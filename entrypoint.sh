@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Entry point script for GAN-HTR container
 # Handles auto-download from HuggingFace and environment setup
 
@@ -21,24 +21,33 @@ download_data() {
     echo "📥 Downloading data from HuggingFace..."
     cd /workspace
 
-    # Download datasets
-    if ! check_data_exists "/workspace/dual_modal_gan/data"; then
-        echo "  📊 Downloading GAN dataset..."
-        python3 /workspace/download_from_huggingface.py
+    # Check critical files instead of directories
+    local dataset_file="/workspace/dual_modal_gan/data/dataset_gan.tfrecord"
+    local model_file="/workspace/models/best_htr_recognizer/best_model.weights.h5"
+    local charlist_file="/workspace/real_data_preparation/real_data_charlist.txt"
+
+    # Check if all critical files exist
+    if [ -f "$dataset_file" ] && [ -f "$model_file" ] && [ -f "$charlist_file" ]; then
+        echo "  ✅ All data files already exist, skipping download"
+        echo "    - Dataset: $(du -h $dataset_file | cut -f1)"
+        echo "    - Model: $(du -h $model_file | cut -f1)"
+        echo "    - Charlist: $(wc -l < $charlist_file) characters"
     else
-        echo "  ✅ GAN dataset already exists, skipping download"
+        echo "  📊 Downloading data from HuggingFace repository..."
+        echo "    Repository: ${HF_USERNAME:-jatnikonm}/${HF_REPO_NAME:-HTR_VOC}"
+        
+        # Run download script
+        python3 /workspace/docRestoration/scripts/download_from_huggingface.py
+        
+        if [ $? -eq 0 ]; then
+            echo "  ✅ Download completed successfully"
+        else
+            echo "  ❌ Download failed, check logs above"
+            exit 1
+        fi
     fi
 
-    # Download models
-    if ! check_data_exists "/workspace/models/best_htr_recognizer"; then
-        echo "  🤖 Downloading HTR models..."
-        mkdir -p /workspace/models/best_htr_recognizer
-        # Models will be downloaded by the download script
-    else
-        echo "  ✅ HTR models already exist, skipping download"
-    fi
-
-    echo "✅ Data download completed"
+    echo "✅ Data validation completed"
 }
 
 # Function to setup environment
@@ -85,18 +94,34 @@ else:
     print('⚠️ No GPU detected, using CPU mode')
 "
 
-    # Check critical files
-    critical_files=(
-        "/workspace/dual_modal_gan/scripts/train.py"
-        "/workspace/network/layers.py"
+    # Check critical files (code + data)
+    critical_code_files=(
+        "/workspace/docRestoration/dual_modal_gan/scripts/train.py"
+    )
+    
+    critical_data_files=(
+        "/workspace/dual_modal_gan/data/dataset_gan.tfrecord"
+        "/workspace/models/best_htr_recognizer/best_model.weights.h5"
         "/workspace/real_data_preparation/real_data_charlist.txt"
     )
 
-    for file in "${critical_files[@]}"; do
+    echo "📂 Checking critical code files..."
+    for file in "${critical_code_files[@]}"; do
         if [ -f "$file" ]; then
             echo "✅ Found: $file"
         else
-            echo "⚠️ Missing: $file"
+            echo "❌ Missing: $file (This file should be in the image/volume)"
+            exit 1
+        fi
+    done
+    
+    echo "📊 Checking critical data files..."
+    for file in "${critical_data_files[@]}"; do
+        if [ -f "$file" ]; then
+            size=$(du -h "$file" | cut -f1)
+            echo "✅ Found: $file ($size)"
+        else
+            echo "⚠️ Missing: $file (Will be downloaded)"
         fi
     done
 
@@ -129,13 +154,29 @@ main() {
     # Validate installation
     validate_installation
 
-    # Execute the provided command or default training
+    # Execute the provided command or training script
     if [ $# -gt 0 ]; then
         echo "🏃 Executing command: $@"
         exec "$@"
     else
-        echo "🏃 Default: Starting training..."
-        exec python3 /workspace/dual_modal_gan/scripts/train.py
+        # Determine training script from environment variable
+        TRAINING_SCRIPT=${TRAINING_SCRIPT:-"dual_modal_gan/scripts/train.py"}
+        
+        echo "🏃 Starting training with: $TRAINING_SCRIPT"
+        
+        # Check if script is shell script or python
+        if [[ "$TRAINING_SCRIPT" == *.sh ]]; then
+            # Shell script - make executable and run
+            chmod +x "/workspace/docRestoration/$TRAINING_SCRIPT"
+            exec bash "/workspace/docRestoration/$TRAINING_SCRIPT"
+        elif [[ "$TRAINING_SCRIPT" == *.py ]]; then
+            # Python script
+            exec python3 "/workspace/docRestoration/$TRAINING_SCRIPT"
+        else
+            echo "❌ Unknown script type: $TRAINING_SCRIPT"
+            echo "   Supported: .py or .sh files"
+            exit 1
+        fi
     fi
 }
 

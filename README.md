@@ -28,7 +28,41 @@ docRestoration/
 
 ## 🚀 Quick Start
 
-### 1. Install Dependencies
+### Method 1: Docker Compose (Recommended - Cloud Ready) 🐳
+
+```bash
+# 1. View available training options
+./quick_start_training.sh
+
+# 2. Run smoke test (quick validation)
+docker-compose up -d gan-htr-smoke-test
+docker logs -f gan-htr-smoke-test
+
+# 3. Or run production training
+docker-compose up -d gan-htr-prod
+docker logs -f gan-htr-prod
+
+# 4. Or run with custom script
+TRAINING_SCRIPT=scripts/train32_smoke_test.sh docker-compose up -d gan-htr-prod
+```
+
+**✅ Benefits:**
+- Auto-download dataset from HuggingFace
+- Zero manual setup
+- Cloud-ready (RunPod, AWS, GCP, Azure)
+- Persistent volumes
+- Easy resume training
+
+📚 **Documentation:**
+- `FLEXIBLE_TRAINING_CONFIG.md` - Flexible training guide
+- `CLOUD_DEPLOYMENT.md` - Cloud deployment guide
+- `README_CLOUD.md` - Quick cloud start
+
+---
+
+### Method 2: Local/Manual Training 💻
+
+#### 1. Install Dependencies
 ```bash
 cd docRestoration
 poetry install
@@ -36,7 +70,7 @@ poetry install
 pip install -r requirements.txt
 ```
 
-### 2. Download Required Data
+#### 2. Download Required Data
 ```bash
 # Option 1: Simple wrapper (recommended)
 ./scripts/download_data.sh
@@ -48,7 +82,7 @@ python scripts/download_from_huggingface.py
 ./scripts/setup.sh
 ```
 
-### 3. Build and Push Docker Image (Optional)
+#### 3. Build and Push Docker Image (Optional)
 ```bash
 # Option 1: Build and push (recommended)
 ./scripts/build_and_push_to_dockerhub.sh
@@ -57,13 +91,13 @@ python scripts/download_from_huggingface.py
 ./scripts/push_to_dockerhub.sh
 ```
 
-### 4. Run Smoke Test
+#### 4. Run Smoke Test
 ```bash
 chmod +x scripts/train32_smoke_test.sh
 ./scripts/train32_smoke_test.sh
 ```
 
-### 3. Check Results
+#### 5. Check Results
 ```bash
 ls -la dual_modal_gan/outputs/checkpoints_fp32_smoke_test/
 ls -la dual_modal_gan/outputs/samples_fp32_smoke_test/

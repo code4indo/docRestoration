@@ -54,17 +54,23 @@ def download_file(repo_id, filename, local_path):
         return False
 
 def main():
-    repo_id = f"{HF_USERNAME}/{REPO_NAME}"
+    # Get config from environment or use defaults
+    hf_username = os.environ.get("HF_USERNAME", HF_USERNAME)
+    hf_repo_name = os.environ.get("HF_REPO_NAME", REPO_NAME)
+    repo_id = f"{hf_username}/{hf_repo_name}"
     
     print(f"=== Downloading from Hugging Face ===")
     print(f"Repository: {repo_id}")
     print()
     
+    # Base path untuk workspace (support Docker dan local)
+    workspace_root = os.environ.get("WORKSPACE_ROOT", "/workspace")
+    
     # Files to download
     files = [
-        ("dataset/dataset_gan.tfrecord", "dual_modal_gan/data/dataset_gan.tfrecord"),
-        ("model/best_model.weights.h5", "models/best_htr_recognizer/best_model.weights.h5"),
-        ("charlist/real_data_charlist.txt", "real_data_preparation/real_data_charlist.txt"),
+        ("dataset/dataset_gan.tfrecord", f"{workspace_root}/dual_modal_gan/data/dataset_gan.tfrecord"),
+        ("model/best_model.weights.h5", f"{workspace_root}/models/best_htr_recognizer/best_model.weights.h5"),
+        ("charlist/real_data_charlist.txt", f"{workspace_root}/real_data_preparation/real_data_charlist.txt"),
     ]
     
     success_count = 0
