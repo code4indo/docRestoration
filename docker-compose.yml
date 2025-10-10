@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  # GAN-HTR Training Service (Production)
+  gan-htr-prod:
+    image: jatnikonem/gan-htr:latest
+    container_name: gan-htr-prod
+    restart: unless-stopped
+    volumes:
+      # Include docRestoration directory (training code)
+      - ./docRestoration:/workspace/docRestoration
+      # Network dependencies
+      - ./network:/workspace/network      
+      # Training outputs (persistent)
+      - ./outputs:/workspace/outputs
+      - ./logbook:/workspace/logbook
+      
+      # HuggingFace cache
+      - huggingface_cache:/root/.cache/huggingface
+      - poetry_cache:/root/.cache/poetry
+      
+      # Models (empty, data akan di-download)
+      - ./models:/workspace/models
+      - ./real_data_preparation:/workspace/real_data_preparation
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+      - TF_FORCE_GPU_ALLOW_GROWTH=true
+      - PYTHONUNBUFFERED=1
+      - HF_HUB_ENABLE_HF_TRANSFER=1
+    ports:
+      - "5000:5000/tcp"
+      - "6006:6006/tcp"
+      -    "8888:8888/tcp"
+    tty: true
+    stdin_open: true
+    
+    # Entrypoint for production mode (auto-download data)
+    entrypoint: "/entrypoint.sh"
+    working_dir: /workspace
+    command: ["python3", "/workspace/dual_modal_gan/scripts/train.py"]
+
+  # Test container with smoke test
+  gan-htr-test:
+    image: jatnikonm/gan-htr:latest
+    container_name: gan-htr-test
+    volumes:
+      - ./docRestoration:/workspace/docRestoration
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+      - TF_FORCE_GPU_ALLOW_GROWTH=true
+      - PYTHONUNFORWARDED=1
+      - TEST_MODE=true
+    command: |
+      echo "🧪 Test container started"
+      poet install
+      python3 scripts/download_data.sh
+      echo "📊 Verifying installation..."
+      python3 -c "
+import tensorflow as tf
+      print('✅ TensorFlow found:', tf.__version__)
+print('✅ GPU:', tf.config.list_physical_devices())
+      "      if tf.config.list_physical_devices():
+          print('✅ GPU acceleration available')
+      except:
+          print('⚠️ GPU not detected or not working')
+      "
+echo "✅ Test passed - Container ready!"
+    depends_on:
+      - gan-htr-prod
+
+  # Development override (optional)
+  gan-htr-dev:
+    extends: gan-htr-prod
+    build:
+      context: ./docRestoration
+      dockerfile: ./docRestoration/Dockerfile.dev
+    volumes:
+      - ./docRestoration:/workspace/docRestoration
+    environment:
+      - DEVELOPMENT_MODE=true
+      - DEBUG=true
+    command: |
+      echo "🔧 Development mode activated"
+      poetry shell
+      
+# Optional: Data volume mounts
+volumes:
+  mlruns: 
+  external_data:
+    driver: local
+    device: /dev/sda1
+    source: /path/to/external/datasets
+    target: /workspace/dual_modal_gan/data
+
+# Network for cross-container communication (if needed)
+networks:
+  gan-htr-network:
+    driver: bridge

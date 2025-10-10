@@ -1,0 +1,48 @@
+# Docker Build Configuration for Development
+
+# Use smaller base image for faster builds
+FROM python:3.10-slim
+
+WORKDIR /workspace
+
+# Install core dependencies faster
+RUN pip install --no-cache \
+    tensorflow==2.18.0 \
+    numpy==1.26.4 \
+    opencv-python==4.9.0.80 \
+    matplotlib==3.9.0 \
+    scipy==1.13.1 \
+    h5py==3.11.0 \
+    tqdm==4.66.4 \
+    editdistance==0.8.1
+
+# Install Poetry
+RUN pip install poetry
+
+# Copy configuration
+COPY pyproject.toml poetry.lock* /workspace/
+
+# Create directories
+RUN mkdir -p /workspace/dual_modal_gan/{src/models,scripts,data,outputs,docs}
+RUN mkdir -p /workspace/network /workspace/{models/best_htr_recognizer,real_data_preparation}
+
+# Copy essential code (copy only what's needed for smoke test)
+COPY dual_modal_gan/scripts/train32.py /workspace/dual_modal_gan/scripts/
+COPY network/layers.py /workspace/network/
+COPY real_data_preparation/real_data_charlist.txt /workspace/real_data_preparation/
+
+# Copy utility scripts
+COPY download_from_huggingface.py /workspace/
+COPY scripts/ /workspace/scripts/
+
+# Environment
+ENV PYTHONUNBUFFERED=1
+ENV TF_FORCE_GPU_ALLOW_GROWTH=true
+ENV CUDA_VISIBLE_DEVICES=0
+ENV DEVELOPMENT_MODE=true
+
+# Expose ports for development
+EXPOSE 8888 6006 5000
+
+# Default test command
+CMD ["python3", "/workspace/dual_modal_gan/scripts/train32.py", "--epochs", "2"]

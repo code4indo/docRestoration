@@ -1,0 +1,42 @@
+- This file tells Git to skip all large files and outputs to keep repository size manageable
+
+# Large datasets (download from HuggingFace instead) 
+dual_modal_gan/data/*.tfrecord
+models/best_htr_recognizer/*.h5
+real_data_preparation/*charlist*.txt
+
+# Training outputs
+dual_modal_gan/outputs/
+mlruns/
+logbook/
+
+# Python cache
+**/__pycache__/
+**/*.pyc
+*.pyc
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+nohup.out
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Poetry
+.venv/
+venv/
+
+# Backup files
+*~
+*.bak
+*.backup*
