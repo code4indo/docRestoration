@@ -1,7 +1,7 @@
 services:
   # GAN-HTR Training Service (Production)
   gan-htr-prod:
-    image: jatnikonem/gan-htr:latest
+    image: jatnikonm/gan-htr:latest
     container_name: gan-htr-prod
     restart: unless-stopped
     volumes:
