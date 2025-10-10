@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Entry point script for GAN-HTR container
 # Handles auto-download from HuggingFace and environment setup
 
