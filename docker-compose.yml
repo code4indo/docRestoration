@@ -41,7 +41,7 @@ services:
 
   # Test container with smoke test
   gan-htr-test:
-    image: jatnikonem/gan-htr:latest
+    image: jatnikonm/gan-htr:latest
     container_name: gan-htr-test
     volumes:
       - ./docRestoration:/workspace/docRestoration
@@ -63,13 +63,8 @@ services:
 
   # Development override (optional)
   gan-htr-dev:
-    extends:
-      file: ./docker-compose.dev.yml
-      service: gan-htr
-    build:
-      context: .
-      dockerfile: docRestoration/Dockerfile.dev
-    image: jatnikonem/gan-htr:local
+    image: jatnikonm/gan-htr:latest
+    container_name: gan-htr-dev
     entrypoint: ["/workspace/docRestoration/entrypoint.sh"]
     volumes:
       - ./docRestoration:/workspace/docRestoration
