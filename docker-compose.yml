@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # GAN-HTR Training Service (Production)
   gan-htr-prod:
@@ -10,89 +8,98 @@ services:
       # Include docRestoration directory (training code)
       - ./docRestoration:/workspace/docRestoration
       # Network dependencies
-      - ./network:/workspace/network      
+      - ./network:/workspace/network
       # Training outputs (persistent)
       - ./outputs:/workspace/outputs
       - ./logbook:/workspace/logbook
-      
       # HuggingFace cache
       - huggingface_cache:/root/.cache/huggingface
       - poetry_cache:/root/.cache/poetry
-      
       # Models (empty, data akan di-download)
       - ./models:/workspace/models
       - ./real_data_preparation:/workspace/real_data_preparation
+      # MLflow runs
+      - ./mlruns:/workspace/mlruns
     environment:
       - CUDA_VISIBLE_DEVICES=0
       - TF_FORCE_GPU_ALLOW_GROWTH=true
       - PYTHONUNBUFFERED=1
       - HF_HUB_ENABLE_HF_TRANSFER=1
+      - MODE=production
     ports:
       - "5000:5000/tcp"
       - "6006:6006/tcp"
-      -    "8888:8888/tcp"
+      - "8888:8888/tcp"
     tty: true
     stdin_open: true
-    
     # Entrypoint for production mode (auto-download data)
-    entrypoint: "/entrypoint.sh"
+    entrypoint: ["/workspace/docRestoration/entrypoint.sh"]
     working_dir: /workspace
     command: ["python3", "/workspace/dual_modal_gan/scripts/train.py"]
+    networks:
+      - gan-htr-network
 
   # Test container with smoke test
   gan-htr-test:
-    image: jatnikonm/gan-htr:latest
+    image: jatnikonem/gan-htr:latest
     container_name: gan-htr-test
     volumes:
       - ./docRestoration:/workspace/docRestoration
+      - ./logbook:/workspace/logbook
+      - huggingface_cache:/root/.cache/huggingface
+      - poetry_cache:/root/.cache/poetry
     environment:
       - CUDA_VISIBLE_DEVICES=0
       - TF_FORCE_GPU_ALLOW_GROWTH=true
-      - PYTHONUNFORWARDED=1
+      - PYTHONUNBUFFERED=1
       - TEST_MODE=true
-    command: |
-      echo "🧪 Test container started"
-      poet install
-      python3 scripts/download_data.sh
-      echo "📊 Verifying installation..."
-      python3 -c "
-import tensorflow as tf
-      print('✅ TensorFlow found:', tf.__version__)
-print('✅ GPU:', tf.config.list_physical_devices())
-      "      if tf.config.list_physical_devices():
-          print('✅ GPU acceleration available')
-      except:
-          print('⚠️ GPU not detected or not working')
-      "
-echo "✅ Test passed - Container ready!"
+      - MODE=test
+    command: >
+      bash -c "echo '🧪 Test container started' && python3 -c 'import tensorflow as tf; print(\"✅ TensorFlow found:\", tf.__version__); print(\"✅ GPU:\", len(tf.config.list_physical_devices(\"GPU\"))); print(\"✅ GPU acceleration available\" if tf.config.list_physical_devices(\"GPU\") else \"⚠️ GPU not detected or not working\")' && echo '✅ Test passed - Container ready!'"
     depends_on:
       - gan-htr-prod
+    networks:
+      - gan-htr-network
 
   # Development override (optional)
   gan-htr-dev:
-    extends: gan-htr-prod
+    extends:
+      file: ./docker-compose.dev.yml
+      service: gan-htr
     build:
-      context: ./docRestoration
-      dockerfile: ./docRestoration/Dockerfile.dev
+      context: .
+      dockerfile: docRestoration/Dockerfile.dev
+    image: jatnikonem/gan-htr:local
+    entrypoint: ["/workspace/docRestoration/entrypoint.sh"]
     volumes:
       - ./docRestoration:/workspace/docRestoration
+      - ./network:/workspace/network
+      - ./outputs:/workspace/outputs
+      - ./logbook:/workspace/logbook
+      - ./models:/workspace/models
+      - ./real_data_preparation:/workspace/real_data_preparation
+      - huggingface_cache:/root/.cache/huggingface
+      - poetry_cache:/root/.cache/poetry
+      - ./mlruns:/workspace/mlruns
     environment:
       - DEVELOPMENT_MODE=true
       - DEBUG=true
-    command: |
-      echo "🔧 Development mode activated"
-      poetry shell
-      
-# Optional: Data volume mounts
-volumes:
-  mlruns: 
-  external_data:
-    driver: local
-    device: /dev/sda1
-    source: /path/to/external/datasets
-    target: /workspace/dual_modal_gan/data
+      - MODE=development
+    command: >
+      bash -c "echo '🔧 Development mode activated' && /workspace/docRestoration/entrypoint.sh poetry shell"
+    networks:
+      - gan-htr-network
 
-# Network for cross-container communication (if needed)
+# Volume definitions
+volumes:
+  huggingface_cache:
+    driver: local
+  poetry_cache:
+    driver: local
+  mlruns:
+    driver: local
+
+# Network for cross-container communication
 networks:
   gan-htr-network:
     driver: bridge
