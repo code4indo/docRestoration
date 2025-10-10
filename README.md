@@ -54,9 +54,10 @@ TRAINING_SCRIPT=scripts/train32_smoke_test.sh docker-compose up -d gan-htr-prod
 - Easy resume training
 
 📚 **Documentation:**
-- `FLEXIBLE_TRAINING_CONFIG.md` - Flexible training guide
-- `CLOUD_DEPLOYMENT.md` - Cloud deployment guide
-- `README_CLOUD.md` - Quick cloud start
+- `catatan/FLEXIBLE_TRAINING_CONFIG.md` - Flexible training guide
+- `catatan/CLOUD_DEPLOYMENT.md` - Cloud deployment guide
+- `catatan/README_CLOUD.md` - Quick cloud start
+- `catatan/README.md` - Index semua dokumentasi
 
 ---
 

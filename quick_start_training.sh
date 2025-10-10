@@ -57,8 +57,8 @@ Pilihan training yang tersedia:
 ════════════════════════════════════════════════════════════
 
 📚 Documentation:
-  • FLEXIBLE_TRAINING_CONFIG.md - Full guide
-  • CLOUD_DEPLOYMENT.md - Cloud deployment
+  • catatan/FLEXIBLE_TRAINING_CONFIG.md - Full guide
+  • catatan/CLOUD_DEPLOYMENT.md - Cloud deployment
   • .env.example - Environment variables
 
 🔍 Status Check:
