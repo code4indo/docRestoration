@@ -5,21 +5,40 @@
 ```bash
 cd /home/lambda_one/tesis/GAN-HTR-ORI/docRestoration
 
-# Production mode (100 epochs)
+# === CPU Mode (Default - Slow but works on any server) ===
 docker-compose up -d gan-htr-prod
 
-# Smoke test (2 epochs - testing only)
-docker-compose up -d gan-htr-smoke-test
+# === GPU Mode (Fast - Requires NVIDIA driver) ===
+docker-compose --profile gpu up -d gan-htr-prod-gpu
 
 # Monitor logs
 docker logs -f gan-htr-prod
+
+# Monitor GPU usage (GPU mode only)
+watch -n 1 nvidia-smi
+```
+
+## Manual Training Start
+
+Container starts in idle mode. Start training manually:
+
+```bash
+# Smoke test (5 epochs - 10-15 menit)
+docker exec -d gan-htr-prod bash /workspace/docRestoration/scripts/train32_smoke_test.sh
+
+# Production (100 epochs - 3-5 jam)
+docker exec -d gan-htr-prod bash /workspace/docRestoration/scripts/train32_production.sh
+
+# Monitor progress
+docker logs -f gan-htr-prod
+tail -f logbook/training_*.log
 ```
 
 ## Stop Training
 
 ```bash
 # Stop container
-docker-compose down gan-htr-prod
+docker-compose down
 
 # Stop dan remove volumes (HATI-HATI: data hilang!)
 docker-compose down -v

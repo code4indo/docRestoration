@@ -4,6 +4,83 @@ services:
     image: jatnikonm/gan-htr:latest
     container_name: gan-htr-prod
     restart: unless-stopped
+    # GPU support (comment out jika server tidak punya GPU)
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+    volumes:
+      # Include docRestoration directory (training code + scripts)
+      - .:/workspace/docRestoration
+      # Training outputs (persistent)
+      - ./outputs:/workspace/outputs
+      - ./logbook:/workspace/logbook
+      # HuggingFace cache (persistent untuk avoid re-download)
+      - huggingface_cache:/root/.cache/huggingface
+      - poetry_cache:/root/.cache/poetry
+      # Data volumes (akan di-download dari HuggingFace)
+      - gan_data:/workspace/dual_modal_gan/data
+      - htr_models:/workspace/models
+      - charlist_data:/workspace/real_data_preparation
+      # MLflow runs (persistent)
+      - ./mlruns:/workspace/mlruns
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+      - TF_FORCE_GPU_ALLOW_GROWTH=true
+      - PYTHONUNBUFFERED=1
+      - HF_HUB_ENABLE_HF_TRANSFER=0
+      - HF_USERNAME=jatnikonm
+      - HF_REPO_NAME=HTR_VOC
+      - PYTHON_BIN=/usr/bin/python3
+    ports:
+      - "5001:5000/tcp"
+      - "6007:6006/tcp"
+      - "8889:8888/tcp"
+    tty: true
+    stdin_open: true
+    working_dir: /workspace/docRestoration
+    # Container idle - download data only, no auto-training
+    command: >
+      bash -c "
+      echo '🎯 GAN-HTR Container - Manual Mode (CPU-only)';
+      echo '=====================================';
+      echo '';
+      echo '⚠️  Running in CPU mode (no GPU detected)';
+      echo '⚠️  Training will be SLOW! Use GPU server for production.';
+      echo '';
+      echo '📦 Checking and downloading data...';
+      python3 /workspace/docRestoration/scripts/download_from_huggingface.py || echo '⚠️ Download script not found';
+      echo '';
+      echo '📊 Starting MLflow UI server...';
+      cd /workspace && mlflow ui --host 0.0.0.0 --port 5000 --backend-store-uri file:///workspace/mlruns > /tmp/mlflow_ui.log 2>&1 &
+      sleep 3;
+      echo '✅ MLflow UI: http://localhost:5001';
+      echo '';
+      echo '✅ Container ready - IDLE mode';
+      echo '';
+      echo '🚀 To start training manually, run:';
+      echo '   docker exec -d gan-htr-prod bash /workspace/docRestoration/scripts/train32_production.sh';
+      echo '';
+      echo '   Or smoke test:';
+      echo '   docker exec -d gan-htr-prod bash /workspace/docRestoration/scripts/train32_smoke_test.sh';
+      echo '';
+      echo '📊 Monitor: docker logs -f gan-htr-prod';
+      echo '📊 MLflow UI: http://localhost:5001';
+      echo '';
+      echo '💤 Container will stay idle until you start training...';
+      tail -f /dev/null
+      "
+    networks:
+      - gan-htr-network
+
+  # GAN-HTR Training Service with GPU (untuk server dengan GPU)
+  gan-htr-prod-gpu:
+    image: jatnikonm/gan-htr:latest
+    container_name: gan-htr-prod
+    restart: unless-stopped
     deploy:
       resources:
         reservations:
@@ -41,11 +118,13 @@ services:
     tty: true
     stdin_open: true
     working_dir: /workspace/docRestoration
-    # Container idle - download data only, no auto-training
     command: >
       bash -c "
-      echo '🎯 GAN-HTR Container - Manual Mode';
+      echo '🎯 GAN-HTR Container - Manual Mode (GPU)';
       echo '=====================================';
+      echo '';
+      echo '🔍 GPU Check...';
+      python3 -c 'import tensorflow as tf; print(\"GPU:\", len(tf.config.list_physical_devices(\"GPU\")), \"device(s)\")' 2>&1 | tail -1;
       echo '';
       echo '📦 Checking and downloading data...';
       python3 /workspace/docRestoration/scripts/download_from_huggingface.py || echo '⚠️ Download script not found';
@@ -69,6 +148,7 @@ services:
       echo '💤 Container will stay idle until you start training...';
       tail -f /dev/null
       "
+    profiles: [gpu]
     networks:
       - gan-htr-network
 
