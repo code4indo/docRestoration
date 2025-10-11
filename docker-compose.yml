@@ -1,9 +1,16 @@
 services:
-  # GAN-HTR Training Service (Production)
+  # GAN-HTR Training Service (Manual Control - Container Idle)
   gan-htr-prod:
     image: jatnikonm/gan-htr:latest
     container_name: gan-htr-prod
     restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
     volumes:
       # Include docRestoration directory (training code + scripts)
       - .:/workspace/docRestoration
@@ -23,51 +30,75 @@ services:
       - CUDA_VISIBLE_DEVICES=0
       - TF_FORCE_GPU_ALLOW_GROWTH=true
       - PYTHONUNBUFFERED=1
-      - HF_HUB_ENABLE_HF_TRANSFER=1
+      - HF_HUB_ENABLE_HF_TRANSFER=0
       - HF_USERNAME=jatnikonm
       - HF_REPO_NAME=HTR_VOC
-      - MODE=production
-      - TRAINING_SCRIPT=${TRAINING_SCRIPT:-scripts/train32_production.sh}
+      - PYTHON_BIN=/usr/bin/python3
     ports:
       - "5001:5000/tcp"
       - "6007:6006/tcp"
       - "8889:8888/tcp"
     tty: true
     stdin_open: true
-    # Entrypoint for production mode (auto-download data)
-    entrypoint: ["/workspace/docRestoration/entrypoint.sh"]
     working_dir: /workspace/docRestoration
-    # Command akan di-override oleh entrypoint berdasarkan TRAINING_SCRIPT env
+    # Container idle - download data only, no auto-training
+    command: >
+      bash -c "
+      echo '🎯 GAN-HTR Container - Manual Mode';
+      echo '=====================================';
+      echo '';
+      echo '📦 Checking and downloading data...';
+      python3 /workspace/docRestoration/scripts/download_from_huggingface.py || echo '⚠️ Download script not found';
+      echo '';
+      echo '📊 Starting MLflow UI server...';
+      cd /workspace && mlflow ui --host 0.0.0.0 --port 5000 --backend-store-uri file:///workspace/mlruns > /tmp/mlflow_ui.log 2>&1 &
+      sleep 3;
+      echo '✅ MLflow UI: http://localhost:5001';
+      echo '';
+      echo '✅ Container ready - IDLE mode';
+      echo '';
+      echo '🚀 To start training manually, run:';
+      echo '   docker exec -d gan-htr-prod bash /workspace/docRestoration/scripts/train32_production.sh';
+      echo '';
+      echo '   Or smoke test:';
+      echo '   docker exec -d gan-htr-prod bash /workspace/docRestoration/scripts/train32_smoke_test.sh';
+      echo '';
+      echo '📊 Monitor: docker logs -f gan-htr-prod';
+      echo '📊 MLflow UI: http://localhost:5001';
+      echo '';
+      echo '💤 Container will stay idle until you start training...';
+      tail -f /dev/null
+      "
     networks:
       - gan-htr-network
 
-  # Smoke Test Service (Quick 2-epoch validation)
-  gan-htr-smoke-test:
-    image: jatnikonm/gan-htr:latest
-    container_name: gan-htr-smoke-test
-    restart: "no"
-    volumes:
-      - .:/workspace/docRestoration
-      - ./outputs:/workspace/outputs
-      - ./logbook:/workspace/logbook
-      - gan_data:/workspace/dual_modal_gan/data
-      - htr_models:/workspace/models
-      - charlist_data:/workspace/real_data_preparation
-      - huggingface_cache:/root/.cache/huggingface
-      - poetry_cache:/root/.cache/poetry
-      - ./mlruns:/workspace/mlruns
-    environment:
-      - CUDA_VISIBLE_DEVICES=0
-      - TF_FORCE_GPU_ALLOW_GROWTH=true
-      - PYTHONUNBUFFERED=1
-      - HF_USERNAME=jatnikonm
-      - HF_REPO_NAME=HTR_VOC
-      - MODE=smoke_test
-      - TRAINING_SCRIPT=scripts/train32_smoke_test.sh
-    entrypoint: ["/workspace/docRestoration/entrypoint.sh"]
-    working_dir: /workspace/docRestoration
-    networks:
-      - gan-htr-network
+  # Alternative: Auto-training mode (uncomment if needed)
+  # gan-htr-auto:
+  #   image: jatnikonm/gan-htr:latest
+  #   container_name: gan-htr-auto
+  #   restart: unless-stopped
+  #   volumes:
+  #     - .:/workspace/docRestoration
+  #     - ./outputs:/workspace/outputs
+  #     - ./logbook:/workspace/logbook
+  #     - gan_data:/workspace/dual_modal_gan/data
+  #     - htr_models:/workspace/models
+  #     - charlist_data:/workspace/real_data_preparation
+  #     - huggingface_cache:/root/.cache/huggingface
+  #     - poetry_cache:/root/.cache/poetry
+  #     - ./mlruns:/workspace/mlruns
+  #   environment:
+  #     - CUDA_VISIBLE_DEVICES=0
+  #     - TF_FORCE_GPU_ALLOW_GROWTH=true
+  #     - PYTHONUNBUFFERED=1
+  #     - HF_USERNAME=jatnikonm
+  #     - HF_REPO_NAME=HTR_VOC
+  #     - MODE=production
+  #     - TRAINING_SCRIPT=scripts/train32_production.sh
+  #   entrypoint: ["/workspace/docRestoration/entrypoint.sh"]
+  #   working_dir: /workspace/docRestoration
+  #   networks:
+  #     - gan-htr-network
 
   # Test container (validation only - no training)
   gan-htr-test:
@@ -93,7 +124,6 @@ services:
   gan-htr-dev:
     image: jatnikonm/gan-htr:latest
     container_name: gan-htr-dev
-    entrypoint: ["/workspace/docRestoration/entrypoint.sh"]
     volumes:
       - .:/workspace/docRestoration
       - ./outputs:/workspace/outputs
@@ -110,8 +140,13 @@ services:
       - HF_USERNAME=jatnikonm
       - HF_REPO_NAME=HTR_VOC
       - MODE=development
+      - CUDA_VISIBLE_DEVICES=0
+      - TF_FORCE_GPU_ALLOW_GROWTH=true
+    working_dir: /workspace/docRestoration
     command: >
-      bash -c "echo '🔧 Development mode activated' && /workspace/docRestoration/entrypoint.sh poetry shell"
+      bash -c "echo '🔧 Development mode - Interactive shell' && tail -f /dev/null"
+    tty: true
+    stdin_open: true
     networks:
       - gan-htr-network
 

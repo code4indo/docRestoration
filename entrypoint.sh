@@ -71,61 +71,20 @@ setup_environment() {
     echo "✅ Environment setup completed"
 }
 
-# Function to validate installation
+# Function to validate installation (minimal untuk cloud)
 validate_installation() {
-    echo "🔍 Validating installation..."
+    echo "🔍 Quick validation..."
 
-    # Check Python
-    python3 --version
-    echo "✅ Python version: $(python3 --version)"
+    # Check GPU (silent failure OK untuk CPU mode)
+    GPU_COUNT=$(python3 -c "import tensorflow as tf; print(len(tf.config.list_physical_devices('GPU')))" 2>/dev/null || echo "0")
+    [ "$GPU_COUNT" -gt 0 ] && echo "✅ GPU: $GPU_COUNT device(s)" || echo "⚠️ CPU mode"
 
-    # Check TensorFlow
-    python3 -c "import tensorflow as tf; print('✅ TensorFlow version:', tf.__version__)"
+    # Check critical data files exist
+    [ -f "/workspace/dual_modal_gan/data/dataset_gan.tfrecord" ] || { echo "❌ Dataset missing"; exit 1; }
+    [ -f "/workspace/models/best_htr_recognizer/best_model.weights.h5" ] || { echo "❌ Model missing"; exit 1; }
+    [ -f "/workspace/real_data_preparation/real_data_charlist.txt" ] || { echo "❌ Charlist missing"; exit 1; }
 
-    # Check GPU (if available)
-    python3 -c "
-import tensorflow as tf
-gpus = tf.config.list_physical_devices('GPU')
-if gpus:
-    print(f'✅ GPU detected: {len(gpus)} device(s)')
-    for gpu in gpus:
-        print(f'  - {gpu.name}')
-else:
-    print('⚠️ No GPU detected, using CPU mode')
-"
-
-    # Check critical files (code + data)
-    critical_code_files=(
-        "/workspace/docRestoration/dual_modal_gan/scripts/train.py"
-    )
-    
-    critical_data_files=(
-        "/workspace/dual_modal_gan/data/dataset_gan.tfrecord"
-        "/workspace/models/best_htr_recognizer/best_model.weights.h5"
-        "/workspace/real_data_preparation/real_data_charlist.txt"
-    )
-
-    echo "📂 Checking critical code files..."
-    for file in "${critical_code_files[@]}"; do
-        if [ -f "$file" ]; then
-            echo "✅ Found: $file"
-        else
-            echo "❌ Missing: $file (This file should be in the image/volume)"
-            exit 1
-        fi
-    done
-    
-    echo "📊 Checking critical data files..."
-    for file in "${critical_data_files[@]}"; do
-        if [ -f "$file" ]; then
-            size=$(du -h "$file" | cut -f1)
-            echo "✅ Found: $file ($size)"
-        else
-            echo "⚠️ Missing: $file (Will be downloaded)"
-        fi
-    done
-
-    echo "✅ Installation validation completed"
+    echo "✅ Validation complete"
 }
 
 # Main execution logic
