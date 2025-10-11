@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/docRestoration/mlruns/597476338881376573/a34ff07ecd404092a4b744f4800e4416/artifacts
+end_time: 1760150560511
+entry_point_name: ''
+experiment_id: '597476338881376573'
+lifecycle_stage: active
+run_id: a34ff07ecd404092a4b744f4800e4416
+run_name: resilient-snail-905
+run_uuid: a34ff07ecd404092a4b744f4800e4416
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760150543871
+status: 4
+tags: []
+user_id: root

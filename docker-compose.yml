@@ -154,17 +154,22 @@ services:
 volumes:
   huggingface_cache:
     driver: local
+    name: gan-htr-huggingface-cache
   poetry_cache:
     driver: local
+    name: gan-htr-poetry-cache
   mlruns:
     driver: local
   # Data volumes (downloaded from HuggingFace)
   gan_data:
     driver: local
+    name: gan-htr-data
   htr_models:
     driver: local
+    name: gan-htr-models
   charlist_data:
     driver: local
+    name: gan-htr-charlist
 
 # Network for cross-container communication
 networks:

@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/mlruns/790515157284260379/a115a2c47ad9482698ec8e06b98ee41a/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '790515157284260379'
+lifecycle_stage: active
+run_id: a115a2c47ad9482698ec8e06b98ee41a
+run_name: merciful-crab-678
+run_uuid: a115a2c47ad9482698ec8e06b98ee41a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760133518682
+status: 1
+tags: []
+user_id: root

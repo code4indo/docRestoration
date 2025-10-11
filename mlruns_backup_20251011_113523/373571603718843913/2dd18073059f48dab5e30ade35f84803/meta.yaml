@@ -1,0 +1,15 @@
+artifact_uri: file:///workspace/docRestoration/mlruns/373571603718843913/2dd18073059f48dab5e30ade35f84803/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '373571603718843913'
+lifecycle_stage: active
+run_id: 2dd18073059f48dab5e30ade35f84803
+run_name: efficient-dog-811
+run_uuid: 2dd18073059f48dab5e30ade35f84803
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760137732982
+status: 1
+tags: []
+user_id: root
