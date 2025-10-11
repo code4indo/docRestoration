@@ -33,9 +33,9 @@ cd "$(dirname "$0")/.." || exit 1
 
 # Use system Python (dependencies already installed in image)
 ${PYTHON_BIN:-python3} dual_modal_gan/scripts/train32.py \
-  --tfrecord_path /workspace/dual_modal_gan/data/dataset_gan.tfrecord \
-  --charset_path /workspace/real_data_preparation/real_data_charlist.txt \
-  --recognizer_weights /workspace/models/best_htr_recognizer/best_model.weights.h5 \
+  --tfrecord_path dual_modal_gan/data/dataset_gan.tfrecord \
+  --charset_path real_data_preparation/real_data_charlist.txt \
+  --recognizer_weights models/best_htr_recognizer/best_model.weights.h5 \
   --checkpoint_dir dual_modal_gan/outputs/checkpoints_fp32_production \
   --sample_dir dual_modal_gan/outputs/samples_fp32_production \
   --gpu_id 1 \
