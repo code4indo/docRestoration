@@ -5,8 +5,20 @@ Usage: python download_from_huggingface.py
 """
 
 import os
+import sys
+import subprocess
 from pathlib import Path
 from huggingface_hub import hf_hub_download
+
+# Check hf_transfer availability
+try:
+    subprocess.run([sys.executable, "-c", "import hf_transfer"], 
+                   check=True, capture_output=True)
+    HF_TRANSFER_AVAILABLE = True
+    print("✅ hf_transfer available")
+except (subprocess.CalledProcessError, ImportError):
+    HF_TRANSFER_AVAILABLE = False
+    print("⚠️ hf_transfer not available, will use standard download")
 
 # Konfigurasi
 HF_USERNAME = "jatnikonm"  # Ganti dengan username Anda
@@ -22,11 +34,21 @@ def download_file(repo_id, filename, local_path, disable_hf_transfer=False):
     local_path.parent.mkdir(parents=True, exist_ok=True)
     
     try:
-        # Backup and modify environment for hf_transfer
-        env_backup = os.environ.get("HF_HUB_ENABLE_HF_TRANSFER")
+        # Determine if we should use hf_transfer
+        use_hf_transfer = HF_TRANSFER_AVAILABLE and not disable_hf_transfer
+        if use_hf_transfer:
+            print("  🚀 Using hf_transfer for faster download")
+        else:
+            if disable_hf_transfer:
+                print("  📄 Standard download (small file)")
+            else:
+                print("  📄 Standard download (hf_transfer unavailable)")
         
-        if disable_hf_transfer:
-            # Force disable hf_transfer for small files
+        # Set environment variables
+        env_backup = os.environ.get("HF_HUB_ENABLE_HF_TRANSFER")
+        if use_hf_transfer and not disable_hf_transfer:
+            os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
+        else:
             os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "0"
         
         try:
@@ -43,17 +65,16 @@ def download_file(repo_id, filename, local_path, disable_hf_transfer=False):
                 import shutil
                 shutil.move(downloaded_path, str(local_path))
             
-            file_size = os.path.getsize(local_path) / (1024**3)
-            print(f"✅ Downloaded: {local_path} ({file_size:.2f} GB)")
+            file_size = os.path.getsize(local_path) / (1024**2)  # MB
+            print(f"✅ Downloaded: {local_path.name} ({file_size:.2f} MB)")
             return True
             
         finally:
             # Always restore environment
-            if disable_hf_transfer:
-                if env_backup:
-                    os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = env_backup
-                else:
-                    os.environ.pop("HF_HUB_ENABLE_HF_TRANSFER", None)
+            if env_backup:
+                os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = env_backup
+            else:
+                os.environ.pop("HF_HUB_ENABLE_HF_TRANSFER", None)
     
     except Exception as e:
         print(f"❌ Error downloading {filename}: {e}")
@@ -72,15 +93,14 @@ def main():
     # Base path untuk workspace (support Docker dan local)
     workspace_root = os.environ.get("WORKSPACE_ROOT", "/workspace")
     
-    # Use current directory as base untuk menyimpan di induk project
+    # Use current workspace directory (docRestoration) sebagai base
     current_dir = Path.cwd()
-    parent_dir = current_dir.parent
     
     # Files to download (path, local_path, disable_hf_transfer)
     files = [
-        ("dataset/dataset_gan.tfrecord", str(parent_dir / "dual_modal_gan" / "data" / "dataset_gan.tfrecord"), False),
-        ("model/best_model.weights.h5", str(parent_dir / "models" / "best_htr_recognizer" / "best_model.weights.h5"), False),
-        ("charlist/real_data_charlist.txt", str(parent_dir / "real_data_preparation" / "real_data_charlist.txt"), True),  # Disable for small text file
+        ("dataset/dataset_gan.tfrecord", str(current_dir / "dual_modal_gan" / "data" / "dataset_gan.tfrecord"), False),
+        ("model/best_model.weights.h5", str(current_dir / "models" / "best_htr_recognizer" / "best_model.weights.h5"), False),
+        ("charlist/real_data_charlist.txt", str(current_dir / "real_data_preparation" / "real_data_charlist.txt"), True),  # Disable for small text file
     ]
     
     success_count = 0
