@@ -5,7 +5,8 @@ services:
     container_name: gan-htr-prod
     restart: unless-stopped
     # GPU support (comment out jika server tidak punya GPU)
-    # deploy:
+    # runtime: nvidia  # Uncomment untuk GPU mode (Docker Compose v1)
+    # deploy:          # GPU mode untuk Docker Compose v2
     #   resources:
     #     reservations:
     #       devices:
@@ -19,12 +20,12 @@ services:
       - ./outputs:/workspace/outputs
       - ./logbook:/workspace/logbook
       # HuggingFace cache (persistent untuk avoid re-download)
-      - huggingface_cache:/root/.cache/huggingface
-      - poetry_cache:/root/.cache/poetry
+      - gan-htr-huggingface:/root/.cache/huggingface
+      - gan-htr-poetry:/root/.cache/poetry
       # Data volumes (akan di-download dari HuggingFace)
-      - gan_data:/workspace/dual_modal_gan/data
-      - htr_models:/workspace/models
-      - charlist_data:/workspace/real_data_preparation
+      - gan-htr-data:/workspace/dual_modal_gan/data
+      - gan-htr-models:/workspace/models
+      - gan-htr-charlist:/workspace/real_data_preparation
       # MLflow runs (persistent)
       - ./mlruns:/workspace/mlruns
     environment:
@@ -73,21 +74,20 @@ services:
       echo '💤 Container will stay idle until you start training...';
       tail -f /dev/null
       "
-    networks:
-      - gan-htr-network
 
   # GAN-HTR Training Service with GPU (untuk server dengan GPU)
   gan-htr-prod-gpu:
     image: jatnikonm/gan-htr:latest
-    container_name: gan-htr-prod
+    container_name: gan-htr-prod-gpu
     restart: unless-stopped
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+    runtime: nvidia  # Docker Compose v1 GPU support
+    # deploy:        # Docker Compose v2 GPU support (optional)
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
     volumes:
       # Include docRestoration directory (training code + scripts)
       - .:/workspace/docRestoration
@@ -95,12 +95,12 @@ services:
       - ./outputs:/workspace/outputs
       - ./logbook:/workspace/logbook
       # HuggingFace cache (persistent untuk avoid re-download)
-      - huggingface_cache:/root/.cache/huggingface
-      - poetry_cache:/root/.cache/poetry
+      - gan-htr-huggingface:/root/.cache/huggingface
+      - gan-htr-poetry:/root/.cache/poetry
       # Data volumes (akan di-download dari HuggingFace)
-      - gan_data:/workspace/dual_modal_gan/data
-      - htr_models:/workspace/models
-      - charlist_data:/workspace/real_data_preparation
+      - gan-htr-data:/workspace/dual_modal_gan/data
+      - gan-htr-models:/workspace/models
+      - gan-htr-charlist:/workspace/real_data_preparation
       # MLflow runs (persistent)
       - ./mlruns:/workspace/mlruns
     environment:
@@ -148,9 +148,7 @@ services:
       echo '💤 Container will stay idle until you start training...';
       tail -f /dev/null
       "
-    profiles: [gpu]
-    networks:
-      - gan-htr-network
+    # profiles: [gpu]  # Profiles not supported in Docker Compose v1
 
   # Alternative: Auto-training mode (uncomment if needed)
   # gan-htr-auto:
@@ -177,8 +175,6 @@ services:
   #     - TRAINING_SCRIPT=scripts/train32_production.sh
   #   entrypoint: ["/workspace/docRestoration/entrypoint.sh"]
   #   working_dir: /workspace/docRestoration
-  #   networks:
-  #     - gan-htr-network
 
   # Test container (validation only - no training)
   gan-htr-test:
@@ -187,8 +183,8 @@ services:
     volumes:
       - .:/workspace/docRestoration
       - ./logbook:/workspace/logbook
-      - huggingface_cache:/root/.cache/huggingface
-      - poetry_cache:/root/.cache/poetry
+      - gan-htr-huggingface:/root/.cache/huggingface
+      - gan-htr-poetry:/root/.cache/poetry
     environment:
       - CUDA_VISIBLE_DEVICES=0
       - TF_FORCE_GPU_ALLOW_GROWTH=true
@@ -197,8 +193,6 @@ services:
       - MODE=test
     command: >
       bash -c "echo '🧪 Test container started' && python3 -c 'import tensorflow as tf; print(\"✅ TensorFlow found:\", tf.__version__); print(\"✅ GPU:\", len(tf.config.list_physical_devices(\"GPU\"))); print(\"✅ GPU acceleration available\" if tf.config.list_physical_devices(\"GPU\") else \"⚠️ GPU not detected or not working\")' && echo '✅ Test passed - Container ready!'"
-    networks:
-      - gan-htr-network
 
   # Development override (optional)
   gan-htr-dev:
@@ -208,11 +202,11 @@ services:
       - .:/workspace/docRestoration
       - ./outputs:/workspace/outputs
       - ./logbook:/workspace/logbook
-      - gan_data:/workspace/dual_modal_gan/data
-      - htr_models:/workspace/models
-      - charlist_data:/workspace/real_data_preparation
-      - huggingface_cache:/root/.cache/huggingface
-      - poetry_cache:/root/.cache/poetry
+      - gan-htr-data:/workspace/dual_modal_gan/data
+      - gan-htr-models:/workspace/models
+      - gan-htr-charlist:/workspace/real_data_preparation
+      - gan-htr-huggingface:/root/.cache/huggingface
+      - gan-htr-poetry:/root/.cache/poetry
       - ./mlruns:/workspace/mlruns
     environment:
       - DEVELOPMENT_MODE=true
@@ -227,31 +221,11 @@ services:
       bash -c "echo '🔧 Development mode - Interactive shell' && tail -f /dev/null"
     tty: true
     stdin_open: true
-    networks:
-      - gan-htr-network
 
-# Volume definitions
+# Named volumes (Docker will create automatically)
 volumes:
-  huggingface_cache:
-    driver: local
-    name: gan-htr-huggingface-cache
-  poetry_cache:
-    driver: local
-    name: gan-htr-poetry-cache
-  mlruns:
-    driver: local
-  # Data volumes (downloaded from HuggingFace)
-  gan_data:
-    driver: local
-    name: gan-htr-data
-  htr_models:
-    driver: local
-    name: gan-htr-models
-  charlist_data:
-    driver: local
-    name: gan-htr-charlist
-
-# Network for cross-container communication
-networks:
-  gan-htr-network:
-    driver: bridge
+  gan-htr-huggingface:
+  gan-htr-poetry:
+  gan-htr-data:
+  gan-htr-models:
+  gan-htr-charlist:

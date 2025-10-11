@@ -72,11 +72,15 @@ def main():
     # Base path untuk workspace (support Docker dan local)
     workspace_root = os.environ.get("WORKSPACE_ROOT", "/workspace")
     
+    # Use current directory as base untuk menyimpan di induk project
+    current_dir = Path.cwd()
+    parent_dir = current_dir.parent
+    
     # Files to download (path, local_path, disable_hf_transfer)
     files = [
-        ("dataset/dataset_gan.tfrecord", f"{workspace_root}/dual_modal_gan/data/dataset_gan.tfrecord", False),
-        ("model/best_model.weights.h5", f"{workspace_root}/models/best_htr_recognizer/best_model.weights.h5", False),
-        ("charlist/real_data_charlist.txt", f"{workspace_root}/real_data_preparation/real_data_charlist.txt", True),  # Disable for small text file
+        ("dataset/dataset_gan.tfrecord", str(parent_dir / "dual_modal_gan" / "data" / "dataset_gan.tfrecord"), False),
+        ("model/best_model.weights.h5", str(parent_dir / "models" / "best_htr_recognizer" / "best_model.weights.h5"), False),
+        ("charlist/real_data_charlist.txt", str(parent_dir / "real_data_preparation" / "real_data_charlist.txt"), True),  # Disable for small text file
     ]
     
     success_count = 0

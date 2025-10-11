@@ -62,19 +62,39 @@ docker-compose up -d mlflow
 ## Enable GPU (MUST untuk production)
 
 ```bash
-# Install nvidia runtime (run once di host)
+# 1. Install nvidia runtime (run once di host)
 sudo apt-get install -y nvidia-container-toolkit
 sudo systemctl restart docker
 
-# Test GPU
+# 2. Test GPU
 docker run --rm --gpus all tensorflow/tensorflow:2.18.0-gpu \
   python -c "import tensorflow as tf; print('GPU:', tf.config.list_physical_devices('GPU'))"
 
-# Update docker-compose.yml
-# Uncomment line: runtime: nvidia
+# 3a. Docker Compose v2 (recommended)
+docker-compose --profile gpu up -d gan-htr-prod-gpu
 
-# Restart training
-docker-compose restart gan-htr-prod
+# 3b. Docker Compose v1 (older systems)
+# Edit docker-compose.yml, uncomment line: runtime: nvidia
+# Then:
+docker-compose up -d gan-htr-prod
+
+# 4. Verify GPU detected
+docker exec gan-htr-prod python3 -c "import tensorflow as tf; print('GPU:', len(tf.config.list_physical_devices('GPU')))"
+```
+
+## Check Docker Compose Version
+
+```bash
+# Check version
+docker-compose --version
+
+# If output is "1.x" → Use Docker Compose v1 syntax
+# If output is "2.x" or "v2.x" → Use Docker Compose v2 syntax
+
+# Upgrade to v2 (recommended):
+sudo apt-get update
+sudo apt-get install docker-compose-plugin
+# Or use: docker compose (with space, not dash)
 ```
 
 ## Troubleshooting
