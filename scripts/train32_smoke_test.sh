@@ -35,7 +35,7 @@ ${PYTHON_BIN:-python3} dual_modal_gan/scripts/train32.py \
   --epochs 5 \
   --steps_per_epoch 200 \
   --batch_size 4 \
-  --lr_g 0.0002 \
+  --lr_g 0.0006 \
   --lr_d 0.0002 \
   --pixel_loss_weight 1000.0 \
   --ctc_loss_weight 15.0 \

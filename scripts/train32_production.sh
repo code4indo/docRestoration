@@ -11,10 +11,10 @@ echo ""
 echo "Configuration:"
 echo "  • Precision: Pure FP32 (NO mixed precision)"
 echo "  • Epochs: 150 (max)"
-echo "  • Early stopping: Enabled (patience=15, min_delta=0.01)"
+echo "  • Early stopping: Enabled (patience=10, min_delta=0.1)"
 echo "  • Steps per epoch: Auto (dataset size / batch size)"
-echo "  • Batch size: 16"
-echo "  • Loss weights: Pixel=100, CTC=1, Adversarial=2"
+echo "  • Batch size: 32"
+echo "  • Loss weights: Pixel=100, CTC=1, Adversarial=5"
 echo "  • Target: PSNR ~40, SSIM ~0.99"
 echo ""
 echo "Expected Results:"
@@ -48,16 +48,16 @@ ${PYTHON_BIN:-python3} dual_modal_gan/scripts/train32.py \
   --lr_d 0.0004 \
   --pixel_loss_weight 100.0 \
   --ctc_loss_weight 1.0 \
-  --adv_loss_weight 2.0 \
+  --adv_loss_weight 5.0 \
   --gradient_clip_norm 1.0 \
-  --ctc_loss_clip_max 1000.0 \
+  --ctc_loss_clip_max 10000.0 \
   --eval_interval 1 \
   --save_interval 5 \
   --discriminator_mode predicted \
   --cer_weight 0.5 \
   --early_stopping \
-  --patience 15 \
-  --min_delta 0.01 \
+  --patience 10 \
+  --min_delta 0.1 \
   --restore_best_weights \
   --seed 42
 
