@@ -183,9 +183,8 @@ def run_validation_step(val_dataset, generator, recognizer, charset, psnr_metric
         
         # Textual metrics: CER/WER
         # Get HTR predictions for clean (ground truth quality) and generated (enhanced) images
-        clean_logits = recognizer(clean_images, training=False)
-                        generated_logits = recognizer(generated_images, training=True)        
-        # Decode predictions using greedy decoding (argmax)
+                        clean_logits = recognizer(clean_images, training=False)
+                        generated_logits = recognizer(generated_images, training=True)        # Decode predictions using greedy decoding (argmax)
         clean_predictions = tf.argmax(clean_logits, axis=-1, output_type=tf.int32)
         generated_predictions = tf.argmax(generated_logits, axis=-1, output_type=tf.int32)
         
