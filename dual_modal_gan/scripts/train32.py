@@ -296,7 +296,7 @@ def main(args):
             with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
                 generated_images = generator(degraded_images, training=True)
                 clean_logits = recognizer(clean_images, training=False)
-                generated_logits = recognizer(generated_images, training=False)
+                generated_logits = recognizer(generated_images, training=True)
 
                 clean_text_pred = tf.argmax(clean_logits, axis=-1, output_type=tf.int32)
                 generated_text_pred = tf.argmax(generated_logits, axis=-1, output_type=tf.int32)
