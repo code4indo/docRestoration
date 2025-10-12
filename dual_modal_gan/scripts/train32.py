@@ -313,19 +313,15 @@ def main(args):
 
                 adversarial_loss = bce_loss_fn(real_labels_disc, fake_output)
                 pixel_loss = mae_loss_fn(clean_images, generated_images)
+                # Always calculate CTC loss; its contribution is controlled by ctc_weight.
+                # This avoids conditional graph structures that break gradient flow in @tf.function.
+                label_len = tf.math.count_nonzero(ground_truth_text, axis=1, keepdims=True, dtype=tf.int32)
+                label_len = tf.reshape(label_len, [-1])
+                logit_len = tf.fill([args.batch_size], generated_logits.shape[1])
                 
-                # Only calculate CTC loss if weight > 0 to save computation
-                if args.ctc_loss_weight > 0:
-                    label_len = tf.math.count_nonzero(ground_truth_text, axis=1, keepdims=True, dtype=tf.int32)
-                    label_len = tf.reshape(label_len, [-1])
-                    logit_len = tf.fill([args.batch_size], generated_logits.shape[1])
-                    
-                    ctc_loss_raw = tf.reduce_mean(tf.nn.ctc_loss(labels=tf.cast(ground_truth_text, tf.int32), logits=generated_logits, label_length=label_len, logit_length=logit_len, logits_time_major=False, blank_index=0))
-                    # Clip CTC loss to prevent spikes that cause training instability
-                    ctc_loss = tf.clip_by_value(ctc_loss_raw, 0.0, args.ctc_loss_clip_max)
-                else:
-                    ctc_loss = tf.constant(0.0, dtype=tf.float32)
-                    ctc_loss_raw = tf.constant(0.0, dtype=tf.float32)
+                ctc_loss_raw = tf.reduce_mean(tf.nn.ctc_loss(labels=tf.cast(ground_truth_text, tf.int32), logits=generated_logits, label_length=label_len, logit_length=logit_len, logits_time_major=False, blank_index=0))
+                # Clip CTC loss to prevent spikes that cause training instability
+                ctc_loss = tf.clip_by_value(ctc_loss_raw, 0.0, args.ctc_loss_clip_max)
 
                 # ✅ Pure FP32 - NO casting needed (already in FP32)
                 total_gen_loss = (args.adv_loss_weight * adversarial_loss) + (args.pixel_loss_weight * pixel_loss) + (ctc_weight * ctc_loss)
@@ -445,31 +441,45 @@ def main(args):
         for epoch in range(args.epochs):
             epoch_start_time = time.time()
             
-            # --- Curriculum Learning Logic ---
+            # --- Curriculum Learning & Loss Annealing Logic ---
             is_warmup = epoch < args.warmup_epochs
-            current_ctc_weight = 0.0 if is_warmup else args.ctc_loss_weight
+            is_annealing = not is_warmup and (epoch - args.warmup_epochs) < args.annealing_epochs
             
-            if is_warmup and epoch == 0:
-                print(f"\n🔥 Starting visual warm-up phase for {args.warmup_epochs} epochs (CTC loss disabled)...")
-            if not is_warmup and epoch == args.warmup_epochs:
-                print(f"\n✅ Warm-up complete. Activating CTC loss with weight: {current_ctc_weight}...")
+            current_ctc_weight = 0.0
+            if is_annealing:
+                # Linear ramp-up of CTC weight
+                annealing_epoch = epoch - args.warmup_epochs
+                progress = float(annealing_epoch + 1) / float(args.annealing_epochs)
+                current_ctc_weight = args.ctc_loss_weight * progress
+            elif not is_warmup:
+                # Full CTC weight after warm-up and annealing
+                current_ctc_weight = args.ctc_loss_weight
 
-            print(f"\nEpoch {epoch + 1}/{args.epochs}" + (" (Warm-up)" if is_warmup else ""))
-            
+            # --- Epoch Logging ---
+            phase_str = ""
+            if is_warmup:
+                phase_str = f" (Warm-up, CTC_w=0.0)"
+                if epoch == 0:
+                    print(f"\n🔥 Starting visual warm-up for {args.warmup_epochs} epochs...")
+            elif is_annealing:
+                phase_str = f" (Annealing, CTC_w={current_ctc_weight:.2f})"
+                if epoch == args.warmup_epochs:
+                    print(f"\n📈 Starting CTC loss annealing for {args.annealing_epochs} epochs...")
+            else:
+                phase_str = f" (Full Training, CTC_w={current_ctc_weight:.1f})"
+                if epoch == args.warmup_epochs + args.annealing_epochs:
+                    print(f"\n✅ Annealing complete. Using full CTC loss weight.")
+
+            print(f"\nEpoch {epoch + 1}/{args.epochs}{phase_str}")
+
             # Track epoch metrics
             epoch_metrics = {
                 "epoch": epoch + 1,
-                "is_warmup": is_warmup,
+                "phase": "warmup" if is_warmup else "annealing" if is_annealing else "full_training",
                 "current_ctc_weight": current_ctc_weight,
                 "losses": {
-                    "g_loss": [],
-                    "d_loss": [],
-                    "adv_loss": [],
-                    "pixel_loss": [],
-                    "ctc_loss": [],
-                    "ctc_loss_raw": [],
-                    "g_grad_norm": [],
-                    "d_grad_norm": []
+                    "g_loss": [], "d_loss": [], "adv_loss": [], "pixel_loss": [],
+                    "ctc_loss": [], "ctc_loss_raw": [], "g_grad_norm": [], "d_grad_norm": []
                 }
             }
             
@@ -484,19 +494,15 @@ def main(args):
                 epoch_metrics["losses"]["adv_loss"].append(float(adv_loss.numpy()))
                 epoch_metrics["losses"]["pixel_loss"].append(float(pix_loss.numpy()))
                 epoch_metrics["losses"]["ctc_loss"].append(float(ctc_loss.numpy()))
-                if args.ctc_loss_weight > 0:
+                if current_ctc_weight > 0:
                     epoch_metrics["losses"]["ctc_loss_raw"].append(float(ctc_loss_raw.numpy()))
                 epoch_metrics["losses"]["g_grad_norm"].append(float(g_grad_norm.numpy()))
                 epoch_metrics["losses"]["d_grad_norm"].append(float(d_grad_norm.numpy()))
 
                 if (step + 1) % 50 == 0:
                     pbar.set_postfix({
-                        'G': f'{g_loss:.4f}', 
-                        'D': f'{d_loss:.4f}', 
-                        'Adv': f'{adv_loss:.4f}', 
-                        'Pix': f'{pix_loss:.4f}', 
-                        'CTC': f'{ctc_loss:.2f}',
-                        'G_Grad': f'{g_grad_norm:.2f}'
+                        'G': f'{g_loss:.4f}', 'D': f'{d_loss:.4f}', 'Adv': f'{adv_loss:.4f}', 
+                        'Pix': f'{pix_loss:.4f}', 'CTC': f'{ctc_loss:.2f}', 'CTC_w': f'{current_ctc_weight:.2f}'
                     })
 
             # Calculate epoch statistics
@@ -747,6 +753,7 @@ if __name__ == '__main__':
     parser.add_argument('--gradient_clip_norm', type=float, default=1.0, help='Gradient clipping norm to prevent explosion.')
     parser.add_argument('--ctc_loss_clip_max', type=float, default=300.0, help='Maximum value for CTC loss clipping.')
     parser.add_argument('--warmup_epochs', type=int, default=10, help='Number of epochs for visual warm-up (CTC loss is disabled).')
+    parser.add_argument('--annealing_epochs', type=int, default=10, help='Number of epochs to gradually ramp-up CTC loss weight after warm-up.')
     parser.add_argument('--save_interval', type=int, default=5, help='Save samples every N epochs.')
     parser.add_argument('--eval_interval', type=int, default=1, help='Run evaluation every N epochs.')
     parser.add_argument('--discriminator_mode', type=str, default='predicted', choices=['predicted', 'ground_truth'], help="Mode for the discriminator's real pair text input.")
