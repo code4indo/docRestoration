@@ -113,7 +113,8 @@ $PYTHON_CMD dual_modal_gan/scripts/train32.py \
   --checkpoint_dir "$CHECKPOINT_DIR" \
   --sample_dir "$SAMPLE_DIR" \
   --gpu_id 0 \
-  --epochs 2 \
+  --epochs 5 \
+  --warmup_epochs 3 \
   --steps_per_epoch 50 \
   --batch_size 2 \
   --lr_g 0.0004 \

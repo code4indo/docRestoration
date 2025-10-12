@@ -184,7 +184,7 @@ def run_validation_step(val_dataset, generator, recognizer, charset, psnr_metric
         # Textual metrics: CER/WER
         # Get HTR predictions for clean (ground truth quality) and generated (enhanced) images
         clean_logits = recognizer(clean_images, training=False)
-                        generated_logits = recognizer(generated_images, training=True)        
+        generated_logits = recognizer(generated_images, training=True)        
         # Decode predictions using greedy decoding (argmax)
         clean_predictions = tf.argmax(clean_logits, axis=-1, output_type=tf.int32)
         generated_predictions = tf.argmax(generated_logits, axis=-1, output_type=tf.int32)
@@ -288,7 +288,7 @@ def main(args):
         val_wer_metric = tf.keras.metrics.Mean(name='val_wer')
 
         @tf.function
-        def train_step(degraded_images, clean_images, ground_truth_text):
+        def train_step(degraded_images, clean_images, ground_truth_text, ctc_weight):
             real_labels_disc = tf.ones([args.batch_size, 1]) * 0.9
             fake_labels_disc = tf.zeros([args.batch_size, 1])
 
@@ -328,7 +328,7 @@ def main(args):
                     ctc_loss_raw = tf.constant(0.0, dtype=tf.float32)
 
                 # ✅ Pure FP32 - NO casting needed (already in FP32)
-                total_gen_loss = (args.adv_loss_weight * adversarial_loss) + (args.pixel_loss_weight * pixel_loss) + (args.ctc_loss_weight * ctc_loss)
+                total_gen_loss = (args.adv_loss_weight * adversarial_loss) + (args.pixel_loss_weight * pixel_loss) + (ctc_weight * ctc_loss)
 
             generator_gradients = gen_tape.gradient(total_gen_loss, generator.trainable_variables)
             discriminator_gradients = disc_tape.gradient(total_disc_loss, discriminator.trainable_variables)
@@ -444,11 +444,23 @@ def main(args):
     
         for epoch in range(args.epochs):
             epoch_start_time = time.time()
-            print(f"\nEpoch {epoch + 1}/{args.epochs}")
+            
+            # --- Curriculum Learning Logic ---
+            is_warmup = epoch < args.warmup_epochs
+            current_ctc_weight = 0.0 if is_warmup else args.ctc_loss_weight
+            
+            if is_warmup and epoch == 0:
+                print(f"\n🔥 Starting visual warm-up phase for {args.warmup_epochs} epochs (CTC loss disabled)...")
+            if not is_warmup and epoch == args.warmup_epochs:
+                print(f"\n✅ Warm-up complete. Activating CTC loss with weight: {current_ctc_weight}...")
+
+            print(f"\nEpoch {epoch + 1}/{args.epochs}" + (" (Warm-up)" if is_warmup else ""))
             
             # Track epoch metrics
             epoch_metrics = {
                 "epoch": epoch + 1,
+                "is_warmup": is_warmup,
+                "current_ctc_weight": current_ctc_weight,
                 "losses": {
                     "g_loss": [],
                     "d_loss": [],
@@ -464,7 +476,7 @@ def main(args):
             pbar = tqdm(range(steps_per_epoch), desc=f"Epoch {epoch+1}")
             for step in pbar:
                 degraded_batch, clean_batch, text_batch = next(dataset_iterator)
-                g_loss, d_loss, adv_loss, pix_loss, ctc_loss, ctc_loss_raw, g_grad_norm, d_grad_norm = train_step(degraded_batch, clean_batch, text_batch)
+                g_loss, d_loss, adv_loss, pix_loss, ctc_loss, ctc_loss_raw, g_grad_norm, d_grad_norm = train_step(degraded_batch, clean_batch, text_batch, tf.constant(current_ctc_weight, dtype=tf.float32))
                 
                 # Collect metrics
                 epoch_metrics["losses"]["g_loss"].append(float(g_loss.numpy()))
@@ -734,6 +746,7 @@ if __name__ == '__main__':
     parser.add_argument('--adv_loss_weight', type=float, default=2.0, help='Weight for the adversarial loss.')
     parser.add_argument('--gradient_clip_norm', type=float, default=1.0, help='Gradient clipping norm to prevent explosion.')
     parser.add_argument('--ctc_loss_clip_max', type=float, default=300.0, help='Maximum value for CTC loss clipping.')
+    parser.add_argument('--warmup_epochs', type=int, default=10, help='Number of epochs for visual warm-up (CTC loss is disabled).')
     parser.add_argument('--save_interval', type=int, default=5, help='Save samples every N epochs.')
     parser.add_argument('--eval_interval', type=int, default=1, help='Run evaluation every N epochs.')
     parser.add_argument('--discriminator_mode', type=str, default='predicted', choices=['predicted', 'ground_truth'], help="Mode for the discriminator's real pair text input.")
