@@ -288,7 +288,7 @@ def main(args):
         val_cer_metric = tf.keras.metrics.Mean(name='val_cer')
         val_wer_metric = tf.keras.metrics.Mean(name='val_wer')
 
-        # @tf.function
+        @tf.function
         def train_step(degraded_images, clean_images, ground_truth_text):
             real_labels_disc = tf.ones([args.batch_size, 1]) * 0.9
             fake_labels_disc = tf.zeros([args.batch_size, 1])
