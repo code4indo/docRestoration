@@ -71,9 +71,6 @@ def create_htr_model(charset_size, proj_dim=512, target_time_steps=128,
     x = conv_block(x, 512, k=3, s=(1,1), name_prefix='s4_1', dropout=dropout_rate)
     x = conv_block(x, 512, k=3, s=(1,1), name_prefix='s4_2', dropout=dropout_rate)
     
-    # Define the feature output from the CNN backbone
-    cnn_features = layers.Activation('linear', name='cnn_features')(x)
-
     # ========== SEQUENCE PROJECTION ==========
     x = layers.Lambda(
         lambda t: tf.reshape(t, (tf.shape(t)[0], tf.shape(t)[1], tf.shape(t)[2]*tf.shape(t)[3])), 
@@ -114,7 +111,7 @@ def create_htr_model(charset_size, proj_dim=512, target_time_steps=128,
 
     # ========== CTC OUTPUT LAYER ==========
     outputs = layers.Dense(charset_size + 1, activation=None, name='logits')(x)
-    model = Model(inputs=inputs, outputs=[outputs, cnn_features], name='htr_recognizer_with_features')
+    model = Model(inputs=inputs, outputs=outputs, name='htr_transformer_recognizer')
     return model
 
 def load_frozen_recognizer(weights_path, charset_size, 

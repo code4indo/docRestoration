@@ -119,7 +119,7 @@ $PYTHON_CMD dual_modal_gan/scripts/train32.py \
   --lr_g 0.0004 \
   --lr_d 0.0004 \
   --pixel_loss_weight 10.0 \
-  --feature_loss_weight 10.0 \
+  --ctc_loss_weight 10.0 \
   --adv_loss_weight 5.0 \
   --gradient_clip_norm 1.0 \
   --ctc_loss_clip_max 100.0 \
