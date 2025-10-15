@@ -1,0 +1,86 @@
+% ============================================================
+% BAB II: TINJAUAN PUSTAKA (CONTOH FILE TERPISAH)
+% ============================================================
+
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[bahasa]{babel}
+\usepackage{mathptmx}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{setspace}
+\usepackage{geometry}
+\usepackage{tikz}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{bookmark}
+\usepackage{hyperref}
+\usepackage{tocloft}
+\usepackage{caption}
+\usepackage{textcomp}
+
+% Pengaturan margin sesuai ITB
+\geometry{
+    a4paper,
+    left=4cm,
+    right=3cm,
+    top=3cm,
+    bottom=3cm
+}
+
+% Pengaturan spasi
+\onehalfspacing
+
+% Pengaturan paragraf
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+% Pengaturan hyperlink
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=blue
+}
+
+\begin{document}
+
+\vspace{2cm}
+\begin{center}
+{\fontsize{14}{16.8}\selectfont\textbf{BAB II. Tinjauan Pustaka}}\\[1em]
+\end{center}
+\label{sec:tinjauan-pustaka}
+
+\subsection{Generative Adversarial Networks (GAN)}
+
+\textit{Generative Adversarial Networks} (GAN) diperkenalkan oleh Goodfellow et al. (2014) sebagai framework pembelajaran yang terdiri dari dua jaringan neural yang bersaing: generator dan discriminator. Generator mencoba menghasilkan data sintetis yang realistis, sementara discriminator berusaha membedakan data asli dengan data palsu. Proses kompetitif ini memungkinkan GAN untuk mempelajari distribusi data yang kompleks dan menghasilkan output berkualitas tinggi.
+
+\subsubsection{Aplikasi GAN dalam Restorasi Dokumen}
+
+Dalam konteks restorasi dokumen historis, GAN telah menunjukkan performa superior dibandingkan metode tradisional. Souibgui, Khlif, Amara, \& El Abed (2019) memperkenalkan ERB-MultiTaskAdversarial yang merupakan penelitian pionir dalam mengintegrasikan GAN dengan CRNN untuk evaluasi keterbacaan. Namun, metode ini memiliki keterbatasan dalam integrasi end-to-end.
+
+\subsubsection{DE-GAN: Pendekatan Berbasis Conditional GAN}
+
+Souibgui \& Kessentini (2021) mengembangkan DE-GAN dengan pendekatan conditional GAN yang secara khusus dirancang untuk dokumen terdegradasi berat. DE-GAN melaporkan penurunan CER yang signifikan dari 0.37 menjadi 0.01, namun evaluasi keterbacaan dilakukan secara pasca-pelatihan bukan sebagai bagian dari fungsi objektif.
+
+\subsubsection{DocEnTr: Transformer-only Approach}
+
+Souibgui et al. (2022) memperkenalkan DocEnTr yang menggunakan arsitektur transformer-only tanpa komponen adversarial. Meskipun mencapai PSNR tertinggi (35.2 dB), pendekatan ini cenderung menghasilkan output yang over-smoothed dan kehilangan detail tekstur penting untuk HTR.
+
+\subsection{Handwritten Text Recognition (HTR)}
+
+\subsubsection{Connectionist Temporal Classification (CTC)}
+
+Graves et al. (2006) memperkenalkan Connectionist Temporal Classification (CTC) yang memungkinkan training model sequence-to-sequence tanpa alignment manual. CTC loss menjadi standar dalam evaluasi HTR dan penting untuk integrasi dengan framework restorasi dokumen.
+
+\subsection{Multi-modal Learning}
+
+Baltrusaitis, Ahuja, \& Morency (2019) menunjukkan bahwa arsitektur multi-modal dapat meningkatkan stabilitas training dan kualitas output dengan menggabungkan informasi dari berbagai modality. Pendekatan ini relevan untuk pengembangan diskriminator dual-modal yang mengevaluasi koherensi visual-tekstual.
+
+% Import referensi dari file terpisah yang sama dengan Bab 1
+\input{references.tex}
+
+\end{document}

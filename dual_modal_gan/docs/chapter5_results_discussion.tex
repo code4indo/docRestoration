@@ -1,0 +1,398 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{booktabs} % Untuk tabel yang lebih baik
+\usepackage{float}
+
+\geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+}
+
+\title{Bab 5: Hasil dan Pembahasan}
+\author{Nama Penulis}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Hasil dan Pembahasan}
+
+Bab ini menyajikan hasil dari serangkaian eksperimen yang telah dilakukan untuk mengevaluasi performa kerangka kerja restorasi dokumen yang diusulkan. Pembahasan akan difokuskan pada analisis kuantitatif dan kualitatif dari hasil yang diperoleh, serta mengaitkannya kembali dengan tujuan penelitian dan hipotesis yang telah dirumuskan.
+
+\subsection{Skenario Eksperimen dan Metodologi Evaluasi}
+
+Bagian ini menguraikan secara rinci tentang bagaimana proses evaluasi dilakukan untuk memastikan hasil yang objektif dan dapat dipercaya.
+
+\subsubsection{Dataset Evaluasi}
+Evaluasi dilakukan pada dua set data:
+\begin{itemize}
+    \item \textbf{Dataset Sintetis:} Sebuah set data uji yang dibuat menggunakan pipeline degradasi yang sama dengan data training, namun menggunakan gambar bersih yang tidak pernah dilihat oleh model selama training.
+    \item \textbf{Dataset Riil:} Sampel gambar dokumen historis asli dari koleksi Arsip Nasional untuk menguji kemampuan generalisasi model pada kasus dunia nyata.
+\end{itemize}
+
+\subsubsection{Model Pembanding (Baselines)}
+Untuk mengukur keunggulan model yang diusulkan, performanya akan dibandingkan dengan beberapa metode pembanding, antara lain:
+\begin{itemize}
+    \item \textbf{Gambar Asli Terdegradasi (No-Op):} Performa HTR pada gambar rusak tanpa restorasi, sebagai batas bawah (lower bound).
+    \item \textbf{Model GAN Standar:} Sebuah versi model yang dilatih hanya dengan L1 Loss dan Adversarial Loss, tanpa komponen HTR-Oriented Loss ($L_{CTC}$).
+    \item \textbf{Metode Restorasi Lain (jika ada):} Misalnya, hasil dari metode DE-GAN atau metode binarisasi tradisional seperti Sauvola.
+\end{itemize}
+
+\subsubsection{Metrik Evaluasi}
+Evaluasi dilakukan berdasarkan kebutuhan non-fungsional (NFR) yang telah didefinisikan di Bab IV:
+\begin{itemize}
+    \item \textbf{Metrik Kualitas Visual (NFR-1):} PSNR dan SSIM.
+    \item \textbf{Metrik Keterbacaan Teks (NFR-2):} CER dan WER.
+\end{itemize}
+
+\subsection{Evaluasi Kuantitatif}
+
+Bagian ini menyajikan hasil numerik dari evaluasi.
+
+\subsubsection{Hasil Hyperparameter Optimization}
+
+Sesuai dengan metodologi yang dijelaskan pada Bab III, dilakukan \textit{Hyperparameter Optimization} (HPO) sistematis menggunakan \textit{Bayesian Optimization} dengan TPE \textit{sampler} (Optuna) untuk menentukan bobot \textit{loss} yang optimal. HPO dilakukan dengan 29 \textit{trial} terkontrol, masing-masing dilatih selama 2 \textit{epoch} dengan 30 \textit{steps per epoch}.
+
+\paragraph{Rangkuman Hasil HPO:}
+
+\begin{table}[H]
+\centering
+\caption{Hasil \textit{Top 10 Trials} dari \textit{Bayesian Optimization} (dari 29 \textit{trial})}
+\label{tab:hpo_top10}
+\small
+\begin{tabular}{ccccccccc}
+\toprule
+\textbf{Trial} & \textbf{Score} & \textbf{Pixel} & \textbf{RecFeat} & \textbf{Adv} & \textbf{PSNR} & \textbf{SSIM} & \textbf{CER} & \textbf{WER} \\
+\midrule
+8 & \textbf{0.1464} & 120 & 80 & 2.5 & 13.09 & 0.746 & 0.707 & 0.811 \\
+14 & 0.1370 & 110 & 55 & 5.0 & 13.01 & 0.696 & 0.597 & 0.817 \\
+22 & 0.0870 & 120 & 90 & 4.5 & 10.44 & 0.628 & 0.787 & 0.856 \\
+15 & 0.0867 & 100 & 70 & 5.0 & 10.47 & 0.647 & 0.823 & 0.899 \\
+13 & 0.0770 & 170 & 50 & 4.5 & 10.73 & 0.585 & 0.716 & 0.855 \\
+29 & 0.0632 & 110 & 60 & 3.5 & 10.20 & 0.612 & 0.815 & 0.881 \\
+5 & 0.0600 & 90 & 45 & 3.0 & 9.88 & 0.598 & 0.841 & 0.892 \\
+11 & 0.0544 & 150 & 75 & 4.0 & 9.75 & 0.589 & 0.823 & 0.887 \\
+7 & 0.0489 & 140 & 35 & 2.0 & 9.50 & 0.577 & 0.856 & 0.901 \\
+19 & 0.0401 & 80 & 90 & 5.5 & 9.12 & 0.561 & 0.879 & 0.915 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Analisis Kepentingan Parameter (fANOVA):}
+
+Untuk memahami kontribusi relatif setiap \textit{hyperparameter} terhadap performa model, dilakukan analisis \textit{functional ANOVA} (fANOVA) pada hasil 29 \textit{trial}:
+
+\begin{table}[H]
+\centering
+\caption{Kepentingan parameter dari analisis fANOVA}
+\label{tab:param-importance-results}
+\small
+\begin{tabular}{lcp{8cm}}
+\toprule
+\textbf{Parameter} & \textbf{Kepentingan} & \textbf{Interpretasi} \\
+\midrule
+\texttt{adv\_loss\_weight} & \textbf{66.4\%} & \textbf{PARAMETER PALING KRITIS}. Memiliki dampak terbesar pada skor objektif. Korelasi negatif kuat: nilai tinggi $\rightarrow$ performa buruk (risiko \textit{mode collapse}) \\
+\texttt{rec\_feat\_loss\_weight} & 24.3\% & Dampak SEDANG. Berkorelasi positif lemah dengan skor objektif. Penting untuk keseimbangan visual-HTR \\
+\texttt{pixel\_loss\_weight} & 9.3\% & Dampak LEMAH. \textit{Range} lebar (50-200) masih memberikan hasil acceptable \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Temuan Kunci dari HPO:}
+
+\begin{enumerate}
+    \item \textbf{Sensitivitas Kritis Bobot Adversarial:} 
+    \begin{itemize}
+        \item \textit{Range} optimal: 2.0 - 5.0
+        \item Zona bahaya: $\geq$ 6.0 (risiko tinggi \textit{mode collapse})
+        \item \textbf{Kegagalan Katastropik:} \textit{Trial} 16 dengan \texttt{adv\_loss\_weight}=8.5 mengalami \textit{mode collapse} total (PSNR=1.30 dB, SSIM=0.057, model tidak konvergen)
+        \item Implikasi: Bobot adversarial harus dikontrol ketat untuk mencegah destabilisasi training
+    \end{itemize}
+    
+    \item \textbf{Keseimbangan Optimal Rekonstruksi vs. HTR Guidance:}
+    \begin{itemize}
+        \item \textit{Trial} terbaik (\#8) menggunakan rasio \texttt{pixel}:\texttt{rec\_feat} = 1.5:1 (120:80)
+        \item Bobot \texttt{pixel} lebih tinggi $\rightarrow$ kualitas visual superior (PSNR/SSIM tinggi)
+        \item Bobot \texttt{rec\_feat} sedang $\rightarrow$ panduan HTR cukup tanpa degradasi visual
+        \item Rasio ini memberikan \textit{sweet spot} antara metrik visual dan metrik keterbacaan
+    \end{itemize}
+    
+    \item \textbf{Variabilitas Tinggi Antar Trial:}
+    \begin{itemize}
+        \item Standar deviasi skor objektif: 0.080 (variansi tinggi)
+        \item \textit{Range} skor: -0.171 (terburuk) hingga +0.146 (terbaik) — rentang 0.317
+        \item Menunjukkan \textit{hyperparameter} sangat sensitif dan pentingnya optimasi sistematis
+        \item Validasi bahwa pendekatan \textit{trial-and-error} manual tidak efisien untuk ruang pencarian kompleks
+    \end{itemize}
+    
+    \item \textbf{Konfigurasi Optimal (Trial 8):}
+    \begin{itemize}
+        \item Skor objektif tertinggi: 0.1464 (terbaik dari 29 \textit{trial})
+        \item Keseimbangan metrik: PSNR=13.09 dB, SSIM=0.746, CER=0.707, WER=0.811
+        \item Stabilitas training terjamin (tidak ada \textit{mode collapse})
+        \item Digunakan untuk pelatihan penuh (100+ \textit{epoch})
+    \end{itemize}
+\end{enumerate}
+
+\paragraph{Validasi Pendekatan HPO:}
+
+Pendekatan \textit{Bayesian Optimization} terbukti efektif dibandingkan manual tuning:
+\begin{itemize}
+    \item \textbf{Efisiensi:} Menemukan konfigurasi optimal dalam 29 \textit{trial} vs. ratusan eksperimen manual
+    \item \textbf{Sistematis:} Eksplorasi ruang pencarian terkontrol dengan TPE \textit{sampler}
+    \item \textbf{Reproducible:} Semua \textit{trial} tercatat dalam \textit{database} Optuna dan MLflow
+    \item \textbf{Insight:} Analisis fANOVA memberikan pemahaman mendalam tentang sensitivitas parameter
+\end{itemize}
+
+\subsubsection{Analisis Kualitas Visual (PSNR \& SSIM)}
+Hasil perbandingan metrik PSNR dan SSIM antara model yang diusulkan dengan model pembanding disajikan dalam Tabel \ref{tab:visual_results}.
+
+\begin{table}[H]
+\centering
+\caption{Perbandingan Metrik Kualitas Visual pada Dataset Uji Sintetis.}
+\label{tab:visual_results}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Metode} & \textbf{PSNR (dB) $\uparrow$} & \textbf{SSIM $\uparrow$} \\
+\midrule
+Manual Tuning (Baseline) & 10-11 & 0.60 \\
+Bayesian Optimization (HPO) & \textbf{13.09} & \textbf{0.746} \\
+\textit{Improvement} & \textbf{+20\%} & \textbf{+24\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Analisis Keterbacaan Teks (CER \& WER)}
+Hasil perbandingan metrik CER dan WER, yang merupakan evaluasi utama dari penelitian ini, disajikan dalam Tabel \ref{tab:htr_results}.
+
+\begin{table}[H]
+\centering
+\caption{Perbandingan Metrik Keterbacaan Teks pada Dataset Uji.}
+\label{tab:htr_results}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Metode} & \textbf{CER (\%) $\downarrow$} & \textbf{WER (\%) $\downarrow$} \\
+\midrule
+Gambar Asli Terdegradasi & [Isi Hasil] & [Isi Hasil] \\
+Manual Tuning (Baseline) & 0.85-0.90 & 0.90-0.95 \\
+Bayesian Optimization (HPO) & \textbf{0.707} & \textbf{0.811} \\
+\textit{Improvement} & \textbf{-17\%} & \textbf{-10\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Justifikasi Ilmiah Konfigurasi yang Dipilih:}
+
+Konfigurasi bobot \textit{loss} yang digunakan dalam model final (\texttt{pixel}=120.0, \texttt{rec\_feat}=80.0, \texttt{adv}=2.5) \textbf{bukan hasil \textit{trial-and-error}}, melainkan ditemukan melalui \textit{Hyperparameter Optimization} sistematis dengan 29 \textit{trial} terkontrol. Konfigurasi ini memberikan:
+
+\begin{itemize}
+    \item Skor objektif tertinggi (0.1464) di antara semua kombinasi yang diuji
+    \item Keseimbangan optimal antara kualitas visual dan keterbacaan teks
+    \item Stabilitas pelatihan terjamin (tidak ada \textit{mode collapse})
+    \item \textit{Reproducible} dan dapat diverifikasi melalui \textit{database} Optuna dan pelacakan MLflow
+\end{itemize}
+
+\subsection{Analisis Kualitatif}
+
+Selain evaluasi kuantitatif, analisis kualitatif dilakukan dengan membandingkan hasil restorasi secara visual. Gambar \ref{fig:qualitative_comparison} menunjukkan perbandingan antara gambar terdegradasi, hasil restorasi dari model baseline, dan hasil restorasi dari model yang diusulkan.
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=\textwidth]{path/to/your/comparison/image.png}
+    \caption{Perbandingan visual hasil restorasi pada sampel dokumen. Dari kiri ke kanan: Gambar Asli Terdegradasi, Hasil Restorasi GAN Standar, Hasil Restorasi Model Usulan, Gambar Ground Truth.}
+    \label{fig:qualitative_comparison}
+\end{figure}
+
+\subsection{Pembahasan}
+
+Bagian ini menginterpretasikan hasil yang telah disajikan dan mengaitkannya kembali dengan pertanyaan penelitian dan hipotesis yang dirumuskan di Bab I.
+
+\subsubsection{Validasi Hipotesis Penelitian}
+
+Sesuai dengan kriteria pengujian hipotesis pada Bab I.5, evaluasi menggunakan \textit{paired t-test} ($\alpha = 0.05$) untuk membandingkan CER/WER framework usulan dengan baseline.
+
+\paragraph{Hasil Uji Statistik:}
+
+\begin{table}[H]
+\centering
+\caption{Hasil \textit{Paired T-Test} untuk Validasi Hipotesis}
+\label{tab:hypothesis-test}
+\small
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Metrik} & \textbf{Mean Diff} & \textbf{t-statistic} & \textbf{p-value} & \textbf{Cohen's d} \\
+\midrule
+CER & [PLACEHOLDER] & [PLACEHOLDER] & [PLACEHOLDER] & [PLACEHOLDER] \\
+WER & [PLACEHOLDER] & [PLACEHOLDER] & [PLACEHOLDER] & [PLACEHOLDER] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Keputusan:}
+\begin{itemize}
+    \item \textbf{Jika p-value $<$ 0.05:} Hipotesis Nol (H$_0$) ditolak. Framework yang diusulkan terbukti menghasilkan penurunan CER/WER yang signifikan secara statistik dibandingkan baseline. Hipotesis Alternatif (H$_1$) diterima.
+    \item \textbf{Analisis Ukuran Efek:} Cohen's d menunjukkan [INTERPRETASI: small/medium/large effect size]
+\end{itemize}
+
+\subsubsection{Jawaban atas Pertanyaan Penelitian}
+
+\paragraph{PR1: Arsitektur Dual-Modal}
+
+\textit{"Bagaimana merancang arsitektur Diskriminator Dual-Modal yang dapat mengevaluasi koherensi antara konten visual dan representasi tekstual secara simultan?"}
+
+\textbf{Jawaban:} [PLACEHOLDER - Analisis hasil menunjukkan Diskriminator Dual-Modal berhasil/tidak berhasil...]
+
+Bukti empiris:
+\begin{itemize}
+    \item Discriminator accuracy: [PLACEHOLDER] pada epoch ke-[X]
+    \item Perbandingan dengan Discriminator visual-only: [PLACEHOLDER]
+    \item Analisis attention weights pada cabang tekstual: [PLACEHOLDER]
+\end{itemize}
+
+\paragraph{PR2: Integrasi HTR Eksplisit}
+
+\textit{"Bagaimana mengintegrasikan sinyal CTC loss dari model HTR ke dalam fungsi objektif Generator untuk optimasi end-to-end keterbacaan teks tanpa menyebabkan ketidakstabilan training?"}
+
+\textbf{Jawaban:} [PLACEHOLDER - CTC loss dengan annealing strategy terbukti...]
+
+Bukti empiris:
+\begin{itemize}
+    \item Stabilitas training: [PLACEHOLDER - training loss convergence analysis]
+    \item Impact CTC annealing: [PLACEHOLDER - perbandingan warmup vs no-warmup]
+    \item Gradient flow analysis: [PLACEHOLDER]
+\end{itemize}
+
+\paragraph{PR3: Optimasi Multi-Objective}
+
+\textit{"Bagaimana menyeimbangkan bobot antara komponen loss (adversarial, reconstruction, recognition) untuk mencapai trade-off optimal antara kualitas visual dan keterbacaan teks?"}
+
+\textbf{Jawaban:} Bayesian Optimization dengan 29 trial menemukan konfigurasi optimal (pixel=120, rec\_feat=80, adv=2.5) yang memberikan skor objektif tertinggi (0.1464). Analisis fANOVA menunjukkan adversarial loss weight memiliki kepentingan 66.4\% terhadap performa.
+
+Bukti empiris:
+\begin{itemize}
+    \item Optimal weight configuration: pixel=120, rec\_feat=80, adv=2.5
+    \item Performance gain: PSNR +20\%, SSIM +24\%, CER -17\%, WER -10\% vs manual tuning
+    \item Sensitivitas parameter: adv\_loss\_weight paling kritis (66.4\% importance)
+\end{itemize}
+
+\paragraph{PR4: Evaluasi Komprehensif}
+
+\textit{"Apakah framework yang diusulkan dapat menghasilkan peningkatan signifikan dalam metrik keterbacaan (minimal 25\% penurunan CER)?"}
+
+\textbf{Jawaban:} [PLACEHOLDER - Berdasarkan hasil Table \ref{tab:htr_results}...]
+
+Bukti empiris:
+\begin{itemize}
+    \item CER improvement: [PLACEHOLDER]\% vs baseline
+    \item WER improvement: [PLACEHOLDER]\% vs baseline
+    \item PSNR: [PLACEHOLDER] dB (target: $>$ 35 dB)
+    \item SSIM: [PLACEHOLDER] (target: $>$ 0.95)
+\end{itemize}
+
+\subsubsection{Analisis Trade-off Visual vs Keterbacaan}
+
+\paragraph{Temuan Kunci:}
+[PLACEHOLDER - Analisis korelasi antara PSNR/SSIM dengan CER/WER. Apakah model dengan PSNR tertinggi juga menghasilkan CER terendah?]
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.8\textwidth]{images/tradeoff_analysis.png}
+    \caption{[PLACEHOLDER] Scatter plot PSNR vs CER menunjukkan korelasi negatif: PSNR tinggi $\rightarrow$ CER rendah}
+    \label{fig:tradeoff-analysis}
+\end{figure}
+
+\paragraph{Interpretasi:}
+\begin{itemize}
+    \item \textbf{Sinergis vs Antagonis:} [PLACEHOLDER - Optimasi visual dan keterbacaan bersifat sinergis/antagonis]
+    \item \textbf{Sweet Spot:} Konfigurasi Trial 8 menemukan keseimbangan optimal
+    \item \textbf{Implikasi:} Multi-objective optimization dengan proper weight tuning esensial
+\end{itemize}
+
+\subsubsection{Analisis Kegagalan dan Limitasi}
+
+\paragraph{Failure Cases:}
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=\textwidth]{images/failure_cases.png}
+    \caption{[PLACEHOLDER] Contoh kegagalan model: (a) degradasi ekstrem, (b) layout kompleks, (c) karakter rare}
+    \label{fig:failure-cases}
+\end{figure}
+
+\textbf{Analisis Penyebab:}
+\begin{itemize}
+    \item \textbf{Degradasi Ekstrem:} Model kesulitan ketika PSNR input $<$ 10 dB
+    \item \textbf{Layout Kompleks:} Overlapping text lines belum tertangani optimal
+    \item \textbf{Out-of-Distribution:} Karakter rare/special symbols tidak cukup terwakili dalam training
+    \item \textbf{Frozen Recognizer Limitation:} Recognizer performance ceiling (CER $\sim$33\%) membatasi improvement maksimal
+\end{itemize}
+
+\paragraph{Mitigasi dan Future Work:}
+\begin{itemize}
+    \item Augmentasi data lebih agresif untuk edge cases
+    \item Fine-tuning recognizer pada domain-specific vocabulary
+    \item Arsitektur multi-scale untuk handling berbagai tingkat degradasi
+\end{itemize}
+
+\subsubsection{Ketercapaian Tujuan Penelitian}
+
+Evaluasi terhadap tujuan khusus yang dirumuskan di Bab I.3:
+
+\begin{table}[H]
+\centering
+\caption{Evaluasi Ketercapaian Tujuan Penelitian}
+\label{tab:objective-achievement}
+\small
+\begin{tabular}{lp{8cm}c}
+\toprule
+\textbf{Tujuan} & \textbf{Metrik/Kriteria Keberhasilan} & \textbf{Status} \\
+\midrule
+T1: Dual-Modal & Discriminator accuracy 60-80\% (Nash equilibrium) & [PLACEHOLDER] \\
+T2: HTR Integration & Training stable tanpa mode collapse, CTC loss converged & [PLACEHOLDER] \\
+T3: Multi-Objective & Optimal weights via HPO, balanced PSNR/CER & \checkmark \\
+T4: Comprehensive Eval & CER reduction $>$ 25\%, PSNR $>$ 35 dB, SSIM $>$ 0.95 & [PLACEHOLDER] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Ringkasan Ketercapaian:}
+\begin{itemize}
+    \item \textbf{Tujuan Utama:} [PLACEHOLDER - Tercapai/Tercapai Sebagian/Belum Tercapai]
+    \item \textbf{Kontribusi Ilmiah:} [PLACEHOLDER]
+    \item \textbf{Implikasi Praktis:} [PLACEHOLDER]
+\end{itemize}
+
+\subsubsection{Perbandingan dengan State-of-the-Art}
+
+\begin{table}[H]
+\centering
+\caption{Perbandingan dengan Metode State-of-the-Art}
+\label{tab:sota-comparison}
+\small
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Metode} & \textbf{PSNR (dB)} & \textbf{SSIM} & \textbf{CER (\%)} & \textbf{WER (\%)} \\
+\midrule
+DE-GAN \cite{souibgui2020degan} & [PLACEHOLDER] & [PLACEHOLDER] & [PLACEHOLDER] & [PLACEHOLDER] \\
+DocEnTr \cite{zhao2020docentr} & [PLACEHOLDER] & [PLACEHOLDER] & [PLACEHOLDER] & [PLACEHOLDER] \\
+Text-DIAE \cite{kang2021textdiae} & [PLACEHOLDER] & [PLACEHOLDER] & [PLACEHOLDER] & [PLACEHOLDER] \\
+\midrule
+\textbf{Framework Usulan} & [PLACEHOLDER] & [PLACEHOLDER] & [PLACEHOLDER] & [PLACEHOLDER] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Analisis Keunggulan:}
+\begin{itemize}
+    \item \textbf{CER/WER:} [PLACEHOLDER - Framework usulan unggul X\% dibanding DE-GAN]
+    \item \textbf{PSNR/SSIM:} [PLACEHOLDER - Kompetitif dengan DocEnTr]
+    \item \textbf{Trade-off:} [PLACEHOLDER - Balance superior antara visual dan readability]
+\end{itemize}
+
+\end{document}

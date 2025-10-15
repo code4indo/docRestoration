@@ -1,0 +1,91 @@
+digraph UNET_Architecture {
+    rankdir=TB;
+    splines=ortho;
+    nodesep=0.3;
+    ranksep=0.8;
+    fontname="Helvetica";
+    label="Arsitektur U-Net Generator";
+    fontsize=20;
+
+    node [fontname="Helvetica", style=filled, shape=box, margin="0.1,0.1"];
+    edge [fontname="Helvetica", penwidth=1.5];
+
+    // --- Node Definitions ---
+    subgraph cluster_encoder {
+        label="Jalur Encoder (Kontraksi)";
+        style="filled,rounded";
+        fillcolor="#E9F5F9";
+        e1 [label="Conv (64)", fillcolor="#A8DADC"];
+        p1 [label="Pool", shape=circle, fillcolor="#D9D9D9", width=0.5, height=0.5];
+        e2 [label="Conv (128)", fillcolor="#A8DADC"];
+        p2 [label="Pool", shape=circle, fillcolor="#D9D9D9", width=0.5, height=0.5];
+        e3 [label="Conv (256)", fillcolor="#A8DADC"];
+        p3 [label="Pool", shape=circle, fillcolor="#D9D9D9", width=0.5, height=0.5];
+        e4 [label="Conv (512)", fillcolor="#A8DADC"];
+        p4 [label="Pool", shape=circle, fillcolor="#D9D9D9", width=0.5, height=0.5];
+    }
+
+    subgraph cluster_bottleneck {
+        label="Bottleneck";
+        style="filled,rounded";
+        fillcolor="#E9F5F9";
+        b [label="Conv (1024)", fillcolor="#A8DADC"];
+    }
+
+    subgraph cluster_decoder {
+        label="Jalur Decoder (Ekspansi)";
+        style="filled,rounded";
+        fillcolor="#F7F9F9";
+        u4 [label="Up-Conv (512)", fillcolor="#B5E48C"];
+        m4 [label="+", shape=circle, fillcolor="#FFF3B0", width=0.5, height=0.5];
+        d4 [label="Conv (512)", fillcolor="#A8DADC"];
+        u3 [label="Up-Conv (256)", fillcolor="#B5E48C"];
+        m3 [label="+", shape=circle, fillcolor="#FFF3B0", width=0.5, height=0.5];
+        d3 [label="Conv (256)", fillcolor="#A8DADC"];
+        u2 [label="Up-Conv (128)", fillcolor="#B5E48C"];
+        m2 [label="+", shape=circle, fillcolor="#FFF3B0", width=0.5, height=0.5];
+        d2 [label="Conv (128)", fillcolor="#A8DADC"];
+        u1 [label="Up-Conv (64)", fillcolor="#B5E48C"];
+        m1 [label="+", shape=circle, fillcolor="#FFF3B0", width=0.5, height=0.5];
+        d1 [label="Conv (64)", fillcolor="#A8DADC"];
+    }
+    
+    output_node [label="Output (1)", fillcolor="#F19C79", style="filled,rounded"];
+
+    // --- Edge Definitions ---
+    // Encoder Path
+    e1 -> p1 -> e2 -> p2 -> e3 -> p3 -> e4 -> p4 -> b [penwidth=2.0];
+
+    // Decoder Path
+    b -> u4 [penwidth=2.0];
+    u4 -> m4 [penwidth=2.0];
+    m4 -> d4 [penwidth=2.0];
+    d4 -> u3 [penwidth=2.0];
+    u3 -> m3 [penwidth=2.0];
+    m3 -> d3 [penwidth=2.0];
+    d3 -> u2 [penwidth=2.0];
+    u2 -> m2 [penwidth=2.0];
+    m2 -> d2 [penwidth=2.0];
+    d2 -> u1 [penwidth=2.0];
+    u1 -> m1 [penwidth=2.0];
+    m1 -> d1 [penwidth=2.0];
+    d1 -> output_node [penwidth=2.0];
+
+    // Skip Connections
+    edge [style=dashed, color=gray, constraint=false, penwidth=1.5];
+    e4 -> m4 [label="Skip Connection"];
+    e3 -> m3;
+    e2 -> m2;
+    e1 -> m1;
+
+    // --- Layout Hints to enforce U-shape ---
+    {rank=same; e1; u1; m1; d1; output_node;}
+    {rank=same; p1;}
+    {rank=same; e2; u2; m2; d2;}
+    {rank=same; p2;}
+    {rank=same; e3; u3; m3; d3;}
+    {rank=same; p3;}
+    {rank=same; e4; u4; m4; d4;}
+    {rank=same; p4;}
+
+}

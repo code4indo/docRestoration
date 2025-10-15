@@ -1,0 +1,22 @@
+\begin{tikzpicture}[
+    node distance=2.5cm and 2cm, % Jarak lebih renggang untuk diagram yang lebih luas
+    % Definisi style dengan ukuran lebih kecil
+    block/.style={rectangle, draw, fill=blue!20, text centered, rounded corners, minimum height=0.8em, text width=2.5cm, align=center, font=\footnotesize},
+    process/.style={rectangle, draw, fill=orange!20, text centered, rounded corners, minimum height=0.8em, text width=4cm, align=center, font=\footnotesize},
+    line/.style={draw, -latex'} % Gaya garis dengan panah
+]
+
+% Node atas dengan posisi relatif
+\node [block] (adv) {Adversarial Loss\\($L_{adv}$)};
+\node [block, right=of adv] (l1) {L1 Reconstruction Loss\\($L_{L1}$)};
+\node [block, right=of l1] (ctc) {CTC Readability Loss\\($L_{CTC}$)};
+
+% Node bawah di center antara ketiga node atas
+\node [process] at ($(adv)!0.5!(ctc)$) [below=1.5cm] (combine) {Gabungan Loss\\($L_G = \lambda_{adv}L_{adv} + \lambda_{L1}L_{L1} + \lambda_{CTC}L_{CTC}$)};
+
+% Garis siku menggunakan koordinat relatif
+\draw [line] (adv.south) -- ++(0,-0.5) -| (combine.north);
+\draw [line] (l1.south) -- ++(0,-0.5) -| (combine.north);
+\draw [line] (ctc.south) -- ++(0,-0.5) -| (combine.north);
+
+\end{tikzpicture}

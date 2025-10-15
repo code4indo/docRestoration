@@ -1,0 +1,554 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[bahasa]{babel}
+\usepackage{mathptmx} % Times New Roman font
+\usepackage{microtype}
+\usepackage[none]{hyphenat}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{setspace}
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+\geometry{
+    a4paper,
+    left=4cm,
+    right=3cm,
+    top=3cm,
+    bottom=3cm
+}
+
+\onehalfspacing
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+% Pengaturan hyphenation
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\tolerance=3000
+\emergencystretch=10em
+
+\hypersetup{
+    pdfencoding=auto,
+    pdftitle={Lampiran: Detail Teknis Framework GAN-HTR},
+    pdfauthor={},
+    pdfsubject={Tesis},
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=blue
+}
+
+\begin{document}
+
+\vspace{2cm}
+\begin{center}
+{\fontsize{14}{16.8}\selectfont\textbf{LAMPIRAN}}\\[1em]
+\end{center}
+\label{sec:appendix}
+\addcontentsline{toc}{section}{LAMPIRAN}
+\vspace{2em}
+
+% ============================================================
+% LAMPIRAN A: DETAIL ARSITEKTUR MODEL
+% ============================================================
+
+\section{Lampiran A: Detail Arsitektur HTR Recognizer}
+\label{appendix:recognizer-architecture}
+
+Lampiran ini menyajikan spesifikasi lengkap arsitektur Hybrid CNN-Transformer yang digunakan sebagai HTR Recognizer dalam framework GAN-HTR. Detail ini melengkapi ringkasan high-level yang disajikan pada Bab III (Metodologi).
+
+\subsection{Spesifikasi Lengkap CNN Backbone}
+
+\begin{table}[H]
+\centering
+\caption{Detail arsitektur CNN Backbone untuk ekstraksi fitur visual}
+\label{tab:appendix-cnn-detailed}
+\small
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+\textbf{Layer} & \textbf{Type} & \textbf{Spec} & \textbf{Output Shape} & \textbf{Params} \\ \hline
+\multicolumn{5}{|l|}{\textbf{Block 1: Initial Feature Extraction}} \\ \hline
+conv1\_1 & Conv2D & 32 filters, 3×3, stride 1, ReLU & (H, W, 32) & 896 \\ \hline
+conv1\_2 & Conv2D & 32 filters, 3×3, stride 1, ReLU & (H, W, 32) & 9,248 \\ \hline
+bn1 & BatchNorm & - & (H, W, 32) & 128 \\ \hline
+pool1 & MaxPool2D & 2×2 & (H/2, W/2, 32) & 0 \\ \hline
+\multicolumn{5}{|l|}{\textbf{Block 2: Mid-Level Features}} \\ \hline
+conv2\_1 & Conv2D & 64 filters, 3×3, stride 1, ReLU & (H/2, W/2, 64) & 18,496 \\ \hline
+conv2\_2 & Conv2D & 64 filters, 3×3, stride 1, ReLU & (H/2, W/2, 64) & 36,928 \\ \hline
+bn2 & BatchNorm & - & (H/2, W/2, 64) & 256 \\ \hline
+pool2 & MaxPool2D & 2×2 & (H/4, W/4, 64) & 0 \\ \hline
+\multicolumn{5}{|l|}{\textbf{Block 3: High-Level Features with Residual}} \\ \hline
+conv3\_1 & Conv2D & 128 filters, 3×3, stride 1, ReLU & (H/4, W/4, 128) & 73,856 \\ \hline
+conv3\_2 & Conv2D & 128 filters, 3×3, stride 1, ReLU & (H/4, W/4, 128) & 147,584 \\ \hline
+residual3 & Add & Skip connection from conv3\_1 & (H/4, W/4, 128) & 0 \\ \hline
+bn3 & BatchNorm & - & (H/4, W/4, 128) & 512 \\ \hline
+pool3 & MaxPool2D & 2×2 & (H/8, W/8, 128) & 0 \\ \hline
+\multicolumn{5}{|l|}{\textbf{Block 4: Deep Features}} \\ \hline
+conv4\_1 & Conv2D & 256 filters, 3×3, stride 1, ReLU & (H/8, W/8, 256) & 295,168 \\ \hline
+conv4\_2 & Conv2D & 256 filters, 3×3, stride 1, ReLU & (H/8, W/8, 256) & 590,080 \\ \hline
+residual4 & Add & Skip connection from conv4\_1 & (H/8, W/8, 256) & 0 \\ \hline
+bn4 & BatchNorm & - & (H/8, W/8, 256) & 1,024 \\ \hline
+pool4 & MaxPool2D & 2×2 & (H/16, W/16, 256) & 0 \\ \hline
+\multicolumn{5}{|l|}{\textbf{Block 5: Final Feature Extraction}} \\ \hline
+conv5\_1 & Conv2D & 512 filters, 3×3, stride 1, ReLU & (H/16, W/16, 512) & 1,180,160 \\ \hline
+conv5\_2 & Conv2D & 512 filters, 3×3, stride 1, ReLU & (H/16, W/16, 512) & 2,359,808 \\ \hline
+bn5 & BatchNorm & - & (H/16, W/16, 512) & 2,048 \\ \hline
+\multicolumn{5}{|l|}{\textbf{Projection Layer (proj\_ln)}} \\ \hline
+proj & Conv2D & 512 filters, 1×1 (projection) & (H/16, W/16, 512) & 262,656 \\ \hline
+proj\_ln & LayerNorm & - & (H/16, W/16, 512) & 1,024 \\ \hline
+reshape & Reshape & Flatten spatial dims & (W/16, 512) & 0 \\ \hline
+\multicolumn{4}{|r|}{\textbf{Total CNN Parameters:}} & \textbf{4,979,872} \\ \hline
+\end{tabular}
+\end{table}
+
+\textbf{Catatan Implementasi:}
+\begin{itemize}
+    \item Input shape: (128, 1024, 1) — grayscale images
+    \item Residual connections: Setiap 2 conv layers untuk mencegah vanishing gradient
+    \item BatchNorm: Setelah setiap block untuk stabilitas training
+    \item Activation: ReLU untuk non-linearity
+    \item Pooling strategy: Max pooling 2×2 untuk spatial downsampling progresif
+    \item Final output: (64, 512) sequence untuk Transformer input
+\end{itemize}
+
+\subsection{Spesifikasi Lengkap Transformer Encoder}
+
+\begin{table}[H]
+\centering
+\caption{Detail arsitektur Transformer Encoder untuk sequence modeling}
+\label{tab:appendix-transformer-detailed}
+\small
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Component} & \textbf{Specification} & \textbf{Parameters} & \textbf{Notes} \\ \hline
+\multicolumn{4}{|l|}{\textbf{Positional Encoding}} \\ \hline
+Encoding Type & Sinusoidal & 0 (learned) & Fixed sin/cos encoding \\ \hline
+Max Sequence Len & 256 & - & Supports up to 256 timesteps \\ \hline
+\multicolumn{4}{|l|}{\textbf{Transformer Layer Configuration (6 layers)}} \\ \hline
+Num Layers & 6 & - & Stacked encoder layers \\ \hline
+Model Dimension ($d_{model}$) & 512 & - & Feature dimension \\ \hline
+Num Attention Heads & 8 & - & Multi-head attention \\ \hline
+Head Dimension ($d_k$) & 64 & - & $d_{model}$ / num\_heads \\ \hline
+FFN Dimension ($d_{ff}$) & 2048 & - & 4× $d_{model}$ \\ \hline
+Dropout Rate & 0.20 & - & Applied to attention \& FFN \\ \hline
+\multicolumn{4}{|l|}{\textbf{Per-Layer Components}} \\ \hline
+Multi-Head Attention & 8 heads, 64 dims each & 1,048,576 & Q, K, V projections + output \\ \hline
+LayerNorm (post-attn) & $d_{model}$=512 & 1,024 & Normalization \\ \hline
+FFN Layer 1 & 512 → 2048, ReLU & 1,050,624 & Expansion \\ \hline
+FFN Layer 2 & 2048 → 512 & 1,049,088 & Projection back \\ \hline
+LayerNorm (post-FFN) & $d_{model}$=512 & 1,024 & Normalization \\ \hline
+Residual Connections & 2 per layer & 0 & Skip connections \\ \hline
+\multicolumn{3}{|r|}{\textbf{Total per Layer:}} & 3,150,336 \\ \hline
+\multicolumn{3}{|r|}{\textbf{Total 6 Layers:}} & \textbf{18,902,016} \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{CTC Output Layer}
+
+\begin{table}[H]
+\centering
+\caption{Detail CTC output layer dan decoding}
+\label{tab:appendix-ctc-layer}
+\small
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Component} & \textbf{Specification} & \textbf{Parameters} \\ \hline
+Output Dense Layer & 512 → 95 (vocab size) & 48,735 \\ \hline
+Activation & Softmax & 0 \\ \hline
+Vocab Size & 95 characters & - \\ \hline
+\multicolumn{2}{|r|}{\textbf{Total Output Layer:}} & \textbf{48,735} \\ \hline
+\end{tabular}
+\end{table}
+
+\textbf{Character Set (95 characters):}
+\begin{itemize}
+    \item Lowercase: a-z (26 chars)
+    \item Uppercase: A-Z (26 chars)
+    \item Digits: 0-9 (10 chars)
+    \item Punctuation: 30 symbols (.,:;!?'"-/()[]{}@\#\$\%\&*+<>=\_\textasciitilde)
+    \item Special: BLANK token, SPACE, newline
+\end{itemize}
+
+\subsection{Model Summary}
+
+\begin{table}[H]
+\centering
+\caption{Ringkasan total parameter HTR Recognizer}
+\label{tab:appendix-model-summary}
+\begin{tabular}{|l|r|}
+\hline
+\textbf{Component} & \textbf{Parameters} \\ \hline
+CNN Backbone & 4,979,872 \\ \hline
+Transformer Encoder (6 layers) & 18,902,016 \\ \hline
+CTC Output Layer & 48,735 \\ \hline
+\textbf{Total Trainable Parameters} & \textbf{23,930,623} \\ \hline
+\textbf{Model Size (FP32)} & \textbf{$\sim$96 MB} \\ \hline
+\end{tabular}
+\end{table}
+
+% ============================================================
+% LAMPIRAN B: DETAIL KONFIGURASI TRAINING
+% ============================================================
+
+\section{Lampiran B: Detail Konfigurasi Training Recognizer}
+\label{appendix:training-config}
+
+\subsection{Optimizer Configuration}
+
+\begin{table}[H]
+\centering
+\caption{Detail konfigurasi AdamW optimizer}
+\label{tab:appendix-optimizer}
+\small
+\begin{tabular}{|l|l|p{7cm}|}
+\hline
+\textbf{Parameter} & \textbf{Value} & \textbf{Justification} \\ \hline
+Base Learning Rate & 3×10$^{-4}$ & Optimal for Transformer (Vaswani et al. 2017) \\ \hline
+Beta1 ($\beta_1$) & 0.9 & Standard Adam momentum \\ \hline
+Beta2 ($\beta_2$) & 0.999 & Standard Adam RMSProp term \\ \hline
+Epsilon ($\epsilon$) & 1×10$^{-8}$ & Numerical stability \\ \hline
+Weight Decay & 1×10$^{-4}$ & L2 regularization (decoupled from gradient) \\ \hline
+Gradient Clipping & clipnorm=1.0 & Prevent exploding gradients \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Learning Rate Schedule}
+
+\begin{table}[H]
+\centering
+\caption{Cosine annealing learning rate schedule}
+\label{tab:appendix-lr-schedule}
+\small
+\begin{tabular}{|l|l|p{7cm}|}
+\hline
+\textbf{Parameter} & \textbf{Value} & \textbf{Description} \\ \hline
+Schedule Type & Cosine Annealing & Smooth decay without oscillation \\ \hline
+Warmup Steps & 1000 & Linear warmup from 0 to base LR \\ \hline
+Max Learning Rate & 3×10$^{-4}$ & Reached after warmup \\ \hline
+Min Learning Rate & 1×10$^{-6}$ & Final LR at end of training \\ \hline
+Total Steps & 50,000 & Based on dataset size and epochs \\ \hline
+Restart & No & Single cosine curve \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Data Augmentation}
+
+\begin{table}[H]
+\centering
+\caption{Detail data augmentation pipeline}
+\label{tab:appendix-augmentation}
+\small
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Augmentation} & \textbf{Parameters} & \textbf{Probability} \\ \hline
+\multicolumn{3}{|l|}{\textbf{Photometric Augmentation}} \\ \hline
+Brightness Adjustment & factor ∈ [0.8, 1.2] & 0.5 \\ \hline
+Contrast Adjustment & factor ∈ [0.8, 1.2] & 0.5 \\ \hline
+Gamma Correction & gamma ∈ [0.8, 1.2] & 0.3 \\ \hline
+\multicolumn{3}{|l|}{\textbf{Noise Injection}} \\ \hline
+Gaussian Noise & mean=0, std ∈ [0.01, 0.05] & 0.4 \\ \hline
+Salt \& Pepper Noise & amount ∈ [0.001, 0.01] & 0.2 \\ \hline
+\multicolumn{3}{|l|}{\textbf{Geometric Augmentation}} \\ \hline
+Elastic Transform & alpha ∈ [50, 150], sigma=5 & 0.2 \\ \hline
+Slight Rotation & angle ∈ [-2°, +2°] & 0.3 \\ \hline
+Slight Shear & shear ∈ [-0.1, +0.1] & 0.2 \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Regularization Techniques}
+
+\begin{table}[H]
+\centering
+\caption{Regularization strategies}
+\label{tab:appendix-regularization}
+\small
+\begin{tabular}{|l|l|p{7cm}|}
+\hline
+\textbf{Technique} & \textbf{Configuration} & \textbf{Purpose} \\ \hline
+Dropout & rate=0.20 & Applied after attention and FFN layers \\ \hline
+Label Smoothing & $\epsilon$=0.1 & Soft targets for CTC loss \\ \hline
+Weight Decay & 1×10$^{-4}$ & L2 regularization on model weights \\ \hline
+Early Stopping & patience=15 epochs & Prevent overfitting, monitor val CER \\ \hline
+Model Checkpoint & Save best val CER & Keep best performing weights \\ \hline
+\end{tabular}
+\end{table}
+
+% ============================================================
+% LAMPIRAN C: DETAIL IMPLEMENTASI TEKNIS
+% ============================================================
+
+\section{Lampiran C: Detail Implementasi Numerik dan Efisiensi}
+\label{appendix:implementation-details}
+
+\subsection{Stabilisasi Numerik CTC Loss}
+
+\begin{table}[H]
+\centering
+\caption{Teknik stabilisasi numerik untuk CTC loss computation}
+\label{tab:appendix-ctc-stabilization}
+\small
+\begin{tabular}{|l|l|p{6.5cm}|}
+\hline
+\textbf{Teknik} & \textbf{Implementation} & \textbf{Rationale} \\ \hline
+Log-Space Computation & Use log-probabilities & Prevent underflow in probability multiplication \\ \hline
+LogSumExp Trick & Numerically stable summation & Avoid overflow/underflow in exponential \\ \hline
+Label Smoothing & $\epsilon$=0.1 on targets & Prevent overconfident predictions \\ \hline
+Loss Normalization & Divide by sequence length & Consistent loss across varying lengths \\ \hline
+Value Clipping & Max CTC loss = 50.0 & Prevent extreme values in logging \\ \hline
+Precision & FP32 (pure float32) & Critical for log-space stability \\ \hline
+Gradient Clipping & clipnorm=1.0 & Prevent gradient explosion \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Justifikasi Presisi Numerik FP32}
+
+\begin{table}[H]
+\centering
+\caption{Perbandingan FP16/Mixed vs Pure FP32 untuk CTC computation}
+\label{tab:appendix-precision-comparison}
+\small
+\begin{tabular}{|p{3cm}|p{5cm}|p{5.5cm}|}
+\hline
+\textbf{Aspect} & \textbf{FP16/Mixed Precision} & \textbf{Pure FP32} \\ \hline
+CTC Log-Prob & Underflow saat exp(-50) & Stable hingga exp(-100) \\ \hline
+Gradient Balance & Loss component dominance & Balanced multi-loss gradients \\ \hline
+Convergence & Unstable, oscillating & Smooth, stable convergence \\ \hline
+Visual Quality & Suboptimal & Superior quality \\ \hline
+Speed & +30-40\% faster & Baseline speed \\ \hline
+Memory & -40\% usage & Baseline memory \\ \hline
+\textbf{Decision} & \multicolumn{2}{|l|}{\textbf{Pure FP32} chosen: stability > speed trade-off} \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Efisiensi Komputasi}
+
+\begin{table}[H]
+\centering
+\caption{Profiling waktu eksekusi per komponen (per batch)}
+\label{tab:appendix-timing-profile}
+\small
+\begin{tabular}{|l|r|r|r|}
+\hline
+\textbf{Component} & \textbf{Time (ms)} & \textbf{Percentage} & \textbf{GPU Util} \\ \hline
+Data Loading & 15 & 15\% & CPU-bound \\ \hline
+Generator Forward & 25 & 25\% & 85\% \\ \hline
+Discriminator Forward & 10 & 10\% & 75\% \\ \hline
+Recognizer Forward (frozen) & 20 & 20\% & 80\% \\ \hline
+Loss Computation & 5 & 5\% & 60\% \\ \hline
+Backward Pass & 20 & 20\% & 90\% \\ \hline
+Optimizer Step & 5 & 5\% & 70\% \\ \hline
+\textbf{Total per Iteration} & \textbf{100} & \textbf{100\%} & \textbf{Avg 78\%} \\ \hline
+\end{tabular}
+\end{table}
+
+\textbf{Optimization Opportunities:}
+\begin{itemize}
+    \item Data loading: Implemented prefetch buffer (2 batches ahead)
+    \item Mixed precision: NOT used due to stability concerns
+    \item Batch size: Limited by GPU memory (2 per GPU on RTX 4090)
+    \item Recognizer: Feature extraction cached for GT images
+\end{itemize}
+
+% ============================================================
+% LAMPIRAN D: DETAIL SOFTWARE DESIGN
+% ============================================================
+
+\section{Lampiran D: Dokumentasi Desain Software}
+\label{appendix:software-design}
+
+Lampiran ini menyajikan detail arsitektur software framework GAN-HTR yang mendukung reproduktifitas dan ekstensibilitas penelitian. Konten ini melengkapi metodologi penelitian yang disajikan pada Bab III dengan fokus pada aspek implementasi software engineering.
+
+\subsection{Prinsip Desain Modular}
+
+\begin{table}[H]
+\centering
+\caption{Prinsip desain modular dan implementasinya}
+\label{tab:appendix-modular-principles}
+\small
+\begin{tabular}{|p{3.5cm}|p{5cm}|p{5cm}|}
+\hline
+\textbf{Prinsip} & \textbf{Definisi} & \textbf{Implementasi} \\ \hline
+Loose Coupling & Komponen independen dengan minimal dependencies & Interface-based communication, not direct implementation \\ \hline
+High Cohesion & Fungsi terkait grouped dalam modul yang sama & Data processing functions dalam satu Data module \\ \hline
+Abstraction Layers & Abstract interfaces untuk implementasi berbeda & Generator interface: U-Net, ResNet, atau custom architectures \\ \hline
+Dependency Injection & Runtime configuration of dependencies & Components receive dependencies via constructor/config \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Komponen Inti Framework}
+
+\begin{table}[H]
+\centering
+\caption{Mapping komponen inti ke modules/classes}
+\label{tab:appendix-component-mapping}
+\small
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Component} & \textbf{Module Path} & \textbf{Key Classes/Functions} \\ \hline
+Generator & \texttt{src/models/generator.py} & \texttt{UNetGenerator}, \texttt{build\_generator()} \\ \hline
+Discriminator & \texttt{src/models/discriminator.py} & \texttt{DualModalDiscriminator} \\ \hline
+Recognizer & \texttt{src/models/recognizer.py} & \texttt{HTRRecognizer}, \texttt{freeze\_recognizer()} \\ \hline
+Loss Functions & \texttt{src/losses/} & \texttt{PixelLoss}, \texttt{RecFeatLoss}, \texttt{CTCLoss} \\ \hline
+Data Pipeline & \texttt{src/data/} & \texttt{DataLoader}, \texttt{Augmentation} \\ \hline
+Training Loop & \texttt{src/training/trainer.py} & \texttt{GANTrainer}, \texttt{train\_step()} \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Sistem Konfigurasi Hierarkis}
+
+\begin{table}[H]
+\centering
+\caption{Hierarki konfigurasi dan lokasi file}
+\label{tab:appendix-config-hierarchy}
+\small
+\begin{tabular}{|l|l|p{6.5cm}|}
+\hline
+\textbf{Level} & \textbf{File} & \textbf{Content} \\ \hline
+Base Config & \texttt{configs/base.yaml} & Default architecture, model dimensions \\ \hline
+Experiment Config & \texttt{configs/experiment/*.yaml} & HPO results, loss weights, specific settings \\ \hline
+Environment Config & \texttt{configs/env/*.yaml} & Data paths, GPU settings, storage locations \\ \hline
+Runtime Override & Command-line args & Quick parameter adjustments via argparse \\ \hline
+\end{tabular}
+\end{table}
+
+\textbf{Configuration Inheritance Example:}
+\begin{verbatim}
+# configs/experiment/hpo_best.yaml
+base: configs/base.yaml  # Inherit from base
+
+# Override specific parameters
+loss_weights:
+  pixel: 120.0
+  rec_feat: 80.0
+  adv: 2.5
+  ctc: 10.0  # monitoring only
+
+training:
+  batch_size: 2
+  epochs: 100
+\end{verbatim}
+
+\subsection{Testing Framework}
+
+\begin{table}[H]
+\centering
+\caption{Testing strategy dan coverage}
+\label{tab:appendix-testing}
+\small
+\begin{tabular}{|l|l|p{7cm}|}
+\hline
+\textbf{Test Type} & \textbf{Location} & \textbf{Coverage} \\ \hline
+Unit Tests & \texttt{tests/unit/} & Individual components (models, losses, data) \\ \hline
+Integration Tests & \texttt{tests/integration/} & Full pipeline, end-to-end workflow \\ \hline
+Smoke Tests & \texttt{tests/smoke/} & Quick validation (5 epochs, 100 samples) \\ \hline
+Performance Tests & \texttt{tests/performance/} & Timing, memory profiling \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Dependency Management}
+
+Framework menggunakan Poetry untuk dependency management:
+
+\begin{verbatim}
+# Core dependencies (pyproject.toml)
+[tool.poetry.dependencies]
+python = "^3.9"
+tensorflow = "^2.15.0"
+numpy = "^1.24.0"
+optuna = "^3.5.0"
+mlflow = "^2.10.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+black = "^23.0.0"
+flake8 = "^6.1.0"
+\end{verbatim}
+
+\subsection{MLOps Integration}
+
+\begin{table}[H]
+\centering
+\caption{MLOps tools dan integrasi}
+\label{tab:appendix-mlops}
+\small
+\begin{tabular}{|l|l|p{7cm}|}
+\hline
+\textbf{Tool} & \textbf{Purpose} & \textbf{Integration} \\ \hline
+MLflow & Experiment tracking & Auto-logging params, metrics, artifacts \\ \hline
+Optuna & Hyperparameter optimization & TPE sampler, SQLite database \\ \hline
+TensorBoard & Real-time monitoring & Loss curves, image samples \\ \hline
+Git & Version control & Auto-commit hash logging in MLflow \\ \hline
+Poetry & Dependency management & Reproducible environments \\ \hline
+\end{tabular}
+\end{table}
+
+% ============================================================
+% LAMPIRAN E: DETAIL STABILITY TECHNIQUES
+% ============================================================
+
+\section{Lampiran E: Detail Teknik Stabilitas Training}
+\label{appendix:stability-techniques}
+
+\subsection{Gradient Stabilization}
+
+\begin{table}[H]
+\centering
+\caption{Comprehensive gradient stabilization techniques}
+\label{tab:appendix-gradient-stability}
+\small
+\begin{tabular}{|l|l|p{6.5cm}|}
+\hline
+\textbf{Technique} & \textbf{Configuration} & \textbf{Effect} \\ \hline
+Gradient Clipping & clipnorm=1.0 (global norm) & Prevents exploding gradients \\ \hline
+Loss Scaling & Not used (FP32 only) & N/A for pure FP32 training \\ \hline
+Gradient Accumulation & Not used (batch size=2 fits) & N/A for current setup \\ \hline
+Gradient Checkpointing & Not used (memory sufficient) & N/A \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Loss Balancing Strategies}
+
+\begin{table}[H]
+\centering
+\caption{Multi-loss balancing implementation}
+\label{tab:appendix-loss-balancing}
+\small
+\begin{tabular}{|l|l|p{6.5cm}|}
+\hline
+\textbf{Strategy} & \textbf{Implementation} & \textbf{Rationale} \\ \hline
+Static Weights & From HPO: pixel=120, rec\_feat=80, adv=2.5 & Optimal balance found via Bayesian Optimization \\ \hline
+CTC Annealing & Warmup 2 epochs: weight 0→10 & Gradual introduction to prevent early collapse \\ \hline
+Loss Normalization & Divide by batch size \& sequence length & Consistent scale across batches \\ \hline
+Component Monitoring & Log individual losses separately & Detect imbalance during training \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Mode Collapse Prevention}
+
+\begin{table}[H]
+\centering
+\caption{Strategies untuk mencegah mode collapse}
+\label{tab:appendix-mode-collapse}
+\small
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Strategy} & \textbf{Description} \\ \hline
+Adversarial Weight Control & Keep adv\_loss\_weight ≤ 5.0 (proven via HPO) \\ \hline
+Label Smoothing & Factor 0.9 for discriminator targets (real=0.9, fake=0.1) \\ \hline
+Discriminator Regularization & Instance noise injection (std=0.05 at epoch start, decay) \\ \hline
+Diversity Regularization & Not explicitly used (pixel + rec\_feat losses provide diversity) \\ \hline
+Early Warning System & Monitor PSNR drop below 5 dB → trigger alert \\ \hline
+\end{tabular}
+\end{table}
+
+\end{document}

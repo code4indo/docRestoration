@@ -1,0 +1,10 @@
+graph TD;
+    subgraph Komponen_Loss
+        A["Adversarial Loss\n($L_{adv}$)"]
+        B["L1 Reconstruction Loss\n($L_{L1}$)"]
+        D["CTC Readability Loss\n($L_{CTC}$)"]
+    end
+    C["Gabungan Loss\n($L_G = \lambda_{adv}L_{adv} + \lambda_{L1}L_{L1} + \lambda_{CTC}L_{CTC}$)"]
+    A --> C
+    B --> C
+    D --> C

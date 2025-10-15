@@ -1,0 +1,73 @@
+% ============================================================
+% DOKUMEN STANDALONE DAFTAR PUSTAKA
+% ============================================================
+% File ini digunakan untuk menghasilkan PDF terpisah hanya untuk daftar pustaka
+
+\documentclass[12pt,a4paper]{article}
+
+% Package setup
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[bahasa]{babel}
+\usepackage{mathptmx} % Times New Roman font
+\usepackage{microtype} % Untuk optimasi typography dan spacing
+
+% Menonaktifkan hyphenation secara total untuk Bahasa Indonesia
+\lefthyphenmin=62
+\righthyphenmin=62
+\pretolerance=10000
+\tolerance=2000
+\emergencystretch=10pt
+\hbadness=10000
+\vbadness=10000
+\raggedright
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\linepenalty=10000
+\binoppenalty=10000
+\relpenalty=10000
+\usepackage{geometry}
+\usepackage{hyperref}
+
+% Geometry setup sesuai format tesis ITB
+\geometry{
+    left=4cm,    % Tepi dalam (sesuai ketentuan tesis)
+    right=3cm,   % Tepi luar
+    top=3cm,     % Tepi atas
+    bottom=3cm   % Tepi bawah
+}
+
+% Line spacing 1.5
+\renewcommand{\baselinestretch}{1.5}
+
+% Hyperref setup
+\hypersetup{
+    pdfencoding=auto,
+    pdftitle={Daftar Pustaka},
+    pdfauthor={Tesis},
+    pdfsubject={Daftar Pustaka},
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=blue,
+    pdfstartview=FitH
+}
+
+% Document info
+\title{\textbf{DAFTAR PUSTAKA}}
+\author{}
+\date{}
+
+\begin{document}
+
+% Title
+\begin{center}
+    \Large\textbf{DAFTAR PUSTAKA}
+\end{center}
+
+\vspace{1cm}
+
+% Import references dari file terpisah
+\input{references.tex}
+
+\end{document}

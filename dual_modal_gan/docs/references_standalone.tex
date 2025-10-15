@@ -1,0 +1,26 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[bahasa]{babel}
+\usepackage{geometry}
+\geometry{
+    a4paper,
+    left=4cm,
+    right=3cm,
+    top=3cm,
+    bottom=3cm
+}
+
+% Packages untuk formatting
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{url}
+
+\begin{document}
+
+% Ubah nama "Pustaka" yang otomatis menjadi "DAFTAR PUSTAKA" dengan posisi center
+\renewcommand{\refname}{\begin{center}\textbf{DAFTAR PUSTAKA}\end{center}\vspace{2\baselineskip}}
+
+% Import references
+\input{references.tex}
+
+\end{document}

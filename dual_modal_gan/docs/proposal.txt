@@ -1,0 +1,128 @@
+BAB I. Pendahuluan
+
+I.1	Latar Belakang
+Arsip Nasional RI menyimpan berbagai koleksi arsip bersejarah yang sangat bernilai yang diakui sebagai “Memory of th World Register” dari UNESCO, diantaranya dokumen tulisan tangan kuno dari abad ke-16 hingga ke-18, yang merepresentasikan jati diri bangsa dan merupakan aset budaya penting. Namun, dokumen-dokumen ini saat ini mengalami degradasi fisik ringan hingga berat yang disebabkan beberapa faktor antara lain lingkungan dan usia. Degradasi yang terjadi, seperti ink bleed-through (tembusan tinta), fading (pemudaran), noda, dan kerusakan struktural, tidak hanya mengganggu keutuhan visual tetapi juga mengancam keutuhan dan keaslian informasi yang terkandung di dalamnya. Hal ini menimbulkan tantangan serius dalam upaya pelestarian, sebagaimana yang diamanatkan oleh UU No. 43 Tahun 2009 tentang Kearsipan, yang menekankan pentingnya menjaga keutuhan dan keautentikan arsip sebagai sumber informasi yang akurat dan dapat diandalkan. Selain itu, degradasi fisik arsip merupakan penghambat utama dalam upaya digitalisasi dan preservasi. Secara khusus, kondisi ini menurunkan kinerja sistem Handwritten Text Recognition (HTR) yang krusial untuk transkripsi dokumen tulisan tangan. Akibatnya, tingkat kesalahan pengenalan karakter pada dokumen yang rusak menjadi lebih tinggi, sehingga menyulitkan proses untuk mendapatkan transkripsi akurat dan mempercepat ekstraksi informasi. Oleh karena itu, degradasi fisik menjadi tantangan signifikan bagi lembaga kearsipan.
+Pendekatan untuk mengatasi masalah degradasi dokumen dapat dilakukan dengan melakukan restorasi digital, metodenya bervariasi dari mulai teknik tradisional hingga pendekatan berbasis deep learning. Metode tradisional seperti thresholding adaptif (Sauvola) dan segmentasi berbasis ruang warna (CIE Lab) telah terbukti efektif untuk kasus degradasi sederhana, seperti noda ringan atau perubahan warna minor, sebagaimana ditunjukkan oleh penelitian (Gatos dkk., 2006). Namun, metode ini sering kali kurang mampu menangani degradasi yang lebih kompleks, seperti bleed-through atau variasi intensitas latar belakang yang signifikan. Sebagai alternatif, metode berbasis Generative Adversarial Networks (GAN) menawarkan pendekatan yang menjanjikan untuk restorasi dokumen. GAN memanfaatkan dua jaringan yang saling bersaing: generator, yang mencoba menghasilkan citra dokumen yang lebih bersih, dan discriminator, yang menilai keaslian citra tersebut. Proses ini memungkinkan GAN untuk menyesuaikan diri dengan pola degradasi yang kompleks dan menghasilkan gambar yang lebih baik secara visual dalam beberapa kasus. Misalnya, studi menunjukkan bahwa GAN dapat mencapai nilai Peak Signal-to-Noise Ratio (PSNR) antara 33-38 dB dalam tugas pembersihan dokumen, yang lebih tinggi dibandingkan metode tradisional pada kasus tertentu. Namun, keunggulan ini tidak berlaku di semua situasi, dan PSNR saja tidak cukup untuk mengevaluasi keberhasilan restorasi. Metrik lain, seperti Structural Similarity Index (SSIM) untuk kesamaan struktural atau Character Error Rate  (CER) untuk akurasi pengenalan teks oleh sistem HTR, juga perlu dipertimbangkan untuk mendapatkan gambaran yang lebih lengkap tentang kualitas restorasi.
+Metode restorasi dokumen berbasis GAN seringkali memiliki keterbatasan karena fokus utama pada peningkatan kualitas visual, seperti yang ditunjukkan oleh penelitian pada DE-GAN (Souibgui & Kessentini, 2022) dan CycleGAN (Ni dkk., 2024). Peningkatan metrik visual ini tidak selalu berkorelasi secara langsung atau proposional dengan peningkatan akurasi HTR (Jadhav dkk., 2022), yang menjadi kebutuhan utama dalam restorasi dokumen bersejarah yaitu keterbacaan informasi. Komponen GAN yang signifikan mempengaruhi metrik visual dan akurasi HTR adalah discriminator dan loss fuction, discriminator memastikan realisme gambar (metrik visual), sedangkan loss function, terutama kombinasi adversarial dan recognition loss, memastikan keseimbangan antara kualitas visual dan akurasi pengenalan teks, oleh karena itu dibutuhkan desain dan implementasi yang tepat. Untuk mengatasi hal ini, diusulkan sebuah framework GAN yang mengintegrasikan Diskriminator Dual-Modal dan Optimasi Loss Function Berorientasi HTR.
+Diskriminator Dual-Modal dirancang untuk mengevaluasi kualitas visual dan integritas struktur teks secara simultan, yang krusial untuk keberhasilan HTR, Pendekatan ini didukung oleh penelitian sebelumnya, seperti (Arjovsky dkk., 2017; Ooi & Lim, 2023; Zhang dkk., 2024), yang menunjukkan bahwa loss function yang dirancang dengan baik dapat mengatasi masalah seperti mode collapse, vanishing gradients dan meningkatkan kinerja model, dan dalam penelitian lainnya (Wei dkk., 2024), yang menunjukkan bahwa penggunaan diskriminator multi-modal dapat secara signifikasi meningkatkan stabilitas proses pelatihan dan mempercepat konvergensi dari modul discriminator, hal ini sangat penting untuk menghasilkan keluaran yang berkualitas tinggi dan menghindari kegagalan model, yang merupakan masalah umum pada diskriminitor tunggal.
+Kebaruan metode ini terletak pada kombinasi Diskriminator Dual-Modal dan Optimasi Loss Function Berorientasi HTR, yang belum ditemukan dalam penelitian sebelumnya seperti DE-GAN, CycleGAN, atau TG2 (Kodym & Hradiš, 2022). Pendekatan ini memungkinkan model untuk belajar dari dua sumber umpan balik, yaitu kualitas visual dan akurasi teks, sehingga menghasilkan restorasi yang lebih seimbang dan efektif. Dengan demikian, metode yang diusulkan tidak hanya meningkatkan kualitas visual dokumen terdegradasi, tetapi juga memastikan bahwa teks yang dihasilkan lebih akurat dikenali oleh sistem HTR, menjadikannya solusi yang lebih komprehensif untuk restorasi dokumen bersejarah.
+Penelitian ini memiliki urgensi praktis dan akademis yang signifikan, terutama bagi lembaga kearsipan. Secara praktis, framework ini mendukung preservasi digital dokumen historis untuk menjaga keautentikan dan keutuhan informasi arsip sebagai memori kolektif bangsa. Kedua, digitalisasi dan peningkatan keterbacaan dokumen melalui HTR yang difasilitasi oleh penelitian ini akan meningkatkan aksesibilitas informasi bagi para peneliti dan masyarakat luas, yang merupakan salah satu misi utama Arsip Nasional. Ketiga, keberhasilan restorasi dokumen yang terdegradasi akan mengurangi kebutuhan transkripsi manual, menghemat biaya dan waktu operasional. Terakhir, penelitian ini berpotensi membuka jalan bagi penelitian selanjutnya yang memanfaatkan kekayaan informasi dalam arsip negara. Secara akademis, integrasi GAN dengan discriminator multi-modal yang fokus pada visual dan keterbacaan teks dapat memberikan kontribusi dalam pengembangan metode baru di bidang analisis dokumen. Dengan demikian, penelitian ini tidak hanya menjawab tantangan teknis yang dihadapi lembaga kearsipan tetapi juga memperkuat fondasi pelestarian warisan budaya secara global.
+
+
+I.2	Rumusan Masalah
+Khazanah arsip yang dimiliki oleh Institusi Kearsipan seperti Arsip Nasional atau lembaga kearsipan daerah banyak mengalami kerusakan fisik seperti ink bleed-through, fading, noda, dan blur yang mengurangi keterbacaan teks dan menghambat proses digitalisasi. Sistem HTR saat ini memiliki akurasi rendah pada dokumen terdegradasi, sehingga diperlukan restorasi citra yang tidak hanya meningkatkan kualitas visual tetapi juga mempertahankan struktur teks untuk HTR. Berdasarkan pada hasil kajian literatur dan observasi awal, terdapat empat masalah yang ditemukan yaitu sebagai berikut:
+1.	Ketidakefektifan Metode Restorasi Tradisional
+Metode seperti thresholding (Otsu, Sauvola) gagal memisahkan teks dari degradasi kompleks seperti bleed-through atau latar belakang tidak merata.
+Contoh: Segmentasi berbasis warna atau tekstur sering keliru mengklasifikasikan noda sebagai teks.
+2.	Kurangnya Integrasi Antara Restorasi Visual dan Keterbacaan Teks
+Model restorasi seperti DE-GAN dapat meningkatan visual (PSNR/SSIM) tetapi beresiko mengabaikan struktur teks yang dibutuhkan untuk HTR.
+Contoh: Citra hasil restorasi mungkin "bersih" secara visual tetapi mengandung karakter terputus atau distorsi yang menyulitkan HTR.
+3.	Ketergantungan pada Data Pasangan dan Augmentasi Terbatas
+Metode berbasis GAN konvensional memerlukan data berpasangan (degradasi-bersih), yang sulit diperoleh untuk dokumen historis.
+Contoh: Pelatihan CycleGAN tanpa data pasangan menghasilkan restorasi tidak konsisten.
+4.	Kondisi degradasi yang beragam secara signifikan mengurangi performa HTR
+Model HTR modern (CNN-BiRNN) mengalami penurunan akurasi (CER/WER) untuk kasus dokumen yang mengalami variasi degradasi.
+Contoh: CER meningkat 15% pada dokumen dengan bleed-through berat.
+
+
+
+I.2.1 Dampak dari Masalah yang Ditemukan
+a.	Efektivitas: Transkripsi dokumen historis menjadi tidak akurat, menghambat preservasi digital dan aksesibilitas arsip.
+b.	Efisiensi: Proses restorasi manual atau semi-otomatis memakan waktu dan biaya tinggi.
+c.	Keterbatasan Teknis: Metode saat ini kesulitan mengatasi variasi degradasi yang umum ditemui pada kondisi sesungguhnya, seperti kombinasi bleed-through dan blur.
+
+I.2.2 Logika Berpikir dalam Pembentukan Solusi
+Berdasarkan pada identifikasi masalah maka dilakukan langkah berikut untuk menyelesaikannya:
+1. Penentuan Kebutuhan Sistem/Metode
+a.	Akurasi: Restorasi harus meningkatkan PSNR > 40 dB dan mengurangi CER/WER ≥ 25% dibandingkan dengan baseline.
+b.	Integrasi: Framework harus menggabungkan restorasi visual dan umpan balik HTR dengan alur kerja yang berkelanjutan
+c.	Adaptabilitas: Solusi harus mampu beradaptasi dengan berbagai jenis degradasi.
+2. Pendekatan Teknologi
+a.	Generative Adversarial Networks (GAN): Dipilih untuk kebutuhan menghasilkan citra dokumen yang realistis dan adaptif.
+b.	HTR-Aware Discriminator: Integrasi model HTR ke dalam loss function GAN untuk menyelaraskan restorasi dengan kebutuhan pengenalan teks.
+3. Perancangan Arsitektur Solusi
+a.	Generator: U-Net dengan input citra dokumen
+b.	Diskriminator Visual: FCN 6-lapisan untuk evaluasi kualitas citra.
+c.	Diskriminator HTR-Aware: Model HTR yang menghitung CER/WER sebagai bagian dari loss.
+d.	Alur kerja dimulai dengan tahap pra-pemrosesan, di mana data pseudo-paired dihasilkan. Setelah itu, citra direstorasi menggunakan generator. Selanjutnya, keterbacaan teks dievaluasi melalui HTR-aware discriminator, dan proses ini diikuti oleh umpan balik iteratif yang bertujuan mengoptimasi generator.
+4.	Rencana Pengujian dan Evaluasi
+Pengujian dilakukan terhadap dataset koleksi Arsip Nasional, dengan beragam tingkat degradasi (ringan, sedang, berat), dan ditentukan matrik evaluasi dan pembanding yang sesuai dengan objek penelitian
+Dari logika berpikir ini, dirumuskan pertanyaan penelitian umum dan khusus yang menjadi dasar pengembangan, yaitu: "Bagaimana penggunaan model GAN dapat membantu memperbaiki tampilan dan keterbacaan teks pada dokumen historis yang terdegradasi?"
+Pertanyaan khusus yang akan dijawab pada penelitian ini adalah:
+a.	Pertanyaan 1: Bagaimana transkripsi pada HTR memandu GAN dalam melakukan rekonstruksi citra dokumen?
+b.	Pertanyaan 2: Jika model restorasi dilatih dengan mempertimbangkan bagaimana komputer membaca teks, apakah hasilnya akan lebih baik dalam memperbaiki keterbacaan teks dibandingkan metode lainnya?
+c.	Pertanyaan 3: Bagaimana cara membuat model restorasi agar bisa mengatasi berbagai macam masalah kerusakan yang mungkin terjadi bersamaan pada dokumen historis?
+Rumusan masalah ini difokuskan pada masalah utama dalam restorasi dokumen historis dan mengarahkan solusi ke pendekatan terintegrasi yang menggabungkan GAN, dan evaluasi berbasis HTR. Dengan menjawab pertanyaan penelitian, diharapkan tersedia framework yang tidak hanya meningkatkan kualitas visual tetapi juga mendukung preservasi digital melalui transkripsi teks yang akurat.
+I.3	Tujuan Penelitian
+Tujuan utama penelitian ini adalah mengembangkan kerangka kerja berbasis GAN yang mengutamakan diskriminator berorientasi pada HTR untuk meningkatkan kualitas visual dokumen historis terdegradasi dan memulihkan struktur teks agar mudah dikenali oleh model HTR dan manusia. Secara khusus penelitian akan melakukan tiga tujuan spesifik yaitu:
+1.	Mengintegrasikan Model HTR ke dalam Loss Function GAN
+Membangun discriminator tambahan berbasis CNN-BiRNN yang menghitung CER dari teks hasil restorasi, lalu menggunakannya sebagai umpan balik untuk melatih generator.
+2.	Membuat Pseudo-Paired Data dengan Self-Supervised
+Pseudo-paired data dihasilkan dengan metode cycle-consistency loss agar mendapatkan citra bersih sintetik untuk digunakan sebagai data pelatihan selanjutnya.
+3.	Evaluasi Performa pada Dataset 
+Menguji framework pada dokumen historis dari Arsip Nasional dan dataset publik (DIBCO), dengan metrik Visual dan HTR
+I.4	Ruang Lingkup 
+Agar penelitian ini tetap fokus dan dapat menghasilkan solusi yang efektif, maka ditentukan ruang lingkup dan pembatasan masalah sebagai berikut:
+1.	Batasan Penelitian 
+a.	Fokus pada tulisan tangan pada dokumen historis, bukan dokumen cetak 
+b.	Degradasi yang ditangani terbatas pada bleed-through, fading, noda, dan blur.
+c.	Evaluasi HTR menggunakan model berbasis CNN-BiRNN, bukan OCR tradisional.
+2. Aspek yang dikaji 
+a.	Variabel Independen: Jenis dan tingkat degradasi, dan Transkripsi teks 
+b.	Variabel Dependen: Kualitas visual restorasi (PSNR, SSIM), dan Akurasi HTR (CER, WER).
+c.	Isu Utama: Dampak kerusakan atau degradasi pada keterbacaan teks, dan Keseimbangan (Trade-off) antara presisi restorasi visual dan struktur teks.
+
+
+
+3.	Konteks dan Kondisi Lingkungan:
+a.	Pengumpulan Data: Citra dokumen diproses dalam kondisi pencahayaan terkontrol (D65 standard illuminant), dan sumber data berasal dari Arsip Nasional serta dataset sintetik dengan augmentasi degradasi realistis.
+b.	Kondisi Operasional: Pengujian dilakukan pada lingkungan komputasi dengan GPU (NVIDIA RTX A4000) untuk mempercepat pelatihan GAN.
+4.	Metode dan Teknologi yang digunakan 
+a.	Pendekatan Metodologis
+Metode ini menggunakan GAN dengan Diskriminator dual cabang yang terdiri atas Generator berbasis U-Net, Diskriminator Visual menggunakan FCN 6-lapisan, dan Diskriminator HTR-Aware yang mengintegrasikan model HTR (CNN-BiRNN) untuk evaluasi CER/WER. Selain itu, augmentasi degradasi sintetik dilakukan melalui simulasi bleed-through, blur, noda, dan fading guna mendukung pelatihan invarian.
+b.	Teknologi/Algoritma
+Pendekatan ini memanfaatkan framework machine learning seperti PyTorch, TensorFlow, dan Keras, serta arsitektur jaringan seperti U-Net, CNN, dan BiRNN. Kakas pendukung yang digunakan meliputi OpenCV untuk pra-pemrosesan citra serta Loghi-HTR/Transkribus untuk validasi HTR.
+
+Ruang lingkup penelitian ini mencakup pengembangan framework GAN yang menyelaraskan restorasi visual dan akurasi HTR untuk dokumen historis terdegradasi. Cakupan meliputi:
+1.	Integrasi HTR-aware loss untuk mengoptimalkan keterbacaan teks.
+2.	Evaluasi komparatif dengan metode konvensional (DE-GAN, Otsu) dan autoencoder (Text-DIAE).
+3.	Validasi praktis melalui penerapan pada koleksi Arsip Nasional.
+Dengan batasan dan ruang lingkup ini diharapkan penelitian fokus pada solusi spesifik untuk preservasi digital dokumen historis, sekaligus menyediakan dasar metodologis untuk pengembangan lebih lanjut.
+I.5	Hipotesis 
+Hipotesis dalam penelitian ini dirumuskan berdasarkan identifikasi masalah, logika berpikir dalam pembentukan solusi, serta hasil penelitian terdahulu. Pengujian hipotesis akan dilakukan melalui pengembangan framework restorasi berbasis GAN dengan diskriminator HTR-aware dan evaluasi kinerjanya dalam meningkatkan kualitas visual serta akurasi pengenalan teks pada dokumen historis. Berikut ini hipotesis yang diusulkan pada penelitian ini:
+Hipotesis Nol (H₀): Penggunaan framework GAN dengan diskriminator HTR-aware tidak secara signifikan meningkatkan kualitas visual restorasi (PSNR, SSIM) dan akurasi pengenalan teks (CER, WER) dibandingkan dengan metode restorasi konvensional atau model autoencoder.
+Hipotesis Alternatif (H₁): Framework GAN dengan diskriminator HTR-aware menghasilkan peningkatan signifikan dengan kualitas visual yang lebih baik (PSNR ≥ 40 dB, SSIM ≥ 0.90) dan penurunan CER minimal 25% dibandingkan dengan metode pembanding.
+1.	Rencana Pengujian
+Untuk menguji hipotesis tersebut, penelitian akan melibatkan pengumpulan data uji yang mencakup 500 citra dokumen tulisan tangan terdegradasi dari Arsip Nasional, yang dilengkapi dengan ground truth, serta 1.000 citra sintetik dengan augmentasi degradasi, seperti ink bleed-through, fading, noda dan blur. Selain itu, dataset publik seperti DIBCO 2017 dan Bentham Papers juga akan digunakan untuk menguji generalisasi metode yang dikembangkan.
+2.	Metode Pembading
+Metode pembanding dalam penelitian ini meliputi DE-GAN tanpa penerapan HTR-aware loss, metode binarisasi adaptif seperti Otsu dan Sauvola, serta model autoencoder berbasis transformer yaitu Text-DIAE. 
+3.	Evaluasi Performa
+Evaluasi performa akan dilakukan dengan mengukur parameter visual seperti PSNR, SSIM, dan DRD, serta parameter pengenalan teks seperti CER, WER, dan Document-Level Accuracy.
+4.	Analisis Statistik
+Analisis statistik dalam penelitian ini akan mencakup uji-T berpasangan untuk membandingkan perbedaan CER dan WER antara framework yang diusulkan dan metode pembanding. Selain itu, ANOVA akan digunakan untuk mengukur signifikansi peningkatan PSNR dan SSIM pada berbagai tingkat degradasi, didukung oleh perhitungan Confidence Interval sebesar 95% untuk menilai keandalan perbedaan akurasi.
+5.	Harapan dan Implikasi
+Diharapkan penelitian ini dapat memberikan bukti empiris bahwa integrasi HTR-aware loss dalam framework GAN meningkatkan keterbacaan teks tanpa mengorbankan kualitas visual, selain itu pendekatan integratif yang dikembangkan diharapkan menyediakan protokol restorasi dokumen historis yang lebih efektif, mendukung upaya digitalisasi arsip nasional, serta berkontribusi pada pelestarian warisan budaya.
+I.6	Kebaruan Penelitian
+Kebaruan penelitian ini yaitu, berupaya berkontribusi pada bidang restorasi dokumen historis terdegradasi melalui dua inovasi utama: 
+1.	Integrasi fungsi loss HTR ke dalam GAN, memungkinkan pelatihan model yang mempertimbangkan keterbacaan teks, dan
+2.	Pengembangan pseudo-paired data untuk mengatasi keterbatasan data berpasangan. 
+Berikut ini diberikan tabel perbandingan antara kebaruan pada penelitan ini dengan state-of-the-art:
+Tabel I. 1 Perbandingan Kebaruan Penelitian dengan SOTA
+Aspek	Penelitian Ini	SOTA
+		DE-GAN	Text-DIAE	 Tradisional
+Integrasi HTR	HTR-aware discriminator	Hanya visual	Autoencoder + HTR	Tidak relevan
+Data Sintetik	Data berpasangan dengan cycle-consistency loss	Data berpasangan	Data berpasangan	Tidak digunakan
+
+Penerapan framework ini berpotensi untuk mendukung pelestarian dokumen historis. Berdasarkan hasil eksperimen awal, framework ini tidak hanya berupaya membersihkan dokumen, tetapi juga dirancang untuk menghasilkan hasil restorasi yang lebih kompatibel dengan sistem HTR, yang selanjutnya akan digunakan untuk membantu mempercepat proses digitalisasi arsip serta berkontribusi terhadap efisiensi biaya dan waktu. Selain itu, penggunaan augmentasi data sintetik dalam penelitian ini diharapkan dapat mengurangi ketergantungan pada pengumpulan data berpasangan yang berbiaya tinggi, dan integrasi dengan sistem HTR telah dioptimalkan untuk mengurangi kebutuhan intervensi manual di tahap akhir.
+I.7	Sistematika Pembahasan
+Untuk menyajikan penelitian ini secara terstruktur dan memudahkan pemahaman, tesis ini dibagi menjadi beberapa bab dengan susunan sebagai berikut:
+Bab I Pendahuluan
+Bab ini membahas latar belakang pentingnya restorasi dokumen historis dan keterbatasan metode konvensional seperti segmentasi berbasis thresholding. Di dalamnya dijelaskan urgensi integrasi teknologi  HTR untuk meningkatkan kualitas visual dan akurasi pembacaan teks. Rumusan masalah, tujuan penelitian, hipotesis, serta kebaruan penelitian, yaitu pengembangan framework GAN dengan HTR-aware discriminator dan pseudo-paired data berbasis CycleGAN juga diuraikan secara ringkas.
+Bab II Tinjauan Pustaka
+Bab ini mengkaji literatur yang menjadi dasar teori dalam penelitian, mencakup teori arsitektur GAN (seperti U-Net, CycleGAN), dan model HTR (CNN - BIRNN). Selain itu, penelitian terdahulu seperti DE-GAN, Text-DIAE dikaji untuk mengidentifikasi celah penelitian, yaitu belum tersedianya framework yang menyelaraskan restorasi visual dengan optimasi keterbacaan teks.
+Bab III Metodologi Penelitian
+Bab ini menguraikan pendekatan penelitian yang mengintegrasikan Design Science Research Methodology (DSRM) untuk kerangka sistematis (identifikasi masalah, penetapan tujuan, desain, evaluasi) dengan iterasi deep learning untuk implementasi teknis framework GAN. Metodologi penelitian meliputi: analisis masalah dan literatur, penetapan target optimasi, perancangan dan pengembangan model (U-Net generator, diskriminator dual-branch dengan FCN dan Vision Transformer) melalui pelatihan iteratif, evaluasi menggunakan metrik kuantitatif dan analisis statistik, serta publikasi hasil dan sumber daya untuk reproduktifitas.
+Bab IV Analisis & Desain
+Bab ini menguraikan analisis kebutuhan sistem yang mencakup: Kebutuhan Fungsional: Restorasi bleed-through, dan kompatibilitas dengan HTR, dan Kebutuhan Non-fungsional: Standar performa seperti PSNR > 40 dB dan waktu inferensi kurang dari 15 detik per citra. Selain itu dijelaskan desain arsitektur sistem yang meliputi penggunaan generator U-Net dan diskriminator HTR-aware, proses augmentasi sintetik, alur pemrosesan data dari pra-pemrosesan hingga evaluasi HTR, serta desain database untuk penyimpanan hasil restorasi dan transkripsi teks.
+Bab V Kesimpulan & Saran
+Bab ini menyajikan rangkuman temuan utama dari penelitian, menilai keefektifan framework GAN dengan HTR-aware discriminator dalam meningkatkan kualitas restorasi dokumen historis dan akurasi HTR. Disampaikan pula saran untuk pengembangan lebih lanjut, termasuk peningkatan metode augmentasi data dan optimasi model, serta implikasi praktis untuk aplikasi restorasi dokumen.

@@ -1,0 +1,162 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\title{Analisis dan Desain Pipeline Pembuatan Dataset TFRecord untuk HTR}
+\author{Berdasarkan skrip \texttt{create\_tfrecord\_fixed.py}}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Pendahuluan}
+
+Efisiensi dalam pemuatan data merupakan faktor krusial dalam siklus pengembangan model \textit{deep learning}, terutama untuk tugas yang melibatkan data dalam jumlah besar seperti \textit{Handwritten Text Recognition} (HTR). Proses membaca ribuan file gambar individual dari disk pada setiap epoch dapat menjadi hambatan I/O yang signifikan, memperlambat proses training dan mengurangi utilisasi GPU.
+
+Untuk mengatasi masalah ini, format \texttt{TFRecord} dari TensorFlow diadopsi. \texttt{TFRecord} adalah format biner sederhana yang dirancang untuk menyimpan sekuens data. Format ini memungkinkan data untuk dibaca secara efisien, mendukung paralelisasi, dan dapat diintegrasikan dengan mulus ke dalam pipeline \texttt{tf.data}, sehingga mengoptimalkan alur data dari penyimpanan ke unit pemrosesan.
+
+Dokumen ini menguraikan analisis dan desain dari pipeline pembuatan dataset \texttt{TFRecord} yang diimplementasikan dalam skrip \texttt{create\_tfrecord\_fixed.py}. Tujuannya adalah untuk mengonversi dataset gambar baris teks dan label transkripsinya menjadi satu file \texttt{TFRecord} yang terstruktur, terstandarisasi, dan siap pakai untuk melatih model HTR.
+
+\section{Desain Pipeline}
+
+Pipeline konversi data dirancang sebagai proses sekuensial yang sistematis, dimulai dari pemuatan data mentah hingga serialisasi ke dalam format \texttt{TFRecord}.
+
+\subsection{Input Pipeline}
+Pipeline ini memerlukan tiga jenis input utama:
+\begin{enumerate}
+    \item \textbf{Direktori Gambar (\texttt{images\_dir}):} Sebuah direktori yang berisi file-file gambar baris teks dalam format yang dapat dibaca oleh library Pillow (misalnya, PNG, JPG). Setiap gambar merepresentasikan satu sampel data.
+    \item \textbf{File Label (\texttt{labels\_file}):} Sebuah file teks (\texttt{.txt}) di mana setiap baris berisi nama file gambar dan transkripsi teksnya, dipisahkan oleh spasi. Formatnya adalah: \texttt{<nama\_file> <teks\_transkripsi>}.
+    \item \textbf{File Charset (\texttt{charset}):} Sebuah file teks yang mendefinisikan kosakata karakter yang akan dikenali oleh model. Setiap baris berisi satu karakter. Karakter yang tidak ada dalam daftar ini akan dipetakan ke token "tidak diketahui" (unknown).
+\end{enumerate}
+
+\subsection{Tahapan Pemrosesan}
+Setiap pasangan gambar dan label dari input diproses melalui serangkaian langkah berikut sebelum ditulis ke file \texttt{TFRecord}.
+
+\subsubsection{Pemuatan Charset dan Pemetaan Karakter}
+Langkah pertama adalah membangun mekanisme untuk mengonversi label teks (string) menjadi sekuens numerik (integer).
+\begin{itemize}
+    \item \textbf{Mekanisme:} Sebuah \texttt{tf.lookup.StaticHashTable} dibuat. Tabel ini memetakan setiap karakter dari file charset ke sebuah ID integer unik, dimulai dari 1.
+    \item \textbf{Penanganan Karakter Tidak Dikenal:} Nilai \textit{default} (0) ditetapkan untuk setiap karakter yang tidak ditemukan dalam charset. Ini memastikan bahwa model dapat menangani karakter di luar kosakata tanpa menyebabkan error.
+\end{itemize}
+
+\subsubsection{Pra-pemrosesan Gambar}
+Setiap gambar menjalani serangkaian transformasi untuk standardisasi dan normalisasi.
+\begin{enumerate}
+    \item \textbf{Konversi Grayscale:} Gambar dibuka dan dikonversi ke mode \textit{grayscale} ('L') untuk menyederhanakan data dan mengurangi kompleksitas komputasi.
+    \item \textbf{Pengubahan Ukuran (Resizing):} Ukuran setiap gambar diubah secara seragam menjadi dimensi target (misalnya, 1024x128 piksel) menggunakan metode interpolasi \texttt{LANCZOS} untuk menjaga kualitas visual.
+    \item \textbf{Normalisasi Nilai Piksel:} Gambar dikonversi menjadi array NumPy dengan tipe data \texttt{float32}, dan nilai pikselnya dinormalisasi ke rentang [0.0, 1.0] dengan membaginya dengan 255.0.
+    \item \textbf{Penambahan Dimensi Channel (FIX):} Ini adalah perbaikan krusial. Sebuah dimensi channel ditambahkan secara eksplisit di akhir array gambar (\texttt{np.expand\_dims(img, axis=-1)}). Ini mengubah shape dari (H, W) menjadi (H, W, 1), sesuai dengan format input yang diharapkan oleh lapisan konvolusi TensorFlow.
+\end{enumerate}
+
+\subsubsection{Pra-pemrosesan Label}
+Label teks juga diproses untuk mengubahnya menjadi format tensor.
+\begin{enumerate}
+    \item \textbf{Pemisahan Karakter:} String teks dipecah menjadi sekuens karakter individual menggunakan \texttt{tf.strings.unicode\_split} untuk menangani karakter Unicode dengan benar.
+    \item \textbf{Konversi Numerik:} \texttt{StaticHashTable} yang telah dibuat sebelumnya digunakan untuk memetakan setiap karakter dalam sekuens ke ID numeriknya, menghasilkan sebuah tensor integer.
+\end{enumerate}
+
+\subsection{Struktur Data dan Serialisasi}
+Setelah diproses, data gambar dan label siap untuk diserialisasi.
+
+\subsubsection{Struktur Fitur \texttt{tf.train.Example}}
+Setiap sampel data (pasangan gambar-label) dikemas dalam sebuah proto \texttt{tf.train.Example}. Struktur fitur yang digunakan adalah sebagai berikut:
+\begin{itemize}
+    \item \textbf{\texttt{'image'}:} Berisi tensor gambar yang telah diproses dan kemudian diserialisasi menjadi string byte menggunakan \texttt{tf.io.serialize\_tensor}.
+    \item \textbf{\texttt{'label'}:} Berisi tensor label numerik yang juga diserialisasi menjadi string byte.
+\end{itemize}
+
+Penggunaan \texttt{tf.io.serialize\_tensor} merupakan pilihan desain yang modern dan fleksibel. Metode ini secara otomatis menyimpan informasi tipe data (\textit{dtype}) dan bentuk (\textit{shape}) dari tensor asli, sehingga proses deserialisasi (parsing) di sisi training menjadi lebih sederhana dan tidak rawan kesalahan.
+
+\begin{lstlisting}[language=Python, caption={Contoh fungsi serialisasi dalam skrip.}, label=lst:serialize]
+def serialize_example(image, label):
+    feature = {
+        'image': _bytes_feature(tf.io.serialize_tensor(image)),
+        'label': _bytes_feature(tf.io.serialize_tensor(label)),
+    }
+    example_proto = tf.train.Example(
+        features=tf.train.Features(feature=feature)
+    )
+    return example_proto.SerializeToString()
+\end{lstlisting}
+
+\subsubsection{Penulisan ke File}
+Objek \texttt{tf.io.TFRecordWriter} digunakan untuk menulis setiap proto \texttt{tf.train.Example} yang telah diserialisasi ke dalam satu file output biner. Proses ini dilakukan secara iteratif untuk semua sampel data yang valid. Skrip juga menyertakan penanganan error untuk melewati file gambar yang tidak ditemukan atau data yang korup, sehingga memastikan integritas dataset final.
+
+\section{Desain Fungsi Parsing (Sisi Training)}
+
+Sebagai pelengkap dari proses pembuatan, fungsi parsing di sisi training dirancang untuk membaca dan merekonstruksi data dari file \texttt{TFRecord}.
+
+\begin{lstlisting}[language=Python, caption={Contoh fungsi parsing untuk membaca TFRecord.}, label=lst:parse]
+def _parse_function(example_proto):
+    feature_description = {
+        'image': tf.io.FixedLenFeature([], tf.string),
+        'label': tf.io.FixedLenFeature([], tf.string),
+    }
+    example = tf.io.parse_single_example(
+        example_proto, feature_description
+    )
+    
+    image = tf.io.parse_tensor(example['image'], out_type=tf.float32)
+    label = tf.io.parse_tensor(example['label'], out_type=tf.int64)
+    
+    # Set shape jika diperlukan untuk optimasi graph
+    image.set_shape([128, 1024, 1])
+    
+    return image, label
+\end{lstlisting}
+
+Fungsi ini membaca string byte dari fitur \texttt{'image'} dan \texttt{'label'}, lalu menggunakan \texttt{tf.io.parse\_tensor} untuk merekonstruksinya kembali menjadi tensor dengan tipe data dan bentuk aslinya. Ini menunjukkan keunggulan dari metode serialisasi yang dipilih.
+
+\section{Kesimpulan}
+
+Pipeline yang diimplementasikan dalam \texttt{create\_tfrecord\_fixed.py} secara efektif mengubah dataset gambar dan teks mentah menjadi sebuah file \texttt{TFRecord} tunggal yang terstruktur dan efisien. Desain ini memberikan beberapa keuntungan kunci:
+\begin{itemize}
+    \item \textbf{Efisiensi I/O:} Mengurangi waktu pemuatan data secara drastis selama training.
+    \item \textbf{Standardisasi Data:} Memastikan semua gambar dan label memiliki format, ukuran, dan normalisasi yang konsisten.
+    \item \textbf{Integritas Data:} Penggunaan \texttt{tf.io.serialize\_tensor} menjaga keutuhan tipe data dan bentuk tensor, menyederhanakan proses parsing.
+    \item \textbf{Robustness:} Penanganan error memastikan bahwa hanya data yang valid yang disertakan dalam dataset final.
+\end{itemize}
+
+Dengan demikian, pipeline ini menyediakan fondasi data yang solid dan andal untuk melatih model HTR dengan performa optimal.
+
+\end{document}

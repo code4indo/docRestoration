@@ -1,0 +1,64 @@
+digraph HighLevelConceptual {
+    rankdir=TB; // Top-to-bottom layout
+    splines=ortho;
+    fontname="Helvetica";
+    label="Alur Logika Konseptual: Umpan Balik Gabungan ke Generator";
+    fontsize=20;
+    nodesep=0.8;
+    ranksep=1.0;
+
+    node [style="filled,rounded", shape=box, fontname="Helvetica", penwidth=2, margin="0.25,0.15"];
+    edge [penwidth=1.5, fontname="Helvetica", fontsize=11];
+
+    // --- Main Components ---
+    subgraph cluster_main_components {
+        label="Komponen Utama";
+        style="filled";
+        fillcolor="#E9F5F9";
+        generator [label="Generator\n(Belajar Merestorasi)", fillcolor="#A8DADC"];
+        discriminator [label="Diskriminator Cerdas", fillcolor="#F19C79"];
+        recognizer [label="Pakar HTR (Beku)", fillcolor="#B5E48C"];
+    }
+
+    // --- Data Nodes ---
+    input_degraded [label="Input:\nGambar Rusak", shape=ellipse, fillcolor="#FFF3B0"];
+    output_restored [label="Output:\nGambar Restorasi", shape=ellipse, fillcolor="#FFD166"];
+    gt_data [label="Input:\nData Ground Truth\n(Gbr. Bersih & Teks Asli)", shape=cylinder, fillcolor="#FEFEE3", margin="0.3,0.2"];
+
+    // --- Loss Nodes ---
+    subgraph cluster_losses {
+        label = "Komponen-Komponen Loss Individual";
+        style="dashed,rounded";
+        l1_loss [label="L1 Loss\n(Visual)", shape=note, fillcolor="#D4A5A5"];
+        ctc_loss [label="CTC Loss\n(Keterbacaan)", shape=note, fillcolor="#D4A5A5"];
+        adv_loss [label="Adv. Loss\n(Koherensi)", shape=note, fillcolor="#D4A5A5"];
+    }
+
+    // --- Composite Loss Node (The "How") ---
+    composite_loss [label="Loss Gabungan Generator\n(L1 + CTC + Adv)", shape=doublecircle, style=filled, fillcolor="#DDA0DD", penwidth=3];
+
+    // --- Main Process Flow ---
+    input_degraded -> generator;
+    generator -> output_restored;
+    output_restored -> recognizer [label=" 'dibaca' oleh"];
+    output_restored -> discriminator [label=" dinilai oleh"];
+    gt_data -> discriminator [style=dotted, label=" referensi"];
+
+    // --- Flow to Individual Losses ---
+    recognizer -> ctc_loss;
+    gt_data -> ctc_loss [style=dotted];
+
+    output_restored -> l1_loss;
+    gt_data -> l1_loss [style=dotted];
+
+    discriminator -> adv_loss;
+
+    // --- Flow to Composite Loss ---
+    l1_loss -> composite_loss [style=dashed, color=gray];
+    ctc_loss -> composite_loss [style=dashed, color=gray];
+    adv_loss -> composite_loss [style=dashed, color=gray];
+
+    // --- THE KEY FEEDBACK LOOP ---
+    composite_loss -> generator [style="dotted, bold", color=orange, penwidth=4, dir=back, label=" UMPAN BALIK UTAMA\n(Pembaruan Bobot via Gradien)"];
+
+}

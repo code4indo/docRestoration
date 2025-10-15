@@ -1,0 +1,82 @@
+digraph G {
+    // --- Graph Attributes ---
+    rankdir="LR";
+    splines=ortho;    // Use orthogonal lines as requested
+    nodesep=1.0;      // Increased space between nodes
+    ranksep=2.0;      // Increased space between ranks (layers)
+    fontname="Helvetica";
+    label="Diagram Arsitektur GAN-HTR (Logika Akurat)";
+    fontsize=20;
+
+    // --- Node Definitions ---
+    node [style=filled, shape=box, fontname="Helvetica"];
+
+    subgraph cluster_input {
+        label = "Input Data";
+        style="filled,rounded";
+        fillcolor="#FEFEE3";
+        degraded [label="Gambar Rusak", shape=ellipse, fillcolor="#FFF3B0"];
+        clean [label="Gambar Bersih\n(Ground Truth)", shape=ellipse, fillcolor="#FFF3B0"];
+        gt_text [label="Teks Asli\n(Ground Truth)", shape=ellipse, fillcolor="#FFF3B0"];
+    }
+
+    subgraph cluster_models {
+        label = "Komponen Model";
+        style="filled,rounded";
+        fillcolor="#E9F5F9";
+        generator [label="Generator G", style="filled,rounded", fillcolor="#A8DADC"];
+        recognizer [label="Recognizer R\n[Frozen]", style="filled,rounded", fillcolor="#B5E48C"];
+        discriminator [label="Diskriminator D", style="filled,rounded", fillcolor="#F19C79"];
+    }
+
+    subgraph cluster_outputs {
+        label = "Output Internal";
+        style="filled,rounded";
+        fillcolor="#FEF9E7";
+        restored [label="Gambar Restorasi", shape=ellipse, fillcolor="#FFD166"];
+        pred_text [label="Teks Prediksi\n(dari Gbr. Restorasi)", shape=ellipse, fillcolor="#FFD166"];
+        clean_pred_text [label="Teks Prediksi\n(dari Gbr. Bersih)", shape=ellipse, fillcolor="#FFD166"];
+    }
+
+    subgraph cluster_loss {
+        label = "Komponen Loss";
+        style="filled,rounded";
+        fillcolor="#F4ECF7";
+        l1_loss [label="L1 Loss", shape=diamond, fillcolor="#D4A5A5"];
+        ctc_loss [label="CTC Loss", shape=diamond, fillcolor="#D4A5A5"];
+        adv_loss [label="Adversarial\nLoss", shape=diamond, fillcolor="#D4A5A5"];
+    }
+
+
+    // --- Edge Definitions ---
+    edge [fontname="Helvetica", fontsize=12, penwidth=2.0]; // Increased global edge thickness
+
+    // Main Forward Path (Generator) - Dark Blue, Solid, Bold
+    degraded -> generator [style=bold, color="#1D3557"];
+    generator -> restored [style=bold, color="#1D3557"];
+    
+    // Recognizer Paths - Lighter Blue, Solid
+    restored -> recognizer [color="#457B9D"];
+    recognizer -> pred_text [color="#457B9D"];
+    clean -> recognizer [color="#457B9D", constraint=false];
+    recognizer -> clean_pred_text [color="#457B9D"];
+
+    // Loss Calculation Paths - Red, Dashed
+    restored -> l1_loss [label="  Visual", color="#E63946", style=dashed];
+    clean -> l1_loss [color="#E63946", style=dashed];
+    pred_text -> ctc_loss [label="  Keterbacaan", color="#E63946", style=dashed];
+    gt_text -> ctc_loss [color="#E63946", style=dashed];
+    discriminator -> adv_loss [color="#E63946", style=dashed];
+
+    // Discriminator Input Paths - Colors match their source
+    restored -> discriminator [label="  Fake Img", fontcolor="#1D3557", color="#1D3557", style=bold, constraint=false];
+    clean -> discriminator [label="  Real Img", fontcolor="#1D3557", color="#1D3557", style=bold];
+    pred_text -> discriminator [label="  Fake Txt", fontcolor="#457B9D", color="#457B9D", constraint=false];
+    clean_pred_text -> discriminator [label="  Real Txt", fontcolor="#457B9D", color="#457B9D"];
+
+    // Feedback Paths (Gradient Flow) - Orange, Dotted, Thick
+    l1_loss -> generator [style=dotted, color=orange, arrowhead=normal, dir=back, constraint=false, penwidth=3.0];
+    ctc_loss -> generator [style=dotted, color=orange, arrowhead=normal, dir=back, constraint=false, penwidth=3.0];
+    adv_loss -> generator [style=dotted, color=orange, arrowhead=normal, dir=back, constraint=false, penwidth=3.0];
+
+}
