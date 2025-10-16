@@ -690,6 +690,8 @@ def main(args):
             training_history["epochs"].append(epoch_metrics)
             
             # Save metrics to JSON after each epoch (incremental save)
+            # Ensure metrics directory exists (may not exist after checkpoint restore)
+            os.makedirs(metrics_dir, exist_ok=True)
             metrics_file = os.path.join(metrics_dir, "training_metrics_fp32.json")
             with open(metrics_file, 'w') as f:
                 json.dump(training_history, f, indent=2)
@@ -703,6 +705,8 @@ def main(args):
         training_history["final_patience_counter"] = patience_counter
         
         # Save final metrics
+        # Ensure metrics directory exists (may not exist after checkpoint restore)
+        os.makedirs(metrics_dir, exist_ok=True)
         final_metrics_file = os.path.join(metrics_dir, "training_metrics_fp32_final.json")
         with open(final_metrics_file, 'w') as f:
             json.dump(training_history, f, indent=2)

@@ -1,0 +1,264 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "category": "documentation",
+      "id": "README.md"
+    },
+    {
+      "category": "documentation",
+      "id": "MANIFEST.md"
+    },
+    {
+      "category": "documentation",
+      "id": "QUICKSTART.md"
+    },
+    {
+      "category": "documentation",
+      "id": ".github/copilot-instructions.md"
+    },
+    {
+      "category": "documentation",
+      "id": "logbook/20251016_bugfix_nan_loss_lr_alpha_zero.md"
+    },
+    {
+      "category": "documentation",
+      "id": "logbook/20251016_solution1_lr_scheduling_smoke_test.md"
+    },
+    {
+      "category": "documentation",
+      "id": "logbook/20251016_experiment2b_analysis_vs_contingency_plan.md"
+    },
+    {
+      "category": "documentation",
+      "id": "logbook/20251015_experiment_2b_full_unlimited_training.md"
+    },
+    {
+      "category": "documentation",
+      "id": "logbook/TEMPLATE_logbook.md"
+    },
+    {
+      "category": "documentation",
+      "id": "logbook/LOGBOOK_STANDARDS.md"
+    },
+    {
+      "category": "documentation",
+      "id": "catatan/RENCANA_KONTINGENSI_POST_EXPERIMENT1.md"
+    },
+    {
+      "category": "documentation",
+      "id": "catatan/implementasiNovelty.md"
+    },
+    {
+      "category": "documentation",
+      "id": "catatan/StrategiOptimalisasi.md"
+    },
+    {
+      "category": "script",
+      "id": "scripts/train32_solution1_smoke_test_FIXED.sh"
+    },
+    {
+      "category": "script",
+      "id": "scripts/train32_solution1_smoke_test.sh"
+    },
+    {
+      "category": "script",
+      "id": "scripts/monitor_solution1_smoke.sh"
+    },
+    {
+      "category": "script",
+      "id": "scripts/analyze_solution1_results.sh"
+    },
+    {
+      "category": "script",
+      "id": "scripts/train32_continue.sh"
+    },
+    {
+      "category": "script",
+      "id": "quick_start_training.sh"
+    },
+    {
+      "category": "core_module",
+      "id": "dual_modal_gan/scripts/train32.py"
+    },
+    {
+      "category": "core_module",
+      "id": "dual_modal_gan/src/models/generator.py"
+    },
+    {
+      "category": "core_module",
+      "id": "dual_modal_gan/src/models/discriminator.py"
+    },
+    {
+      "category": "core_module",
+      "id": "dual_modal_gan/src/losses/dual_modal_loss.py"
+    },
+    {
+      "category": "core_module",
+      "id": "dual_modal_gan/data/prepare_dataset.py"
+    },
+    {
+      "category": "data",
+      "id": "dual_modal_gan/data/dataset_gan.tfrecord"
+    },
+    {
+      "category": "data",
+      "id": "real_data_preparation/real_data_charlist.txt"
+    },
+    {
+      "category": "data",
+      "id": "models/best_htr_recognizer/best_model.weights.h5"
+    },
+    {
+      "category": "data",
+      "id": "dual_modal_gan/checkpoints/solution1_smoke_fixed/"
+    },
+    {
+      "category": "config",
+      "id": "pyproject.toml"
+    },
+    {
+      "category": "config",
+      "id": "entrypoint.sh"
+    }
+  ],
+  "links": [
+    {
+      "edge_type": "REFERENCES",
+      "source": "README.md",
+      "target": "QUICKSTART.md"
+    },
+    {
+      "edge_type": "REFERENCES",
+      "source": "README.md",
+      "target": "pyproject.toml"
+    },
+    {
+      "edge_type": "REFERENCES",
+      "source": "MANIFEST.md",
+      "target": "logbook/LOGBOOK_STANDARDS.md"
+    },
+    {
+      "edge_type": "REFERENCES",
+      "source": "QUICKSTART.md",
+      "target": "quick_start_training.sh"
+    },
+    {
+      "edge_type": "REFERENCES",
+      "source": ".github/copilot-instructions.md",
+      "target": "MANIFEST.md"
+    },
+    {
+      "edge_type": "GENERATES",
+      "source": "logbook/20251016_bugfix_nan_loss_lr_alpha_zero.md",
+      "target": "scripts/train32_solution1_smoke_test_FIXED.sh"
+    },
+    {
+      "edge_type": "REFERENCES",
+      "source": "logbook/20251016_solution1_lr_scheduling_smoke_test.md",
+      "target": "logbook/20251016_bugfix_nan_loss_lr_alpha_zero.md"
+    },
+    {
+      "edge_type": "GENERATES",
+      "source": "logbook/20251016_experiment2b_analysis_vs_contingency_plan.md",
+      "target": "scripts/train32_solution1_smoke_test.sh"
+    },
+    {
+      "edge_type": "REFERENCES",
+      "source": "logbook/LOGBOOK_STANDARDS.md",
+      "target": "logbook/TEMPLATE_logbook.md"
+    },
+    {
+      "edge_type": "REFERENCES",
+      "source": "catatan/RENCANA_KONTINGENSI_POST_EXPERIMENT1.md",
+      "target": "logbook/20251016_experiment2b_analysis_vs_contingency_plan.md"
+    },
+    {
+      "edge_type": "DEPENDS_ON",
+      "source": "scripts/train32_solution1_smoke_test_FIXED.sh",
+      "target": "dual_modal_gan/scripts/train32.py"
+    },
+    {
+      "edge_type": "GENERATES",
+      "source": "scripts/train32_solution1_smoke_test.sh",
+      "target": "logbook/20251016_solution1_lr_scheduling_smoke_test.md"
+    },
+    {
+      "edge_type": "DEPENDS_ON",
+      "source": "scripts/train32_solution1_smoke_test.sh",
+      "target": "dual_modal_gan/scripts/train32.py"
+    },
+    {
+      "edge_type": "RELATED_TO",
+      "source": "scripts/monitor_solution1_smoke.sh",
+      "target": "scripts/train32_solution1_smoke_test_FIXED.sh"
+    },
+    {
+      "edge_type": "RELATED_TO",
+      "source": "scripts/analyze_solution1_results.sh",
+      "target": "scripts/monitor_solution1_smoke.sh"
+    },
+    {
+      "edge_type": "DEPENDS_ON",
+      "source": "scripts/train32_continue.sh",
+      "target": "dual_modal_gan/scripts/train32.py"
+    },
+    {
+      "edge_type": "DEPENDS_ON",
+      "source": "quick_start_training.sh",
+      "target": "dual_modal_gan/scripts/train32.py"
+    },
+    {
+      "edge_type": "DEPENDS_ON",
+      "source": "dual_modal_gan/scripts/train32.py",
+      "target": "dual_modal_gan/src/models/generator.py"
+    },
+    {
+      "edge_type": "DEPENDS_ON",
+      "source": "dual_modal_gan/scripts/train32.py",
+      "target": "dual_modal_gan/src/models/discriminator.py"
+    },
+    {
+      "edge_type": "DEPENDS_ON",
+      "source": "dual_modal_gan/scripts/train32.py",
+      "target": "dual_modal_gan/src/losses/dual_modal_loss.py"
+    },
+    {
+      "edge_type": "DEPENDS_ON",
+      "source": "dual_modal_gan/scripts/train32.py",
+      "target": "dual_modal_gan/data/prepare_dataset.py"
+    },
+    {
+      "edge_type": "DEPENDS_ON",
+      "source": "dual_modal_gan/scripts/train32.py",
+      "target": "dual_modal_gan/data/dataset_gan.tfrecord"
+    },
+    {
+      "edge_type": "DEPENDS_ON",
+      "source": "dual_modal_gan/scripts/train32.py",
+      "target": "models/best_htr_recognizer/best_model.weights.h5"
+    },
+    {
+      "edge_type": "GENERATES",
+      "source": "dual_modal_gan/scripts/train32.py",
+      "target": "dual_modal_gan/checkpoints/solution1_smoke_fixed/"
+    },
+    {
+      "edge_type": "GENERATES",
+      "source": "dual_modal_gan/data/prepare_dataset.py",
+      "target": "dual_modal_gan/data/dataset_gan.tfrecord"
+    },
+    {
+      "edge_type": "DEPENDS_ON",
+      "source": "dual_modal_gan/data/prepare_dataset.py",
+      "target": "real_data_preparation/real_data_charlist.txt"
+    },
+    {
+      "edge_type": "RELATED_TO",
+      "source": "pyproject.toml",
+      "target": "dual_modal_gan/scripts/train32.py"
+    }
+  ]
+}
