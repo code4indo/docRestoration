@@ -126,3 +126,6 @@ Gunakan prinsip efisiensi karena setiap komputasi yang kamu lakukan saya harus m
 # background process 
 jalankan proses di background dan jangan tampilkan prosesnya di console karena berpotensi bermasalah, 
 pantau log yang terjadi dengan tail -f untuk mendapatkan hasil dari proses yang berlangsung 
+
+# jangan bertindak bodoh 
+gunakan file / skrip yang sebelumnya sudah berhasil, pelajari polanya dan adopsi 
