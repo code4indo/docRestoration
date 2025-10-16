@@ -55,6 +55,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.
 
 # Import models and utils
 from dual_modal_gan.src.models.generator import unet
+from dual_modal_gan.src.models.generator_enhanced import unet_enhanced
+from dual_modal_gan.src.models.generator_enhanced_v2 import unet_enhanced_v2
 from dual_modal_gan.src.models.recognizer import load_frozen_recognizer
 from dual_modal_gan.src.models.discriminator import build_dual_modal_discriminator
 
@@ -262,7 +264,21 @@ def main(args):
     with strategy.scope():
         print("\n[Phase 2/6] Building Models...")
         # Use (W, H, C) = (1024, 128, 1) to match HTR recognizer expectation
-        generator = unet(input_size=(1024, 128, 1))
+        
+        # --- Select Generator Architecture ---
+        if args.generator_version == 'enhanced':
+            print("   ✅ Using ENHANCED generator (U-Net with Residual Blocks and Attention)")
+            generator = unet_enhanced(input_size=(1024, 128, 1))
+            generator_name = "U-Net Enhanced (ResBlocks+Attention, 21.8M)"
+        elif args.generator_version == 'enhanced_v2':
+            print("   🚀 Using ENHANCED V2 generator (CBAM + RDB + Multi-Scale)")
+            generator = unet_enhanced_v2(input_size=(1024, 128, 1))
+            generator_name = "U-Net Enhanced V2 (CBAM+RDB+MSFP, 18.8M)"
+        else:
+            print("   ✅ Using BASE generator (Standard U-Net)")
+            generator = unet(input_size=(1024, 128, 1))
+            generator_name = "U-Net (30M params, no dropout)"
+        
         # Load recognizer with multi-output for Recognition Feature Loss
         use_rec_feat_loss = args.rec_feat_loss_weight > 0.0
         recognizer = load_frozen_recognizer(
@@ -460,7 +476,7 @@ def main(args):
             "optimizer_generator": f"Adam(lr={args.lr_g}, beta_1=0.5, clipnorm={args.gradient_clip_norm})",
             "optimizer_discriminator": f"SGD(lr={args.lr_d}, momentum=0.9, clipnorm={args.gradient_clip_norm})",
             "model_architecture": {
-                "generator": "U-Net (30M params, no dropout)",
+                "generator": generator_name,
                 "discriminator": "Dual-Modal (137M params)",
                 "recognizer": "Frozen HTR Stage 3 (50M params, CER 33.72%)"
             },
@@ -503,7 +519,7 @@ def main(args):
         mlflow.set_tags({
             "model_type": "Dual-Modal GAN-HTR",
             "precision": "Pure FP32",
-            "generator": "U-Net (30M params)",
+            "generator": generator_name,
             "discriminator": "Dual-Modal (137M params)",
             "recognizer": "Frozen HTR Stage 3 (CER 33.72%)",
             "optimized_for": "Balanced loss + CTC stability"
@@ -815,6 +831,7 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Train Dual-Modal GAN-HTR with Pure FP32 (OPTIMIZED)')
+    parser.add_argument('--generator_version', type=str, default='base', choices=['base', 'enhanced', 'enhanced_v2'], help='Version of the generator to use: base, enhanced, or enhanced_v2 (SOTA).')
     parser.add_argument('--tfrecord_path', type=str, default='dual_modal_gan/data/dataset_gan.tfrecord', help='Path to the training TFRecord file.')
     parser.add_argument('--charset_path', type=str, default='real_data_preparation/real_data_charlist.txt', help='Path to the character set file.')
     parser.add_argument('--recognizer_weights', type=str, default='models/best_htr_recognizer/best_model.weights.h5', help='Path to pre-trained recognizer weights (Stage 3, CER 33.72%).')

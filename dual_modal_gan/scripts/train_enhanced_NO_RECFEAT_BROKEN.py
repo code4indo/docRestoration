@@ -55,6 +55,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.
 
 # Import models and utils
 from dual_modal_gan.src.models.generator import unet
+from dual_modal_gan.src.models.generator_enhanced import unet_enhanced
 from dual_modal_gan.src.models.recognizer import load_frozen_recognizer
 from dual_modal_gan.src.models.discriminator import build_dual_modal_discriminator
 
@@ -167,7 +168,7 @@ def create_dataset(tfrecord_path, batch_size, val_split=0.1):
 
 # --- Main Training & Evaluation Logic ---
 def run_validation_step(val_dataset, generator, recognizer, charset, psnr_metric, ssim_metric, cer_metric, wer_metric):
-    """Run validation step with both visual (PSNR/SSIM) and textual (CER/WER) metrics.
+    """Run validation step with both visual (PSNR/SSIM) and textual (CER/WER) metrics. 
     
     Note: Cannot use @tf.function due to Python-based CER/WER calculation.
     """
@@ -183,18 +184,8 @@ def run_validation_step(val_dataset, generator, recognizer, charset, psnr_metric
         
         # Textual metrics: CER/WER
         # Get HTR predictions for clean (ground truth quality) and generated (enhanced) images
-        # Handle both single and multi-output recognizer
-        recognizer_output_clean = recognizer(clean_images, training=False)
-        recognizer_output_generated = recognizer(generated_images, training=False)
-        
-        # Extract logits (handle both tuple and single output)
-        if isinstance(recognizer_output_clean, (list, tuple)):
-            clean_logits = recognizer_output_clean[0]
-            generated_logits = recognizer_output_generated[0]
-        else:
-            clean_logits = recognizer_output_clean
-            generated_logits = recognizer_output_generated
-        
+        clean_logits = recognizer(clean_images, training=False)
+        generated_logits = recognizer(generated_images, training=True)        
         # Decode predictions using greedy decoding (argmax)
         clean_predictions = tf.argmax(clean_logits, axis=-1, output_type=tf.int32)
         generated_predictions = tf.argmax(generated_logits, axis=-1, output_type=tf.int32)
@@ -262,51 +253,32 @@ def main(args):
     with strategy.scope():
         print("\n[Phase 2/6] Building Models...")
         # Use (W, H, C) = (1024, 128, 1) to match HTR recognizer expectation
-        generator = unet(input_size=(1024, 128, 1))
-        # Load recognizer with multi-output for Recognition Feature Loss
-        use_rec_feat_loss = args.rec_feat_loss_weight > 0.0
-        recognizer = load_frozen_recognizer(
-            weights_path=args.recognizer_weights, 
-            charset_size=vocab_size - 1,
-            return_feature_map=use_rec_feat_loss
-        )
+        
+        # --- Select Generator Architecture ---
+        if args.generator_version == 'enhanced':
+            print("   ✅ Using ENHANCED generator (U-Net with Residual Blocks and Attention)")
+            generator = unet_enhanced(input_size=(1024, 128, 1))
+            generator_name = "U-Net Enhanced (ResBlocks+Attention)"
+        else:
+            print("   ✅ Using BASE generator (Standard U-Net)")
+            generator = unet(input_size=(1024, 128, 1))
+            generator_name = "U-Net (30M params, no dropout)"
+
+        recognizer = load_frozen_recognizer(weights_path=args.recognizer_weights, charset_size=vocab_size - 1)
         discriminator = build_dual_modal_discriminator(img_shape=(1024, 128, 1), vocab_size=vocab_size, max_text_len=128)
         print("All models built.")
+        generator.summary()
 
     with strategy.scope():
         print("\n[Phase 3/6] Setting up Optimizers and Checkpoints...")
         # ✅ Pure FP32 - NO LossScaleOptimizer wrapping
         # Add clipnorm to optimizers for gradient stability
+        generator_optimizer = tf.keras.optimizers.Adam(args.lr_g, beta_1=0.5, clipnorm=args.gradient_clip_norm)
+        # Use SGD for discriminator (saves memory, stable for adversarial training)
+        discriminator_optimizer = tf.keras.optimizers.SGD(learning_rate=args.lr_d, momentum=0.9, clipnorm=args.gradient_clip_norm)
         
-        # ✅ Solution 1: Cosine Annealing LR Schedule (if enabled)
-        if args.use_lr_schedule:
-            # Calculate decay steps: epochs * steps_per_epoch
-            # Use dataset size to estimate steps if steps_per_epoch=0 (unlimited)
-            decay_steps = args.lr_decay_epochs * (args.steps_per_epoch if args.steps_per_epoch > 0 else 2133)
-            
-            lr_schedule_g = tf.keras.optimizers.schedules.CosineDecay(
-                initial_learning_rate=args.lr_g,
-                decay_steps=decay_steps,
-                alpha=args.lr_alpha
-            )
-            lr_schedule_d = tf.keras.optimizers.schedules.CosineDecay(
-                initial_learning_rate=args.lr_d,
-                decay_steps=decay_steps,
-                alpha=args.lr_alpha
-            )
-            generator_optimizer = tf.keras.optimizers.Adam(lr_schedule_g, beta_1=0.5, clipnorm=args.gradient_clip_norm)
-            discriminator_optimizer = tf.keras.optimizers.SGD(learning_rate=lr_schedule_d, momentum=0.9, clipnorm=args.gradient_clip_norm)
-            
-            print(f"  🔄 Cosine LR Schedule ENABLED (Solution 1)")
-            print(f"     Initial LR (G/D): {args.lr_g}/{args.lr_d}")
-            print(f"     Decay steps: {decay_steps} ({args.lr_decay_epochs} epochs)")
-            print(f"     Alpha (min LR): {args.lr_alpha}")
-        else:
-            generator_optimizer = tf.keras.optimizers.Adam(args.lr_g, beta_1=0.5, clipnorm=args.gradient_clip_norm)
-            discriminator_optimizer = tf.keras.optimizers.SGD(learning_rate=args.lr_d, momentum=0.9, clipnorm=args.gradient_clip_norm)
-            
-            print(f"  Generator optimizer: Adam(lr={args.lr_g}, clipnorm={args.gradient_clip_norm}) [PURE FP32]")
-            print(f"  Discriminator optimizer: SGD(lr={args.lr_d}, momentum=0.9, clipnorm={args.gradient_clip_norm}) [PURE FP32]")
+        print(f"  Generator optimizer: Adam(lr={args.lr_g}, clipnorm={args.gradient_clip_norm}) [PURE FP32]")
+        print(f"  Discriminator optimizer: SGD(lr={args.lr_d}, momentum=0.9, clipnorm={args.gradient_clip_norm}) [PURE FP32]")
         
         checkpoint = tf.train.Checkpoint(generator_optimizer=generator_optimizer, discriminator_optimizer=discriminator_optimizer, generator=generator, discriminator=discriminator)
         ckpt_manager = tf.train.CheckpointManager(checkpoint, args.checkpoint_dir, max_to_keep=args.max_checkpoints)
@@ -322,38 +294,20 @@ def main(args):
     with strategy.scope():
         bce_loss_fn = tf.keras.losses.BinaryCrossentropy()
         mae_loss_fn = tf.keras.losses.MeanAbsoluteError()
-        mse_loss_fn = tf.keras.losses.MeanSquaredError()  # For Recognition Feature Loss
         val_psnr_metric = tf.keras.metrics.Mean(name='val_psnr')
         val_ssim_metric = tf.keras.metrics.Mean(name='val_ssim')
         val_cer_metric = tf.keras.metrics.Mean(name='val_cer')
         val_wer_metric = tf.keras.metrics.Mean(name='val_wer')
 
         @tf.function
-        def train_step(degraded_images, clean_images, ground_truth_text, ctc_weight, rec_feat_weight):
+        def train_step(degraded_images, clean_images, ground_truth_text, ctc_weight):
             real_labels_disc = tf.ones([args.batch_size, 1]) * 0.9
             fake_labels_disc = tf.zeros([args.batch_size, 1])
 
             with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
                 generated_images = generator(degraded_images, training=True)
-                
-                # Get recognizer outputs - handle both single and multi-output
-                recognizer_output_clean = recognizer(clean_images, training=False)
-                recognizer_output_generated = recognizer(generated_images, training=False)
-                
-                # Extract logits and feature maps (if available)
-                if isinstance(recognizer_output_clean, (list, tuple)):
-                    # Multi-output mode: (logits, feature_map)
-                    clean_logits = recognizer_output_clean[0]
-                    clean_feature_map = recognizer_output_clean[1]
-                    generated_logits = recognizer_output_generated[0]
-                    generated_feature_map = recognizer_output_generated[1]
-                else:
-                    # Single output mode: logits only
-                    clean_logits = recognizer_output_clean
-                    generated_logits = recognizer_output_generated
-                    # Create dummy feature maps with same shape for consistency
-                    clean_feature_map = tf.zeros([args.batch_size, 1], dtype=tf.float32)
-                    generated_feature_map = tf.zeros([args.batch_size, 1], dtype=tf.float32)
+                clean_logits = recognizer(clean_images, training=False)
+                generated_logits = recognizer(generated_images, training=True)
 
                 clean_text_pred = tf.argmax(clean_logits, axis=-1, output_type=tf.int32)
                 generated_text_pred = tf.argmax(generated_logits, axis=-1, output_type=tf.int32)
@@ -371,11 +325,6 @@ def main(args):
 
                 adversarial_loss = bce_loss_fn(real_labels_disc, fake_output)
                 pixel_loss = mae_loss_fn(clean_images, generated_images)
-                
-                # Recognition Feature Loss (HTR-aware loss from intermediate features)
-                # Always calculate but weight will control its contribution
-                rec_feat_loss = mse_loss_fn(clean_feature_map, generated_feature_map)
-                
                 # Always calculate CTC loss; its contribution is controlled by ctc_weight.
                 # This avoids conditional graph structures that break gradient flow in @tf.function.
                 label_len = tf.math.count_nonzero(ground_truth_text, axis=1, keepdims=True, dtype=tf.int32)
@@ -387,13 +336,7 @@ def main(args):
                 ctc_loss = tf.clip_by_value(ctc_loss_raw, 0.0, args.ctc_loss_clip_max)
 
                 # ✅ Pure FP32 - NO casting needed (already in FP32)
-                # Total Generator Loss with Recognition Feature Loss
-                total_gen_loss = (
-                    (args.adv_loss_weight * adversarial_loss) + 
-                    (args.pixel_loss_weight * pixel_loss) + 
-                    (rec_feat_weight * rec_feat_loss) +
-                    (ctc_weight * ctc_loss)
-                )
+                total_gen_loss = (args.adv_loss_weight * adversarial_loss) + (args.pixel_loss_weight * pixel_loss) + (ctc_weight * ctc_loss)
 
             generator_gradients = gen_tape.gradient(total_gen_loss, generator.trainable_variables)
             discriminator_gradients = disc_tape.gradient(total_disc_loss, discriminator.trainable_variables)
@@ -406,7 +349,7 @@ def main(args):
             generator_optimizer.apply_gradients(zip(generator_gradients, generator.trainable_variables))
             discriminator_optimizer.apply_gradients(zip(discriminator_gradients, discriminator.trainable_variables))
 
-            return total_gen_loss, total_disc_loss, adversarial_loss, pixel_loss, rec_feat_loss, ctc_loss, ctc_loss_raw, gen_grad_norm, disc_grad_norm
+            return total_gen_loss, total_disc_loss, adversarial_loss, pixel_loss, ctc_loss, ctc_loss_raw, gen_grad_norm, disc_grad_norm
 
     print("\n[Phase 4/6] Starting Training Loop...")
     dataset_iterator = iter(train_dataset)
@@ -460,7 +403,7 @@ def main(args):
             "optimizer_generator": f"Adam(lr={args.lr_g}, beta_1=0.5, clipnorm={args.gradient_clip_norm})",
             "optimizer_discriminator": f"SGD(lr={args.lr_d}, momentum=0.9, clipnorm={args.gradient_clip_norm})",
             "model_architecture": {
-                "generator": "U-Net (30M params, no dropout)",
+                "generator": generator_name,
                 "discriminator": "Dual-Modal (137M params)",
                 "recognizer": "Frozen HTR Stage 3 (50M params, CER 33.72%)"
             },
@@ -484,10 +427,8 @@ def main(args):
             "lr_generator": args.lr_g,
             "lr_discriminator": args.lr_d,
             "pixel_loss_weight": args.pixel_loss_weight,
-            "rec_feat_loss_weight": args.rec_feat_loss_weight,
             "ctc_loss_weight": args.ctc_loss_weight,
             "adv_loss_weight": args.adv_loss_weight,
-            "contrastive_loss_weight": args.contrastive_loss_weight,
             "discriminator_mode": args.discriminator_mode,
             "gradient_clip_norm": args.gradient_clip_norm,
             "ctc_loss_clip_max": args.ctc_loss_clip_max,
@@ -503,7 +444,7 @@ def main(args):
         mlflow.set_tags({
             "model_type": "Dual-Modal GAN-HTR",
             "precision": "Pure FP32",
-            "generator": "U-Net (30M params)",
+            "generator": generator_name,
             "discriminator": "Dual-Modal (137M params)",
             "recognizer": "Frozen HTR Stage 3 (CER 33.72%)",
             "optimized_for": "Balanced loss + CTC stability"
@@ -548,29 +489,22 @@ def main(args):
                 "epoch": epoch + 1,
                 "phase": "warmup" if is_warmup else "annealing" if is_annealing else "full_training",
                 "current_ctc_weight": current_ctc_weight,
-                "current_rec_feat_weight": args.rec_feat_loss_weight,
                 "losses": {
                     "g_loss": [], "d_loss": [], "adv_loss": [], "pixel_loss": [],
-                    "rec_feat_loss": [], "ctc_loss": [], "ctc_loss_raw": [], 
-                    "g_grad_norm": [], "d_grad_norm": []
+                    "ctc_loss": [], "ctc_loss_raw": [], "g_grad_norm": [], "d_grad_norm": []
                 }
             }
             
             pbar = tqdm(range(steps_per_epoch), desc=f"Epoch {epoch+1}")
             for step in pbar:
                 degraded_batch, clean_batch, text_batch = next(dataset_iterator)
-                g_loss, d_loss, adv_loss, pix_loss, rec_feat_loss, ctc_loss, ctc_loss_raw, g_grad_norm, d_grad_norm = train_step(
-                    degraded_batch, clean_batch, text_batch, 
-                    tf.constant(current_ctc_weight, dtype=tf.float32),
-                    tf.constant(args.rec_feat_loss_weight, dtype=tf.float32)
-                )
+                g_loss, d_loss, adv_loss, pix_loss, ctc_loss, ctc_loss_raw, g_grad_norm, d_grad_norm = train_step(degraded_batch, clean_batch, text_batch, tf.constant(current_ctc_weight, dtype=tf.float32))
                 
                 # Collect metrics
                 epoch_metrics["losses"]["g_loss"].append(float(g_loss.numpy()))
                 epoch_metrics["losses"]["d_loss"].append(float(d_loss.numpy()))
                 epoch_metrics["losses"]["adv_loss"].append(float(adv_loss.numpy()))
                 epoch_metrics["losses"]["pixel_loss"].append(float(pix_loss.numpy()))
-                epoch_metrics["losses"]["rec_feat_loss"].append(float(rec_feat_loss.numpy()))
                 epoch_metrics["losses"]["ctc_loss"].append(float(ctc_loss.numpy()))
                 if current_ctc_weight > 0:
                     epoch_metrics["losses"]["ctc_loss_raw"].append(float(ctc_loss_raw.numpy()))
@@ -580,15 +514,13 @@ def main(args):
                 if (step + 1) % 50 == 0:
                     pbar.set_postfix({
                         'G': f'{g_loss:.4f}', 'D': f'{d_loss:.4f}', 'Adv': f'{adv_loss:.4f}', 
-                        'Pix': f'{pix_loss:.4f}', 'RecFeat': f'{rec_feat_loss:.4f}',
-                        'CTC': f'{ctc_loss:.2f}', 'CTC_w': f'{current_ctc_weight:.2f}'
+                        'Pix': f'{pix_loss:.4f}', 'CTC': f'{ctc_loss:.2f}', 'CTC_w': f'{current_ctc_weight:.2f}'
                     })
 
             # Calculate epoch statistics
             epoch_metrics["training_losses"] = {
                 "total_loss": float(np.mean(epoch_metrics["losses"]["g_loss"])),
                 "pixel_loss": float(np.mean(epoch_metrics["losses"]["pixel_loss"])),
-                "rec_feat_loss": float(np.mean(epoch_metrics["losses"]["rec_feat_loss"])),
                 "ctc_loss": float(np.mean(epoch_metrics["losses"]["ctc_loss"])),
                 "adv_loss": float(np.mean(epoch_metrics["losses"]["adv_loss"])),
                 "ctc_loss_raw": float(np.mean(epoch_metrics["losses"]["ctc_loss_raw"])) if epoch_metrics["losses"]["ctc_loss_raw"] else 0.0,
@@ -606,7 +538,6 @@ def main(args):
                 "train/d_loss": float(np.mean(epoch_metrics["losses"]["d_loss"])),
                 "train/adv_loss": epoch_metrics["training_losses"]["adv_loss"],
                 "train/pixel_loss": epoch_metrics["training_losses"]["pixel_loss"],
-                "train/rec_feat_loss": epoch_metrics["training_losses"]["rec_feat_loss"],
                 "train/ctc_loss": epoch_metrics["training_losses"]["ctc_loss"],
                 "train/ctc_loss_raw": epoch_metrics["training_losses"]["ctc_loss_raw"],
                 "train/g_grad_norm_mean": epoch_metrics["training_losses"]["gradient_norm"]["generator_mean"],
@@ -815,6 +746,7 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Train Dual-Modal GAN-HTR with Pure FP32 (OPTIMIZED)')
+    parser.add_argument('--generator_version', type=str, default='base', choices=['base', 'enhanced'], help='Version of the generator to use: base or enhanced.')
     parser.add_argument('--tfrecord_path', type=str, default='dual_modal_gan/data/dataset_gan.tfrecord', help='Path to the training TFRecord file.')
     parser.add_argument('--charset_path', type=str, default='real_data_preparation/real_data_charlist.txt', help='Path to the character set file.')
     parser.add_argument('--recognizer_weights', type=str, default='models/best_htr_recognizer/best_model.weights.h5', help='Path to pre-trained recognizer weights (Stage 3, CER 33.72%).')
@@ -828,14 +760,9 @@ if __name__ == '__main__':
     parser.add_argument('--batch_size', type=int, default=4, help='Batch size per replica.')
     parser.add_argument('--lr_g', type=float, default=2e-4, help='Generator learning rate.')
     parser.add_argument('--lr_d', type=float, default=2e-4, help='Discriminator learning rate.')
-    parser.add_argument('--use_lr_schedule', action='store_true', help='Enable cosine annealing LR schedule (Solution 1).')
-    parser.add_argument('--lr_decay_epochs', type=int, default=50, help='Number of epochs for LR cosine decay (default: 50).')
-    parser.add_argument('--lr_alpha', type=float, default=0.0, help='Minimum learning rate as fraction of initial LR (0.0 = decay to zero).')
     parser.add_argument('--pixel_loss_weight', type=float, default=100.0, help='Weight for the L1 pixel loss.')
-    parser.add_argument('--ctc_loss_weight', type=float, default=1.0, help='Weight for the HTR CTC loss (monitoring only, not backpropagated).')
+    parser.add_argument('--ctc_loss_weight', type=float, default=1.0, help='Weight for the HTR CTC loss.')
     parser.add_argument('--adv_loss_weight', type=float, default=2.0, help='Weight for the adversarial loss.')
-    parser.add_argument('--rec_feat_loss_weight', type=float, default=0.0, help='Weight for the Recognition Feature Loss (HTR-aware).')
-    parser.add_argument('--contrastive_loss_weight', type=float, default=0.0, help='Weight for the Contrastive Loss.')
     parser.add_argument('--gradient_clip_norm', type=float, default=1.0, help='Gradient clipping norm to prevent explosion.')
     parser.add_argument('--ctc_loss_clip_max', type=float, default=300.0, help='Maximum value for CTC loss clipping.')
     parser.add_argument('--warmup_epochs', type=int, default=10, help='Number of epochs for visual warm-up (CTC loss is disabled).')

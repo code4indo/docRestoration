@@ -116,8 +116,7 @@ def create_htr_model(charset_size, proj_dim=512, target_time_steps=128,
 
 def load_frozen_recognizer(weights_path, charset_size, 
                           num_transformer_layers=NUM_TRANSFORMER_LAYERS,
-                          dropout_rate=DROPOUT_RATE,
-                          return_feature_map=False):
+                          dropout_rate=DROPOUT_RATE):
     """Loads the HTR model, applies pre-trained weights, and freezes it.
     
     Args:
@@ -125,11 +124,6 @@ def load_frozen_recognizer(weights_path, charset_size,
         charset_size: Number of characters (108 for our charset)
         num_transformer_layers: Number of transformer layers (6 for Stage 3)
         dropout_rate: Dropout rate (0.20 for Stage 3)
-        return_feature_map: If True, returns multi-output model (logits, feature_map)
-    
-    Returns:
-        If return_feature_map=False: Model with single output (logits only)
-        If return_feature_map=True: Model with dual outputs (logits, feature_map)
     """
     print(f"[Recognizer] Creating HTR model for {charset_size} characters...")
     print(f"[Recognizer] Architecture: {num_transformer_layers} layers, {NUM_HEADS} heads, "
@@ -161,25 +155,6 @@ def load_frozen_recognizer(weights_path, charset_size,
             # Continue without loading weights for testing purposes
 
     print("[Recognizer] Freezing model (setting trainable=False)...")
-    model.trainable = False
-    
-    # If multi-output is requested, create a new model that outputs both logits and feature_map
-    if return_feature_map:
-        print("[Recognizer] Creating multi-output model (logits + feature_map)...")
-        # Find the CNN feature layer (before transformer) - "proj_ln" is the last CNN layer
-        feature_layer = model.get_layer('proj_ln').output
-        
-        # Create multi-output model
-        multi_output_model = Model(
-            inputs=model.input,
-            outputs=[model.output, feature_layer],
-            name='htr_recognizer_multi_output'
-        )
-        multi_output_model.trainable = False
-        print("[Recognizer] Multi-output model created: (logits, feature_map)")
-        print(f"   - Logits shape: {model.output.shape}")
-        print(f"   - Feature map shape: {feature_layer.shape}")
-        return multi_output_model
 
     print("[Recognizer] Frozen HTR model ready (Stage 3, CER 33.72%).")
     return model
