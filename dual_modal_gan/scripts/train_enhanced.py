@@ -59,6 +59,8 @@ from dual_modal_gan.src.models.generator_enhanced import unet_enhanced
 from dual_modal_gan.src.models.generator_enhanced_v2 import unet_enhanced_v2
 from dual_modal_gan.src.models.recognizer import load_frozen_recognizer
 from dual_modal_gan.src.models.discriminator import build_dual_modal_discriminator
+from dual_modal_gan.src.models.discriminator_enhanced_v2 import build_dual_modal_discriminator_enhanced_v2
+from dual_modal_gan.losses.perceptual_loss import create_perceptual_loss
 
 # --- Utility Functions ---
 def read_charlist(path):
@@ -286,7 +288,15 @@ def main(args):
             charset_size=vocab_size - 1,
             return_feature_map=use_rec_feat_loss
         )
-        discriminator = build_dual_modal_discriminator(img_shape=(1024, 128, 1), vocab_size=vocab_size, max_text_len=128)
+        
+        # Build discriminator based on version
+        if args.discriminator_version == 'enhanced_v2':
+            discriminator = build_dual_modal_discriminator_enhanced_v2(img_shape=(1024, 128, 1), vocab_size=vocab_size, max_text_len=128)
+            print(f"✅ Discriminator selected: ENHANCED_V2 (18M params, ResNet + BiLSTM + Cross-Attention)")
+        else:
+            discriminator = build_dual_modal_discriminator(img_shape=(1024, 128, 1), vocab_size=vocab_size, max_text_len=128)
+            print(f"✅ Discriminator selected: BASE (137M params, Simple CNN + LSTM)")
+        
         print("All models built.")
 
     with strategy.scope():
@@ -326,15 +336,43 @@ def main(args):
         
         checkpoint = tf.train.Checkpoint(generator_optimizer=generator_optimizer, discriminator_optimizer=discriminator_optimizer, generator=generator, discriminator=discriminator)
         ckpt_manager = tf.train.CheckpointManager(checkpoint, args.checkpoint_dir, max_to_keep=args.max_checkpoints)
-        if ckpt_manager.latest_checkpoint and not args.no_restore:
-            checkpoint.restore(ckpt_manager.latest_checkpoint)
-            print(f"Restored from {ckpt_manager.latest_checkpoint}")
-        else:
-            if args.no_restore and ckpt_manager.latest_checkpoint:
+        
+        # Epoch tracking for resume capability
+        epoch_info_path = os.path.join(args.checkpoint_dir, 'epoch_info.json')
+        start_epoch = 0
+        
+        if ckpt_manager.latest_checkpoint:
+            if args.resume and os.path.exists(epoch_info_path):
+                # Resume mode: restore checkpoint and continue from last epoch
+                checkpoint.restore(ckpt_manager.latest_checkpoint).expect_partial()
+                with open(epoch_info_path, 'r') as f:
+                    epoch_info = json.load(f)
+                start_epoch = epoch_info.get('last_completed_epoch', -1) + 1
+                print(f"✅ RESUME MODE: Restored from {ckpt_manager.latest_checkpoint}")
+                print(f"   Last completed epoch: {epoch_info.get('last_completed_epoch', -1)}")
+                print(f"   Continuing from epoch {start_epoch}/{args.epochs}")
+                print(f"   Best PSNR so far: {epoch_info.get('best_psnr', 'N/A')}")
+            elif not args.no_restore:
+                # Normal restore: use checkpoint but start from epoch 0
+                checkpoint.restore(ckpt_manager.latest_checkpoint)
+                print(f"Restored model from {ckpt_manager.latest_checkpoint} (starting from epoch 0)")
+            else:
                 print(f"🚫 Skipping checkpoint restoration (--no_restore flag)")
                 print(f"   Found checkpoint: {ckpt_manager.latest_checkpoint}")
+                print("Initializing from scratch.")
+        else:
             print("Initializing from scratch.")
 
+    # VGG Perceptual Loss (optional) - MUST BE DEFINED BEFORE strategy.scope()
+    # Create ALWAYS (even if weight=0) to avoid tf.function scope issues
+    if args.perceptual_loss_weight > 0:
+        print(f"\n🎨 Initializing VGG Perceptual Loss (weight={args.perceptual_loss_weight})...")
+        perceptual_loss_layer = create_perceptual_loss()
+        print("   Expected benefit: +0.3-0.5 dB PSNR improvement")
+    else:
+        # Create dummy layer that returns 0 (avoids None reference in @tf.function)
+        perceptual_loss_layer = tf.keras.layers.Lambda(lambda x: tf.constant(0.0, dtype=tf.float32))
+    
     with strategy.scope():
         bce_loss_fn = tf.keras.losses.BinaryCrossentropy()
         mae_loss_fn = tf.keras.losses.MeanAbsoluteError()
@@ -345,7 +383,7 @@ def main(args):
         val_wer_metric = tf.keras.metrics.Mean(name='val_wer')
 
         @tf.function
-        def train_step(degraded_images, clean_images, ground_truth_text, ctc_weight, rec_feat_weight):
+        def train_step(degraded_images, clean_images, ground_truth_text, ctc_weight, rec_feat_weight, percep_weight):
             real_labels_disc = tf.ones([args.batch_size, 1]) * 0.9
             fake_labels_disc = tf.zeros([args.batch_size, 1])
 
@@ -392,6 +430,10 @@ def main(args):
                 # Always calculate but weight will control its contribution
                 rec_feat_loss = mse_loss_fn(clean_feature_map, generated_feature_map)
                 
+                # VGG Perceptual Loss - uses perceptual_loss_layer (Keras Layer)
+                # This is always defined (either real VGG or dummy=0), so no None check needed
+                perceptual_loss = perceptual_loss_layer(clean_images, generated_images)
+                
                 # Always calculate CTC loss; its contribution is controlled by ctc_weight.
                 # This avoids conditional graph structures that break gradient flow in @tf.function.
                 label_len = tf.math.count_nonzero(ground_truth_text, axis=1, keepdims=True, dtype=tf.int32)
@@ -403,11 +445,12 @@ def main(args):
                 ctc_loss = tf.clip_by_value(ctc_loss_raw, 0.0, args.ctc_loss_clip_max)
 
                 # ✅ Pure FP32 - NO casting needed (already in FP32)
-                # Total Generator Loss with Recognition Feature Loss
+                # Total Generator Loss with Recognition Feature Loss + Perceptual Loss
                 total_gen_loss = (
                     (args.adv_loss_weight * adversarial_loss) + 
                     (args.pixel_loss_weight * pixel_loss) + 
                     (rec_feat_weight * rec_feat_loss) +
+                    (percep_weight * perceptual_loss) +
                     (ctc_weight * ctc_loss)
                 )
 
@@ -422,7 +465,7 @@ def main(args):
             generator_optimizer.apply_gradients(zip(generator_gradients, generator.trainable_variables))
             discriminator_optimizer.apply_gradients(zip(discriminator_gradients, discriminator.trainable_variables))
 
-            return total_gen_loss, total_disc_loss, adversarial_loss, pixel_loss, rec_feat_loss, ctc_loss, ctc_loss_raw, gen_grad_norm, disc_grad_norm
+            return total_gen_loss, total_disc_loss, adversarial_loss, pixel_loss, rec_feat_loss, perceptual_loss, ctc_loss, ctc_loss_raw, gen_grad_norm, disc_grad_norm
 
     print("\n[Phase 4/6] Starting Training Loop...")
     dataset_iterator = iter(train_dataset)
@@ -525,7 +568,7 @@ def main(args):
             "optimized_for": "Balanced loss + CTC stability"
         })
     
-        for epoch in range(args.epochs):
+        for epoch in range(start_epoch, args.epochs):
             epoch_start_time = time.time()
             
             # --- Curriculum Learning & Loss Annealing Logic ---
@@ -575,10 +618,11 @@ def main(args):
             pbar = tqdm(range(steps_per_epoch), desc=f"Epoch {epoch+1}")
             for step in pbar:
                 degraded_batch, clean_batch, text_batch = next(dataset_iterator)
-                g_loss, d_loss, adv_loss, pix_loss, rec_feat_loss, ctc_loss, ctc_loss_raw, g_grad_norm, d_grad_norm = train_step(
+                g_loss, d_loss, adv_loss, pix_loss, rec_feat_loss, percep_loss, ctc_loss, ctc_loss_raw, g_grad_norm, d_grad_norm = train_step(
                     degraded_batch, clean_batch, text_batch, 
                     tf.constant(current_ctc_weight, dtype=tf.float32),
-                    tf.constant(args.rec_feat_loss_weight, dtype=tf.float32)
+                    tf.constant(args.rec_feat_loss_weight, dtype=tf.float32),
+                    tf.constant(args.perceptual_loss_weight, dtype=tf.float32)
                 )
                 
                 # Collect metrics
@@ -587,6 +631,8 @@ def main(args):
                 epoch_metrics["losses"]["adv_loss"].append(float(adv_loss.numpy()))
                 epoch_metrics["losses"]["pixel_loss"].append(float(pix_loss.numpy()))
                 epoch_metrics["losses"]["rec_feat_loss"].append(float(rec_feat_loss.numpy()))
+                epoch_metrics["losses"]["perceptual_loss"] = epoch_metrics["losses"].get("perceptual_loss", [])
+                epoch_metrics["losses"]["perceptual_loss"].append(float(percep_loss.numpy()) if isinstance(percep_loss, tf.Tensor) else float(percep_loss))
                 epoch_metrics["losses"]["ctc_loss"].append(float(ctc_loss.numpy()))
                 if current_ctc_weight > 0:
                     epoch_metrics["losses"]["ctc_loss_raw"].append(float(ctc_loss_raw.numpy()))
@@ -594,17 +640,21 @@ def main(args):
                 epoch_metrics["losses"]["d_grad_norm"].append(float(d_grad_norm.numpy()))
 
                 if (step + 1) % 50 == 0:
-                    pbar.set_postfix({
+                    postfix_dict = {
                         'G': f'{g_loss:.4f}', 'D': f'{d_loss:.4f}', 'Adv': f'{adv_loss:.4f}', 
                         'Pix': f'{pix_loss:.4f}', 'RecFeat': f'{rec_feat_loss:.4f}',
                         'CTC': f'{ctc_loss:.2f}', 'CTC_w': f'{current_ctc_weight:.2f}'
-                    })
+                    }
+                    if args.perceptual_loss_weight > 0:
+                        postfix_dict['Percep'] = f'{percep_loss:.4f}' if isinstance(percep_loss, tf.Tensor) else f'{percep_loss:.4f}'
+                    pbar.set_postfix(postfix_dict)
 
             # Calculate epoch statistics
             epoch_metrics["training_losses"] = {
                 "total_loss": float(np.mean(epoch_metrics["losses"]["g_loss"])),
                 "pixel_loss": float(np.mean(epoch_metrics["losses"]["pixel_loss"])),
                 "rec_feat_loss": float(np.mean(epoch_metrics["losses"]["rec_feat_loss"])),
+                "perceptual_loss": float(np.mean(epoch_metrics["losses"]["perceptual_loss"])) if "perceptual_loss" in epoch_metrics["losses"] and epoch_metrics["losses"]["perceptual_loss"] else 0.0,
                 "ctc_loss": float(np.mean(epoch_metrics["losses"]["ctc_loss"])),
                 "adv_loss": float(np.mean(epoch_metrics["losses"]["adv_loss"])),
                 "ctc_loss_raw": float(np.mean(epoch_metrics["losses"]["ctc_loss_raw"])) if epoch_metrics["losses"]["ctc_loss_raw"] else 0.0,
@@ -617,7 +667,7 @@ def main(args):
             
             # Log epoch mean losses to MLflow
             mlflow_step = epoch + 1
-            mlflow.log_metrics({
+            metrics_to_log = {
                 "train/g_loss": epoch_metrics["training_losses"]["total_loss"],
                 "train/d_loss": float(np.mean(epoch_metrics["losses"]["d_loss"])),
                 "train/adv_loss": epoch_metrics["training_losses"]["adv_loss"],
@@ -628,7 +678,10 @@ def main(args):
                 "train/g_grad_norm_mean": epoch_metrics["training_losses"]["gradient_norm"]["generator_mean"],
                 "train/g_grad_norm_max": epoch_metrics["training_losses"]["gradient_norm"]["generator_max"],
                 "train/d_grad_norm_mean": epoch_metrics["training_losses"]["gradient_norm"]["discriminator_mean"]
-            }, step=mlflow_step)
+            }
+            if args.perceptual_loss_weight > 0:
+                metrics_to_log["train/perceptual_loss"] = epoch_metrics["training_losses"]["perceptual_loss"]
+            mlflow.log_metrics(metrics_to_log, step=mlflow_step)
         
             # --- End of Epoch Actions ---
             if (epoch + 1) % args.eval_interval == 0:
@@ -790,6 +843,21 @@ def main(args):
             metrics_file = os.path.join(metrics_dir, "training_metrics_fp32.json")
             with open(metrics_file, 'w') as f:
                 json.dump(training_history, f, indent=2)
+            
+            # Save checkpoint EVERY EPOCH (for resume capability)
+            ckpt_save_path = ckpt_manager.save()
+            
+            # Save epoch info for resume capability (EVERY EPOCH)
+            epoch_info = {
+                'last_completed_epoch': epoch,
+                'best_combined_score': float(best_val_psnr) if best_val_psnr > -1.0 else None,
+                'best_epoch': best_epoch,
+                'patience_counter': patience_counter,
+                'total_epochs': args.epochs,
+                'timestamp': time.strftime('%Y-%m-%d %H:%M:%S')
+            }
+            with open(epoch_info_path, 'w') as f:
+                json.dump(epoch_info, f, indent=2)
 
         # Finalize training history
         training_history["end_time"] = datetime.now().isoformat()
@@ -832,11 +900,13 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Train Dual-Modal GAN-HTR with Pure FP32 (OPTIMIZED)')
     parser.add_argument('--generator_version', type=str, default='base', choices=['base', 'enhanced', 'enhanced_v2'], help='Version of the generator to use: base, enhanced, or enhanced_v2 (SOTA).')
+    parser.add_argument('--discriminator_version', type=str, default='base', choices=['base', 'enhanced_v2'], help='Version of the discriminator to use: base (137M params) or enhanced_v2 (18M params).')
     parser.add_argument('--tfrecord_path', type=str, default='dual_modal_gan/data/dataset_gan.tfrecord', help='Path to the training TFRecord file.')
     parser.add_argument('--charset_path', type=str, default='real_data_preparation/real_data_charlist.txt', help='Path to the character set file.')
     parser.add_argument('--recognizer_weights', type=str, default='models/best_htr_recognizer/best_model.weights.h5', help='Path to pre-trained recognizer weights (Stage 3, CER 33.72%).')
     parser.add_argument('--gpu_id', type=str, default='1', help='ID of the GPU to use (e.g., "0" or "1").')
     parser.add_argument('--no_restore', action='store_true', help='Do not restore from checkpoint, start from scratch.')
+    parser.add_argument('--resume', action='store_true', help='Resume training from last completed epoch (requires epoch_info.json in checkpoint dir).')
     parser.add_argument('--checkpoint_dir', type=str, default='dual_modal_gan/outputs/checkpoints_fp32', help='Directory to save model checkpoints.')
     parser.add_argument('--max_checkpoints', type=int, default=1, help='Maximum number of checkpoints to keep (default: 1 for storage efficiency).')
     parser.add_argument('--sample_dir', type=str, default='dual_modal_gan/outputs/samples_fp32', help='Directory to save sample images.')
@@ -853,6 +923,7 @@ if __name__ == '__main__':
     parser.add_argument('--adv_loss_weight', type=float, default=2.0, help='Weight for the adversarial loss.')
     parser.add_argument('--rec_feat_loss_weight', type=float, default=0.0, help='Weight for the Recognition Feature Loss (HTR-aware).')
     parser.add_argument('--contrastive_loss_weight', type=float, default=0.0, help='Weight for the Contrastive Loss.')
+    parser.add_argument('--perceptual_loss_weight', type=float, default=0.0, help='Weight for the VGG Perceptual Loss (default: 0.0 = disabled).')
     parser.add_argument('--gradient_clip_norm', type=float, default=1.0, help='Gradient clipping norm to prevent explosion.')
     parser.add_argument('--ctc_loss_clip_max', type=float, default=300.0, help='Maximum value for CTC loss clipping.')
     parser.add_argument('--warmup_epochs', type=int, default=10, help='Number of epochs for visual warm-up (CTC loss is disabled).')

@@ -1,0 +1,82 @@
+{
+  "_comment": "Example config for resuming training from checkpoint",
+  "_usage": "Use this when you want to continue training from a previous checkpoint",
+  "_note": "Make sure checkpoint_dir matches the original experiment",
+  
+  "experiment_name": "experiment_resumed",
+  "description": "Example: Resume training from previous checkpoint with same config",
+  
+  "model": {
+    "generator": {
+      "architecture": "enhanced"
+    },
+    "discriminator": {
+      "architecture": "enhanced_v2"
+    }
+  },
+  
+  "data": {
+    "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+    "charset_path": "real_data_preparation/real_data_charlist.txt",
+    "recognizer_weights": "models/best_htr_recognizer/best_model.weights.h5"
+  },
+  
+  "training": {
+    "gpu_id": "0",
+    "epochs": 15,
+    "steps_per_epoch": 2133,
+    "batch_size": 2,
+    "learning_rate_g": 0.0002,
+    "learning_rate_d": 0.0002,
+    "gradient_clip": 1.0,
+    "seed": 42,
+    "use_lr_schedule": true,
+    "lr_decay_epochs": 15,
+    "lr_alpha": 1e-6,
+    "warmup_epochs": 10,
+    "annealing_epochs": 0,
+    "resume_from_checkpoint": true,
+    "_resume_note": "Set to true to enable checkpoint resume. Will auto-detect latest checkpoint and continue from last completed epoch."
+  },
+  
+  "loss_weights": {
+    "pixel_loss_weight": 200.0,
+    "adv_loss_weight": 1.5,
+    "rec_feat_loss_weight": 5.0,
+    "ctc_loss_weight": 1.0,
+    "perceptual_loss_weight": 0.2,
+    "contrastive_loss_weight": 0.0
+  },
+  
+  "loss_config": {
+    "use_perceptual_loss": true,
+    "ctc_loss_clip_max": 300.0
+  },
+  
+  "discriminator": {
+    "mode": "predicted"
+  },
+  
+  "evaluation": {
+    "eval_interval": 1,
+    "save_interval": 1
+  },
+  
+  "visualization": {
+    "save_samples": true,
+    "save_interval": 1,
+    "create_comparison": true
+  },
+  
+  "checkpoints": {
+    "max_checkpoints": 1,
+    "save_best_only": false,
+    "_checkpoint_note": "Checkpoints saved every epoch. Resume will load from latest checkpoint."
+  },
+  
+  "early_stopping": {
+    "enabled": true,
+    "patience": 20,
+    "min_delta": 0.01
+  }
+}
