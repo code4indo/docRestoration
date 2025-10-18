@@ -1,0 +1,84 @@
+{
+  "experiment_name": "recfeat_only_no_ctc",
+  "description": "RecFeat Loss ONLY - CTC disabled completely (monitoring only)",
+  
+  "model": {
+    "generator_version": "enhanced",
+    "discriminator_version": "enhanced_v2"
+  },
+  
+  "data": {
+    "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+    "charset_path": "real_data_preparation/real_data_charlist.txt",
+    "recognizer_weights": "models/best_htr_recognizer/best_model.weights.h5"
+  },
+  
+  "training": {
+    "epochs": 1,
+    "steps_per_epoch": 200,
+    "batch_size": 2,
+    "gpu_id": "0",
+    "no_restore": true,
+    "seed": 42
+  },
+  
+  "loss_weights": {
+    "pixel_loss_weight": 300.0,
+    "rec_feat_loss_weight": 20.0,
+    "adv_loss_weight": 5.0,
+    "ctc_loss_weight": 0.0,
+    "contrastive_loss_weight": 0.0
+  },
+  
+  "loss_config": {
+    "gradient_clip_norm": 1.0,
+    "ctc_loss_clip_max": 300.0
+  },
+  
+  "schedule": {
+    "warmup_epochs": 0,
+    "annealing_epochs": 0,
+    "use_lr_schedule": false,
+    "lr_decay_epochs": 50,
+    "lr_alpha": 0.0
+  },
+  
+  "optimizer": {
+    "lr_g": 0.0002,
+    "lr_d": 0.0002
+  },
+  
+  "checkpoints": {
+    "checkpoint_dir": "dual_modal_gan/checkpoints/recfeat_only_no_ctc",
+    "sample_dir": "dual_modal_gan/outputs/recfeat_only_no_ctc",
+    "max_checkpoints": 3,
+    "save_interval": 1,
+    "eval_interval": 1
+  },
+  
+  "discriminator": {
+    "mode": "predicted"
+  },
+  
+  "early_stopping": {
+    "enabled": false,
+    "patience": 15,
+    "min_delta": 0.01,
+    "restore_best_weights": true
+  },
+  
+  "metrics": {
+    "cer_weight": 0.5
+  },
+  
+  "hypothesis": {
+    "problem": "CTC loss causes training instability and provides no useful gradient",
+    "solution": "Use RecFeat loss ONLY for text awareness - stable, smooth gradients",
+    "expected_outcome": {
+      "d_loss": "Drop to 0.5-0.7 (stable GAN training)",
+      "psnr": "25-30 dB (good visual quality)",
+      "cer": "< 0.20 (RecFeat preserves text features)",
+      "training": "STABLE and FAST convergence"
+    }
+  }
+}

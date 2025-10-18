@@ -1,0 +1,65 @@
+{
+  "experiment_name": "fast_fail_adaptive_5epochs",
+  "description": "Fresh start dengan adaptive balancing - 5 epoch fast fail test untuk break PSNR plateau. Target: PSNR 29.75+ by epoch 5",
+  "training": {
+    "epochs": 5,
+    "batch_size": 2,
+    "steps_per_epoch": 2133,
+    "generator_lr": 0.0002,
+    "discriminator_lr": 0.0002,
+    "lr_schedule": "cosine_decay",
+    "lr_warmup_epochs": 0,
+    "lr_decay_from_epoch": 999
+  },
+  "loss_weights": {
+    "pixel_loss_weight": 200.0,
+    "adversarial_loss_weight": 1.5,
+    "rec_feat_loss_weight": 5.0,
+    "ctc_loss_weight": 1.0,
+    "perceptual_loss_weight": 0.2
+  },
+  "adaptive_balancing": {
+    "enabled": true,
+    "algorithm": "SimpleAdaptiveBalancer",
+    "target_ctc_ratio": 0.65,
+    "target_visual_ratio": 0.35,
+    "adaptation_rate": 0.15,
+    "update_frequency": "per_step",
+    "log_interval": 100
+  },
+  "ctc_annealing": {
+    "enabled": false,
+    "comment": "Disable annealing karena adaptive balancer yang handle weight adjustment"
+  },
+  "checkpointing": {
+    "checkpoint_dir": "dual_modal_gan/checkpoints/fast_fail_adaptive_5epochs",
+    "save_best_only": false,
+    "save_interval": 1,
+    "monitor_metric": "val_psnr"
+  },
+  "mlflow": {
+    "experiment_name": "fast_fail_adaptive_5epochs",
+    "run_name_prefix": "adaptive_test",
+    "tags": {
+      "strategy": "adaptive_balancing",
+      "algorithm": "SimpleAdaptiveBalancer",
+      "purpose": "break_plateau",
+      "comparison": "vs_baseline"
+    }
+  },
+  "dataset": {
+    "train_tfrecord": "data/processed/train_dataset.tfrecord",
+    "val_tfrecord": "data/processed/val_dataset.tfrecord",
+    "train_samples": 4266,
+    "val_samples": 473,
+    "charset_size": 109
+  },
+  "comparison_baseline": {
+    "reference_run": "experiment_15epochs_vgg_perceptual",
+    "reference_mlflow_id": "75221a749c7348d08658dbfde175a3a1",
+    "plateau_psnr": "29.52-29.56",
+    "plateau_epochs": "16-29",
+    "ctc_dominance": "98.17%",
+    "target_improvement": ">=0.05 dB per epoch"
+  }
+}

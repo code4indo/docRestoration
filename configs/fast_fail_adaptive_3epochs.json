@@ -1,0 +1,104 @@
+{
+  "experiment_name": "fast_fail_adaptive_3epochs",
+  "description": "Fast fail test: 3 epochs dengan GradNorm adaptive balancing. Resume dari checkpoint epoch 16 (PSNR 29.5476 dB). Success criteria: PSNR naik ≥0.05 dB per epoch.",
+  
+  "model_architecture": {
+    "generator": {
+      "type": "enhanced",
+      "filters": 64,
+      "num_residual_blocks": 9,
+      "use_attention": false
+    },
+    "discriminator": {
+      "type": "enhanced_v2",
+      "filters": 64,
+      "num_layers": 3
+    },
+    "recognizer": {
+      "type": "crnn",
+      "pretrained": true
+    }
+  },
+  
+  "training": {
+    "total_epochs": 3,
+    "batch_size": 2,
+    "steps_per_epoch": 2133,
+    "learning_rate_g": 0.0001,
+    "learning_rate_d": 0.0001,
+    "gradient_clip": 1.0,
+    "mixed_precision": "fp32",
+    
+    "lr_schedule": {
+      "enabled": false,
+      "comment": "Disable LR decay for fast fail test - keep constant LR"
+    },
+    
+    "adaptive_loss_balancing": {
+      "enabled": true,
+      "method": "simple",
+      "target_ctc_ratio": 0.65,
+      "target_visual_ratio": 0.35,
+      "adaptation_rate": 0.15,
+      "comment": "Simple adaptive balancer: target 65% CTC, 35% visual losses"
+    },
+    
+    "loss_weights": {
+      "pixel_loss_weight": 200.0,
+      "perceptual_loss_weight": 5.0,
+      "adv_loss_weight": 2.0,
+      "ctc_loss_weight": 1.0,
+      "rec_feat_loss_weight": 5.0,
+      "comment": "Initial weights - will be adapted by SimpleAdaptiveBalancer"
+    },
+    
+    "ctc_config": {
+      "ctc_loss_clip_max": 500.0,
+      "warmup_epochs": 0,
+      "annealing_epochs": 0,
+      "comment": "No warmup/annealing - use full CTC from start since resuming from trained model"
+    },
+    
+    "resume_from_checkpoint": true,
+    "checkpoint_path": "dual_modal_gan/checkpoints/experiment_15epochs_vgg_perceptual/ckpt-42",
+    "resume_epoch": 16,
+    "comment": "Resume from best checkpoint (epoch 16, PSNR 29.5476 dB)",
+    
+    "early_stopping": {
+      "enabled": false,
+      "comment": "Disabled for fast fail - run exactly 3 epochs"
+    }
+  },
+  
+  "data": {
+    "train_tfrecord": "dataset_gan.tfrecord",
+    "val_tfrecord": "dataset_gan.tfrecord",
+    "charlist_file": "real_data_charlist.txt",
+    "augmentation": {
+      "enabled": true,
+      "random_brightness": 0.1,
+      "random_contrast": 0.1
+    }
+  },
+  
+  "logging": {
+    "mlflow_tracking": true,
+    "log_frequency": 50,
+    "save_samples_frequency": 500,
+    "checkpoint_frequency": 1,
+    "comment": "Save checkpoint every epoch untuk monitoring"
+  },
+  
+  "evaluation_metrics": [
+    "psnr",
+    "ssim",
+    "cer",
+    "wer"
+  ],
+  
+  "success_criteria": {
+    "min_psnr_improvement_per_epoch": 0.05,
+    "target_psnr": 29.70,
+    "comment": "Target: reach 29.70+ dB by epoch 3 (0.15 dB improvement total)"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "experiment_name": "ablation_C_pixel_ctc",
+  "description": "ABLATION C: Pixel + CTC (No RecFeat) - Test if RecFeat is the bottleneck",
+  
+  "generator_type": "enhanced",
+  "discriminator_version": "enhanced_v2",
+  "discriminator_mode": "predicted",
+  
+  "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "models/best_htr_recognizer/best_model.weights.h5",
+  
+  "gpu_id": 0,
+  "checkpoint_dir": "dual_modal_gan/checkpoints/ablation_C_pixel_ctc",
+  "sample_dir": "dual_modal_gan/outputs/samples_ablation_C_pixel_ctc",
+  "max_checkpoints": 1,
+  
+  "epochs": 1,
+  "steps_per_epoch": 500,
+  "batch_size": 4,
+  
+  "pixel_loss_weight": 500.0,
+  "rec_feat_loss_weight": 0.0,
+  "adv_loss_weight": 0.0,
+  "ctc_loss_weight": 1.0,
+  "contrastive_loss_weight": 0.0,
+  
+  "gradient_clip_norm": 5.0,
+  "ctc_loss_clip_max": 500.0,
+  
+  "warmup_epochs": 0,
+  "annealing_epochs": 0,
+  
+  "save_interval": 1,
+  "eval_interval": 1,
+  
+  "seed": 42,
+  
+  "learning_rate": 0.0001,
+  "discriminator_learning_rate": 0.00005,
+  "lr_decay_epochs": 50,
+  "lr_alpha": 0.0,
+  
+  "cer_weight": 0.5,
+  "patience": 15,
+  "min_delta": 0.01,
+  "restore_best_weights": true,
+  
+  "_comments": {
+    "purpose": "Test if RecFeat loss is causing PSNR degradation",
+    "hypothesis": "RecFeat loss mungkin pull features ke arah yang tidak optimal untuk pixel accuracy",
+    "expected": "Jika RecFeat adalah bottleneck, PSNR akan lebih tinggi tanpa RecFeat"
+  }
+}

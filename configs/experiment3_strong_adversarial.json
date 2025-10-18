@@ -1,0 +1,22 @@
+{
+  "experiment_name": "experiment3_strong_adversarial",
+  "description": "Test adversarial weight 5.0 dengan CTC 0.5 - Hipotesis: Discriminator lebih kuat, generator produce better quality",
+  "epochs": 1,
+  "steps_per_epoch": 1000,
+  "batch_size": 4,
+  "learning_rate": 0.0001,
+  "discriminator_learning_rate": 0.00005,
+  "pixel_loss_weight": 200.0,
+  "rec_feat_loss_weight": 5.0,
+  "adv_loss_weight": 5.0,
+  "ctc_loss_weight": 0.5,
+  "discriminator_mode": "predicted",
+  "generator_type": "enhanced",
+  "discriminator_type": "enhanced_v2",
+  "expected_outcome": {
+    "psnr": "23-25 dB",
+    "cer": "0.4-0.5",
+    "g_loss": "~120-150",
+    "d_loss": "~0.9-1.2 (lebih rendah, discriminator lebih kuat)"
+  }
+}

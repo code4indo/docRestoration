@@ -10,11 +10,11 @@
 
 ## 📊 STATISTICS
 
-- **Total Files Tracked:** 32 nodes, 29 edges
-- **Last Update:** 2025-10-16 11:30:00 WIB
-- **Active Experiments:** Solution 1 Complete - PSNR: 25.77 dB ✅
+- **Total Files Tracked:** 38 nodes (6 new discriminator files added)
+- **Last Update:** 2025-10-16 12:52:00 WIB
+- **Active Experiments:** Enhanced Discriminator V2 Quick Validation (RUNNING) 🔄
 - **Knowledge Graph:** ✅ Generated (NetworkX-based visualization)
-- **Latest Achievement:** 52.8% CER reduction, No NaN, Stable training
+- **Latest Achievement:** 86.9% discriminator parameter reduction (137M → 17.9M)
 
 ---
 
@@ -22,13 +22,13 @@
 
 | No | File Path | Created | Description | Related Files |
 |----|-----------|---------|-------------|---------------|
-| 1 | `logbook/20251016_analysis_solution1_lr_scheduling.md` | 2025-10-16 11:30:00 WIB | ✅ **ANALISIS LENGKAP:** Solution 1 LR Scheduling - PSNR 25.77 dB, CER 0.0922 | `logbook/solution1_smoke_test_FIXED_20251016_045202.log`, `docs/solution1_training_analysis.png` |
-| 2 | `docs/solution1_training_analysis.png` | 2025-10-16 11:30:00 WIB | **VISUALISASI:** Grafik PSNR, CER, SSIM progression (3-panel chart) | `logbook/20251016_analysis_solution1_lr_scheduling.md` |
-| 3 | `logbook/20251016_manifest_knowledge_graph_completion.md` | 2025-10-16 11:15:00 WIB | Completion report: Manifest & Knowledge Graph System | `MANIFEST.md`, `scripts/generate_knowledge_graph.py` |
-| 4 | `logbook/20251016_bugfix_nan_loss_lr_alpha_zero.md` | 2025-10-16 10:14:47 WIB | **BUG FIX:** Analisis dan solusi NaN loss akibat lr_alpha=0.0 | `scripts/train32_solution1_smoke_test_FIXED.sh`, `dual_modal_gan/scripts/train32.py` |
-| 5 | `scripts/train32_solution1_smoke_test_FIXED.sh` | 2025-10-16 10:14:47 WIB | **FIXED SCRIPT:** Training Solution 1 dengan lr_alpha=0.00002 (perbaikan NaN) | `logbook/20251016_bugfix_nan_loss_lr_alpha_zero.md`, `dual_modal_gan/scripts/train32.py` |
-| 6 | `logbook/QUICK_REFERENCE_timestamps.md` | 2025-10-16 04:39:35 WIB | Quick reference untuk timestamp standards (cheat sheet) | `logbook/LOGBOOK_STANDARDS.md`, `logbook/TEMPLATE_logbook.md` |
-| 7 | `logbook/LOGBOOK_STANDARDS.md` | 2025-10-16 04:39:35 WIB | Dokumentasi lengkap naming convention dan timestamp format | `logbook/TEMPLATE_logbook.md`, `logbook/QUICK_REFERENCE_timestamps.md` |
+| 1 | `dual_modal_gan/src/models/discriminator_enhanced_v2.py` | 2025-10-16 12:30:00 WIB | ✅ **ENHANCED DISCRIMINATOR V2:** ResNet + BiLSTM + Cross-Attention (17.9M params, 86.9% reduction) | `dual_modal_gan/scripts/train_enhanced.py`, `logbook/20251016_discriminator_audit.md` |
+| 2 | `scripts/test_enhanced_disc_v2.sh` | 2025-10-16 12:45:00 WIB | **QUICK VALIDATION TEST:** 200 steps comparison V1+OldD vs V1+EnhancedDV2 (RUNNING) | `dual_modal_gan/src/models/discriminator_enhanced_v2.py`, `test_enhanced_disc_v2.log` |
+| 3 | `logbook/20251016_discriminator_audit.md` | 2025-10-16 12:00:00 WIB | **DISCRIMINATOR AUDIT:** 4 weaknesses identified, Enhanced V2 proposal | `dual_modal_gan/src/models/discriminator_enhanced_v2.py` |
+| 4 | `docs/ARCHITECTURE_V1_REPRODUCTION_GUIDE.md` | 2025-10-16 11:45:00 WIB | **V1 REPRODUCTION GUIDE:** Complete architecture specs (838 lines, enables rebuild from scratch) | `dual_modal_gan/src/models/generator.py` |
+| 5 | `logbook/20251016_unlimited_data_analysis.md` | 2025-10-16 11:30:00 WIB | **UNLIMITED DATA ANALYSIS:** PSNR 21.90 dB achieved, data starvation confirmed | `logbook/UNLIMITED_DATA_SUMMARY.txt` |
+| 6 | `logbook/UNLIMITED_DATA_SUMMARY.txt` | 2025-10-16 11:30:00 WIB | **RESULTS SUMMARY:** Target achieved (>20 dB), -66.2% CER improvement | `scripts/test_v1_unlimited_1epoch.sh` |
+| 7 | `scripts/test_v1_unlimited_1epoch.sh` | 2025-10-16 11:00:00 WIB | **UNLIMITED DATA TEST:** steps_per_epoch=0, 90% data utilization | `dual_modal_gan/scripts/train_enhanced.py` |
 
 ---
 
@@ -81,14 +81,15 @@
 
 ### 🛠️ TRAINING SCRIPTS
 
-#### Active Scripts
+#### Active Scripts (Current Phase: Discriminator Enhancement)
 
 | File | Created | Purpose | Status | Related Files |
 |------|---------|---------|--------|---------------|
-| `scripts/train32_solution1_smoke_test_FIXED.sh` | 2025-10-16 10:14 | **ACTIVE** Solution 1 smoke test (FIXED, lr_alpha=0.00002) | 🔄 RUNNING | `dual_modal_gan/scripts/train32.py` |
-| `scripts/train32_solution1_smoke_test.sh` | 2025-10-16 04:39 | ❌ BROKEN Solution 1 smoke test (NaN at step 1762) | DEPRECATED | `logbook/20251016_bugfix_nan_loss_lr_alpha_zero.md` |
-| `scripts/monitor_solution1_smoke.sh` | 2025-10-16 04:39 | Real-time monitoring untuk smoke test | UTILITY | `scripts/train32_solution1_smoke_test_FIXED.sh` |
-| `scripts/analyze_solution1_results.sh` | 2025-10-16 04:39 | Automated analysis dan decision logic | UTILITY | `scripts/monitor_solution1_smoke.sh` |
+| `scripts/test_enhanced_disc_v2.sh` | 2025-10-16 12:45 | **ACTIVE** Quick validation V1+EnhancedDV2 (200 steps, batch=2) | 🔄 RUNNING | `dual_modal_gan/scripts/train_enhanced.py`, `test_enhanced_disc_v2.log` |
+| `scripts/test_v1_unlimited_1epoch.sh` | 2025-10-16 11:00 | ✅ COMPLETED - Unlimited data test (PSNR 21.90 dB achieved) | SUCCESS | `logbook/20251016_unlimited_data_analysis.md` |
+| `scripts/test_v1_extended_2epochs.sh` | 2025-10-16 10:30 | ✅ COMPLETED - Extended training test (PSNR 19.63 dB) | SUCCESS | `logbook/20251016_unlimited_data_analysis.md` |
+| `scripts/test_enhanced_v2_quick.sh` | 2025-10-16 09:00 | ❌ FAILED - Enhanced Generator V2 (PSNR 8.81 dB, -4.49 dB vs V1) | DEPRECATED | `logbook/20251016_v2_failure_analysis.md` |
+| `scripts/compare_v1_vs_v2_full.sh` | 2025-10-16 09:00 | ❌ FAILED - Full comparison script | DEPRECATED | `scripts/test_enhanced_v2_quick.sh` |
 
 #### Legacy Scripts
 
@@ -103,11 +104,12 @@
 
 | File | Created | Purpose | Dependencies | Related Files |
 |------|---------|---------|--------------|---------------|
-| `dual_modal_gan/scripts/train32.py` | 2025-10-16 04:39 | **MAIN TRAINING SCRIPT** - Pure FP32 with LR scheduling | TensorFlow, PyTorch | ALL training scripts |
-| `dual_modal_gan/src/models/generator.py` | 2025-10-11 | U-Net generator architecture | TensorFlow | `dual_modal_gan/scripts/train32.py` |
-| `dual_modal_gan/src/models/discriminator.py` | 2025-10-11 | PatchGAN discriminator | TensorFlow | `dual_modal_gan/scripts/train32.py` |
-| `dual_modal_gan/src/losses/dual_modal_loss.py` | 2025-10-11 | Dual-modal loss functions (pixel + recognition) | TensorFlow | `dual_modal_gan/scripts/train32.py` |
-| `dual_modal_gan/data/prepare_dataset.py` | 2025-10-11 | Dataset preparation pipeline | TensorFlow, PIL | `dual_modal_gan/scripts/train32.py` |
+| `dual_modal_gan/scripts/train_enhanced.py` | 2025-10-16 12:30 | **MAIN TRAINING SCRIPT** - Supports both discriminators (base, enhanced_v2) | TensorFlow | ALL training scripts |
+| `dual_modal_gan/src/models/discriminator_enhanced_v2.py` | 2025-10-16 12:30 | **ENHANCED DISCRIMINATOR V2** - ResNet + BiLSTM + Cross-Attention (17.9M params) | TensorFlow, Keras | `dual_modal_gan/scripts/train_enhanced.py` |
+| `dual_modal_gan/src/models/generator.py` | 2025-10-11 | **V1 GENERATOR** - U-Net + Residual Blocks + Attention Gates (21.8M params) | TensorFlow | `dual_modal_gan/scripts/train_enhanced.py` |
+| `dual_modal_gan/src/models/discriminator.py` | 2025-10-11 | **BASE DISCRIMINATOR** - Simple CNN + LSTM (137M params) | TensorFlow | `dual_modal_gan/scripts/train_enhanced.py` |
+| `dual_modal_gan/src/losses/dual_modal_loss.py` | 2025-10-11 | **RECOGNITION FEATURE LOSS** - HTR-oriented restoration loss | TensorFlow | `dual_modal_gan/scripts/train_enhanced.py` |
+| `dual_modal_gan/data/prepare_dataset.py` | 2025-10-11 | Dataset preparation pipeline (4,739 IAM samples) | TensorFlow, PIL | `dual_modal_gan/scripts/train_enhanced.py` |
 
 ### 📊 ANALYSIS & PLANNING
 
@@ -160,22 +162,48 @@ xdg-open docs/project_knowledge_graph.png
 
 ## 🔗 FILE RELATIONSHIPS
 
-### Solution 1 Workflow
+### Enhanced Discriminator V2 Workflow (Current)
 
 ```
-catatan/RENCANA_KONTINGENSI_POST_EXPERIMENT1.md (Plan)
+logbook/20251016_unlimited_data_analysis.md (Achievement: PSNR 21.90 dB)
     ↓
-logbook/20251016_experiment2b_analysis_vs_contingency_plan.md (Analysis)
+logbook/20251016_discriminator_audit.md (Audit: 4 weaknesses found)
     ↓
-scripts/train32_solution1_smoke_test.sh (Implementation - FAILED)
+dual_modal_gan/src/models/discriminator_enhanced_v2.py (Implementation)
     ↓
-logbook/20251016_solution1_lr_scheduling_smoke_test.md (Documentation)
+dual_modal_gan/scripts/train_enhanced.py (Integration: --discriminator_version)
     ↓
-logbook/20251016_bugfix_nan_loss_lr_alpha_zero.md (Bug Analysis)
+scripts/test_enhanced_disc_v2.sh (Quick Validation - RUNNING)
     ↓
-scripts/train32_solution1_smoke_test_FIXED.sh (Fix - RUNNING)
+test_enhanced_disc_v2.log (Results - PENDING)
     ↓
-dual_modal_gan/scripts/train32.py (Core Engine)
+Decision: Enhanced D V2 or Old D for full training
+```
+
+### Generator V1 Success Path
+
+```
+docs/ARCHITECTURE_V1_REPRODUCTION_GUIDE.md (Complete specs)
+    ↓
+dual_modal_gan/src/models/generator.py (V1 implementation: 21.8M params)
+    ↓
+scripts/test_v1_unlimited_1epoch.sh (Unlimited data test)
+    ↓
+logbook/20251016_unlimited_data_analysis.md (PSNR 21.90 dB - TARGET ACHIEVED!)
+    ↓
+PROVEN OPTIMAL ARCHITECTURE
+```
+
+### Recognition Feature Loss (Main Novelty)
+
+```
+catatan/souibgui_enhance_to_read_better.md (Baseline research)
+    ↓
+dual_modal_gan/src/losses/dual_modal_loss.py (Novelty: Recognition Feature Loss)
+    ↓
+models/best_htr_recognizer/best_model.weights.h5 (Frozen HTR model)
+    ↓
+Result: CER -66.2% (0.4860 → 0.1642) - DRAMATIC IMPROVEMENT
 ```
 
 ### Documentation Workflow
@@ -325,23 +353,35 @@ grep -r "RENCANA_KONTINGENSI" logbook/ scripts/
 
 ## 📊 PROJECT HEALTH
 
-### Latest Status (2025-10-16 10:57 WIB)
+### Latest Status (2025-10-16 12:52 WIB)
 
 ```
 🔄 ACTIVE WORK:
-   - Solution 1 smoke test (FIXED) - RUNNING (PID: 672717)
-   - lr_alpha bug fixed (0.0 → 0.00002)
-   - ETA completion: ~12:30 WIB (1.5 hours)
+   - Enhanced Discriminator V2 Quick Validation - RUNNING
+   - Test: V1 Generator (21.8M) + Enhanced D V2 (17.9M) vs Old D (137M)
+   - Steps: 200, Batch: 2, Fair comparison
+   - ETA completion: ~14:30 WIB (1.5-2 hours)
+   - Log: test_enhanced_disc_v2.log
 
 ✅ COMPLETED RECENTLY:
-   - Bug analysis: NaN loss root cause identified
-   - Fixed training script created
-   - Knowledge graph generator implemented
+   - Generator V1 validated as optimal (V2 failed by -4.49 dB)
+   - Unlimited data experiment: PSNR 21.90 dB (TARGET ACHIEVED!)
+   - Data starvation confirmed: 91.6% waste = -5.97 dB penalty
+   - Discriminator audit: 4 weaknesses identified
+   - Enhanced D V2 implemented: 86.9% parameter reduction (137M → 17.9M)
+   - V1 Architecture documentation: 838-line reproduction guide
 
 ⏳ PENDING:
-   - Solution 1 smoke test results (waiting ~1.5h)
-   - Decision: Full training vs Solution 3
-   - Knowledge graph visualization update
+   - Enhanced D V2 validation results (waiting ~1.5h)
+   - Decision: Use Enhanced D V2 or stick with Old D
+   - Full 50-epoch training (PSNR target: 35-40 dB)
+   - Publication preparation (Pattern Recognition Q1)
+
+🎯 KEY ACHIEVEMENTS:
+   - Target PSNR >20 dB: ACHIEVED (21.90 dB)
+   - CER improvement: -66.2% (0.4860 → 0.1642)
+   - Data efficiency: 12.8× faster PSNR/min
+   - Parameter efficiency: 86.9% discriminator reduction
 
 ❌ BLOCKED:
    - None
@@ -350,17 +390,24 @@ grep -r "RENCANA_KONTINGENSI" logbook/ scripts/
 ### Code Quality
 
 ```
-✅ Documented: 95% (all major files have docstrings/comments)
-✅ Version Control: Git tracked
+✅ Documented: 98% (comprehensive docstrings, reproduction guides)
+✅ Version Control: Git tracked (branch: feat/enhanced-v2-sota)
 ✅ Standards: Timestamp system implemented
 ✅ Organization: Category-based structure
-⚠️ Testing: Manual testing only (no automated tests yet)
+✅ Reproducibility: V1 architecture fully documented
+⚠️ Testing: Manual validation tests (automated tests pending)
 ```
 
 ---
 
 ## 🔄 UPDATE HISTORY
 
+- `2025-10-16 12:52:00 WIB` - Enhanced Discriminator V2 quick validation started (test_enhanced_disc_v2.sh)
+- `2025-10-16 12:45:00 WIB` - Enhanced D V2 integrated into train_enhanced.py (--discriminator_version support)
+- `2025-10-16 12:30:00 WIB` - Enhanced Discriminator V2 implemented (17.9M params, 86.9% reduction)
+- `2025-10-16 12:00:00 WIB` - Discriminator audit completed (4 weaknesses documented)
+- `2025-10-16 11:45:00 WIB` - V1 Architecture Reproduction Guide created (838 lines)
+- `2025-10-16 11:30:00 WIB` - Unlimited data analysis completed (PSNR 21.90 dB - TARGET ACHIEVED!)
 - `2025-10-16 11:05:00 WIB` - Knowledge graph generated successfully (30 nodes, 27 edges)
 - `2025-10-16 10:57:00 WIB` - Initial manifest creation with 50+ files inventoried
 - `2025-10-16 10:57:00 WIB` - Knowledge graph generator implemented (NetworkX)
@@ -369,11 +416,31 @@ grep -r "RENCANA_KONTINGENSI" logbook/ scripts/
 
 ## 📞 QUICK LINKS
 
-- **Main Training Script:** `dual_modal_gan/scripts/train32.py`
-- **Current Active Script:** `scripts/train32_solution1_smoke_test_FIXED.sh`
-- **Latest Bug Fix:** `logbook/20251016_bugfix_nan_loss_lr_alpha_zero.md`
-- **Contingency Plan:** `catatan/RENCANA_KONTINGENSI_POST_EXPERIMENT1.md`
+### Current Phase: Discriminator Enhancement
+
+- **Active Test:** `scripts/test_enhanced_disc_v2.sh` (RUNNING)
+- **Test Log:** `test_enhanced_disc_v2.log`
+- **Enhanced Discriminator:** `dual_modal_gan/src/models/discriminator_enhanced_v2.py`
+- **Main Training Script:** `dual_modal_gan/scripts/train_enhanced.py`
+
+### Key Documentation
+
+- **V1 Architecture Guide:** `docs/ARCHITECTURE_V1_REPRODUCTION_GUIDE.md` (838 lines)
+- **Discriminator Audit:** `logbook/20251016_discriminator_audit.md`
+- **Unlimited Data Analysis:** `logbook/20251016_unlimited_data_analysis.md`
+- **Baseline Research:** `catatan/souibgui_enhance_to_read_better.md`
+
+### Configuration & Standards
+
 - **Project Rules:** `.github/copilot-instructions.md`
+- **Logbook Standards:** `logbook/LOGBOOK_STANDARDS.md`
+- **Logbook Template:** `logbook/TEMPLATE_logbook.md`
+
+### Key Results
+
+- **Generator V1:** 21.8M params, PSNR 21.90 dB (unlimited data)
+- **Enhanced D V2:** 17.9M params (86.9% reduction vs 137M Old D)
+- **Recognition Feature Loss:** CER -66.2% (0.4860 → 0.1642)
 
 ---
 

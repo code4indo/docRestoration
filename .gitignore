@@ -29,6 +29,7 @@ Thumbs.db
 *.temp
 *.log
 nohup.out
+.bevel/
 
 # Jupyter checkpoints
 .ipynb_checkpoints/

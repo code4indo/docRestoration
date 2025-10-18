@@ -1,0 +1,66 @@
+{
+  "experiment_name": "replication_b2b745d0",
+  "description": "Exact replication of run b2b745d048b2464fae0075e561424754 to validate reproducibility",
+  "model": {
+    "generator": {
+      "architecture": "unet",
+      "filters": 64,
+      "num_residual_blocks": 9
+    },
+    "discriminator": {
+      "architecture": "patchgan",
+      "filters": 64,
+      "num_layers": 3
+    },
+    "recognizer": {
+      "architecture": "crnn",
+      "use_pretrained": true
+    }
+  },
+  "training": {
+    "epochs": 1,
+    "steps_per_epoch": 2133,
+    "batch_size": 2,
+    "learning_rate_g": 0.0002,
+    "learning_rate_d": 0.0002,
+    "beta1": 0.5,
+    "beta2": 0.999,
+    "gradient_clip": 1.0,
+    "use_amp": false,
+    "precision": "fp32"
+  },
+  "loss_weights": {
+    "pixel_loss_weight": 200.0,
+    "adv_loss_weight": 1.5,
+    "rec_feat_loss_weight": 5.0,
+    "ctc_loss_weight": 1.0
+  },
+  "loss_config": {
+    "pixel_loss_type": "mae",
+    "use_perceptual_loss": false,
+    "discriminator_loss_type": "lsgan",
+    "gradient_penalty_weight": 0.0,
+    "ctc_loss_clip_max": 300.0
+  },
+  "data": {
+    "dataset_path": "data/processed",
+    "image_height": 64,
+    "image_width": 256,
+    "augmentation": {
+      "random_crop": false,
+      "random_flip": false,
+      "random_rotation": 0
+    }
+  },
+  "checkpoints": {
+    "save_frequency": 5,
+    "keep_best_only": false,
+    "monitor_metric": "psnr"
+  },
+  "logging": {
+    "log_frequency": 50,
+    "save_images_frequency": 100,
+    "use_tensorboard": true,
+    "mlflow_tracking": true
+  }
+}

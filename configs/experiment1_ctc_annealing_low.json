@@ -1,0 +1,22 @@
+{
+  "experiment_name": "experiment1_ctc_annealing_low",
+  "description": "Test CTC weight 0.1 - Hipotesis: PSNR akan naik 5-7 dB karena pixel/recfeat/adv loss lebih dominan",
+  "epochs": 1,
+  "steps_per_epoch": 1000,
+  "batch_size": 4,
+  "learning_rate": 0.0001,
+  "discriminator_learning_rate": 0.00005,
+  "pixel_loss_weight": 200.0,
+  "rec_feat_loss_weight": 5.0,
+  "adv_loss_weight": 1.5,
+  "ctc_loss_weight": 0.1,
+  "discriminator_mode": "predicted",
+  "generator_type": "enhanced",
+  "discriminator_type": "enhanced_v2",
+  "expected_outcome": {
+    "psnr": "24-26 dB",
+    "cer": "0.6-0.7 (worse, karena CTC lemah)",
+    "g_loss": "~30-40 (CTC tidak dominan)",
+    "d_loss": "~1.2-1.5"
+  }
+}

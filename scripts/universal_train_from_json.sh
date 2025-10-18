@@ -87,10 +87,12 @@ try:
     epochs = get_value(config, ['training', 'epochs'], 1)
     steps_per_epoch = get_value(config, ['training', 'steps_per_epoch'], 500)
     batch_size = get_value(config, ['training', 'batch_size'], 2)
+    save_interval = get_value(config, ['training', 'save_interval'], 5)
     
     training_args.append(f\"--epochs {epochs}\")
     training_args.append(f\"--steps_per_epoch {steps_per_epoch}\")
     training_args.append(f\"--batch_size {batch_size}\")
+    training_args.append(f\"--save_interval {save_interval}\")
     
     # Learning rates
     lr_g = get_value(config, ['training', 'learning_rate_g'], 0.0002)

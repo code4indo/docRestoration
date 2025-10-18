@@ -1,0 +1,83 @@
+{
+  "experiment_name": "strategy1_extreme_rebalance",
+  "description": "Strategi 1: Aggressive Loss Rebalancing - Mengurangi dominasi CTC loss dari 97% ke 67%",
+  
+  "model": {
+    "generator_version": "enhanced",
+    "discriminator_version": "enhanced_v2"
+  },
+  
+  "data": {
+    "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+    "charset_path": "real_data_preparation/real_data_charlist.txt",
+    "recognizer_weights": "models/best_htr_recognizer/best_model.weights.h5"
+  },
+  
+  "training": {
+    "epochs": 1,
+    "steps_per_epoch": 200,
+    "batch_size": 2,
+    "gpu_id": "0",
+    "no_restore": true,
+    "seed": 42
+  },
+  
+  "loss_weights": {
+    "pixel_loss_weight": 300.0,
+    "rec_feat_loss_weight": 10.0,
+    "adv_loss_weight": 5.0,
+    "ctc_loss_weight": 0.3,
+    "contrastive_loss_weight": 0.0
+  },
+  
+  "loss_config": {
+    "gradient_clip_norm": 1.0,
+    "ctc_loss_clip_max": 100.0
+  },
+  
+  "schedule": {
+    "warmup_epochs": 0,
+    "annealing_epochs": 0,
+    "use_lr_schedule": false,
+    "lr_decay_epochs": 50,
+    "lr_alpha": 0.0
+  },
+  
+  "optimizer": {
+    "lr_g": 0.0002,
+    "lr_d": 0.0002
+  },
+  
+  "checkpoints": {
+    "checkpoint_dir": "dual_modal_gan/checkpoints/strategy1_extreme_rebalance",
+    "sample_dir": "dual_modal_gan/outputs/strategy1_extreme_rebalance",
+    "max_checkpoints": 1,
+    "save_interval": 1,
+    "eval_interval": 1
+  },
+  
+  "discriminator": {
+    "mode": "predicted"
+  },
+  
+  "early_stopping": {
+    "enabled": false,
+    "patience": 15,
+    "min_delta": 0.01,
+    "restore_best_weights": true
+  },
+  
+  "metrics": {
+    "cer_weight": 0.5
+  },
+  
+  "hypothesis": {
+    "problem": "CTC loss dominates 97% of total loss, causing Generator to ignore adversarial signal",
+    "solution": "Reduce CTC weight from 1.0 to 0.3, increase adversarial weight from 1.5 to 5.0",
+    "expected_outcome": {
+      "d_loss": "Should drop from 1.2-1.7 to 0.5-0.7 (ideal range)",
+      "psnr_improvement": "+1-2 dB",
+      "new_balance": "CTC contributes 67% instead of 97%"
+    }
+  }
+}

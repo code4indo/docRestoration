@@ -1,6 +1,6 @@
 {
-  "experiment_name": "experiment_15epochs_vgg_perceptual",
-  "description": "STRATEGI MENGEJAR PSNR 30+: (1) Extended Training 15 epochs + CTC activation, (2) VGG Perceptual Loss weight=0.2, (3) Proper LR schedule decay=15. Baseline: 26.26 dB, Target: 28-30 dB. Expected gain: +1.5-3.7 dB dengan multi-strategy approach.",
+  "experiment_name": "experiment_A1_A2_extended_training",
+  "description": "Testing strategies A1 (Extended Training 5 epochs) + A2 (Cosine Annealing LR Schedule). Baseline PSNR: 23.18 dB, Expected gain: +0.5-1.1 dB PSNR (target: 23.7-24.3 dB). Note: A3 (Gradient Accumulation) requires code modification - tested separately.",
   "model": {
     "generator": {
       "architecture": "enhanced",
@@ -18,7 +18,7 @@
     }
   },
   "training": {
-    "epochs": 30,
+    "epochs": 5,
     "steps_per_epoch": 2133,
     "batch_size": 2,
     "learning_rate_g": 0.0002,
@@ -29,14 +29,13 @@
     "use_amp": false,
     "precision": "fp32",
     "use_lr_schedule": true,
-    "lr_decay_epochs": 15,
+    "lr_decay_epochs": 50,
     "lr_alpha": 1e-6,
-    "seed": 42, 
-    "resume_from_checkpoint": true
+    "seed": 42
   },
   "early_stopping": {
     "enabled": true,
-    "patience": 20,
+    "patience": 15,
     "monitor": "val_psnr",
     "mode": "max",
     "min_delta": 0.01
@@ -45,22 +44,14 @@
     "pixel_loss_weight": 200.0,
     "adv_loss_weight": 1.5,
     "rec_feat_loss_weight": 5.0,
-    "ctc_loss_weight": 1.0,
-    "perceptual_loss_weight": 0.2
+    "ctc_loss_weight": 1.0
   },
   "loss_config": {
     "pixel_loss_type": "mae",
-    "use_perceptual_loss": true,
-    "perceptual_layers": ["block1_conv2", "block2_conv2", "block3_conv4", "block4_conv4", "block5_conv4"],
+    "use_perceptual_loss": false,
     "discriminator_loss_type": "lsgan",
     "gradient_penalty_weight": 0.0,
     "ctc_loss_clip_max": 300.0
-  },
-  "visualization": {
-    "save_samples": true,
-    "save_interval": 1,
-    "num_samples": 4,
-    "create_comparison": true
   },
   "data": {
     "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
@@ -76,7 +67,7 @@
   },
   "checkpoints": {
     "save_frequency": 1,
-    "max_checkpoints": 1,
+    "max_checkpoints": 10,
     "keep_best_only": false,
     "monitor_metric": "psnr"
   },

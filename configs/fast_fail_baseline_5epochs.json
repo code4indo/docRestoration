@@ -1,0 +1,57 @@
+{
+  "experiment_name": "fast_fail_baseline_5epochs",
+  "description": "Baseline control - NO adaptive balancing - 5 epoch untuk comparison dengan adaptive run. Expected: PSNR tetap plateau ~29.5",
+  "training": {
+    "epochs": 5,
+    "batch_size": 2,
+    "steps_per_epoch": 2133,
+    "generator_lr": 0.0002,
+    "discriminator_lr": 0.0002,
+    "lr_schedule": "cosine_decay",
+    "lr_warmup_epochs": 0,
+    "lr_decay_from_epoch": 999
+  },
+  "loss_weights": {
+    "pixel_loss_weight": 200.0,
+    "adversarial_loss_weight": 1.5,
+    "rec_feat_loss_weight": 5.0,
+    "ctc_loss_weight": 1.0,
+    "perceptual_loss_weight": 0.2
+  },
+  "adaptive_balancing": {
+    "enabled": false,
+    "comment": "DISABLED - ini adalah baseline control untuk comparison"
+  },
+  "ctc_annealing": {
+    "enabled": false,
+    "comment": "Disable untuk fair comparison dengan adaptive (keduanya mulai dengan same static weights)"
+  },
+  "checkpointing": {
+    "checkpoint_dir": "dual_modal_gan/checkpoints/fast_fail_baseline_5epochs",
+    "save_best_only": false,
+    "save_interval": 1,
+    "monitor_metric": "val_psnr"
+  },
+  "mlflow": {
+    "experiment_name": "fast_fail_baseline_5epochs",
+    "run_name_prefix": "baseline_control",
+    "tags": {
+      "strategy": "fixed_weights",
+      "algorithm": "none",
+      "purpose": "control_experiment",
+      "comparison": "vs_adaptive"
+    }
+  },
+  "dataset": {
+    "train_tfrecord": "data/processed/train_dataset.tfrecord",
+    "val_tfrecord": "data/processed/val_dataset.tfrecord",
+    "train_samples": 4266,
+    "val_samples": 473,
+    "charset_size": 109
+  },
+  "comparison_note": {
+    "reference_adaptive": "fast_fail_adaptive_5epochs",
+    "hypothesis": "Baseline will plateau ~29.5 dB, adaptive should reach 29.75+",
+    "key_metric": "PSNR improvement rate per epoch"
+  }
+}

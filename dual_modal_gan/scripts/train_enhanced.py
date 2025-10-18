@@ -61,6 +61,7 @@ from dual_modal_gan.src.models.recognizer import load_frozen_recognizer
 from dual_modal_gan.src.models.discriminator import build_dual_modal_discriminator
 from dual_modal_gan.src.models.discriminator_enhanced_v2 import build_dual_modal_discriminator_enhanced_v2
 from dual_modal_gan.losses.perceptual_loss import create_perceptual_loss
+from dual_modal_gan.models.gradnorm import SimpleAdaptiveBalancer
 
 # --- Utility Functions ---
 def read_charlist(path):
@@ -373,6 +374,30 @@ def main(args):
         # Create dummy layer that returns 0 (avoids None reference in @tf.function)
         perceptual_loss_layer = tf.keras.layers.Lambda(lambda x: tf.constant(0.0, dtype=tf.float32))
     
+    # Initialize Adaptive Loss Balancer (if enabled)
+    adaptive_balancer = None
+    if args.adaptive_loss_balancing:
+        print(f"\n⚖️  Initializing Adaptive Loss Balancing...")
+        print(f"   Method: SimpleAdaptiveBalancer")
+        print(f"   Target CTC ratio: {args.target_ctc_ratio:.2%}")
+        print(f"   Target Visual ratio: {args.target_visual_ratio:.2%}")
+        print(f"   Adaptation rate: {args.adaptation_rate}")
+        
+        # Define loss names and target ratios
+        loss_names = ['ctc', 'visual']  # visual = pixel + perceptual + adv + recfeat
+        target_ratios = {
+            'ctc': args.target_ctc_ratio,
+            'visual': args.target_visual_ratio
+        }
+        
+        adaptive_balancer = SimpleAdaptiveBalancer(
+            loss_names=loss_names,
+            target_ratios=target_ratios,
+            adaptation_rate=args.adaptation_rate
+        )
+        print("   ✅ Adaptive balancer initialized")
+        print("   Expected benefit: Automatic loss balancing, prevents CTC dominance")
+    
     with strategy.scope():
         bce_loss_fn = tf.keras.losses.BinaryCrossentropy()
         mae_loss_fn = tf.keras.losses.MeanAbsoluteError()
@@ -618,11 +643,39 @@ def main(args):
             pbar = tqdm(range(steps_per_epoch), desc=f"Epoch {epoch+1}")
             for step in pbar:
                 degraded_batch, clean_batch, text_batch = next(dataset_iterator)
+                
+                # If adaptive balancing enabled, update weights before training step
+                if adaptive_balancer is not None and step > 0:
+                    # Calculate loss magnitudes from previous step for adaptive balancing
+                    # Group visual losses: pixel + perceptual + adversarial + rec_feat
+                    loss_dict = {
+                        'ctc': float(ctc_loss.numpy()),
+                        'visual': float(pix_loss.numpy()) + float(percep_loss.numpy() if isinstance(percep_loss, tf.Tensor) else percep_loss) + float(adv_loss.numpy()) + float(rec_feat_loss.numpy())
+                    }
+                    
+                    # Update adaptive weights
+                    updated_weights = adaptive_balancer.update(loss_dict)
+                    
+                    # Apply updated weights (override curriculum learning weights)
+                    current_ctc_weight = updated_weights['ctc'] * args.ctc_loss_weight
+                    # Visual weight is distributed across components proportionally
+                    visual_weight = updated_weights['visual']
+                    current_pixel_weight = visual_weight * args.pixel_loss_weight
+                    current_percep_weight = visual_weight * args.perceptual_loss_weight
+                    current_adv_weight = visual_weight * args.adv_loss_weight
+                    current_rec_feat_weight = visual_weight * args.rec_feat_loss_weight
+                else:
+                    # Use original weights if adaptive balancing disabled or first step
+                    current_pixel_weight = args.pixel_loss_weight
+                    current_percep_weight = args.perceptual_loss_weight
+                    current_adv_weight = args.adv_loss_weight
+                    current_rec_feat_weight = args.rec_feat_loss_weight
+                
                 g_loss, d_loss, adv_loss, pix_loss, rec_feat_loss, percep_loss, ctc_loss, ctc_loss_raw, g_grad_norm, d_grad_norm = train_step(
                     degraded_batch, clean_batch, text_batch, 
                     tf.constant(current_ctc_weight, dtype=tf.float32),
-                    tf.constant(args.rec_feat_loss_weight, dtype=tf.float32),
-                    tf.constant(args.perceptual_loss_weight, dtype=tf.float32)
+                    tf.constant(current_rec_feat_weight, dtype=tf.float32),
+                    tf.constant(current_percep_weight, dtype=tf.float32)
                 )
                 
                 # Collect metrics
@@ -681,6 +734,16 @@ def main(args):
             }
             if args.perceptual_loss_weight > 0:
                 metrics_to_log["train/perceptual_loss"] = epoch_metrics["training_losses"]["perceptual_loss"]
+            
+            # Log adaptive weights if enabled
+            if adaptive_balancer is not None:
+                current_weights = adaptive_balancer.weights
+                metrics_to_log["adaptive/weight_ctc"] = current_weights['ctc']
+                metrics_to_log["adaptive/weight_visual"] = current_weights['visual']
+                # Log target ratios for reference
+                metrics_to_log["adaptive/target_ctc_ratio"] = args.target_ctc_ratio
+                metrics_to_log["adaptive/target_visual_ratio"] = args.target_visual_ratio
+            
             mlflow.log_metrics(metrics_to_log, step=mlflow_step)
         
             # --- End of Epoch Actions ---
@@ -899,11 +962,11 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Train Dual-Modal GAN-HTR with Pure FP32 (OPTIMIZED)')
-    parser.add_argument('--generator_version', type=str, default='base', choices=['base', 'enhanced', 'enhanced_v2'], help='Version of the generator to use: base, enhanced, or enhanced_v2 (SOTA).')
-    parser.add_argument('--discriminator_version', type=str, default='base', choices=['base', 'enhanced_v2'], help='Version of the discriminator to use: base (137M params) or enhanced_v2 (18M params).')
+    parser.add_argument('--generator_version', type=str, default='base', choices=['base', 'enhanced', 'enhanced_v2'], help='Version of the generator to use: base, enhanced, or enhanced_v2 as SOTA version.')
+    parser.add_argument('--discriminator_version', type=str, default='base', choices=['base', 'enhanced_v2'], help='Version of the discriminator to use: base with 137M params or enhanced_v2 with 18M params.')
     parser.add_argument('--tfrecord_path', type=str, default='dual_modal_gan/data/dataset_gan.tfrecord', help='Path to the training TFRecord file.')
     parser.add_argument('--charset_path', type=str, default='real_data_preparation/real_data_charlist.txt', help='Path to the character set file.')
-    parser.add_argument('--recognizer_weights', type=str, default='models/best_htr_recognizer/best_model.weights.h5', help='Path to pre-trained recognizer weights (Stage 3, CER 33.72%).')
+    parser.add_argument('--recognizer_weights', type=str, default='models/best_htr_recognizer/best_model.weights.h5', help='Path to pre-trained recognizer weights from Stage 3 with CER 33.72 percent.')
     parser.add_argument('--gpu_id', type=str, default='1', help='ID of the GPU to use (e.g., "0" or "1").')
     parser.add_argument('--no_restore', action='store_true', help='Do not restore from checkpoint, start from scratch.')
     parser.add_argument('--resume', action='store_true', help='Resume training from last completed epoch (requires epoch_info.json in checkpoint dir).')
@@ -939,6 +1002,12 @@ if __name__ == '__main__':
     parser.add_argument('--patience', type=int, default=15, help='Number of epochs without improvement before stopping (default: 15).')
     parser.add_argument('--min_delta', type=float, default=0.01, help='Minimum change in monitored metric to qualify as improvement (default: 0.01).')
     parser.add_argument('--restore_best_weights', action='store_true', default=True, help='Restore model weights from best epoch when early stopping triggers.')
+    
+    # Adaptive Loss Balancing Parameters
+    parser.add_argument('--adaptive_loss_balancing', action='store_true', help='Enable adaptive loss balancing with SimpleAdaptiveBalancer.')
+    parser.add_argument('--target_ctc_ratio', type=float, default=0.65, help='Target contribution ratio for CTC loss, default is 0.65 or 65 percent.')
+    parser.add_argument('--target_visual_ratio', type=float, default=0.35, help='Target contribution ratio for visual losses including pixel, perceptual, adversarial, and recognition feature losses. Default is 0.35 or 35 percent.')
+    parser.add_argument('--adaptation_rate', type=float, default=0.15, help='Adaptation rate for SimpleAdaptiveBalancer ranging from 0.1 to 0.5, default is 0.15.')
 
     args = parser.parse_args()
     main(args)

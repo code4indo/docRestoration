@@ -1,0 +1,82 @@
+{
+  "experiment_name": "baseline_current",
+  "description": "Baseline - Konfigurasi saat ini yang sedang running (CTC dominates 97%)",
+  
+  "model": {
+    "generator_version": "enhanced",
+    "discriminator_version": "enhanced_v2"
+  },
+  
+  "data": {
+    "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+    "charset_path": "real_data_preparation/real_data_charlist.txt",
+    "recognizer_weights": "models/best_htr_recognizer/best_model.weights.h5"
+  },
+  
+  "training": {
+    "epochs": 1,
+    "steps_per_epoch": 200,
+    "batch_size": 4,
+    "gpu_id": "0",
+    "no_restore": true,
+    "seed": 42
+  },
+  
+  "loss_weights": {
+    "pixel_loss_weight": 200.0,
+    "rec_feat_loss_weight": 5.0,
+    "adv_loss_weight": 1.5,
+    "ctc_loss_weight": 1.0,
+    "contrastive_loss_weight": 0.0
+  },
+  
+  "loss_config": {
+    "gradient_clip_norm": 1.0,
+    "ctc_loss_clip_max": 300.0
+  },
+  
+  "schedule": {
+    "warmup_epochs": 0,
+    "annealing_epochs": 0,
+    "use_lr_schedule": false,
+    "lr_decay_epochs": 50,
+    "lr_alpha": 0.0
+  },
+  
+  "optimizer": {
+    "lr_g": 0.0002,
+    "lr_d": 0.0002
+  },
+  
+  "checkpoints": {
+    "checkpoint_dir": "dual_modal_gan/checkpoints/baseline_current",
+    "sample_dir": "dual_modal_gan/outputs/baseline_current",
+    "max_checkpoints": 1,
+    "save_interval": 1,
+    "eval_interval": 1
+  },
+  
+  "discriminator": {
+    "mode": "predicted"
+  },
+  
+  "early_stopping": {
+    "enabled": false,
+    "patience": 15,
+    "min_delta": 0.01,
+    "restore_best_weights": true
+  },
+  
+  "metrics": {
+    "cer_weight": 0.5
+  },
+  
+  "notes": {
+    "current_results": {
+      "psnr": "22-26 dB",
+      "d_loss_range": "1.23-1.71 (STUCK)",
+      "g_loss": "300-315 (dominated by CTC ~300)",
+      "problem": "CTC loss contributes 97% of total loss"
+    }
+  }
+}

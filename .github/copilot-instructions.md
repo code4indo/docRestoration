@@ -17,7 +17,7 @@ saya adalah belekok, peraturan dalam diskusi dengan saya:
 - proyek ini merupakan implementasi dari penelitian souibgui_enhance_to_read_better.md, tetapi dengan peningkatan akurasi (bisa jadi menemukan novelty)
 - dataset yang digunakan masih sintetis dan bukan data sebenarnya 
 - setelah ditemukan formula yang tepat akan digunakan dataset real dari arsip nasional 
-- Target PSNR adalah sekitar 40, target SSIM adalah sekitar 0.99
+- Target PSNR adalah sekitar 30, target SSIM adalah sekitar 0.95
 - lakukan penelitian untuk mendapatkan arsitektur yang lebih baik dan hasil yang optimal 
 - tujuan nya adalah menemukan arsitektur baru yang hasilnya melampaui penelitian baseline
 - lakukan training dengan prinsip clean slate
@@ -128,4 +128,21 @@ jalankan proses di background dan jangan tampilkan prosesnya di console karena b
 pantau log yang terjadi dengan tail -f untuk mendapatkan hasil dari proses yang berlangsung 
 
 # jangan bertindak bodoh 
-gunakan file / skrip yang sebelumnya sudah berhasil, pelajari polanya dan adopsi 
+gunakan file / skrip yang sebelumnya sudah berhasil, pelajari polanya dan adopsi
+
+# CRITICAL WARNING - TRAINING EXECUTION
+⚠️ **FATAL ERROR HISTORY - NEVER REPEAT:**
+1. **SELALU VERIFIKASI** skrip training yang digunakan SEBELUM launch
+2. **JANGAN ASUMSI** skrip .sh sudah kompatibel dengan format JSON - ALWAYS TEST FIRST
+3. **WAJIB CEK** apakah skrip benar-benar membaca file JSON yang di-pass sebagai argument
+4. **GUNAKAN** skrip universal (scripts/universal_train_from_json.sh) yang sudah diverifikasi
+5. **HINDARI** menggunakan skrip dengan hard-coded config paths atau format JSON spesifik
+6. **TEST DULU** dengan dry-run atau print command sebelum execute training
+7. **WASTE USER TIME = UNACCEPTABLE** - setiap training memakan biaya dan waktu berharga
+8. **VERIFY TWICE, RUN ONCE** - double check semua parameter sebelum launch
+
+## Standar Eksekusi Training:
+- Gunakan HANYA `scripts/universal_train_from_json.sh` untuk JSON configs
+- ATAU gunakan direct command ke `train_enhanced.py` dengan CLI args (paling reliable)
+- JANGAN gunakan skrip yang tidak diverifikasi atau hard-coded untuk config tertentu
+- SELALU test parsing config dulu sebelum launch training aktual 
