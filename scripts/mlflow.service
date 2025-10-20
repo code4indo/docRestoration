@@ -1,0 +1,32 @@
+[Unit]
+Description=MLflow Tracking Server
+Documentation=https://mlflow.org/docs/latest/index.html
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=lambda_one
+Group=lambda_one
+WorkingDirectory=/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration
+Environment=PATH=/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/.venv/bin:/usr/local/bin:/usr/bin:/bin
+Environment=PYTHONPATH=/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration
+Environment=MLFLOW_BACKEND_STORE_URI=sqlite:///home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/mlruns/.db
+ExecStart=/usr/bin/bash -c 'cd /home/lambda_one/tesis/GAN-HTR-ORI/docRestoration && source .venv/bin/activate && poetry run mlflow ui --host 0.0.0.0 --port 5000 --workers 4 --default-artifact-root /home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/mlruns'
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=mlflow
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/mlruns
+ReadWritePaths=/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/logs
+
+[Install]
+WantedBy=multi-user.target

@@ -63,9 +63,9 @@ try:
     gen_map = {'unet': 'enhanced', 'enhanced': 'enhanced', 'enhanced_v2': 'enhanced_v2', 'base': 'base'}
     gen_version = gen_map.get(gen_arch, 'enhanced')
     
-    disc_arch = get_value(config, ['model', 'discriminator', 'architecture'], 'enhanced_v2')
-    disc_map = {'patchgan': 'enhanced_v2', 'enhanced_v2': 'enhanced_v2', 'base': 'base'}
-    disc_version = disc_map.get(disc_arch, 'enhanced_v2')
+    disc_arch = get_value(config, ['model', 'discriminator', 'architecture'], 'enhanced_v2_fixed')
+    disc_map = {'patchgan': 'enhanced_v2', 'enhanced_v2': 'enhanced_v2', 'enhanced_v2_fixed': 'enhanced_v2_fixed', 'base': 'base'}
+    disc_version = disc_map.get(disc_arch, 'enhanced_v2_fixed')
     
     training_args.append(f\"--generator_version {gen_version}\")
     training_args.append(f\"--discriminator_version {disc_version}\")
@@ -82,6 +82,10 @@ try:
     training_args.append(f\"--checkpoint_dir dual_modal_gan/checkpoints/{exp_name}\")
     training_args.append(f\"--sample_dir dual_modal_gan/outputs/samples_{exp_name}\")
     training_args.append(f\"--max_checkpoints {get_value(config, ['checkpoints', 'max_checkpoints'], 1)}\")
+
+    # Best model checkpoint management (NEW)
+    save_best_separately = get_value(config, ['checkpoints', 'save_best_model_separately'], True)
+    training_args.append(f\"--save_best_model_separately\") if save_best_separately else None
     
     # Training hyperparameters
     epochs = get_value(config, ['training', 'epochs'], 1)
@@ -93,6 +97,10 @@ try:
     training_args.append(f\"--steps_per_epoch {steps_per_epoch}\")
     training_args.append(f\"--batch_size {batch_size}\")
     training_args.append(f\"--save_interval {save_interval}\")
+    
+    # Evaluation interval
+    eval_interval = get_value(config, ['training', 'eval_interval'], 1)
+    training_args.append(f\"--eval_interval {eval_interval}\")
     
     # Learning rates
     lr_g = get_value(config, ['training', 'learning_rate_g'], 0.0002)
@@ -122,15 +130,39 @@ try:
     ctc_clip = get_value(config, ['loss_config', 'ctc_loss_clip_max'], 300.0)
     training_args.append(f\"--ctc_loss_clip_max {ctc_clip}\")
     
+    # Curriculum Learning & Annealing (CRITICAL - was missing!)
+    warmup_epochs = get_value(config, ['training', 'warmup_epochs'], 10)
+    annealing_epochs = get_value(config, ['training', 'annealing_epochs'], 10)
+    training_args.append(f\"--warmup_epochs {warmup_epochs}\")
+    training_args.append(f\"--annealing_epochs {annealing_epochs}\")
+    
     # Other settings
     training_args.append(f\"--discriminator_mode {get_value(config, ['discriminator', 'mode'], 'predicted')}\")
+    training_args.append(f\"--cer_weight {get_value(config, ['cer_weight'], 0.2)}\")  # Fixed: reduced default from 0.5 to 0.2
     training_args.append(f\"--seed {get_value(config, ['training', 'seed'], 42)}\")
-    
+
     # Early stopping (optional)
     if get_value(config, ['early_stopping', 'enabled'], False):
         training_args.append('--early_stopping')
         training_args.append(f\"--patience {get_value(config, ['early_stopping', 'patience'], 15)}\")
         training_args.append(f\"--min_delta {get_value(config, ['early_stopping', 'min_delta'], 0.01)}\")
+        # restore_best_weights is handled as action='store_true' with default=True in argparse
+        # Only add flag if explicitly set to True in config
+        if get_value(config, ['early_stopping', 'restore_best_weights'], True):
+            training_args.append('--restore_best_weights')
+
+        # Early stopping metric (new parameter)
+        early_stop_metric = get_value(config, ['early_stopping_metric'], 'combined')
+        training_args.append(f\"--early_stopping_metric {early_stop_metric}\")
+
+        # PSNR improvement threshold (new parameter)
+        psnr_threshold = get_value(config, ['psnr_improvement_threshold'], 2.0)
+        training_args.append(f\"--psnr_improvement_threshold {psnr_threshold}\")
+
+        # Curriculum-aware early stopping (NEW - CRITICAL for proper training)
+        curriculum_aware = get_value(config, ['early_stopping', 'curriculum_aware'], True)
+        if curriculum_aware:
+            training_args.append('--curriculum_aware_early_stopping')
     
     # LR schedule (optional)
     if get_value(config, ['training', 'use_lr_schedule'], False):
@@ -146,6 +178,13 @@ try:
     if get_value(config, ['training', 'no_restore'], False):
         training_args.append('--no_restore')
     
+    # Adaptive Loss Balancing (optional - CRITICAL feature that was missing!)
+    if get_value(config, ['training', 'adaptive_loss_balancing'], False):
+        training_args.append('--adaptive_loss_balancing')
+        training_args.append(f\"--target_ctc_ratio {get_value(config, ['training', 'target_ctc_ratio'], 0.65)}\")
+        training_args.append(f\"--target_visual_ratio {get_value(config, ['training', 'target_visual_ratio'], 0.35)}\")
+        training_args.append(f\"--adaptation_rate {get_value(config, ['training', 'adaptation_rate'], 0.15)}\")
+    
     # Print configuration summary
     print('=' * 80)
     print('CONFIGURATION SUMMARY:')
@@ -158,9 +197,16 @@ try:
     print(f'  Steps per epoch: {steps_per_epoch}')
     print(f'  Batch size: {batch_size}')
     print(f'  Learning rates: G={lr_g}, D={lr_d}')
+    print(f'  Eval interval: {eval_interval}')
     resume_flag = get_value(config, ['training', 'resume_from_checkpoint'], False)
     if resume_flag:
         print(f'  Resume from checkpoint: ✅ ENABLED')
+    print('')
+    print(f'Curriculum Learning:')
+    warmup_ep = get_value(config, ['training', 'warmup_epochs'], 10)
+    annealing_ep = get_value(config, ['training', 'annealing_epochs'], 10)
+    print(f'  Warmup epochs: {warmup_ep}')
+    print(f'  Annealing epochs: {annealing_ep}')
     print('')
     print(f'Loss Weights:')
     print(f'  Pixel: {pixel_weight}')
@@ -173,6 +219,27 @@ try:
     print(f'Loss Config:')
     print(f'  Gradient clip: {grad_clip}')
     print(f'  CTC clip max: {ctc_clip}')
+    print(f'  CER weight: {get_value(config, [\"training\", \"cer_weight\"], 0.5)}')
+    print('')
+    
+    # Adaptive Loss Balancing
+    adaptive_enabled = get_value(config, ['training', 'adaptive_loss_balancing'], False)
+    if adaptive_enabled:
+        print(f'Adaptive Loss Balancing: ✅ ENABLED')
+        print(f'  Target CTC ratio: {get_value(config, [\"training\", \"target_ctc_ratio\"], 0.65)}')
+        print(f'  Target visual ratio: {get_value(config, [\"training\", \"target_visual_ratio\"], 0.35)}')
+        print(f'  Adaptation rate: {get_value(config, [\"training\", \"adaptation_rate\"], 0.15)}')
+        print('')
+    
+    # Early Stopping
+    early_stop = get_value(config, ['early_stopping', 'enabled'], False)
+    if early_stop:
+        print(f'Early Stopping: ✅ ENABLED')
+        print(f'  Patience: {get_value(config, [\"early_stopping\", \"patience\"], 15)}')
+        print(f'  Min delta: {get_value(config, [\"early_stopping\", \"min_delta\"], 0.01)}')
+        print(f'  Metric: {get_value(config, [\"early_stopping_metric\"], \"combined\")}')
+        print(f'  PSNR threshold: {get_value(config, [\"psnr_improvement_threshold\"], 2.0)}')
+        print('')
     print('=' * 80)
     print('')
     

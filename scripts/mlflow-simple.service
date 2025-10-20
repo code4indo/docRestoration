@@ -1,0 +1,19 @@
+[Unit]
+Description=MLflow Tracking Server
+Documentation=https://mlflow.org/docs/latest/index.html
+After=network.target
+
+[Service]
+Type=simple
+User=lambda_one
+Group=lambda_one
+WorkingDirectory=/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration
+ExecStart=/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/.venv/bin/python -m mlflow ui --host 0.0.0.0 --port 5000
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=mlflow
+
+[Install]
+WantedBy=multi-user.target

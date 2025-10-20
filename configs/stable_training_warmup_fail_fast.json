@@ -14,7 +14,7 @@
   "resume": false,
   "epochs": 40,
   "batch_size": 2,
-  "steps_per_epoch": 50,
+  "steps_per_epoch": 2133,
   "save_interval": 1,
   "eval_interval": 1,
   "seed": 42,

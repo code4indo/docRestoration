@@ -23,12 +23,12 @@ saya adalah belekok, peraturan dalam diskusi dengan saya:
 - lakukan training dengan prinsip clean slate
 - hasil akhir dari penelitian ini adalah jurnal Q1 yang menghasilkan Novelty tetapi bukan plagiat dari souibgui_enhance_to_read_better.md
 - jalankan proses training secara background, dan gunakan > /dev/null 2>&1    
-- tuliskan setiap temuan penting secara rutin di file baru pada direktori logbook 
+<!-- - tuliskan setiap temuan penting secara rutin di file baru pada direktori logbook  -->
 - skrip program harus disusun dengan sistem pemberkasan yang baik 
 - jika hanya untuk mengetahui apakah kode berfungsi atau tidak gunakan epoch yang minimal, karena ini akan menghemat production cost dalam membangun model
 
 # Proses kerja
-- jangan lupa untuk membuat catatan logbook dalam bentuk point singkat, tujuannya adalah mencatat apa yang kamu kerjakan dan jika tertunda bisa dilaksanakan pada sesi yang berbeda, simpan logbook di dir logbook (pertahankan hanya menggunakan 1 file yang digunakan sebagai live dokumen, dukumen yang di update terus menerus)
+<!-- - jangan lupa untuk membuat catatan logbook dalam bentuk point singkat, tujuannya adalah mencatat apa yang kamu kerjakan dan jika tertunda bisa dilaksanakan pada sesi yang berbeda, simpan logbook di dir logbook (pertahankan hanya menggunakan 1 file yang digunakan sebagai live dokumen, dukumen yang di update terus menerus) -->
 
 # ML Project Configuration
 - Gunakan prinsip dan standar MLOps yang baik 
@@ -146,3 +146,19 @@ gunakan file / skrip yang sebelumnya sudah berhasil, pelajari polanya dan adopsi
 - ATAU gunakan direct command ke `train_enhanced.py` dengan CLI args (paling reliable)
 - JANGAN gunakan skrip yang tidak diverifikasi atau hard-coded untuk config tertentu
 - SELALU test parsing config dulu sebelum launch training aktual 
+
+
+
+# script training utama 
+skrip utama training yang saat ini digunakan adalah @dual_modal_gan/scripts/train_enhanced.py  
+
+# scrip launcher 
+skrip launcher utama yang saat ini digunakan adalah @scripts/universal_train_from_json.sh 
+
+
+# perintah memulai training 
+pola perintah utama yang digunakan untuk memulai training adalah 
+
+```
+nohup ./scripts/universal_train_from_json.sh configs/stable_training_enhanced_v2_fixed.json &
+```

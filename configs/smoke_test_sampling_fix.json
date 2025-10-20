@@ -1,0 +1,51 @@
+{
+  "experiment_name": "smoke_test_sampling_fix",
+  "description": "SMOKE TEST: Verify sampling validation fix shows different samples each epoch",
+  "model": {
+    "generator": {
+      "architecture": "enhanced"
+    },
+    "discriminator": {
+      "architecture": "enhanced_v2_fixed"
+    }
+  },
+  "data": {
+    "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+    "charset_path": "real_data_preparation/real_data_charlist.txt",
+    "recognizer_weights": "models/best_htr_recognizer/best_model.weights.h5"
+  },
+  "training": {
+    "epochs": 3,
+    "steps_per_epoch": 10,
+    "batch_size": 2,
+    "learning_rate_g": 0.0002,
+    "learning_rate_d": 0.0002,
+    "gpu_id": "0",
+    "save_interval": 1,
+    "eval_interval": 1,
+    "warmup_epochs": 1,
+    "annealing_epochs": 1,
+    "cer_weight": 0.5,
+    "seed": 42,
+    "gradient_clip": 1.0,
+    "adaptive_loss_balancing": false,
+    "early_stopping": false
+  },
+  "loss_weights": {
+    "pixel_loss_weight": 50.0,
+    "adv_loss_weight": 3.0,
+    "rec_feat_loss_weight": 8.0,
+    "ctc_loss_weight": 0.15,
+    "perceptual_loss_weight": 1.0,
+    "contrastive_loss_weight": 0.0
+  },
+  "loss_config": {
+    "ctc_loss_clip_max": 400.0
+  },
+  "discriminator": {
+    "mode": "predicted"
+  },
+  "checkpoints": {
+    "max_checkpoints": 1
+  }
+}

@@ -57,9 +57,10 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.
 from dual_modal_gan.src.models.generator import unet
 from dual_modal_gan.src.models.generator_enhanced import unet_enhanced
 from dual_modal_gan.src.models.generator_enhanced_v2 import unet_enhanced_v2
-from dual_modal_gan.src.models.recognizer import load_frozen_recognizer
+from dual_modal_gan.src.models.recognizer_fixed import load_frozen_recognizer_fixed as load_frozen_recognizer
 from dual_modal_gan.src.models.discriminator import build_dual_modal_discriminator
 from dual_modal_gan.src.models.discriminator_enhanced_v2 import build_dual_modal_discriminator_enhanced_v2
+from dual_modal_gan.src.models.discriminator_enhanced_v2_fixed import build_dual_modal_discriminator_enhanced_v2_fixed
 from dual_modal_gan.losses.perceptual_loss import create_perceptual_loss
 from dual_modal_gan.models.gradnorm import SimpleAdaptiveBalancer
 
@@ -67,6 +68,46 @@ from dual_modal_gan.models.gradnorm import SimpleAdaptiveBalancer
 def read_charlist(path):
     with open(path, 'r', encoding='utf-8') as f:
         return [line.rstrip('\n') for line in f]
+
+def decode_ctc_predictions(logits, charset):
+    """
+    Manual CTC decode - EXACT implementation from training script.
+    This is the CORRECT way to decode HTR predictions.
+    
+    Args:
+        logits: (batch, time_steps, vocab_size+1) - raw logits from recognizer
+        charset: list of characters
+    
+    Returns:
+        list of decoded strings
+    """
+    charset_size = len(charset)
+    batch_size = logits.shape[0]
+    results = []
+    
+    for b in range(batch_size):
+        # Get predictions for this sample
+        raw_preds = np.argmax(logits[b], axis=-1)
+        
+        # Manual CTC decode with deduplication
+        deduped = []
+        prev = -1
+        for token in raw_preds:
+            if token != prev:
+                deduped.append(token)
+                prev = token
+        
+        # Remove blank tokens (blank_token = charset_size)
+        result = []
+        for token in deduped:
+            if token != charset_size:  # Skip blank
+                result.append(token)
+        
+        # Convert to string
+        decoded = ''.join([charset[i] if 0 <= i < len(charset) else '<?>' for i in result])
+        results.append(decoded)
+    
+    return results
 
 def set_seeds(seed=42):
     os.environ['PYTHONHASHSEED'] = str(seed)
@@ -102,6 +143,64 @@ def calculate_wer(ground_truth, prediction):
         return 0.0 if len(pred_words) == 0 else 1.0
     distance = editdistance.eval(gt_words, pred_words)
     return distance / len(gt_words)
+
+def calculate_noise_artifacts_metrics(image):
+    """
+    Calculate metrics to detect white dots/noise artifacts in generated images.
+    
+    Args:
+        image: TensorFlow tensor or numpy array, shape (W, H, C) or (W, H), values in [0, 1]
+    
+    Returns:
+        dict with noise metrics:
+        - noise_variance: Variance of Laplacian (high-frequency noise)
+        - isolated_white_ratio: Ratio of isolated white pixels (salt noise)
+        - local_variance: Variance of local deviations from smoothed image
+    """
+    # Convert to numpy and ensure grayscale
+    if isinstance(image, tf.Tensor):
+        img_np = image.numpy()
+    else:
+        img_np = image
+    
+    # Ensure 2D grayscale
+    if len(img_np.shape) == 3:
+        if img_np.shape[-1] == 1:
+            img_np = img_np.squeeze(-1)
+        else:
+            # Convert RGB to grayscale
+            img_np = np.mean(img_np, axis=-1)
+    
+    # Convert to uint8 for OpenCV operations (0-255 range)
+    if img_np.max() <= 1.0:
+        img_uint8 = (img_np * 255).astype(np.uint8)
+    else:
+        img_uint8 = img_np.astype(np.uint8)
+    
+    # 1. High-frequency noise detection (Laplacian variance)
+    laplacian = cv2.Laplacian(img_uint8, cv2.CV_64F)
+    noise_variance = float(np.var(laplacian))
+    
+    # 2. Isolated white pixel detection (salt noise)
+    # Threshold to detect very bright pixels (> 250/255 = 0.98)
+    _, binary = cv2.threshold(img_uint8, 250, 255, cv2.THRESH_BINARY)
+    kernel = np.ones((3, 3), np.uint8)
+    eroded = cv2.erode(binary, kernel, iterations=1)
+    isolated_white_pixels = np.sum(binary - eroded)
+    total_pixels = img_uint8.size
+    isolated_white_ratio = float(isolated_white_pixels / total_pixels)
+    
+    # 3. Local variance (smoothness measure)
+    kernel_size = 5
+    mean_filtered = cv2.blur(img_uint8, (kernel_size, kernel_size))
+    local_deviations = img_uint8.astype(np.float32) - mean_filtered.astype(np.float32)
+    local_variance = float(np.var(local_deviations))
+    
+    return {
+        'noise_variance': noise_variance,
+        'isolated_white_ratio': isolated_white_ratio,
+        'local_variance': local_variance
+    }
 
 
 # --- Dataset Pipeline ---
@@ -166,31 +265,57 @@ def create_dataset(tfrecord_path, batch_size, val_split=0.1):
     val_dataset = dataset.skip(train_size)
 
     train_dataset = train_dataset.shuffle(buffer_size=1024).repeat().batch(batch_size, drop_remainder=True).prefetch(tf.data.AUTOTUNE)
-    val_dataset = val_dataset.batch(batch_size, drop_remainder=True).prefetch(tf.data.AUTOTUNE)
+    val_dataset = val_dataset.shuffle(buffer_size=100, seed=42).batch(batch_size, drop_remainder=True).prefetch(tf.data.AUTOTUNE)
     
     return train_dataset, val_dataset, train_size, val_size
 
 # --- Main Training & Evaluation Logic ---
-def run_validation_step(val_dataset, generator, recognizer, charset, psnr_metric, ssim_metric, cer_metric, wer_metric):
-    """Run validation step with both visual (PSNR/SSIM) and textual (CER/WER) metrics.
-    
+def run_validation_step(val_dataset, generator, recognizer, charset, psnr_metric, ssim_metric, cer_metric, wer_metric, clean_cer_metric, clean_wer_metric, noise_variance_metric, isolated_white_metric, local_variance_metric):
+    """Run validation step with visual (PSNR/SSIM), textual (CER/WER), and noise artifact metrics.
+
     Note: Cannot use @tf.function due to Python-based CER/WER calculation.
+    FIXED: Now uses take() method to get consistent but different validation samples each call.
     """
-    for degraded_images, clean_images, labels in val_dataset:
+    first_batch = True  # Flag to log first batch sample
+    # Take first batch from validation dataset for consistent metrics calculation
+    # Using take(1) ensures we get fresh samples each epoch but consistent within the epoch
+    for degraded_images, clean_images, labels in val_dataset.take(1):
         # Generate enhanced images
         generated_images = generator(degraded_images, training=False)
         
+        # BUGFIX: Generator uses tanh activation (outputs [-1, 1])
+        # Denormalize to [0, 1] range for proper PSNR/SSIM calculation
+        # This fixes the white dots issue caused by range mismatch
+        generated_images_normalized = (generated_images + 1.0) / 2.0
+        clean_images_normalized = (clean_images + 1.0) / 2.0  # Clean images also in [-1,1] from TFRecord
+        
         # Visual metrics: PSNR and SSIM expect values in [0, 1] range
-        psnr = tf.image.psnr(clean_images, generated_images, max_val=1.0)
-        ssim = tf.image.ssim(clean_images, generated_images, max_val=1.0)
+        psnr = tf.image.psnr(clean_images_normalized, generated_images_normalized, max_val=1.0)
+        ssim = tf.image.ssim(clean_images_normalized, generated_images_normalized, max_val=1.0)
         psnr_metric.update_state(psnr)
         ssim_metric.update_state(ssim)
         
+        # Noise artifact metrics: Calculate for each generated image in batch
+        # Use denormalized images [0,1] for proper noise detection
+        batch_noise_variance = []
+        batch_isolated_white = []
+        batch_local_variance = []
+        for i in range(generated_images_normalized.shape[0]):
+            noise_metrics = calculate_noise_artifacts_metrics(generated_images_normalized[i])
+            batch_noise_variance.append(noise_metrics['noise_variance'])
+            batch_isolated_white.append(noise_metrics['isolated_white_ratio'])
+            batch_local_variance.append(noise_metrics['local_variance'])
+        
+        # Update noise metrics (average across batch)
+        noise_variance_metric.update_state(np.mean(batch_noise_variance))
+        isolated_white_metric.update_state(np.mean(batch_isolated_white))
+        local_variance_metric.update_state(np.mean(batch_local_variance))
+        
         # Textual metrics: CER/WER
+        # ✅ CRITICAL FIX: Run recognizer on NORMALIZED images [0,1], not tanh [-1,1]!
         # Get HTR predictions for clean (ground truth quality) and generated (enhanced) images
-        # Handle both single and multi-output recognizer
-        recognizer_output_clean = recognizer(clean_images, training=False)
-        recognizer_output_generated = recognizer(generated_images, training=False)
+        recognizer_output_clean = recognizer(clean_images_normalized, training=False)
+        recognizer_output_generated = recognizer(generated_images_normalized, training=False)
         
         # Extract logits (handle both tuple and single output)
         if isinstance(recognizer_output_clean, (list, tuple)):
@@ -200,37 +325,57 @@ def run_validation_step(val_dataset, generator, recognizer, charset, psnr_metric
             clean_logits = recognizer_output_clean
             generated_logits = recognizer_output_generated
         
-        # Decode predictions using greedy decoding (argmax)
-        clean_predictions = tf.argmax(clean_logits, axis=-1, output_type=tf.int32)
-        generated_predictions = tf.argmax(generated_logits, axis=-1, output_type=tf.int32)
+        # ✅ CRITICAL FIX: Use manual CTC decode, not tf.argmax!
+        # Decode predictions using manual CTC decoding (same as training script)
+        clean_predictions_text = decode_ctc_predictions(clean_logits.numpy(), charset)
+        generated_predictions_text = decode_ctc_predictions(generated_logits.numpy(), charset)
         
-        # Convert to numpy for text decoding
+        # Convert labels to numpy for text decoding
         labels_np = labels.numpy()
-        clean_pred_np = clean_predictions.numpy()
-        generated_pred_np = generated_predictions.numpy()
         
         # Calculate CER/WER for each sample in batch
-        batch_cer = []
-        batch_wer = []
+        batch_cer = []  # CER for generated image vs ground truth
+        batch_wer = []  # WER for generated image vs ground truth
+        batch_clean_cer = []  # CER for clean image vs ground truth (baseline)
+        batch_clean_wer = []  # WER for clean image vs ground truth (baseline)
+        
         for i in range(labels_np.shape[0]):
             # Decode ground truth
             gt_text = decode_label(labels_np[i], charset)
             
-            # Decode HTR predictions
-            clean_text = decode_label(clean_pred_np[i], charset)
-            generated_text = decode_label(generated_pred_np[i], charset)
+            # Get decoded HTR predictions (already decoded by manual CTC decode)
+            clean_text = clean_predictions_text[i]
+            generated_text = generated_predictions_text[i]
             
-            # Calculate CER/WER: Compare generated image predictions vs clean image predictions
-            # (We use clean as reference because it represents "ideal" HTR performance)
-            cer = calculate_cer(clean_text, generated_text)
-            wer = calculate_wer(clean_text, generated_text)
+            # FIXED: Calculate CER/WER against GROUND TRUTH (not clean prediction)
+            # This is the CORRECT way to measure HTR accuracy
+            cer = calculate_cer(gt_text, generated_text)
+            wer = calculate_wer(gt_text, generated_text)
+            
+            # Also calculate clean baseline (for comparison)
+            clean_cer = calculate_cer(gt_text, clean_text)
+            clean_wer = calculate_wer(gt_text, clean_text)
             
             batch_cer.append(cer)
             batch_wer.append(wer)
+            batch_clean_cer.append(clean_cer)
+            batch_clean_wer.append(clean_wer)
+            
+            # Log first sample for debugging
+            if i == 0 and first_batch:
+                print(f"\n📝 [SAMPLE TEXT RECOGNITION VALIDATION]")
+                print(f"  🎯 Ground Truth:    '{gt_text}'")
+                print(f"  ✨ Clean Image:     '{clean_text}' (CER: {clean_cer:.3f})")
+                print(f"  🤖 Generated Image: '{generated_text}' (CER: {cer:.3f})")
+                print(f"  📊 Quality Gap:     ΔCER = {cer - clean_cer:+.3f} (generated vs clean)")
+        
+        first_batch = False  # Don't log subsequent batches
         
         # Update metrics
         cer_metric.update_state(batch_cer)
         wer_metric.update_state(batch_wer)
+        clean_cer_metric.update_state(batch_clean_cer)
+        clean_wer_metric.update_state(batch_clean_wer)
 
 def main(args):
     os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu_id
@@ -291,7 +436,21 @@ def main(args):
         )
         
         # Build discriminator based on version
-        if args.discriminator_version == 'enhanced_v2':
+        if args.discriminator_version == 'enhanced_v2_fixed':
+            # Load discriminator config from additional args if available
+            disc_config = getattr(args, 'discriminator_config', {})
+            discriminator = build_dual_modal_discriminator_enhanced_v2_fixed(
+                img_shape=(1024, 128, 1),
+                vocab_size=vocab_size,
+                max_text_len=128,
+                config=disc_config
+            )
+            print(f"✅ Discriminator selected: ENHANCED_V2_FIXED (Reduced visual artifacts)")
+            print(f"   ✓ Smaller spatial attention (3x3 kernel)")
+            print(f"   ✓ Reduced cross-modal complexity (128 dim)")
+            print(f"   ✓ Improved BatchNorm stability (0.9)")
+            print(f"   ✓ Lower dropout (0.1)")
+        elif args.discriminator_version == 'enhanced_v2':
             discriminator = build_dual_modal_discriminator_enhanced_v2(img_shape=(1024, 128, 1), vocab_size=vocab_size, max_text_len=128)
             print(f"✅ Discriminator selected: ENHANCED_V2 (18M params, ResNet + BiLSTM + Cross-Attention)")
         else:
@@ -337,6 +496,18 @@ def main(args):
         
         checkpoint = tf.train.Checkpoint(generator_optimizer=generator_optimizer, discriminator_optimizer=discriminator_optimizer, generator=generator, discriminator=discriminator)
         ckpt_manager = tf.train.CheckpointManager(checkpoint, args.checkpoint_dir, max_to_keep=args.max_checkpoints)
+
+        # ✅ FIXED: Separate Best Model Checkpoint System to prevent loss due to max_checkpoints limitation
+        best_model_dir = os.path.join(args.checkpoint_dir, "best_model")
+        os.makedirs(best_model_dir, exist_ok=True)
+        best_model_ckpt_manager = tf.train.CheckpointManager(checkpoint, best_model_dir, max_to_keep=1) if args.save_best_model_separately else None
+
+        print(f"✅ Checkpoint system initialized:")
+        print(f"   Main checkpoints: {args.checkpoint_dir} (max_to_keep={args.max_checkpoints})")
+        if args.save_best_model_separately:
+            print(f"   Best model: {best_model_dir} (separate,不会被max_checkpoints影响)")
+        else:
+            print(f"   Best model: same as main checkpoints (可能受max_checkpoints影响)")
         
         # Epoch tracking for resume capability
         epoch_info_path = os.path.join(args.checkpoint_dir, 'epoch_info.json')
@@ -406,6 +577,13 @@ def main(args):
         val_ssim_metric = tf.keras.metrics.Mean(name='val_ssim')
         val_cer_metric = tf.keras.metrics.Mean(name='val_cer')
         val_wer_metric = tf.keras.metrics.Mean(name='val_wer')
+        val_clean_cer_metric = tf.keras.metrics.Mean(name='val_clean_cer')  # Baseline HTR on clean images
+        val_clean_wer_metric = tf.keras.metrics.Mean(name='val_clean_wer')  # Baseline HTR on clean images
+        
+        # Noise artifact detection metrics
+        val_noise_variance_metric = tf.keras.metrics.Mean(name='val_noise_variance')
+        val_isolated_white_metric = tf.keras.metrics.Mean(name='val_isolated_white_ratio')
+        val_local_variance_metric = tf.keras.metrics.Mean(name='val_local_variance')
 
         @tf.function
         def train_step(degraded_images, clean_images, ground_truth_text, ctc_weight, rec_feat_weight, percep_weight):
@@ -415,9 +593,14 @@ def main(args):
             with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
                 generated_images = generator(degraded_images, training=True)
                 
+                # ✅ CRITICAL FIX: Normalize images to [0,1] before passing to recognizer
+                # Recognizer expects [0,1] range, but generator outputs [-1,1] (tanh)
+                clean_images_normalized = (clean_images + 1.0) / 2.0
+                generated_images_normalized = (generated_images + 1.0) / 2.0
+                
                 # Get recognizer outputs - handle both single and multi-output
-                recognizer_output_clean = recognizer(clean_images, training=False)
-                recognizer_output_generated = recognizer(generated_images, training=False)
+                recognizer_output_clean = recognizer(clean_images_normalized, training=False)
+                recognizer_output_generated = recognizer(generated_images_normalized, training=False)
                 
                 # Extract logits and feature maps (if available)
                 if isinstance(recognizer_output_clean, (list, tuple)):
@@ -494,12 +677,12 @@ def main(args):
 
     print("\n[Phase 4/6] Starting Training Loop...")
     dataset_iterator = iter(train_dataset)
-    
-    # Create a fixed batch from the VALIDATION set for generating samples
-    val_iterator = iter(val_dataset)
-    sample_batch = next(val_iterator)
 
-    best_val_psnr = -1.0 # Initialize best PSNR for checkpoint management
+    # ✅ FIXED: Separate variables for each metric type to avoid confusion
+    best_monitored_value = float('-inf')  # For early stopping decision (changes based on metric)
+    best_psnr_value = -1.0  # For logging only
+    best_cer_value = float('inf')  # For logging only
+    best_combined_value = float('-inf')  # For logging only
     
     # --- Early Stopping Setup ---
     patience_counter = 0
@@ -624,8 +807,34 @@ def main(args):
                 phase_str = f" (Full Training, CTC_w={current_ctc_weight:.1f})"
                 if epoch == args.warmup_epochs + args.annealing_epochs:
                     print(f"\n✅ Annealing complete. Using full CTC loss weight.")
+                    # ✅ CURRICULUM COMPLETE: Reset patience counter for clean early stopping start
+                    if args.curriculum_aware_early_stopping and args.early_stopping:
+                        patience_counter = 0
+                        print(f"🎯 Early stopping evaluation BEGINS!")
+                        print(f"   Patience counter reset to 0/{args.patience}")
+                        print(f"   Now monitoring for improvements in full training phase")
 
             print(f"\nEpoch {epoch + 1}/{args.epochs}{phase_str}")
+
+            # ✅ Calculate curriculum status once at epoch start
+            curriculum_complete_epoch = args.warmup_epochs + args.annealing_epochs
+            is_curriculum_complete = (epoch + 1) > curriculum_complete_epoch
+
+            # ✅ ENHANCED: Show early stopping status at epoch start
+            if args.early_stopping:
+                if args.curriculum_aware_early_stopping:
+                    if is_curriculum_complete:
+                        print(f"  🎯 Early Stopping: ACTIVE (monitoring for improvements)")
+                        print(f"     Patience: {patience_counter}/{args.patience} | Metric: {args.early_stopping_metric}")
+                    else:
+                        remaining_epochs = curriculum_complete_epoch - epoch
+                        print(f"  📚 Early Stopping: PAUSED (curriculum in progress)")
+                        print(f"     Resume in: {remaining_epochs} epochs | Counter: frozen at {patience_counter}")
+                else:
+                    print(f"  ⚠️  Early Stopping: ALWAYS ACTIVE (curriculum-aware disabled)")
+                    print(f"     Patience: {patience_counter}/{args.patience} | Risk: may stop during warmup/annealing")
+            else:
+                print(f"  🚫 Early Stopping: DISABLED (will train for all {args.epochs} epochs)")
 
             # Track epoch metrics
             epoch_metrics = {
@@ -645,7 +854,9 @@ def main(args):
                 degraded_batch, clean_batch, text_batch = next(dataset_iterator)
                 
                 # If adaptive balancing enabled, update weights before training step
-                if adaptive_balancer is not None and step > 0:
+                # ✅ FIX: Only use adaptive balancing AFTER curriculum learning (warmup + annealing) completes
+                # This prevents adaptive mechanism from overriding the carefully designed curriculum schedule
+                if adaptive_balancer is not None and step > 0 and not (is_warmup or is_annealing):
                     # Calculate loss magnitudes from previous step for adaptive balancing
                     # Group visual losses: pixel + perceptual + adversarial + rec_feat
                     loss_dict = {
@@ -656,7 +867,7 @@ def main(args):
                     # Update adaptive weights
                     updated_weights = adaptive_balancer.update(loss_dict)
                     
-                    # Apply updated weights (override curriculum learning weights)
+                    # Apply updated weights (only in full training phase, not during curriculum)
                     current_ctc_weight = updated_weights['ctc'] * args.ctc_loss_weight
                     # Visual weight is distributed across components proportionally
                     visual_weight = updated_weights['visual']
@@ -735,6 +946,11 @@ def main(args):
             if args.perceptual_loss_weight > 0:
                 metrics_to_log["train/perceptual_loss"] = epoch_metrics["training_losses"]["perceptual_loss"]
             
+            # ✅ NEW: Log curriculum learning schedule weights
+            metrics_to_log["schedule/current_ctc_weight"] = epoch_metrics["current_ctc_weight"]
+            metrics_to_log["schedule/current_rec_feat_weight"] = epoch_metrics["current_rec_feat_weight"]
+            metrics_to_log["schedule/phase"] = 0 if is_warmup else (1 if is_annealing else 2)  # 0=warmup, 1=annealing, 2=full
+            
             # Log adaptive weights if enabled
             if adaptive_balancer is not None:
                 current_weights = adaptive_balancer.weights
@@ -748,24 +964,39 @@ def main(args):
         
             # --- End of Epoch Actions ---
             if (epoch + 1) % args.eval_interval == 0:
-                print("  Running validation (visual + textual metrics)...")
+                print("  Running validation (visual + textual + noise metrics)...")
                 run_validation_step(
                     val_dataset, generator, recognizer, charset,
-                    val_psnr_metric, val_ssim_metric, val_cer_metric, val_wer_metric
+                    val_psnr_metric, val_ssim_metric, val_cer_metric, val_wer_metric,
+                    val_clean_cer_metric, val_clean_wer_metric,
+                    val_noise_variance_metric, val_isolated_white_metric, val_local_variance_metric
                 )
                 psnr_result = val_psnr_metric.result()
                 ssim_result = val_ssim_metric.result()
                 cer_result = val_cer_metric.result()
                 wer_result = val_wer_metric.result()
+                clean_cer_result = val_clean_cer_metric.result()
+                clean_wer_result = val_clean_wer_metric.result()
+                noise_var_result = val_noise_variance_metric.result()
+                isolated_white_result = val_isolated_white_metric.result()
+                local_var_result = val_local_variance_metric.result()
                 
-                print(f"  📊 PSNR: {psnr_result:.2f}, SSIM: {ssim_result:.4f}, CER: {cer_result:.4f}, WER: {wer_result:.4f}")
+                print(f"  📊 Visual Quality: PSNR={psnr_result:.2f}dB, SSIM={ssim_result:.4f}")
+                print(f"  🔤 Text Recognition: Generated CER={cer_result:.4f}, Clean CER={clean_cer_result:.4f} (baseline)")
+                print(f"  🔍 Image Quality: Noise={noise_var_result:.2f}, Artifacts={isolated_white_result:.6f}")
+                print(f"  📈 WER: Generated={wer_result:.4f}, Clean={clean_wer_result:.4f} (baseline)")
                 
                 # Add validation metrics to epoch data
                 epoch_metrics["validation"] = {
                     "psnr": float(psnr_result.numpy()),
                     "ssim": float(ssim_result.numpy()),
                     "cer": float(cer_result.numpy()),
-                    "wer": float(wer_result.numpy())
+                    "wer": float(wer_result.numpy()),
+                    "clean_cer": float(clean_cer_result.numpy()),
+                    "clean_wer": float(clean_wer_result.numpy()),
+                    "noise_variance": float(noise_var_result.numpy()),
+                    "isolated_white_ratio": float(isolated_white_result.numpy()),
+                    "local_variance": float(local_var_result.numpy())
                 }
                 
                 # Log validation metrics to MLflow
@@ -773,61 +1004,261 @@ def main(args):
                     "val/psnr": float(psnr_result.numpy()),
                     "val/ssim": float(ssim_result.numpy()),
                     "val/cer": float(cer_result.numpy()),
-                    "val/wer": float(wer_result.numpy())
+                    "val/wer": float(wer_result.numpy()),
+                    "val/clean_cer": float(clean_cer_result.numpy()),
+                    "val/clean_wer": float(clean_wer_result.numpy()),
+                    "val/noise_variance": float(noise_var_result.numpy()),
+                    "val/isolated_white_ratio": float(isolated_white_result.numpy()),
+                    "val/local_variance": float(local_var_result.numpy())
                 }, step=epoch+1)
             
                 # --- Checkpoint Management: Dual objective (PSNR + CER) ---
                 # Best model = High PSNR (visual quality) + Low CER (text readability)
-                combined_score = psnr_result - (args.cer_weight * cer_result * 100)
-                
-                # Check if there's significant improvement
-                improvement = combined_score - best_val_psnr
-                is_improvement = improvement > args.min_delta
+                # FIXED: Reduced CER penalty from 100x to 10x to prevent dominance over PSNR
+                combined_score = psnr_result - (args.cer_weight * cer_result * 10)
+
+                # Calculate individual contributions for analysis
+                psnr_contribution = float(psnr_result.numpy())
+                cer_penalty = float(args.cer_weight * cer_result.numpy() * 10)
+
+                # ✅ FIXED: Check improvement using correct best_monitored_value variable
+                if args.early_stopping_metric == 'psnr_only':
+                    monitored_metric = psnr_result
+                    improvement = float(psnr_result.numpy()) - best_monitored_value
+                    is_improvement = improvement > args.min_delta
+                elif args.early_stopping_metric == 'cer_only':
+                    monitored_metric = -cer_result  # Negative because lower CER is better
+                    improvement = float(-cer_result.numpy()) - best_monitored_value
+                    is_improvement = improvement > args.min_delta
+                else:  # 'combined' (default)
+                    monitored_metric = combined_score
+                    improvement = float(combined_score) - best_monitored_value
+                    is_improvement = improvement > args.min_delta
+
+                # SANITY CHECK: Override early stopping if PSNR improvement is significant
+                # This prevents premature stopping due to CER fluctuations when visual quality is improving
+                if hasattr(args, 'psnr_improvement_threshold') and (epoch + 1) > 1:
+                    # ✅ FIXED: Get previous epoch's PSNR from training_history
+                    if epoch > 0 and len(training_history["epochs"]) > 0:
+                        prev_epoch_data = training_history["epochs"][-1]
+                        prev_psnr = prev_epoch_data.get("validation", {}).get("psnr", float(psnr_result.numpy()))
+                    else:
+                        prev_psnr = float(psnr_result.numpy())
+                    
+                    psnr_improvement = float(psnr_result.numpy()) - prev_psnr
+
+                    if psnr_improvement > args.psnr_improvement_threshold:
+                        print(f"  🚀 Significant PSNR improvement detected ({psnr_improvement:.2f} > {args.psnr_improvement_threshold})")
+                        print(f"     Overriding early stopping decision")
+                        is_improvement = True
+                        improvement = psnr_improvement
                 
                 if is_improvement:
-                    best_val_psnr = combined_score
+                    # ✅ FIXED: Update ALL metric values for logging, and best_monitored_value for early stopping
+                    best_psnr_value = float(psnr_result.numpy())
+                    best_cer_value = float(cer_result.numpy())
+                    best_combined_value = float(combined_score)
+                    
+                    # Update monitored value based on selected strategy
+                    if args.early_stopping_metric == 'psnr_only':
+                        best_monitored_value = float(psnr_result.numpy())
+                        best_score_desc = f"PSNR: {psnr_result:.2f} dB"
+                    elif args.early_stopping_metric == 'cer_only':
+                        best_monitored_value = float(-cer_result.numpy())
+                        best_score_desc = f"CER: {cer_result:.4f}"
+                    else:  # 'combined'
+                        best_monitored_value = float(combined_score)
+                        best_score_desc = f"Combined: {combined_score:.2f}"
+
                     best_epoch = epoch + 1
                     patience_counter = 0  # Reset patience counter
-                    
-                    # Save checkpoint using CheckpointManager (respects max_to_keep)
-                    saved_path = ckpt_manager.save()
-                    best_weights_path = saved_path  # Track best model path for restoration
-                    
-                    print(f"  ✅ New best model saved! (Improvement: {improvement:.2f})")
-                    print(f"     PSNR: {psnr_result:.2f}, CER: {cer_result:.4f}, Combined Score: {combined_score:.2f}")
+
+                    # ✅ DISK-EFFICIENT: Smart checkpoint management (max 2 files total)
+                    # Save to separate best model directory FIRST (most important)
+                    if best_model_ckpt_manager:
+                        best_model_path = best_model_ckpt_manager.save()
+                        best_weights_path = best_model_path  # Track for restoration
+                        print(f"  ✅ New best model saved! (Improvement: {improvement:.2f})")
+                        print(f"     💾 Best model preserved: {best_model_path}")
+
+                        # For disk efficiency, ONLY save regular checkpoint if needed for resume capability
+                        # With max_checkpoints=1, this maintains single checkpoint for debugging
+                        saved_path = ckpt_manager.save()
+                        print(f"     📄 Debug checkpoint: {saved_path}")
+                        print(f"     💰 Total disk usage: 2 checkpoints (best + debug)")
+                    else:
+                        # Fallback: Save regular checkpoint only
+                        saved_path = ckpt_manager.save()
+                        best_weights_path = saved_path
+                        print(f"  ✅ New best model saved! (Improvement: {improvement:.2f})")
+                        print(f"     📄 Checkpoint: {saved_path} (Best = Regular)")
+                        print(f"     💰 Disk usage: 1 checkpoint only")
+
+                    print(f"     PSNR: {psnr_result:.2f}, CER: {cer_result:.4f}")
+                    print(f"     Combined Score: {combined_score:.2f} (PSNR: +{psnr_contribution:.2f}, CER: -{cer_penalty:.2f})")
+                    print(f"     Best Metric ({args.early_stopping_metric}): {best_score_desc}")
                     print(f"     Best Epoch: {best_epoch}, Patience Counter: {patience_counter}/{args.patience}")
                     epoch_metrics["best_model_saved"] = True
                     epoch_metrics["patience_counter"] = patience_counter
-                    
+
+                    # Enhanced logging for early stopping analysis
+                    epoch_metrics["early_stopping_analysis"] = {
+                        "strategy": args.early_stopping_metric,
+                        "monitored_metric_value": float(monitored_metric.numpy()),
+                        "improvement": float(improvement),
+                        "combined_score": float(combined_score),
+                        "psnr_contribution": psnr_contribution,
+                        "cer_penalty": cer_penalty
+                    }
+
                     # Log best metrics to MLflow
                     mlflow.log_metrics({
-                        "best_val_psnr": float(psnr_result),
-                        "best_val_cer": float(cer_result),
-                        "best_combined_score": float(combined_score),
+                        "best_val_psnr": best_psnr_value,
+                        "best_val_cer": best_cer_value,
+                        "best_combined_score": best_combined_value,
+                        "best_monitored_value": best_monitored_value,
                         "best_epoch": best_epoch,
-                        "patience_counter": patience_counter
+                        "patience_counter": patience_counter,
+                        "early_stop/psnr_contribution": psnr_contribution,
+                        "early_stop/cer_penalty": cer_penalty,
+                        "early_stop/monitored_metric": float(monitored_metric.numpy()),
+                        "early_stop/improvement": float(improvement)
                     }, step=epoch+1)
                 else:
-                    patience_counter += 1  # Increment patience counter
-                    print(f"  ⚠️  No improvement (score: {combined_score:.2f} vs best: {best_val_psnr:.2f})")
+                    # ✅ CURRICULUM-AWARE: Only increment patience counter during full training
+                    if args.curriculum_aware_early_stopping and not is_curriculum_complete:
+                        # Don't increment patience counter during warmup/annealing
+                        print(f"     📚 Patience Counter PAUSED (curriculum in progress)")
+                        print(f"     ⏳ Early stopping evaluation will begin after epoch {curriculum_complete_epoch}")
+                    else:
+                        # Only increment during full training phase
+                        patience_counter += 1  # Increment patience counter
+                        print(f"     ⏱️  Patience Counter incremented: {patience_counter}/{args.patience}")
+
+                    # ✅ FIXED: Enhanced logging with correct metric values
+                    if args.early_stopping_metric == 'psnr_only':
+                        score_desc = f"PSNR: {psnr_result:.2f} dB (best: {best_monitored_value:.2f} dB)"
+                    elif args.early_stopping_metric == 'cer_only':
+                        score_desc = f"CER: {cer_result:.4f} (best: {-best_monitored_value:.4f})"
+                    else:  # 'combined'
+                        score_desc = f"Combined: {combined_score:.2f} (best: {best_monitored_value:.2f})"
+
+                    print(f"  ⚠️  No improvement ({score_desc})")
+                    print(f"     Combined Score Breakdown: PSNR=+{psnr_contribution:.2f}, CER=-{cer_penalty:.2f}")
                     print(f"     Patience Counter: {patience_counter}/{args.patience}")
+
+                    # ✅ CURRICULUM-AWARE: Show curriculum status and early stopping eligibility
+                    if args.curriculum_aware_early_stopping:
+                        if is_curriculum_complete:
+                            print(f"     🎓 Curriculum Complete: Early stopping ALLOWED")
+                            print(f"     📊 Full Training Phase (CTC weight: {current_ctc_weight:.2f})")
+                        else:
+                            remaining_epochs = curriculum_complete_epoch - epoch
+                            print(f"     🎓 Curriculum in Progress: Early stopping PAUSED")
+                            print(f"     ⏳ Remaining curriculum epochs: {remaining_epochs}")
+                            print(f"     📊 Current Phase: {phase_str.strip()} (CTC weight: {current_ctc_weight:.2f})")
+
+                        epoch_metrics["curriculum_complete"] = is_curriculum_complete
+                        epoch_metrics["curriculum_remaining_epochs"] = max(0, curriculum_complete_epoch - epoch)
+                    else:
+                        print(f"     ⚠️  Curriculum-Aware Early Stopping: DISABLED")
+                        print(f"     🚨 Early stopping can trigger ANYTIME (may stop during warmup/annealing)")
+                        epoch_metrics["curriculum_complete"] = True  # Always "complete" for logging
+                        epoch_metrics["curriculum_remaining_epochs"] = 0
+
                     epoch_metrics["best_model_saved"] = False
                     epoch_metrics["patience_counter"] = patience_counter
-                    
+
+                    # Enhanced logging for early stopping analysis
+                    epoch_metrics["early_stopping_analysis"] = {
+                        "strategy": args.early_stopping_metric,
+                        "monitored_metric_value": float(monitored_metric.numpy()),
+                        "improvement": float(improvement),
+                        "combined_score": float(combined_score),
+                        "psnr_contribution": psnr_contribution,
+                        "cer_penalty": cer_penalty,
+                        "best_so_far": best_monitored_value
+                    }
+
                     # Log patience to MLflow
-                    mlflow.log_metric("patience_counter", patience_counter, step=epoch+1)
+                    mlflow.log_metrics({
+                        "patience_counter": patience_counter,
+                        "early_stop/psnr_contribution": psnr_contribution,
+                        "early_stop/cer_penalty": cer_penalty,
+                        "early_stop/monitored_metric": float(monitored_metric.numpy()),
+                        "early_stop/improvement": float(improvement),
+                        "early_stop/best_so_far": best_monitored_value
+                    }, step=epoch+1)
                     
-                    # --- Early Stopping Check ---
-                    if args.early_stopping and patience_counter >= args.patience:
+                    # ✅ CURRICULUM-AWARE Early Stopping Check ---
+                    # Only allow early stopping AFTER curriculum learning phases complete (if enabled)
+                    if args.curriculum_aware_early_stopping:
+                        early_stopping_allowed = is_curriculum_complete
+                    else:
+                        # Original logic: allow early stopping anytime
+                        early_stopping_allowed = True
+
+                    if args.early_stopping and patience_counter >= args.patience and early_stopping_allowed:
                         print(f"\n🛑 EARLY STOPPING TRIGGERED!")
                         print(f"   No improvement for {args.patience} epochs")
-                        print(f"   Best epoch: {best_epoch} with score: {best_val_psnr:.2f}")
                         
-                        # Restore best weights if enabled
+                        # ✅ FIXED: Show metric-specific best values
+                        if args.early_stopping_metric == 'psnr_only':
+                            print(f"   Best epoch: {best_epoch} with PSNR: {best_monitored_value:.2f} dB")
+                        elif args.early_stopping_metric == 'cer_only':
+                            print(f"   Best epoch: {best_epoch} with CER: {-best_monitored_value:.4f}")
+                        else:
+                            print(f"   Best epoch: {best_epoch} with Combined Score: {best_monitored_value:.2f}")
+                            print(f"   (PSNR: {best_psnr_value:.2f} dB, CER: {best_cer_value:.4f})")
+
+                        if args.curriculum_aware_early_stopping:
+                            print(f"   🎓 Curriculum Status: COMPLETE (Phase: Full Training)")
+                            print(f"   📊 Final CTC Weight: {current_ctc_weight:.2f}")
+                            print(f"   ✅ Early stopping only allowed AFTER curriculum completion")
+                        else:
+                            print(f"   ⚠️  Curriculum-Aware Early Stopping: DISABLED")
+                            print(f"   🚨 Early stopping triggered during phase: {phase_str.strip()}")
+                            print(f"   📊 Current CTC Weight: {current_ctc_weight:.2f}")
+                        
+                        # ✅ FIXED: Enhanced best weights restoration with fallback mechanism
                         if args.restore_best_weights and best_weights_path:
                             print(f"   Restoring best model weights from: {best_weights_path}")
-                            checkpoint.restore(best_weights_path)
-                            print(f"   ✅ Best weights restored successfully")
+
+                            # Check if checkpoint file exists before attempting restoration
+                            if os.path.exists(best_weights_path + '.index') or os.path.exists(best_weights_path + '.data-00000-of-00001'):
+                                try:
+                                    checkpoint.restore(best_weights_path).expect_partial()
+                                    print(f"   ✅ Best weights restored successfully")
+                                except Exception as e:
+                                    print(f"   ⚠️  Error restoring best weights: {str(e)}")
+                                    print(f"   🔄 Attempting fallback to latest available checkpoint...")
+
+                                    # Fallback to latest available checkpoint
+                                    if ckpt_manager.latest_checkpoint:
+                                        try:
+                                            checkpoint.restore(ckpt_manager.latest_checkpoint).expect_partial()
+                                            print(f"   ✅ Fallback successful: restored {ckpt_manager.latest_checkpoint}")
+                                        except Exception as fallback_error:
+                                            print(f"   ❌ Fallback also failed: {str(fallback_error)}")
+                                            print(f"   🚨 Using current model state (no restoration)")
+                                    else:
+                                        print(f"   ❌ No fallback checkpoint available")
+                                        print(f"   🚨 Using current model state (no restoration)")
+                            else:
+                                print(f"   ❌ Best model checkpoint not found: {best_weights_path}")
+                                print(f"   🔄 Attempting fallback to latest available checkpoint...")
+
+                                # Fallback to latest available checkpoint
+                                if ckpt_manager.latest_checkpoint:
+                                    try:
+                                        checkpoint.restore(ckpt_manager.latest_checkpoint).expect_partial()
+                                        print(f"   ✅ Fallback successful: restored {ckpt_manager.latest_checkpoint}")
+                                    except Exception as fallback_error:
+                                        print(f"   ❌ Fallback failed: {str(fallback_error)}")
+                                        print(f"   🚨 Using current model state (no restoration)")
+                                else:
+                                    print(f"   ❌ No fallback checkpoint available")
+                                    print(f"   🚨 Using current model state (no restoration)")
                         
                         early_stopped = True
                         epoch_metrics["early_stopped"] = True
@@ -845,18 +1276,55 @@ def main(args):
                 val_ssim_metric.reset_state()
                 val_cer_metric.reset_state()
                 val_wer_metric.reset_state()
+                val_clean_cer_metric.reset_state()
+                val_clean_wer_metric.reset_state()
+                val_noise_variance_metric.reset_state()
+                val_isolated_white_metric.reset_state()
+                val_local_variance_metric.reset_state()
             else:
                 epoch_metrics["validation"] = None
 
             # Always save samples at save_interval
             if (epoch + 1) % args.save_interval == 0:
-                generated_samples = generator(sample_batch[0], training=False)
-                degraded_samples = sample_batch[0]  # Original degraded images
-                clean_samples = sample_batch[1]     # Ground truth clean images
+                # ✅ FIX: Get multiple batches to ensure we have 5 samples for visualization
+                # (Don't be limited by training batch_size which might be 2)
+                num_vis_samples = 5
+                collected_degraded = []
+                collected_clean = []
+                collected_labels = []
                 
-                # Save generated images
-                img_to_save = (generated_samples * 255).numpy().astype(np.uint8)
-                for i in range(min(args.batch_size, 4)):
+                val_iter = iter(val_dataset)
+                samples_collected = 0
+                while samples_collected < num_vis_samples:
+                    try:
+                        batch = next(val_iter)
+                        batch_size_actual = batch[0].shape[0]
+                        samples_needed = min(batch_size_actual, num_vis_samples - samples_collected)
+                        
+                        collected_degraded.append(batch[0][:samples_needed])
+                        collected_clean.append(batch[1][:samples_needed])
+                        collected_labels.append(batch[2][:samples_needed])
+                        
+                        samples_collected += samples_needed
+                    except StopIteration:
+                        break
+                
+                # Concatenate collected samples
+                degraded_samples = tf.concat(collected_degraded, axis=0)[:num_vis_samples]
+                clean_samples = tf.concat(collected_clean, axis=0)[:num_vis_samples]
+                ground_truth_labels = tf.concat(collected_labels, axis=0)[:num_vis_samples]
+                
+                # Generate restored images
+                generated_samples = generator(degraded_samples, training=False)
+                
+                # BUGFIX: Denormalize from tanh [-1,1] to [0,1] before saving
+                generated_samples_normalized = (generated_samples + 1.0) / 2.0
+                degraded_samples_normalized = (degraded_samples + 1.0) / 2.0
+                clean_samples_normalized = (clean_samples + 1.0) / 2.0
+                
+                # ✅ Now we always have exactly 5 samples regardless of training batch_size
+                img_to_save = (generated_samples_normalized * 255).numpy().astype(np.uint8)
+                for i in range(num_vis_samples):
                     img = img_to_save[i]
                     if img.shape[-1] == 1:
                         img = np.squeeze(img, axis=-1)
@@ -868,29 +1336,54 @@ def main(args):
                     sample_path = os.path.join(args.sample_dir, f'epoch_{epoch+1:04d}_sample_{i}.png')
                     cv2.imwrite(sample_path, img)
                     
-                    # --- Log to MLflow: Create comparison image (degraded | generated | clean) ---
-                    if i < 2:  # Log only first 2 samples to avoid clutter
-                        # Prepare degraded image
-                        deg_img = (degraded_samples[i] * 255).numpy().astype(np.uint8)
-                        deg_img = np.squeeze(deg_img, axis=-1) if deg_img.shape[-1] == 1 else deg_img
-                        if deg_img.shape[0] > deg_img.shape[1]:
-                            deg_img = np.transpose(deg_img)
-                        
-                        # Prepare clean (GT) image
-                        clean_img = (clean_samples[i] * 255).numpy().astype(np.uint8)
-                        clean_img = np.squeeze(clean_img, axis=-1) if clean_img.shape[-1] == 1 else clean_img
-                        if clean_img.shape[0] > clean_img.shape[1]:
-                            clean_img = np.transpose(clean_img)
-                        
-                        # Create horizontal concatenation: [Degraded | Generated | Clean]
-                        comparison = np.hstack([deg_img, img, clean_img])
-                        comparison_path = os.path.join(args.sample_dir, f'comparison_epoch_{epoch+1:04d}_sample_{i}.png')
-                        cv2.imwrite(comparison_path, comparison)
-                        
-                        # Log to MLflow
-                        mlflow.log_artifact(comparison_path, artifact_path=f"samples/epoch_{epoch+1:04d}")
+                    # --- Create comparison image (Vertical: Degraded | Ground Truth | Restored) ---
+                    # Prepare degraded image
+                    deg_img = (degraded_samples_normalized[i] * 255).numpy().astype(np.uint8)
+                    deg_img = np.squeeze(deg_img, axis=-1) if deg_img.shape[-1] == 1 else deg_img
+                    if deg_img.shape[0] > deg_img.shape[1]:
+                        deg_img = np.transpose(deg_img)
+                    
+                    # Prepare clean (GT) image
+                    clean_img = (clean_samples_normalized[i] * 255).numpy().astype(np.uint8)
+                    clean_img = np.squeeze(clean_img, axis=-1) if clean_img.shape[-1] == 1 else clean_img
+                    if clean_img.shape[0] > clean_img.shape[1]:
+                        clean_img = np.transpose(clean_img)
+                    
+                    # Create VERTICAL concatenation: [Degraded | Ground Truth | Restored]
+                    comparison = np.vstack([deg_img, clean_img, img])
+                    comparison_path = os.path.join(args.sample_dir, f'comparison_epoch_{epoch+1:04d}_sample_{i}.png')
+                    cv2.imwrite(comparison_path, comparison)
+                    
+                    # ✅ FIX: Log to MLflow with UNIQUE key per sample (i changes in loop!)
+                    mlflow.log_image(comparison, key=f"sample_{i}_comparison", step=epoch+1)
+
+                # --- [NEW] Log recognition text for samples ---
+                recognition_results = []
+                # ✅ FIX: Run recognizer on NORMALIZED samples [0,1], not tanh [-1,1]
+                # Recognizer expects input in [0,1] range
+                recognizer_output = recognizer(generated_samples_normalized, training=False)
+                if isinstance(recognizer_output, (list, tuple)):
+                    predicted_logits = recognizer_output[0]
+                else:
+                    predicted_logits = recognizer_output
                 
-                print(f"  💾 Saved sample images to {args.sample_dir}")
+                # ✅ CRITICAL FIX: Use manual CTC decode, not tf.argmax!
+                # This is the same decode method as in standalone test script
+                predicted_texts = decode_ctc_predictions(predicted_logits.numpy(), charset)
+                ground_truth_labels_np = ground_truth_labels.numpy()
+
+                for i in range(num_vis_samples):  # ✅ FIX: Loop exactly 5 samples
+                    gt_text = decode_label(ground_truth_labels_np[i], charset)
+                    pred_text = predicted_texts[i]
+                    recognition_results.append(f"--- Sample {i} ---\n")
+                    recognition_results.append(f"Ground Truth: {gt_text}\n")
+                    recognition_results.append(f"Prediction  : {pred_text}\n\n")
+
+                # Write results to a text file and log to MLflow as text
+                text_content = ''.join(recognition_results)
+                mlflow.log_text(text_content, f"recognition_epoch_{epoch+1:04d}.txt")
+                
+                print(f"  💾 Saved sample images and recognition text to {args.sample_dir}")
 
             epoch_time = time.time() - epoch_start_time
             epoch_metrics["epoch_time_seconds"] = float(epoch_time)
@@ -913,7 +1406,10 @@ def main(args):
             # Save epoch info for resume capability (EVERY EPOCH)
             epoch_info = {
                 'last_completed_epoch': epoch,
-                'best_combined_score': float(best_val_psnr) if best_val_psnr > -1.0 else None,
+                'best_combined_score': best_combined_value if best_combined_value > float('-inf') else None,
+                'best_psnr': best_psnr_value if best_psnr_value > -1.0 else None,
+                'best_cer': best_cer_value if best_cer_value < float('inf') else None,
+                'best_monitored_value': best_monitored_value if best_monitored_value > float('-inf') else None,
                 'best_epoch': best_epoch,
                 'patience_counter': patience_counter,
                 'total_epochs': args.epochs,
@@ -924,7 +1420,10 @@ def main(args):
 
         # Finalize training history
         training_history["end_time"] = datetime.now().isoformat()
-        training_history["best_val_psnr"] = float(best_val_psnr)
+        training_history["best_val_psnr"] = best_psnr_value
+        training_history["best_val_cer"] = best_cer_value
+        training_history["best_combined_score"] = best_combined_value
+        training_history["best_monitored_value"] = best_monitored_value
         training_history["best_epoch"] = best_epoch
         training_history["total_epochs_completed"] = len(training_history["epochs"])
         training_history["early_stopped"] = early_stopped
@@ -937,7 +1436,10 @@ def main(args):
         
         # Log final metrics to MLflow
         mlflow.log_artifact(final_metrics_file, artifact_path="metrics")
-        mlflow.log_metric("final_best_psnr", float(best_val_psnr))
+        mlflow.log_metric("final_best_psnr", best_psnr_value)
+        mlflow.log_metric("final_best_cer", best_cer_value)
+        mlflow.log_metric("final_best_combined", best_combined_value)
+        mlflow.log_metric("final_best_monitored", best_monitored_value)
         mlflow.log_metric("best_epoch", best_epoch)
         
         print(f"\n✅ Training metrics saved to: {final_metrics_file}")
@@ -963,7 +1465,7 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Train Dual-Modal GAN-HTR with Pure FP32 (OPTIMIZED)')
     parser.add_argument('--generator_version', type=str, default='base', choices=['base', 'enhanced', 'enhanced_v2'], help='Version of the generator to use: base, enhanced, or enhanced_v2 as SOTA version.')
-    parser.add_argument('--discriminator_version', type=str, default='base', choices=['base', 'enhanced_v2'], help='Version of the discriminator to use: base with 137M params or enhanced_v2 with 18M params.')
+    parser.add_argument('--discriminator_version', type=str, default='base', choices=['base', 'enhanced_v2', 'enhanced_v2_fixed'], help='Version of the discriminator to use: base (137M params), enhanced_v2 (18M params), or enhanced_v2_fixed (18M params, reduced artifacts)')
     parser.add_argument('--tfrecord_path', type=str, default='dual_modal_gan/data/dataset_gan.tfrecord', help='Path to the training TFRecord file.')
     parser.add_argument('--charset_path', type=str, default='real_data_preparation/real_data_charlist.txt', help='Path to the character set file.')
     parser.add_argument('--recognizer_weights', type=str, default='models/best_htr_recognizer/best_model.weights.h5', help='Path to pre-trained recognizer weights from Stage 3 with CER 33.72 percent.')
@@ -971,7 +1473,8 @@ if __name__ == '__main__':
     parser.add_argument('--no_restore', action='store_true', help='Do not restore from checkpoint, start from scratch.')
     parser.add_argument('--resume', action='store_true', help='Resume training from last completed epoch (requires epoch_info.json in checkpoint dir).')
     parser.add_argument('--checkpoint_dir', type=str, default='dual_modal_gan/outputs/checkpoints_fp32', help='Directory to save model checkpoints.')
-    parser.add_argument('--max_checkpoints', type=int, default=1, help='Maximum number of checkpoints to keep (default: 1 for storage efficiency).')
+    parser.add_argument('--max_checkpoints', type=int, default=1, help='Maximum number of checkpoints to keep (default: 1 for disk efficiency).')
+    parser.add_argument('--save_best_model_separately', action='store_true', default=True, help='Save best model separately to prevent loss due to max_checkpoints limitation.')
     parser.add_argument('--sample_dir', type=str, default='dual_modal_gan/outputs/samples_fp32', help='Directory to save sample images.')
     parser.add_argument('--epochs', type=int, default=100, help='Number of training epochs.')
     parser.add_argument('--steps_per_epoch', type=int, default=100, help='Number of steps per epoch (if None, calculated from dataset size).')
@@ -996,12 +1499,15 @@ if __name__ == '__main__':
     parser.add_argument('--discriminator_mode', type=str, default='predicted', choices=['predicted', 'ground_truth'], help="Mode for the discriminator's real pair text input.")
     parser.add_argument('--cer_weight', type=float, default=0.5, help='Weight for CER in combined score calculation.')
     parser.add_argument('--seed', type=int, default=42, help='Random seed for reproducibility.')
-    
+
     # Early Stopping Parameters
     parser.add_argument('--early_stopping', action='store_true', help='Enable early stopping to prevent overfitting and save resources.')
+    parser.add_argument('--curriculum_aware_early_stopping', action='store_true', default=True, help='Enable curriculum-aware early stopping (only triggers AFTER warmup + annealing phases complete).')
+    parser.add_argument('--early_stopping_metric', type=str, default='combined', choices=['combined', 'psnr_only', 'cer_only'], help='Metric to monitor for early stopping: combined (PSNR-CER balance), psnr_only (visual quality), or cer_only (text readability).')
     parser.add_argument('--patience', type=int, default=15, help='Number of epochs without improvement before stopping (default: 15).')
     parser.add_argument('--min_delta', type=float, default=0.01, help='Minimum change in monitored metric to qualify as improvement (default: 0.01).')
     parser.add_argument('--restore_best_weights', action='store_true', default=True, help='Restore model weights from best epoch when early stopping triggers.')
+    parser.add_argument('--psnr_improvement_threshold', type=float, default=2.0, help='Minimum PSNR improvement to override early stopping (prevents premature stopping due to CER fluctuations).')
     
     # Adaptive Loss Balancing Parameters
     parser.add_argument('--adaptive_loss_balancing', action='store_true', help='Enable adaptive loss balancing with SimpleAdaptiveBalancer.')

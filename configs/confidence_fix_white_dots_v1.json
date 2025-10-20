@@ -1,0 +1,60 @@
+{
+  "experiment_name": "confidence_fix_white_dots_v1",
+  "description": "CONFIDENCE BUILD: Fix CTC saturation + rebalance loss weights. Fast-fail validation (15 epochs, 50 steps) to prove hypothesis before full training. Expected: PSNR 26+, reduced white dots, converging CTC loss.",
+
+  "generator_version": "enhanced_v2",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "models/best_htr_recognizer/best_model.weights.h5",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/confidence_fix_white_dots_v1",
+  "sample_dir": "dual_modal_gan/outputs/samples_confidence_fix_white_dots_v1",
+
+  "resume": false,
+  "epochs": 15,
+  "batch_size": 2,
+  "steps_per_epoch": 50,
+  "save_interval": 1,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 3,
+  "gpu_id": "0",
+
+  "early_stopping": {
+    "enabled": true,
+    "patience": 10,
+    "min_delta": 0.01,
+    "restore_best_weights": true
+  },
+
+  "lr_g": 0.0001,
+  "lr_d": 0.0001,
+  "use_lr_schedule": true,
+  "warmup_epochs": 5,
+  "annealing_epochs": 5,
+
+  "pixel_loss_weight": 50.0,
+  "adv_loss_weight": 3.0,
+  "rec_feat_loss_weight": 8.0,
+  "ctc_loss_weight": 0.3,
+  "perceptual_loss_weight": 1.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 500.0,
+
+  "adaptive_loss_balancing": true,
+  "target_ctc_ratio": 0.3,
+  "target_visual_ratio": 0.7,
+  "adaptation_rate": 0.1,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.1,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  }
+}

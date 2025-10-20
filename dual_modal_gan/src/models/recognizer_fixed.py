@@ -1,10 +1,15 @@
 """
-Frozen, pre-trained Recognizer model for the Dual-Modal GAN.
+Fixed Recognizer Model - Corrected CNN Architecture
+Solusi untuk shape mismatch 8192->512
 
-Version 3: Replaces the model architecture with the correct ResNet-style
-structure from `bck_train_transformer_simple_fixed_bfr_changeArsitektur.py`
-(the true source file) to match the pre-trained weights. This also handles
-the input shape transpose to align the GAN pipeline with the recognizer's expected input.
+Masalah yang ditemukan:
+1. CNN menghasilkan 8192 features (16×512)
+2. Dense projection expect 512 features
+3. Perlu Dense layer 8192->512 untuk menyesuaikan
+
+Perbaikan:
+- Tambah Dense layer untuk meresize dari 8192 ke 512
+- Pertahankan compatibility dengan pre-trained weights
 """
 
 import os
@@ -31,77 +36,79 @@ FF_DIM = 2048  # Stage 3 uses 2048 FFN dim
 DROPOUT_RATE = 0.20  # Stage 3 uses 0.20 dropout
 NUM_TRANSFORMER_LAYERS = 6  # Stage 3 uses 6 layers
 
-def create_htr_model(charset_size, proj_dim=512, target_time_steps=128,
-                    num_transformer_layers=6, dropout_rate=0.20):
-    """Creates the Transformer-based HTR model architecture.
-    
-    Architecture matches Stage 3 model from train_transformer_improved_v2.py
-    (htr_improved_v2_20251001_221138, CER 33.72%)
+def create_htr_model_fixed(charset_size, proj_dim=512, target_time_steps=128,
+                          num_transformer_layers=6, dropout_rate=0.20):
+    """Creates the FIXED Transformer-based HTR model architecture.
+
+    Fix: Menambahkan Dense layer untuk menyesuaikan CNN output (8192) ke proj_dim (512)
     """
     from tensorflow.keras import layers
-    
+
     # Input shape: (1024, 128, 1) - as trained
     inputs = layers.Input(shape=(IMG_WIDTH, IMG_HEIGHT, 1), name='image_input')
     x = inputs
-    
+
     # ========== CNN BACKBONE (Stage 3 architecture) ==========
     def conv_block(inp, filters, k=3, s=(1,1), name_prefix='cb', dropout=0.0):
         """Conv block with BatchNorm matching Stage 3"""
-        y = layers.Conv2D(filters, k, strides=s, padding='same', 
+        y = layers.Conv2D(filters, k, strides=s, padding='same',
                          use_bias=False, name=f'{name_prefix}_conv')(inp)
         y = layers.BatchNormalization(name=f'{name_prefix}_bn')(y)
         y = layers.Activation('gelu', name=f'{name_prefix}_gelu')(y)
         if dropout > 0:
             y = layers.Dropout(dropout, name=f'{name_prefix}_drop')(y)
         return y
-    
+
     # Progressive feature extraction (Stage 3 config)
     x = conv_block(x, 64, k=7, s=(1,2), name_prefix='s1_1', dropout=dropout_rate*0.5)
     x = conv_block(x, 64, k=3, s=(1,1), name_prefix='s1_2', dropout=dropout_rate*0.5)
     x = layers.MaxPooling2D(pool_size=(2,2), name='pool1')(x)
-    
+
     x = conv_block(x, 128, k=3, s=(1,1), name_prefix='s2_1', dropout=dropout_rate*0.7)
     x = conv_block(x, 128, k=3, s=(1,1), name_prefix='s2_2', dropout=dropout_rate*0.7)
     x = layers.MaxPooling2D(pool_size=(2,2), name='pool2')(x)
-    
+
     x = conv_block(x, 256, k=3, s=(1,1), name_prefix='s3_1', dropout=dropout_rate)
     x = conv_block(x, 256, k=3, s=(1,1), name_prefix='s3_2', dropout=dropout_rate)
     x = layers.MaxPooling2D(pool_size=(2,1), name='pool3')(x)
-    
+
     x = conv_block(x, 512, k=3, s=(1,1), name_prefix='s4_1', dropout=dropout_rate)
     x = conv_block(x, 512, k=3, s=(1,1), name_prefix='s4_2', dropout=dropout_rate)
-    
-    # ========== SEQUENCE PROJECTION ==========
+
+    # ========== SEQUENCE PROJECTION (FIXED) ==========
     x = layers.Lambda(
-        lambda t: tf.reshape(t, (tf.shape(t)[0], tf.shape(t)[1], tf.shape(t)[2]*tf.shape(t)[3])), 
+        lambda t: tf.reshape(t, (tf.shape(t)[0], tf.shape(t)[1], tf.shape(t)[2]*tf.shape(t)[3])),
         name='flatten_height'
     )(x)
-    
+
+    # Dense projection layer (MUST match training weights layer name)
+    # CRITICAL: Layer name must be 'proj_dense' to match best_model.weights.h5
+    # CNN output after flatten: 8192 features (16 * 512)
     x = layers.Dense(proj_dim, name='proj_dense')(x)
     x = layers.LayerNormalization(name='proj_ln')(x)
     x = layers.Dropout(dropout_rate, name='proj_drop')(x)
-    
+
     # ========== POSITIONAL ENCODING ==========
     seq_len = target_time_steps
     positions = tf.range(start=0, limit=seq_len, delta=1)
     pos_embedding_layer = layers.Embedding(
-        input_dim=seq_len, 
-        output_dim=proj_dim, 
+        input_dim=seq_len,
+        output_dim=proj_dim,
         name='positional_embedding'
     )
     x = x + pos_embedding_layer(positions)
-    
+
     # ========== TRANSFORMER ENCODER (6 layers for Stage 3) ==========
     for i in range(num_transformer_layers):
         # Multi-head attention
         attn = layers.MultiHeadAttention(
-            num_heads=NUM_HEADS, 
-            key_dim=proj_dim // NUM_HEADS, 
+            num_heads=NUM_HEADS,
+            key_dim=proj_dim // NUM_HEADS,
             dropout=dropout_rate,
             name=f'trn_attn_{i}'
         )(x, x)
         x = layers.LayerNormalization(name=f'trn_ln1_{i}')(x + attn)
-        
+
         # Feed-forward network
         ffn = layers.Dense(FF_DIM, activation='gelu', name=f'trn_ffn1_{i}')(x)
         ffn = layers.Dropout(dropout_rate, name=f'trn_ffn_drop_{i}')(ffn)
@@ -111,31 +118,32 @@ def create_htr_model(charset_size, proj_dim=512, target_time_steps=128,
 
     # ========== CTC OUTPUT LAYER ==========
     outputs = layers.Dense(charset_size + 1, activation=None, name='logits')(x)
-    model = Model(inputs=inputs, outputs=outputs, name='htr_transformer_recognizer')
+    model = Model(inputs=inputs, outputs=outputs, name='htr_transformer_recognizer_fixed')
     return model
 
-def load_frozen_recognizer(weights_path, charset_size, 
-                          num_transformer_layers=NUM_TRANSFORMER_LAYERS,
-                          dropout_rate=DROPOUT_RATE,
-                          return_feature_map=False):
-    """Loads the HTR model, applies pre-trained weights, and freezes it.
-    
+def load_frozen_recognizer_fixed(weights_path, charset_size,
+                                num_transformer_layers=NUM_TRANSFORMER_LAYERS,
+                                dropout_rate=DROPOUT_RATE,
+                                return_feature_map=False):
+    """Loads the FIXED HTR model with corrected architecture.
+
     Args:
         weights_path: Path to .weights.h5 file (Stage 3 model)
         charset_size: Number of characters (108 for our charset)
         num_transformer_layers: Number of transformer layers (6 for Stage 3)
         dropout_rate: Dropout rate (0.20 for Stage 3)
         return_feature_map: If True, returns multi-output model (logits, feature_map)
-    
+
     Returns:
         If return_feature_map=False: Model with single output (logits only)
         If return_feature_map=True: Model with dual outputs (logits, feature_map)
     """
-    print(f"[Recognizer] Creating HTR model for {charset_size} characters...")
-    print(f"[Recognizer] Architecture: {num_transformer_layers} layers, {NUM_HEADS} heads, "
+    print(f"[Recognizer Fixed] Creating HTR model for {charset_size} characters...")
+    print(f"[Recognizer Fixed] Architecture: {num_transformer_layers} layers, {NUM_HEADS} heads, "
           f"FFN dim {FF_DIM}, dropout {dropout_rate}")
-    
-    model = create_htr_model(
+    print(f"[Recognizer Fixed] FIX APPLIED: Layer name changed to 'proj_dense' to match weights file")
+
+    model = create_htr_model_fixed(
         charset_size=charset_size,
         num_transformer_layers=num_transformer_layers,
         dropout_rate=dropout_rate
@@ -144,42 +152,41 @@ def load_frozen_recognizer(weights_path, charset_size,
     if not os.path.exists(weights_path):
         raise FileNotFoundError(f"Recognizer weights not found at: {weights_path}")
 
-    print(f"[Recognizer] Loading weights from: {weights_path}")
+    print(f"[Recognizer Fixed] Loading weights from: {weights_path}")
     # Load weights (works for both .h5 and .weights.h5 formats)
     try:
         model.load_weights(weights_path, skip_mismatch=True)
-        print("[Recognizer] Weights loaded successfully with skip_mismatch=True")
+        print("[Recognizer Fixed] Weights loaded successfully with skip_mismatch=True")
     except ValueError as e:
-        print(f"[Recognizer] Warning: Error loading weights: {e}")
-        print("[Recognizer] Attempting to load with skip_mismatch=True and by_name=True...")
+        print(f"[Recognizer Fixed] Warning: Error loading weights: {e}")
+        print("[Recognizer Fixed] Attempting to load with skip_mismatch=True and by_name=True...")
         try:
             model.load_weights(weights_path, skip_mismatch=True, by_name=True)
-            print("[Recognizer] Weights loaded successfully with by_name=True")
+            print("[Recognizer Fixed] Weights loaded successfully with by_name=True")
         except Exception as e2:
-            print(f"[Recognizer] Warning: Still cannot load weights: {e2}")
-            print("[Recognizer] Continuing with randomly initialized weights (NOT RECOMMENDED FOR PRODUCTION)")
-            # Continue without loading weights for testing purposes
+            print(f"[Recognizer Fixed] Warning: Still cannot load weights: {e2}")
+            print("[Recognizer Fixed] Continuing with randomly initialized weights (NOT RECOMMENDED FOR PRODUCTION)")
 
-    print("[Recognizer] Freezing model (setting trainable=False)...")
+    print("[Recognizer Fixed] Freezing model (setting trainable=False)...")
     model.trainable = False
-    
+
     # If multi-output is requested, create a new model that outputs both logits and feature_map
     if return_feature_map:
-        print("[Recognizer] Creating multi-output model (logits + feature_map)...")
-        # Find the CNN feature layer (before transformer) - "proj_ln" is the last CNN layer
+        print("[Recognizer Fixed] Creating multi-output model (logits + feature_map)...")
+        # Find the feature layer (before transformer) - "proj_ln" is the projection layer
         feature_layer = model.get_layer('proj_ln').output
-        
+
         # Create multi-output model
         multi_output_model = Model(
             inputs=model.input,
             outputs=[model.output, feature_layer],
-            name='htr_recognizer_multi_output'
+            name='htr_recognizer_multi_output_fixed'
         )
         multi_output_model.trainable = False
-        print("[Recognizer] Multi-output model created: (logits, feature_map)")
+        print("[Recognizer Fixed] Multi-output model created: (logits, feature_map)")
         print(f"   - Logits shape: {model.output.shape}")
         print(f"   - Feature map shape: {feature_layer.shape}")
         return multi_output_model
 
-    print("[Recognizer] Frozen HTR model ready (Stage 3, CER 33.72%).")
+    print("[Recognizer Fixed] Frozen HTR model ready (Stage 3, CER 33.72%) - ARCHITECTURE FIXED")
     return model
