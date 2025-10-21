@@ -42,3 +42,6 @@ venv/
 *~
 *.bak
 *.backup*
+# ignore seluruh file dibawah direktori psnr_evaluation_production_v1
+psnr_evaluation_production_v1/
+cross_validation_results/
