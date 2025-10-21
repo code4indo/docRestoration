@@ -1,0 +1,48 @@
+2025-10-21 13:01:41.975992: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2025-10-21 13:01:42.567687: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2025-10-21 13:01:44.089033: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:998] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2025-10-21 13:01:44.155321: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:998] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2025-10-21 13:01:44.159994: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:998] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2025-10-21 13:01:44.165242: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:998] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2025-10-21 13:01:44.169919: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:998] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2025-10-21 13:01:44.173243: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:998] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2025-10-21 13:01:44.304355: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:998] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2025-10-21 13:01:44.305879: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:998] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2025-10-21 13:01:44.307236: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:998] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2025-10-21 13:01:44.308462: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1928] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 14268 MB memory:  -> device: 0, name: NVIDIA RTX A4000, pci bus id: 0000:61:00.0, compute capability: 8.6
+2025-10-21 13:01:45.587523: I external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:465] Loaded cuDNN version 8907
+🔬 H-DIBCO 2016 Benchmark Evaluation
+==================================================
+📂 Loading H-DIBCO 2016 dataset...
+✅ Loaded 10 image pairs from H-DIBCO 2016
+📊 Dataset Statistics:
+   Image count: 10
+   Average size: 703 x 1700 pixels
+   Size range: 302-1067H
+              378-2628W
+📂 Loading model from: dual_modal_gan/checkpoints/full_training_production_v1/best_model
+   🎯 Using BEST MODEL from full_training_production_v1
+   📊 Expected: PSNR 43.81 dB, CER 24.48% (training metrics)
+✅ Model loaded successfully: enhanced
+   Checkpoint: dual_modal_gan/checkpoints/full_training_production_v1/best_model/ckpt-70
+
+🔍 Evaluating model on H-DIBCO 2016 benchmark...
+   Model: Functional
+   Samples: 10
+   Output: hdibco2016_evaluation_results
+
+📄 Processing image 1 (1/10)
+   📐 Ground truth resized: (1067, 1510) → (1024, 128)
+Traceback (most recent call last):
+  File "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/scripts/evaluate_on_hdibco2016.py", line 433, in <module>
+    main()
+  File "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/scripts/evaluate_on_hdibco2016.py", line 413, in main
+    results, stats = evaluate_model_on_hdibco2016(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/scripts/evaluate_on_hdibco2016.py", line 237, in evaluate_model_on_hdibco2016
+    save_sample_images(original, enhanced, ground_truth, sample['id'], output_path)
+  File "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/scripts/evaluate_on_hdibco2016.py", line 310, in save_sample_images
+    comparison[h:2*h, :] = enhanced_uint8
+    ~~~~~~~~~~^^^^^^^^^^
+ValueError: could not broadcast input array from shape (1024,128) into shape (1067,1510)

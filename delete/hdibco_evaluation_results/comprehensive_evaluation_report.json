@@ -1,0 +1,52 @@
+{
+  "evaluation_timestamp": "2025-10-21T11:15:40.328042",
+  "dataset": "H-DIBCO 2016",
+  "total_images": 10,
+  "configurations": {
+    "Small Patches": {
+      "patch_size": [
+        256,
+        32
+      ],
+      "overlap": 0.2,
+      "strategy": "sliding",
+      "blend_method": "linear",
+      "success_rate": 1.0,
+      "images_processed": 10,
+      "avg_psnr": 17.06780329466102,
+      "avg_ssim": 0.6324750344455128,
+      "avg_mse": 0.1436691090464592,
+      "avg_mae": 0.2280473604798317
+    },
+    "Medium Patches": {
+      "patch_size": [
+        512,
+        64
+      ],
+      "overlap": 0.25,
+      "strategy": "sliding",
+      "blend_method": "linear",
+      "success_rate": 1.0,
+      "images_processed": 10,
+      "avg_psnr": 21.688654190896482,
+      "avg_ssim": 0.6849423585807708,
+      "avg_mse": 0.12275406615808607,
+      "avg_mae": 0.18847821205854415
+    },
+    "Large Patches": {
+      "patch_size": [
+        1024,
+        128
+      ],
+      "overlap": 0.3,
+      "strategy": "sliding",
+      "blend_method": "gaussian",
+      "success_rate": 1.0,
+      "images_processed": 10,
+      "avg_psnr": 29.61725325704474,
+      "avg_ssim": 0.7494504113077726,
+      "avg_mse": 0.09498854605481029,
+      "avg_mae": 0.14970304258167744
+    }
+  }
+}

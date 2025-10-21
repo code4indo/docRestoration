@@ -251,65 +251,129 @@ def _parse_tfrecord_fn(example_proto):
 
     return degraded_image, clean_image, label
 
-def create_dataset(tfrecord_path, batch_size, val_split=0.1):
+def create_dataset(tfrecord_path, batch_size, train_split=0.7, val_split=0.15):
+    """
+    Create train/val/test split with proper academic protocol.
+    
+    ✅ ACADEMIC FIX (2025-10-21): 3-way split (train/val/test) for unbiased evaluation
+    
+    Args:
+        tfrecord_path: Path to TFRecord file
+        batch_size: Batch size for training
+        train_split: Fraction for training (default: 0.7)
+        val_split: Fraction for validation (default: 0.15)
+        
+    Returns:
+        train_dataset: Training dataset (shuffled, repeated)
+        val_dataset: Validation dataset (no shuffle, for monitoring)
+        test_dataset: Test dataset (no shuffle, LOCKED until final evaluation)
+        train_size: Number of training samples
+        val_size: Number of validation samples
+        test_size: Number of test samples
+        
+    Split Strategy:
+        - Train:      70% (default) - for model learning
+        - Validation: 15% (default) - for hyperparameter tuning, early stopping
+        - Test:       15% (1.0 - train_split - val_split) - for FINAL evaluation ONLY
+        
+    Important:
+        - Test set should NEVER be touched during training
+        - Test evaluation should happen ONCE after model selection
+        - Validation is used for early stopping and checkpoint selection
+    """
     dataset = tf.data.TFRecordDataset(tfrecord_path)
     
     # Get the total number of items
     total_size = sum(1 for _ in dataset)
-    val_size = int(total_size * val_split)
-    train_size = total_size - val_size
-
-    dataset = dataset.map(_parse_tfrecord_fn, num_parallel_calls=tf.data.AUTOTUNE)
-
-    train_dataset = dataset.take(train_size)
-    val_dataset = dataset.skip(train_size)
-
-    train_dataset = train_dataset.shuffle(buffer_size=1024).repeat().batch(batch_size, drop_remainder=True).prefetch(tf.data.AUTOTUNE)
-    val_dataset = val_dataset.shuffle(buffer_size=100, seed=42).batch(batch_size, drop_remainder=True).prefetch(tf.data.AUTOTUNE)
     
-    return train_dataset, val_dataset, train_size, val_size
+    # Calculate split sizes
+    train_size = int(total_size * train_split)
+    val_size = int(total_size * val_split)
+    test_size = total_size - train_size - val_size  # Remaining samples go to test
+    
+    # Map parsing function
+    dataset = dataset.map(_parse_tfrecord_fn, num_parallel_calls=tf.data.AUTOTUNE)
+    
+    # Split: first 70% train, next 15% val, last 15% test
+    train_dataset = dataset.take(train_size)
+    remaining = dataset.skip(train_size)
+    val_dataset = remaining.take(val_size)
+    test_dataset = remaining.skip(val_size)
+    
+    # Process datasets:
+    # - Train: shuffle + repeat (for continuous training)
+    # - Val: no shuffle, no repeat (fixed evaluation set)
+    # - Test: no shuffle, no repeat (LOCKED for final eval)
+    train_dataset = train_dataset.shuffle(buffer_size=1024).repeat().batch(batch_size, drop_remainder=True).prefetch(tf.data.AUTOTUNE)
+    
+    # ✅ ACADEMIC FIX (2025-10-21): NO shuffle on validation/test - fixed evaluation sets
+    # Validation and test sets should remain in consistent order for reproducible evaluation
+    val_dataset = val_dataset.batch(batch_size, drop_remainder=True).prefetch(tf.data.AUTOTUNE)
+    test_dataset = test_dataset.batch(batch_size, drop_remainder=True).prefetch(tf.data.AUTOTUNE)
+    
+    print(f"\n📊 Dataset Split (Academic Protocol):")
+    print(f"   Total samples: {total_size}")
+    print(f"   Train:      {train_size} samples ({train_split*100:.0f}%) - for learning")
+    print(f"   Validation: {val_size} samples ({val_split*100:.0f}%) - for hyperparameter tuning")
+    print(f"   Test:       {test_size} samples ({(1-train_split-val_split)*100:.0f}%) - for FINAL evaluation (LOCKED)")
+    print(f"   ⚠️  Test set should NEVER be used during training!")
+    
+    return train_dataset, val_dataset, test_dataset, train_size, val_size, test_size
 
 # --- Main Training & Evaluation Logic ---
 def run_validation_step(val_dataset, generator, recognizer, charset, psnr_metric, ssim_metric, cer_metric, wer_metric, clean_cer_metric, clean_wer_metric, noise_variance_metric, isolated_white_metric, local_variance_metric):
     """Run validation step with visual (PSNR/SSIM), textual (CER/WER), and noise artifact metrics.
-
+    
+    ✅ ACADEMIC FIX (2025-10-21): Evaluate on FULL validation set for statistical significance
+    - Uses all validation samples (not just 1 batch)
+    - Reports mean ± std and 95% confidence intervals
+    - Sample size explicitly tracked for academic rigor
+    
     Note: Cannot use @tf.function due to Python-based CER/WER calculation.
-    FIXED: Now uses take() method to get consistent but different validation samples each call.
     """
+    # Collect ALL metrics from full validation set
+    all_psnr = []
+    all_ssim = []
+    all_cer = []
+    all_wer = []
+    all_clean_cer = []
+    all_clean_wer = []
+    all_noise_var = []
+    all_isolated_white = []
+    all_local_var = []
+    
     first_batch = True  # Flag to log first batch sample
-    # Take first batch from validation dataset for consistent metrics calculation
-    # Using take(1) ensures we get fresh samples each epoch but consistent within the epoch
-    for degraded_images, clean_images, labels in val_dataset.take(1):
-        # Generate enhanced images
-        generated_images = generator(degraded_images, training=False)
+    batch_count = 0
+    
+    # Evaluate on FULL validation set
+    for degraded_images, clean_images, labels in val_dataset:
+        # ✅ CRITICAL FIX (2025-10-21): Normalize validation data to [-1,1]
+        # TFRecord data is [0,1], but generator expects [-1,1] input
+        degraded_images_tanh = degraded_images * 2.0 - 1.0
+        clean_images_tanh = clean_images * 2.0 - 1.0
         
-        # BUGFIX: Generator uses tanh activation (outputs [-1, 1])
+        # Generate enhanced images
+        generated_images = generator(degraded_images_tanh, training=False)
+        
         # Denormalize to [0, 1] range for proper PSNR/SSIM calculation
-        # This fixes the white dots issue caused by range mismatch
         generated_images_normalized = (generated_images + 1.0) / 2.0
-        clean_images_normalized = (clean_images + 1.0) / 2.0  # Clean images also in [-1,1] from TFRecord
+        clean_images_normalized = (clean_images_tanh + 1.0) / 2.0
         
         # Visual metrics: PSNR and SSIM expect values in [0, 1] range
         psnr = tf.image.psnr(clean_images_normalized, generated_images_normalized, max_val=1.0)
         ssim = tf.image.ssim(clean_images_normalized, generated_images_normalized, max_val=1.0)
-        psnr_metric.update_state(psnr)
-        ssim_metric.update_state(ssim)
+        
+        # Collect individual sample metrics for statistics
+        all_psnr.extend(psnr.numpy().tolist())
+        all_ssim.extend(ssim.numpy().tolist())
         
         # Noise artifact metrics: Calculate for each generated image in batch
         # Use denormalized images [0,1] for proper noise detection
-        batch_noise_variance = []
-        batch_isolated_white = []
-        batch_local_variance = []
         for i in range(generated_images_normalized.shape[0]):
             noise_metrics = calculate_noise_artifacts_metrics(generated_images_normalized[i])
-            batch_noise_variance.append(noise_metrics['noise_variance'])
-            batch_isolated_white.append(noise_metrics['isolated_white_ratio'])
-            batch_local_variance.append(noise_metrics['local_variance'])
-        
-        # Update noise metrics (average across batch)
-        noise_variance_metric.update_state(np.mean(batch_noise_variance))
-        isolated_white_metric.update_state(np.mean(batch_isolated_white))
-        local_variance_metric.update_state(np.mean(batch_local_variance))
+            all_noise_var.append(noise_metrics['noise_variance'])
+            all_isolated_white.append(noise_metrics['isolated_white_ratio'])
+            all_local_var.append(noise_metrics['local_variance'])
         
         # Textual metrics: CER/WER
         # ✅ CRITICAL FIX: Run recognizer on NORMALIZED images [0,1], not tanh [-1,1]!
@@ -356,10 +420,11 @@ def run_validation_step(val_dataset, generator, recognizer, charset, psnr_metric
             clean_cer = calculate_cer(gt_text, clean_text)
             clean_wer = calculate_wer(gt_text, clean_text)
             
-            batch_cer.append(cer)
-            batch_wer.append(wer)
-            batch_clean_cer.append(clean_cer)
-            batch_clean_wer.append(clean_wer)
+            # Collect individual samples for statistics
+            all_cer.append(cer)
+            all_wer.append(wer)
+            all_clean_cer.append(clean_cer)
+            all_clean_wer.append(clean_wer)
             
             # Log first sample for debugging
             if i == 0 and first_batch:
@@ -369,13 +434,57 @@ def run_validation_step(val_dataset, generator, recognizer, charset, psnr_metric
                 print(f"  🤖 Generated Image: '{generated_text}' (CER: {cer:.3f})")
                 print(f"  📊 Quality Gap:     ΔCER = {cer - clean_cer:+.3f} (generated vs clean)")
         
-        first_batch = False  # Don't log subsequent batches
-        
-        # Update metrics
-        cer_metric.update_state(batch_cer)
-        wer_metric.update_state(batch_wer)
-        clean_cer_metric.update_state(batch_clean_cer)
-        clean_wer_metric.update_state(batch_clean_wer)
+        first_batch = False
+        batch_count += 1
+    
+    # ✅ ACADEMIC FIX: Calculate statistics from full validation set
+    # Report mean ± std and 95% confidence intervals
+    psnr_mean = np.mean(all_psnr)
+    psnr_std = np.std(all_psnr, ddof=1)
+    psnr_ci = 1.96 * psnr_std / np.sqrt(len(all_psnr))
+    
+    ssim_mean = np.mean(all_ssim)
+    ssim_std = np.std(all_ssim, ddof=1)
+    ssim_ci = 1.96 * ssim_std / np.sqrt(len(all_ssim))
+    
+    cer_mean = np.mean(all_cer)
+    cer_std = np.std(all_cer, ddof=1)
+    
+    wer_mean = np.mean(all_wer)
+    wer_std = np.std(all_wer, ddof=1)
+    
+    clean_cer_mean = np.mean(all_clean_cer)
+    clean_wer_mean = np.mean(all_clean_wer)
+    
+    noise_var_mean = np.mean(all_noise_var)
+    isolated_white_mean = np.mean(all_isolated_white)
+    local_var_mean = np.mean(all_local_var)
+    
+    # Update metrics with calculated statistics
+    psnr_metric.update_state([psnr_mean])
+    ssim_metric.update_state([ssim_mean])
+    cer_metric.update_state([cer_mean])
+    wer_metric.update_state([wer_mean])
+    clean_cer_metric.update_state([clean_cer_mean])
+    clean_wer_metric.update_state([clean_wer_mean])
+    noise_variance_metric.update_state([noise_var_mean])
+    isolated_white_metric.update_state([isolated_white_mean])
+    local_variance_metric.update_state([local_var_mean])
+    
+    # Print summary with statistics
+    print(f"\n  📊 Validation Statistics (n={len(all_psnr)} samples, {batch_count} batches):")
+    print(f"     PSNR: {psnr_mean:.2f} ± {psnr_std:.2f} dB (95% CI: [{psnr_mean-psnr_ci:.2f}, {psnr_mean+psnr_ci:.2f}])")
+    print(f"     SSIM: {ssim_mean:.4f} ± {ssim_std:.4f} (95% CI: [{ssim_mean-ssim_ci:.4f}, {ssim_mean+ssim_ci:.4f}])")
+    print(f"     CER:  {cer_mean:.4f} ± {cer_std:.4f} (baseline: {clean_cer_mean:.4f})")
+    print(f"     WER:  {wer_mean:.4f} ± {wer_std:.4f} (baseline: {clean_wer_mean:.4f})")
+    
+    # Return statistics for logging
+    return {
+        'psnr': {'mean': psnr_mean, 'std': psnr_std, 'ci_95': psnr_ci, 'n': len(all_psnr)},
+        'ssim': {'mean': ssim_mean, 'std': ssim_std, 'ci_95': ssim_ci, 'n': len(all_ssim)},
+        'cer': {'mean': cer_mean, 'std': cer_std, 'n': len(all_cer)},
+        'wer': {'mean': wer_mean, 'std': wer_std, 'n': len(all_wer)}
+    }
 
 def main(args):
     os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu_id
@@ -403,8 +512,15 @@ def main(args):
     vocab_size = len(charset) + 1
     print(f"Charset loaded: {vocab_size} characters (including blank token)")
 
-    train_dataset, val_dataset, train_count, val_count = create_dataset(args.tfrecord_path, args.batch_size)
-    print(f"Dataset created: {train_count} training samples, {val_count} validation samples.")
+    # ✅ ACADEMIC FIX (2025-10-21): 3-way split with test set
+    train_dataset, val_dataset, test_dataset, train_count, val_count, test_count = create_dataset(
+        args.tfrecord_path, 
+        args.batch_size,
+        train_split=getattr(args, 'train_split', 0.7),
+        val_split=getattr(args, 'val_split', 0.15)
+    )
+    print(f"Dataset created: {train_count} training, {val_count} validation, {test_count} test samples.")
+    print(f"⚠️  Test set is LOCKED - will only be evaluated after training completion!")
 
     # Calculate steps per epoch if not provided
     steps_per_epoch = args.steps_per_epoch or (train_count // args.batch_size)
@@ -591,11 +707,16 @@ def main(args):
             fake_labels_disc = tf.zeros([args.batch_size, 1])
 
             with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
-                generated_images = generator(degraded_images, training=True)
+                # ✅ CRITICAL FIX (2025-10-21): Normalize TFRecord data [0,1] to [-1,1] for tanh generator
+                # TFRecord stores images as float32 in [0,1], but generator with tanh outputs [-1,1]
+                # ALL losses must compare same range to avoid training bugs
+                clean_images_tanh = clean_images * 2.0 - 1.0      # [0,1] → [-1,1]
+                degraded_images_tanh = degraded_images * 2.0 - 1.0  # [0,1] → [-1,1]
                 
-                # ✅ CRITICAL FIX: Normalize images to [0,1] before passing to recognizer
-                # Recognizer expects [0,1] range, but generator outputs [-1,1] (tanh)
-                clean_images_normalized = (clean_images + 1.0) / 2.0
+                generated_images = generator(degraded_images_tanh, training=True)  # Output: [-1,1]
+                
+                # Denormalize to [0,1] ONLY for recognizer (HTR model expects [0,1])
+                clean_images_normalized = (clean_images_tanh + 1.0) / 2.0
                 generated_images_normalized = (generated_images + 1.0) / 2.0
                 
                 # Get recognizer outputs - handle both single and multi-output
@@ -621,10 +742,11 @@ def main(args):
                 generated_text_pred = tf.argmax(generated_logits, axis=-1, output_type=tf.int32)
 
                 # --- SWITCHABLE DISCRIMINATOR LOGIC ---
+                # Now using clean_images_tanh and generated_images (both [-1,1] range)
                 if args.discriminator_mode == 'ground_truth':
-                    real_output = discriminator([clean_images, ground_truth_text], training=True)
+                    real_output = discriminator([clean_images_tanh, ground_truth_text], training=True)
                 else: # Default to 'predicted' mode (original logic)
-                    real_output = discriminator([clean_images, clean_text_pred], training=True)
+                    real_output = discriminator([clean_images_tanh, clean_text_pred], training=True)
                 fake_output = discriminator([generated_images, generated_text_pred], training=True)
 
                 disc_loss_real = bce_loss_fn(real_labels_disc, real_output)
@@ -632,7 +754,8 @@ def main(args):
                 total_disc_loss = disc_loss_real + disc_loss_fake
 
                 adversarial_loss = bce_loss_fn(real_labels_disc, fake_output)
-                pixel_loss = mae_loss_fn(clean_images, generated_images)
+                # ✅ NOW comparing same range: [-1,1] vs [-1,1]
+                pixel_loss = mae_loss_fn(clean_images_tanh, generated_images)
                 
                 # Recognition Feature Loss (HTR-aware loss from intermediate features)
                 # Always calculate but weight will control its contribution
@@ -640,7 +763,8 @@ def main(args):
                 
                 # VGG Perceptual Loss - uses perceptual_loss_layer (Keras Layer)
                 # This is always defined (either real VGG or dummy=0), so no None check needed
-                perceptual_loss = perceptual_loss_layer(clean_images, generated_images)
+                # ✅ NOW comparing same range: [-1,1] vs [-1,1]
+                perceptual_loss = perceptual_loss_layer(clean_images_tanh, generated_images)
                 
                 # Always calculate CTC loss; its contribution is controlled by ctc_weight.
                 # This avoids conditional graph structures that break gradient flow in @tf.function.
@@ -964,13 +1088,14 @@ def main(args):
         
             # --- End of Epoch Actions ---
             if (epoch + 1) % args.eval_interval == 0:
-                print("  Running validation (visual + textual + noise metrics)...")
-                run_validation_step(
+                print("  Running validation on full validation set...")
+                val_stats = run_validation_step(
                     val_dataset, generator, recognizer, charset,
                     val_psnr_metric, val_ssim_metric, val_cer_metric, val_wer_metric,
                     val_clean_cer_metric, val_clean_wer_metric,
                     val_noise_variance_metric, val_isolated_white_metric, val_local_variance_metric
                 )
+                
                 psnr_result = val_psnr_metric.result()
                 ssim_result = val_ssim_metric.result()
                 cer_result = val_cer_metric.result()
@@ -981,17 +1106,24 @@ def main(args):
                 isolated_white_result = val_isolated_white_metric.result()
                 local_var_result = val_local_variance_metric.result()
                 
-                print(f"  📊 Visual Quality: PSNR={psnr_result:.2f}dB, SSIM={ssim_result:.4f}")
-                print(f"  🔤 Text Recognition: Generated CER={cer_result:.4f}, Clean CER={clean_cer_result:.4f} (baseline)")
-                print(f"  🔍 Image Quality: Noise={noise_var_result:.2f}, Artifacts={isolated_white_result:.6f}")
-                print(f"  📈 WER: Generated={wer_result:.4f}, Clean={clean_wer_result:.4f} (baseline)")
+                # Note: Detailed statistics already printed by run_validation_step()
                 
-                # Add validation metrics to epoch data
+                # Add validation metrics to epoch data (with statistics)
                 epoch_metrics["validation"] = {
                     "psnr": float(psnr_result.numpy()),
+                    "psnr_std": float(val_stats['psnr']['std']),
+                    "psnr_ci_95": float(val_stats['psnr']['ci_95']),
+                    "psnr_n": int(val_stats['psnr']['n']),
                     "ssim": float(ssim_result.numpy()),
+                    "ssim_std": float(val_stats['ssim']['std']),
+                    "ssim_ci_95": float(val_stats['ssim']['ci_95']),
+                    "ssim_n": int(val_stats['ssim']['n']),
                     "cer": float(cer_result.numpy()),
+                    "cer_std": float(val_stats['cer']['std']),
+                    "cer_n": int(val_stats['cer']['n']),
                     "wer": float(wer_result.numpy()),
+                    "wer_std": float(val_stats['wer']['std']),
+                    "wer_n": int(val_stats['wer']['n']),
                     "clean_cer": float(clean_cer_result.numpy()),
                     "clean_wer": float(clean_wer_result.numpy()),
                     "noise_variance": float(noise_var_result.numpy()),
@@ -999,12 +1131,18 @@ def main(args):
                     "local_variance": float(local_var_result.numpy())
                 }
                 
-                # Log validation metrics to MLflow
+                # Log validation metrics to MLflow (with statistics)
                 mlflow.log_metrics({
                     "val/psnr": float(psnr_result.numpy()),
+                    "val/psnr_std": float(val_stats['psnr']['std']),
+                    "val/psnr_ci_95": float(val_stats['psnr']['ci_95']),
                     "val/ssim": float(ssim_result.numpy()),
+                    "val/ssim_std": float(val_stats['ssim']['std']),
+                    "val/ssim_ci_95": float(val_stats['ssim']['ci_95']),
                     "val/cer": float(cer_result.numpy()),
+                    "val/cer_std": float(val_stats['cer']['std']),
                     "val/wer": float(wer_result.numpy()),
+                    "val/wer_std": float(val_stats['wer']['std']),
                     "val/clean_cer": float(clean_cer_result.numpy()),
                     "val/clean_wer": float(clean_wer_result.numpy()),
                     "val/noise_variance": float(noise_var_result.numpy()),
@@ -1314,13 +1452,18 @@ def main(args):
                 clean_samples = tf.concat(collected_clean, axis=0)[:num_vis_samples]
                 ground_truth_labels = tf.concat(collected_labels, axis=0)[:num_vis_samples]
                 
-                # Generate restored images
-                generated_samples = generator(degraded_samples, training=False)
+                # ✅ CRITICAL FIX (2025-10-21): Normalize samples to [-1,1] before generator
+                # TFRecord data is [0,1], but generator expects [-1,1] input
+                degraded_samples_tanh = degraded_samples * 2.0 - 1.0
+                clean_samples_tanh = clean_samples * 2.0 - 1.0
                 
-                # BUGFIX: Denormalize from tanh [-1,1] to [0,1] before saving
+                # Generate restored images
+                generated_samples = generator(degraded_samples_tanh, training=False)
+                
+                # Denormalize from tanh [-1,1] to [0,1] for saving/display
                 generated_samples_normalized = (generated_samples + 1.0) / 2.0
-                degraded_samples_normalized = (degraded_samples + 1.0) / 2.0
-                clean_samples_normalized = (clean_samples + 1.0) / 2.0
+                degraded_samples_normalized = (degraded_samples_tanh + 1.0) / 2.0
+                clean_samples_normalized = (clean_samples_tanh + 1.0) / 2.0
                 
                 # ✅ Now we always have exactly 5 samples regardless of training batch_size
                 img_to_save = (generated_samples_normalized * 255).numpy().astype(np.uint8)

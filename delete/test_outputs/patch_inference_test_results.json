@@ -1,0 +1,31 @@
+{
+  "test_run_timestamp": "2025-10-21T11:01:08.374791",
+  "working_directory": "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration",
+  "test_results": {
+    "Patch Extraction": {
+      "success": null,
+      "duration": "0:00:00.010107",
+      "timestamp": "2025-10-21T11:01:03.694280"
+    },
+    "Image Reconstruction": {
+      "success": null,
+      "duration": "0:00:00.079344",
+      "timestamp": "2025-10-21T11:01:03.773648"
+    },
+    "Processor Configuration": {
+      "success": null,
+      "duration": "0:00:04.601024",
+      "timestamp": "2025-10-21T11:01:08.374697"
+    },
+    "H-DIBCO Dataset": {
+      "success": false,
+      "duration": "0:00:00.000068",
+      "timestamp": "2025-10-21T11:01:08.374787"
+    }
+  },
+  "summary": {
+    "total_tests": 4,
+    "passed": 0,
+    "failed": 4
+  }
+}

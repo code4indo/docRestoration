@@ -160,5 +160,8 @@ skrip launcher utama yang saat ini digunakan adalah @scripts/universal_train_fro
 pola perintah utama yang digunakan untuk memulai training adalah 
 
 ```
-nohup ./scripts/universal_train_from_json.sh configs/stable_training_enhanced_v2_fixed.json &
+nohup ./scripts/universal_train_from_json.sh configs/full_training_production_v1.json &
 ```
+
+generator yang digunakan adalah: enhanced
+discriminator yang digunakan adalah: enhanced_v2_fixed

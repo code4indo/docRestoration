@@ -1,0 +1,55 @@
+{
+  "evaluation_timestamp": "2025-10-21T13:09:31.697184",
+  "dataset": "H-DIBCO 2016",
+  "dataset_description": "Handwritten Document Image Binarization Contest 2016",
+  "evaluation_summary": {
+    "n_samples": 1,
+    "psnr": {
+      "mean": 12.809902187550492,
+      "std": 0.0,
+      "min": 12.809902187550492,
+      "max": 12.809902187550492,
+      "median": 12.809902187550492
+    },
+    "ssim": {
+      "mean": 0.7421787302125277,
+      "std": 0.0,
+      "min": 0.7421787302125277,
+      "max": 0.7421787302125277,
+      "median": 0.7421787302125277
+    },
+    "f_measure": {
+      "mean": 0.9638979177046509,
+      "std": 0.0,
+      "min": 0.9638979177046509,
+      "max": 0.9638979177046509,
+      "median": 0.9638979177046509
+    }
+  },
+  "detailed_results": [
+    {
+      "image_id": 1,
+      "shape": [
+        128,
+        1024
+      ],
+      "psnr": 12.809902187550492,
+      "ssim": 0.7421787302125277,
+      "precision": 0.9303259293183727,
+      "recall": 0.9999835909553346,
+      "f_measure": 0.9638979177046509,
+      "tp": 121882,
+      "fp": 9128,
+      "fn": 2
+    }
+  ],
+  "academic_reporting": {
+    "psnr_mean_sd": "12.81 \u00b1 0.00 dB",
+    "psnr_range": "[12.81, 12.81] dB",
+    "ssim_mean_sd": "0.7422 \u00b1 0.0000",
+    "f_measure_mean_sd": "0.9639 \u00b1 0.0000",
+    "sample_size": 1,
+    "evaluation_type": "cross_validation",
+    "academic_ready": true
+  }
+}

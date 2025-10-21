@@ -1,0 +1,79 @@
+{
+  "demo_timestamp": "2025-10-21T11:08:11.064204",
+  "dataset": "H-DIBCO 2016",
+  "total_images_found": 10,
+  "images_processed": 3,
+  "processing_method": "patch-based_with_simulated_enhancement",
+  "configuration": {
+    "patch_size": [
+      512,
+      64
+    ],
+    "overlap": 0.2,
+    "strategy": "sliding",
+    "blend_method": "linear"
+  },
+  "results": [
+    {
+      "original_path": "demo_outputs/patch_enhancement_demo/10_original.png",
+      "enhanced_path": "demo_outputs/patch_enhancement_demo/10_enhanced.png",
+      "comparison_path": "demo_outputs/patch_enhancement_demo/10_comparison.png",
+      "original_shape": [
+        315,
+        378
+      ],
+      "enhanced_shape": [
+        315,
+        378
+      ],
+      "n_patches": 0,
+      "metrics": {
+        "psnr": 7.984956169994634,
+        "ssim": 7.345046196854955e-05,
+        "mse": 0.39879727363586426,
+        "mae": 0.6113883256912231
+      }
+    },
+    {
+      "original_path": "demo_outputs/patch_enhancement_demo/2_original.png",
+      "enhanced_path": "demo_outputs/patch_enhancement_demo/2_enhanced.png",
+      "comparison_path": "demo_outputs/patch_enhancement_demo/2_comparison.png",
+      "original_shape": [
+        1023,
+        2259
+      ],
+      "enhanced_shape": [
+        1023,
+        2259
+      ],
+      "n_patches": 88,
+      "metrics": {
+        "psnr": 20.93659487235994,
+        "ssim": 0.820422147358596,
+        "mse": 0.08977805823087692,
+        "mae": 0.2251281589269638
+      }
+    },
+    {
+      "original_path": "demo_outputs/patch_enhancement_demo/3_original.png",
+      "enhanced_path": "demo_outputs/patch_enhancement_demo/3_enhanced.png",
+      "comparison_path": "demo_outputs/patch_enhancement_demo/3_comparison.png",
+      "original_shape": [
+        1064,
+        2417
+      ],
+      "enhanced_shape": [
+        1064,
+        2417
+      ],
+      "n_patches": 94,
+      "metrics": {
+        "psnr": 19.18268812627845,
+        "ssim": 0.7357920920069334,
+        "mse": 0.10986656695604324,
+        "mae": 0.23700352013111115
+      }
+    }
+  ],
+  "output_directory": "demo_outputs/patch_enhancement_demo"
+}

@@ -1,0 +1,51 @@
+sample_id,ground_truth,predicted_text,cer,wer,confidence,gt_length,pred_length,match
+1,Rombouw zijne onderdanen over haer begaen Schermstuck,Rombousb zijne onderdanen over haer begaen schelnstuctk,0.1132,0.2857,14.1572,53,55,NO
+2,"jegens onsen staet te straffen, maer deselve ter contrarie","jegens onsen staet te strassen, maer deselve ter contrarie",0.0345,0.1111,13.8818,58,58,NO
+3,"uijtgelaten worden, dat onderstaen op Malacca te roven","uijtgelaten worden, dat onderstaen op Malaca te roven",0.0185,0.1250,14.0242,54,53,NO
+4,ende tot onder de muijren van de stad de landen ende wegen,ende tot onder de mmuijren vande stad de landen ende wegen,0.0345,0.2500,13.8635,58,58,NO
+5,onveijl te houden: indervoegen dat genoeghsaem als,onwveijl te houden: indervoegen dat genoeghsaen als,0.0400,0.2857,14.5358,50,51,NO
+6,"geblocqueert sitten, niet alles tot groten schade ende nadeel","geblocgueert siten, niet allen tot groten schade ende nadeel",0.0492,0.3333,14.0530,61,60,NO
+7,"vande goede Ingesetenen vandien, maer tot onverdraeghelijken","vande goede Ingesetenen vandien, maer tot onverdraeghelijken",0.0000,0.0000,14.2128,60,60,YES
+8,hoon ende Schande van onse Staet in dese quartieren.,hoon ende Schande van onsen staet in dese quartieren.,0.0385,0.2222,14.2256,52,53,NO
+9,"daer soo al vrij wat aen is, ende blijckt bij veele","daer soo al vrij wat aen is, ende blijckt bij veele",0.0000,0.0000,14.4690,51,51,YES
+10,gelegentheden dien vorst ons soo toegedaen niet en sij als,gelegentheden dien vorst ons soo toegedaen niet en sij als,0.0000,0.0000,14.6197,58,58,YES
+11,wel voor desen. 'tSchijnt al onse vrundschap op den haet,wel voor desen. 'tschijnt al onse vrunmndschap op den haet,0.0536,0.2000,13.6046,56,58,NO
+12,"die jegens de Portugesen hadden gefondeert is geweest, ende","die jegens de Portugesen hadden gefondeert is gebbeest, ende",0.0339,0.1111,14.0756,59,60,NO
+13,ende terwijl den Johorit met al zijn Macht naePatanij sal,ende terwijl den Johorit met al zijn Macht naesatanij sal,0.0175,0.1000,13.9820,57,57,NO
+14,dat die Natie door dat middel getracht hebben te,dat die Natie door dat nminddel getracht hebben te,0.0417,0.1111,14.5701,48,50,NO
+15,verdelgen. het welck daer ontrent geschied sijnde nu wel,verdelgen. het welck daer ontrent geschied sijnde mu wel,0.0179,0.1111,14.2169,56,56,NO
+16,souden wenschen ons den selven gangh te doen gaen. dat,souden wenschen ons den selven gangh te doen gaen. dat,0.0000,0.0000,13.9122,54,54,YES
+17,verhopen God almachtigh niet gehengen sal. Echter,verhopen God alnmachtigh niet gehengen sal. Echter,0.0204,0.1429,14.1565,49,50,NO
+18,heeft ons geseijden Prins tot noch toe geen openbare,heft ons geseijden rins tot noch toe geen openbare,0.0385,0.2222,14.3247,52,50,NO
+19,"vijantschap betoont, soo dat soo plotselijck sonder voorgaene","vijantschap betoont, soo dat soo plotselijck sonder voorgaen",0.0164,0.1250,14.3376,61,60,NO
+20,ontseggingh van vrede ende denunciatie van Oorlogh,ontseggingh van vrede ende denuuciatie van Oorlogh,0.0200,0.1429,14.0815,50,50,NO
+21,onversiens in desselfs Landen te vallen niet wel,omwersiens in desselfs landen te vallen iet bel,0.1042,0.5000,14.0846,48,47,NO
+22,gejustificeert soude connen werden. Ende laet voorn,gejustificeert soude connen werden. Eende laet voorn,0.0196,0.1429,13.5507,51,52,NO
+23,"wesen desselfs landen te invaderen, aengesien gelijck den gouv.r","wesen dessels tlanden te invaderen, aengesien gelijck den gouvr",0.0469,0.3333,14.0999,64,63,NO
+24,Gouverneur in vele blijcken jegens die van Johor vrij,Gouverneur in vele blijcken jegens die van Iohor vrin,0.0377,0.2222,14.2569,53,53,NO
+25,gepassionneert,gepassioneeet,0.1429,1.0000,15.3525,14,13,NO
+26,sustineert allerwegen blijcken laet de saken niet recht met,sustineert allerwwegen blijcken laet de saken uiet recht met,0.0339,0.2222,14.1997,59,60,NO
+27,ons te menen: mits nalatigh blijft die van Naningh ende,ons te menen: nits nalatigh bbijft die van Naningh ende,0.0364,0.2000,14.1717,55,55,NO
+28,genoegh jegens ons protegeert. Waer op dan soo stout ende,genoegh jegens ons protegeert. Obaer op dan soo stoiut ende,0.0526,0.2000,14.1764,57,59,NO
+29,11.,11,0.3333,1.0000,16.0029,3,2,NO
+30,"In Banda, ende Jambij, wegens oude schult ontfangen.„ 1970:10:4","Jn Banda, ende Jambij, wegens oude schult ontfangen.„ 1970: 10:4",0.0317,0.3333,13.3737,63,64,NO
+31,"Op wissel getrocken volgens de wisselbrieven ende advijsen.,, 567276:12:-:",p wissel getrocken volgens de wisselbrieven ende advijsen.„ 567276:12:-,0.0541,0.3333,13.7839,74,71,NO
+32,schepen bestaende uijt Contanten Coopmansch: provisien E.a. .„1010112:-:11,schepen bestaende uijt Contanten Coopmansch: provisien E=r. .„1010112: —:1,0.0676,0.3750,11.6353,74,74,NO
+33,decemb:r A=o 1649. . . . . . . . . . . . . .„12663694:12: 5:,decomb: t=o 1649. . . . „12663694.:12: 5:,0.3833,0.7059,12.9633,60,41,NO
+34,omme in't vaderlant te betalen . . . . . . . .„ 72532: 7:-,ommme int vaderlant te betalen . . . . . . . „ 72532:. 7:-,0.0690,0.2667,12.7633,58,58,NO
+35,schepen ontfangen 't samen . . . . . . . . . . . . „ 71329:18:13:,schepen ontfangen 't samen . . . . . . . . . . „ 71329: 18:1:,0.0923,0.2222,13.0260,65,61,NO
+36,Jacht den Arent gelicht bij vercoop geprocedeert . . „ 14307:12:-:,Jacht den Alent gelicht bij vercop geprocedeert . . „ 14307:12:,0.0606,0.2727,12.8677,66,63,NO
+37,Caneel . . . . . . . . . . . . . . . . . . . . . „ 114871:14:4,Canel . . . . . . . „ 114871:14:4,0.4677,0.6250,13.0086,62,33,NO
+38,Blijven de gedane progressen suijver te bedragen. . . . . ƒ 856154: 8:12,Blijven de gedane progressen suijver te bedragen . ƒ 856154. 8:12,0.1111,0.3571,13.3992,72,65,NO
+39,vergaen . . . . . . . . . . . . „ 32703:14:6:,vergaen . . . . . . . . . . . . 32703:14:6:,0.0444,0.0667,14.0315,45,43,NO
+40,verongeluckt . . . . . . . . . „ 1043: 2:11:,verongeluckt . . . . . . . „ 1043: 2:11:,0.0909,0.1538,14.1994,44,40,NO
+41,potvis in Zee verlooren. . . „  181736:15:12:,potvis inzee verlooren. .: . . . „ 181736:15:12,0.1778,0.6250,12.9209,45,47,NO
+42,verlooren. . . . . . . . . . . .  „ 116970:3: 1:,verlooren . . . . . . . . . „ 116970: 3: 1.,0.1667,0.4000,13.6991,48,43,NO
+43,ƒ 862880:11:-:,ƒ 862880: 11:-,0.1429,1.0000,14.1485,14,14,NO
+44,ƒ 15372249:16:1:,ƒ 15372249:16:1,0.0625,0.5000,14.6619,16,15,NO
+45,p=r Transport . . . ƒ 530426:15:2:,P= Transport . ƒ 530426:15.: 2:,0.2353,0.7143,13.4546,34,31,NO
+46,P=r de Fluijt Maeslandt in Zee,P=r de eluijt maeslandt nZee,0.1333,0.6667,13.1610,30,28,NO
+47,P=r 't Jacht Visiagapatnam in Zee,P=r 't 'Iacht Visiagapatmamn inee,0.1818,0.6667,13.2566,33,33,NO
+48,"P=r de scheepen Tijger, bergen op Zoom","P=r descheepen Tijger, bergenopzoomn",0.1316,0.7143,13.6644,38,36,NO
+49,hier bij gevoecht soo veele den keijser van Ceijlon is goet,hier bij gevwecht soo veele den hkeijser van Ceijlon is goet,0.0339,0.1818,14.3156,59,60,NO
+50,"gedaen, op afcortinge sijnder schult, wegens ontfangene","gedaen, op afcortmge sijnder schult, wegens ontfangene",0.0364,0.1429,14.5294,55,54,NO
