@@ -255,13 +255,15 @@ def main():
     # Save side-by-side comparison
     if sr_enabled:
         # Upscale original for comparison
-        h_orig, w_orig = image.shape
-        h_new = h_orig * args.sr_scale
-        w_new = w_orig * args.sr_scale
-        image_upscaled = cv2.resize(image, (w_new, h_new), interpolation=cv2.INTER_CUBIC)
+        # Match restored output size for proper side-by-side display
+        h_restored, w_restored = restored.shape
+        image_upscaled = cv2.resize(image, (w_restored, h_restored), interpolation=cv2.INTER_CUBIC)
         comparison = np.hstack([image_upscaled, restored])
     else:
-        comparison = np.hstack([image, restored])
+        # Match sizes when no upscaling
+        h_restored, w_restored = restored.shape
+        image_resized = cv2.resize(image, (w_restored, h_restored), interpolation=cv2.INTER_CUBIC)
+        comparison = np.hstack([image_resized, restored])
     
     comparison_path = output_dir / f"{input_name}_comparison.png"
     cv2.imwrite(str(comparison_path), comparison)
