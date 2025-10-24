@@ -131,26 +131,19 @@ def postprocess_line(output: np.ndarray) -> np.ndarray:
 
 
 def apply_super_resolution(restored_line: np.ndarray, sr_model, scale: int = 2) -> np.ndarray:
-    """Apply EDSR super-resolution to restored line."""
-    # Preprocess for EDSR (expects H, W)
-    line_prepared = preprocess_for_edsr(restored_line, normalize=True)
+    """
+    Apply super-resolution to restored line.
     
-    # EDSR expects (H=128, W=1024, C=1) - line_prepared is already (H, W, C)
-    # Add batch dimension
-    line_batch = np.expand_dims(line_prepared, axis=0)
+    NOTE: Since EDSR is untrained, we use high-quality Lanczos4 interpolation
+    which gives MUCH better results for document upscaling.
+    """
+    h, w = restored_line.shape
+    new_h = h * scale
+    new_w = w * scale
     
-    # Apply SR
-    sr_output = sr_model.predict(line_batch, verbose=0)
-    
-    # Remove batch dimension
-    sr_line = sr_output[0]
-    
-    # Postprocess
-    sr_line = postprocess_from_edsr(sr_line, denormalize=True)
-    
-    # CRITICAL FIX: EDSR untrained output is inverted (black->white, white->black)
-    # Invert back to match document format (white background, black text)
-    sr_line = 255 - sr_line
+    # Use Lanczos4 - best quality for upscaling documents
+    # Better than untrained EDSR which produces noise/artifacts
+    sr_line = cv2.resize(restored_line, (new_w, new_h), interpolation=cv2.INTER_LANCZOS4)
     
     return sr_line
 
@@ -200,7 +193,7 @@ def main():
     logging.info("="*70)
     logging.info("LINE-AWARE DOCUMENT RESTORATION")
     if args.use_sr:
-        logging.info(f"  + SUPER-RESOLUTION (EDSR {args.sr_scale}x)")
+        logging.info(f"  + HIGH-QUALITY UPSCALING (Lanczos4 {args.sr_scale}x)")
     logging.info("="*70)
     logging.info(f"Checkpoint: {args.checkpoint_dir}/{args.checkpoint_name}")
     logging.info(f"Input: {args.input}")
@@ -221,9 +214,10 @@ def main():
     # Load SR model if enabled
     sr_model = None
     if args.use_sr:
-        logging.warning("⚠️  WARNING: EDSR model is UNTRAINED - output quality may be degraded!")
-        logging.warning("⚠️  EDSR feature is EXPERIMENTAL and for testing only")
-        sr_model = load_sr_model(scale=args.sr_scale, use_efficient=args.sr_efficient)
+        logging.info("ℹ️  Using Lanczos4 interpolation for super-resolution")
+        logging.info("ℹ️  (EDSR disabled - requires training for good quality)")
+        # We pass None as sr_model since we use Lanczos4 instead
+        sr_model = "lanczos4"  # Placeholder to enable SR path
     
     # Load input image
     logging.info(f"Loading image: {args.input}")
@@ -246,7 +240,7 @@ def main():
     
     # Apply SR if enabled
     if sr_model is not None:
-        logging.info(f"Applying EDSR super-resolution ({args.sr_scale}x)...")
+        logging.info(f"Applying high-quality upscaling (Lanczos4 {args.sr_scale}x)...")
         restored = apply_super_resolution(restored, sr_model, scale=args.sr_scale)
         logging.info(f"  SR output size: {restored.shape}")
     
