@@ -148,6 +148,10 @@ def apply_super_resolution(restored_line: np.ndarray, sr_model, scale: int = 2) 
     # Postprocess
     sr_line = postprocess_from_edsr(sr_line, denormalize=True)
     
+    # CRITICAL FIX: EDSR untrained output is inverted (black->white, white->black)
+    # Invert back to match document format (white background, black text)
+    sr_line = 255 - sr_line
+    
     return sr_line
 
 
@@ -217,6 +221,8 @@ def main():
     # Load SR model if enabled
     sr_model = None
     if args.use_sr:
+        logging.warning("⚠️  WARNING: EDSR model is UNTRAINED - output quality may be degraded!")
+        logging.warning("⚠️  EDSR feature is EXPERIMENTAL and for testing only")
         sr_model = load_sr_model(scale=args.sr_scale, use_efficient=args.sr_efficient)
     
     # Load input image

@@ -160,7 +160,7 @@ skrip launcher utama yang saat ini digunakan adalah @scripts/universal_train_fro
 pola perintah utama yang digunakan untuk memulai training adalah 
 
 ```
-nohup ./scripts/universal_train_from_json.sh configs/full_training_production_v1.json &
+nohup ./scripts/universal_train_from_json.sh configs/configs/production_v3_academic_split_70_15_15.json &
 ```
 
 generator yang digunakan adalah: enhanced

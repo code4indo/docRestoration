@@ -1,40 +1,53 @@
 #!/usr/bin/env python3
 """
-GRID-BASED DOCUMENT RESTORATION PIPELINE
-========================================
+GRID-BASED DOCUMENT RESTORATION PIPELINE - PRODUCTION V3 COMPATIBLE
+=====================================================================
 
 Approach: Split document into uniform 1024×128 tiles → GAN restoration → Blend
 
+Version: Updated for Production V3 Academic Split Model
+Compatibility: Enhanced U-Net Generator with [-1, 1] normalization
+
 Advantages:
 - ✅ Native GAN resolution (no resize artifacts)
-- ✅ Simple code (~300 lines vs 1098 lines)
+- ✅ Simple code (~350 lines)
 - ✅ Uniform tile size (consistent quality)
 - ✅ No detection dependency (works on any document)
 - ✅ Reproducible (fixed grid coordinates)
-- ✅ Smooth blending with overlap
+- ✅ Smooth blending with gradient overlap
 
-Disadvantages:
-- ❌ Slower (process entire document area)
-- ❌ Process margins (wasted compute on empty areas)
+Updates from Original:
+- ✅ Compatible dengan production_v3 model (unet_enhanced)
+- ✅ Proper [-1, 1] normalization (match training)
+- ✅ Gradient blend mask (smooth transitions)
+- ✅ Correct transpose operations (H,W ↔ W,H)
 
 Author: AI/ML Research Team
-Date: October 7, 2025
+Date: October 23, 2025
 """
 
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ['TF_XLA_FLAGS'] = '--tf_xla_enable_xla_devices=false'
+
+import sys
+from pathlib import Path
+
+# Add project root to path
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 import numpy as np
 import cv2
 import tensorflow as tf
-from pathlib import Path
-import json
 from tqdm import tqdm
 import time
 from typing import List, Tuple, Dict
 from PIL import Image
+import json
 
-# Hyperparameters
+from dual_modal_gan.src.models.generator_enhanced import unet_enhanced
+
+# Hyperparameters (MATCH TRAINING)
 TILE_WIDTH = 1024
 TILE_HEIGHT = 128
 OVERLAP = 32  # Overlap pixels untuk smooth blending
@@ -52,12 +65,12 @@ if gpus:
         print(f"⚠️  GPU configuration error: {e}")
 
 
-def create_blend_mask(width: int, height: int, overlap: int) -> np.ndarray:
+def create_blend_mask_gradient(width: int, height: int, overlap: int) -> np.ndarray:
     """
-    Create blend mask untuk smooth tile blending dengan overlap.
+    Create gradient blend mask untuk smooth tile blending.
     
-    IMPORTANT: For grid-based tiling, we use UNIFORM weight (1.0) in the center
-    and only fade at overlap regions. This prevents weight accumulation issues.
+    IMPROVED: Uses gradient fade in overlap regions instead of uniform weights.
+    This prevents visible seams while avoiding weight accumulation issues.
     
     Args:
         width: Tile width
@@ -67,12 +80,25 @@ def create_blend_mask(width: int, height: int, overlap: int) -> np.ndarray:
     Returns:
         mask: (H, W) float array [0, 1]
     """
-    # Start with uniform weights (no fade)
     mask = np.ones((height, width), dtype=np.float32)
     
-    # For grid-based approach, we don't need edge fading
-    # The weighted average in overlap regions will handle blending
-    # This keeps weights close to 1.0, avoiding the division problem
+    if overlap <= 0:
+        return mask
+    
+    # Create fade gradient [0 -> 1]
+    fade = np.linspace(0, 1, overlap)
+    
+    # Horizontal fade (left edge)
+    mask[:, :overlap] *= fade[np.newaxis, :]
+    
+    # Horizontal fade (right edge)
+    mask[:, -overlap:] *= fade[::-1][np.newaxis, :]
+    
+    # Vertical fade (top edge)
+    mask[:overlap, :] *= fade[:, np.newaxis]
+    
+    # Vertical fade (bottom edge)
+    mask[-overlap:, :] *= fade[::-1][:, np.newaxis]
     
     return mask
 
@@ -94,7 +120,7 @@ def split_document_to_tiles(image: np.ndarray,
         tiles: List of (tile_img, x, y, w, h)
                tile_img: (tile_h, tile_w) grayscale
                x, y: Top-left coordinate dalam dokumen asli
-               w, h: Tile dimensions
+               w, h: Tile dimensions (actual size before padding)
     """
     # Convert to grayscale if needed
     if len(image.shape) == 3:
@@ -119,8 +145,10 @@ def split_document_to_tiles(image: np.ndarray,
             # Extract tile
             tile = image[y:y_end, x:x_end].copy()
             
-            # Pad jika tile lebih kecil dari target (edges)
+            # Store actual dimensions before padding
             actual_h, actual_w = tile.shape
+            
+            # Pad jika tile lebih kecil dari target (edges)
             if actual_h < tile_h or actual_w < tile_w:
                 # Pad dengan white (255) untuk match document background
                 padded = np.ones((tile_h, tile_w), dtype=np.uint8) * 255
@@ -145,22 +173,36 @@ def split_document_to_tiles(image: np.ndarray,
 def preprocess_tile_for_gan(tile: np.ndarray) -> np.ndarray:
     """
     Preprocess tile untuk GAN input.
-    Tile sudah dalam ukuran 1024×128 (native GAN size).
+    
+    CRITICAL: Must match training preprocessing!
+    
+    Transformations:
+    1. Ensure grayscale (already done)
+    2. Normalize to [0, 1]
+    3. Transpose (H, W) -> (W, H) for model
+    4. Add channel dimension
+    5. Normalize to [-1, 1] for tanh generator
     
     Args:
-        tile: (H, W) grayscale image
+        tile: (H, W) grayscale image, range [0, 255]
     
     Returns:
-        tensor: (1, W, H, 1) float32 [0, 1]
+        tensor: (1, W, H, 1) float32 [-1, 1]
     """
-    # Normalize ke [0, 1]
+    # Normalize to [0, 1]
     normalized = tile.astype(np.float32) / 255.0
     
-    # Transpose ke (W, H) untuk model
-    transposed = np.transpose(normalized)
+    # Transpose (H, W) -> (W, H)
+    transposed = normalized.T  # (1024, 128)
     
-    # Add batch and channel dimension: (1, W, H, 1)
-    tensor = transposed[np.newaxis, :, :, np.newaxis]
+    # Add channel dimension
+    transposed = transposed[..., np.newaxis]  # (1024, 128, 1)
+    
+    # Normalize to [-1, 1] for tanh generator
+    transposed = transposed * 2.0 - 1.0
+    
+    # Add batch dimension
+    tensor = transposed[np.newaxis, ...]  # (1, 1024, 128, 1)
     
     return tensor
 
@@ -171,31 +213,43 @@ def postprocess_gan_output(generated: np.ndarray,
     """
     Postprocess GAN output kembali ke tile format.
     
+    CRITICAL: Inverse of preprocess_tile_for_gan!
+    
+    Transformations:
+    1. Remove batch & channel dimensions
+    2. Denormalize from [-1, 1] to [0, 255]
+    3. Transpose (W, H) -> (H, W)
+    4. Clip and convert to uint8
+    5. Crop to original size
+    
     Args:
-        generated: (1, W, H, 1) float32 [0, 1]
+        generated: (1, W, H, 1) float32 [-1, 1]
         original_h: Target height
         original_w: Target width
     
     Returns:
         tile: (H, W) uint8 [0, 255]
     """
-    # Remove batch & channel: (1, W, H, 1) → (W, H)
+    # Remove batch & channel: (1, W, H, 1) -> (W, H)
     squeezed = np.squeeze(generated, axis=(0, 3))
     
-    # Transpose back: (W, H) → (H, W)
-    transposed = np.transpose(squeezed)
+    # Denormalize from [-1, 1] to [0, 255]
+    denormalized = (squeezed + 1.0) * 127.5
     
-    # Denormalize to [0, 255]
-    denormalized = np.clip(transposed * 255.0, 0, 255).astype(np.uint8)
+    # Transpose back: (W, H) -> (H, W)
+    transposed = denormalized.T
+    
+    # Clip and convert
+    result = np.clip(transposed, 0, 255).astype(np.uint8)
     
     # Crop to original tile size (remove padding if any)
-    result = denormalized[:original_h, :original_w]
+    result = result[:original_h, :original_w]
     
     return result
 
 
 def restore_tiles_batch(tiles: List[np.ndarray], 
-                        generator, 
+                        generator: tf.keras.Model, 
                         batch_size: int = 8) -> List[np.ndarray]:
     """
     Restore multiple tiles dengan batch processing.
@@ -246,6 +300,8 @@ def reconstruct_from_tiles(tiles_info: List[Tuple[np.ndarray, int, int, int, int
     """
     Reconstruct full document dari restored tiles dengan smooth blending.
     
+    Uses weighted averaging in overlap regions with gradient masks.
+    
     Args:
         tiles_info: List of (restored_tile, x, y, w, h)
         doc_shape: Original document shape (H, W)
@@ -258,41 +314,32 @@ def reconstruct_from_tiles(tiles_info: List[Tuple[np.ndarray, int, int, int, int
     canvas = np.zeros((h, w), dtype=np.float32)
     weights = np.zeros((h, w), dtype=np.float32)
     
-    # Create blend mask once (reused for all tiles)
-    blend_mask = create_blend_mask(TILE_WIDTH, TILE_HEIGHT, overlap)
+    # Create gradient blend mask once (reused for all tiles)
+    blend_mask = create_blend_mask_gradient(TILE_WIDTH, TILE_HEIGHT, overlap)
     
     for tile, x, y, orig_w, orig_h in tiles_info:
         # Ensure tile is 2D (H, W)
-        # Tile might be (1, H, W) from batch processing or (H, W, C) from color
-        while len(tile.shape) > 2:
-            if tile.shape[0] == 1:
-                tile = tile[0]  # Remove batch dimension
-            elif tile.shape[-1] == 1:
-                tile = tile[:, :, 0]  # Remove channel dimension
-            elif len(tile.shape) == 3:
-                tile = tile[:, :, 0]  # Take first channel
-            else:
-                break
+        if len(tile.shape) > 2:
+            tile = tile[:, :, 0] if tile.shape[-1] == 1 else tile.squeeze()
         
         # Validate tile shape
         if tile.shape[0] == 0 or tile.shape[1] == 0:
-            continue  # Skip empty tiles
+            continue
         
-        # Get actual boundaries (considering document edges)
+        # Get actual boundaries
         y_end = min(y + orig_h, h)
         x_end = min(x + orig_w, w)
         
         actual_h = y_end - y
         actual_w = x_end - x
         
-        # Skip if no overlap
         if actual_h <= 0 or actual_w <= 0:
             continue
         
         # Get corresponding mask region
         mask = blend_mask[:actual_h, :actual_w]
         
-        # Ensure tile matches expected dimensions (H, W)
+        # Ensure tile matches expected dimensions
         tile_h, tile_w = tile.shape[:2]
         crop_h = min(actual_h, tile_h)
         crop_w = min(actual_w, tile_w)
@@ -300,50 +347,61 @@ def reconstruct_from_tiles(tiles_info: List[Tuple[np.ndarray, int, int, int, int
         tile_region = tile[:crop_h, :crop_w].astype(np.float32)
         mask_region = mask[:crop_h, :crop_w]
         
-        # Accumulate weighted tile
+        # Weighted average blending (original approach)
+        # Accumulate weighted tile contributions
         canvas[y:y+crop_h, x:x+crop_w] += tile_region * mask_region
         weights[y:y+crop_h, x:x+crop_w] += mask_region
     
     # Normalize by weights (avoid division by zero)
-    reconstructed = canvas / (weights + 1e-8)
+    reconstructed = canvas / (weights + 1e-6)
     
     return reconstructed.astype(np.uint8)
 
 
-def load_gan_model(checkpoint_path: str):
-    """Load GAN generator model."""
-    import sys
-    import os
-    sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-    from models.generator import unet
+def load_gan_model(checkpoint_path: str) -> tf.keras.Model:
+    """
+    Load GAN generator model (Production V3 Compatible).
     
-    # Build U-Net generator (grayscale: 1024×128×1)
-    generator = unet(input_size=(IMG_WIDTH, IMG_HEIGHT, 1))
+    Args:
+        checkpoint_path: Path to checkpoint (with or without .index)
     
-    # Load weights menggunakan tf.train.Checkpoint (TensorFlow native format)
-    checkpoint = tf.train.Checkpoint(generator=generator)
+    Returns:
+        generator: Loaded Enhanced U-Net generator
+    """
+    print(f"  📦 Loading generator model...")
+    
+    # Build Enhanced U-Net generator
+    generator = unet_enhanced(input_size=(IMG_WIDTH, IMG_HEIGHT, 1))
     
     # Handle checkpoint path
     if os.path.isdir(checkpoint_path):
         checkpoint_path = tf.train.latest_checkpoint(checkpoint_path)
     else:
+        # Remove extensions if present
         checkpoint_path = checkpoint_path.replace('.index', '').replace('.data-00000-of-00001', '')
     
-    if checkpoint_path and os.path.exists(checkpoint_path + '.index'):
-        status = checkpoint.restore(checkpoint_path)
-        status.expect_partial()
-        print(f"  ✅ Generator loaded: {generator.count_params():,} parameters")
-    else:
-        raise ValueError(f"No checkpoint found at {checkpoint_path}")
+    if not checkpoint_path:
+        raise ValueError(f"No checkpoint found")
+    
+    # Load weights
+    checkpoint = tf.train.Checkpoint(generator=generator)
+    status = checkpoint.restore(checkpoint_path)
+    status.expect_partial()
+    
+    print(f"  ✅ Generator loaded: {generator.count_params():,} parameters")
+    print(f"     Model: Enhanced U-Net (ResBlocks + Attention)")
+    print(f"     Input: ({IMG_WIDTH}, {IMG_HEIGHT}, 1)")
+    print(f"     Normalization: [-1, 1] (tanh)")
     
     return generator
 
 
 def process_document_grid_based(document_path: str,
                                 output_dir: str,
-                                generator,
+                                generator: tf.keras.Model,
                                 batch_size: int = 8,
-                                save_tiles: bool = False) -> Dict:
+                                save_tiles: bool = False,
+                                no_postprocess: bool = False) -> Dict:
     """
     Process dokumen dengan grid-based approach.
     
@@ -378,7 +436,7 @@ def process_document_grid_based(document_path: str,
     num_tiles = len(tiles_info)
     print(f"   ✅ Created {num_tiles} tiles")
     
-    # Calculate theoretical tiles (for comparison)
+    # Calculate grid layout
     step_h = TILE_HEIGHT - OVERLAP
     step_w = TILE_WIDTH - OVERLAP
     theo_rows = int(np.ceil(orig_h / step_h))
@@ -393,7 +451,7 @@ def process_document_grid_based(document_path: str,
     
     # DEBUG: Check restored tile statistics
     if len(restored_tiles) > 0:
-        sample_stats = [f"mean={t.mean():.1f}" for t in restored_tiles[:5]]
+        sample_stats = [f"mean={t.mean():.1f}" for t in restored_tiles[:3]]
         print(f"   📊 Sample tile stats: {', '.join(sample_stats)}")
     
     # Save individual tiles if requested
@@ -408,7 +466,7 @@ def process_document_grid_based(document_path: str,
         print(f"   💾 Saved tiles to: {tiles_dir}")
     
     # Step 3: Reconstruct document dengan blending
-    print(f"   🔨 Reconstructing document with smooth blending...")
+    print(f"   🔨 Reconstructing document with gradient blending...")
     restored_info = [(restored, x, y, w, h) 
                      for restored, (_, x, y, w, h) in zip(restored_tiles, tiles_info)]
     
@@ -416,35 +474,52 @@ def process_document_grid_based(document_path: str,
     print(f"   ✅ Reconstructed: {reconstructed.shape[1]}×{reconstructed.shape[0]}")
     print(f"   📊 Stats: min={reconstructed.min()}, max={reconstructed.max()}, mean={reconstructed.mean():.2f}")
     
-    # Apply post-processing to reduce perceived pixelation
-    # Fix: bilateral filter + reduced sharpness + DPI metadata
-    print(f"   🔧 Post-processing (bilateral + reduced sharpness)...")
+    # Post-processing (conditional based on flag)
+    if no_postprocess:
+        print(f"   ⚠️  Post-processing DISABLED (raw GAN output)")
+        processed = reconstructed
+    else:
+        print(f"   🔧 Post-processing (quality enhancement)...")
+        
+        # Step 1: CLAHE for contrast enhancement (first)
+        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+        enhanced = clahe.apply(reconstructed)
+        print(f"   ✅ CLAHE applied (contrast recovery)")
+        
+        # Step 2: Morphological closing to connect broken strokes
+        # Closing = dilation + erosion (preserves size while filling gaps)
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
+        closed = cv2.morphologyEx(enhanced, cv2.MORPH_CLOSE, kernel, iterations=1)
+        print(f"   ✅ Morphological closing applied (connect broken strokes)")
+        
+        # Step 3: Unsharp masking for sharpness (preserve text detail)
+        gaussian = cv2.GaussianBlur(closed, (3, 3), 1.0)
+        unsharp_mask = cv2.addWeighted(closed, 1.5, gaussian, -0.5, 0)
+        processed = np.clip(unsharp_mask, 0, 255).astype(np.uint8)
+        print(f"   ✅ Unsharp mask applied (detail enhancement)")
     
-    # Step 1: Bilateral filter (edge-preserving smoothing)
-    processed = cv2.bilateralFilter(reconstructed, d=5, sigmaColor=50, sigmaSpace=50)
-    
-    # Step 2: Slightly reduce sharpness (counter GAN over-sharpening)
-    blurred = cv2.GaussianBlur(processed, (3, 3), 0.5)
-    processed = cv2.addWeighted(processed, 0.85, blurred, 0.15, 0).astype(np.uint8)
+    # Optional: Mild bilateral filter (disabled by default)
+    # processed = cv2.bilateralFilter(processed, d=3, sigmaColor=20, sigmaSpace=20)
+    # print(f"   ✅ Bilateral filter applied (gentle smoothing)")
     
     # Save results with DPI metadata
     output_image_path = output_path / f"{doc_name}_restored.png"
     pil_img = Image.fromarray(processed)
     pil_img.save(str(output_image_path), dpi=(300, 300))
-    print(f"   💾 Saved (with DPI 300): {output_image_path}")
+    print(f"   💾 Saved (DPI 300): {output_image_path}")
     
-    # Save original for comparison (with DPI)
+    # Save original for comparison
     original_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     original_path = output_path / f"{doc_name}_original.png"
     pil_orig = Image.fromarray(original_gray)
     pil_orig.save(str(original_path), dpi=(300, 300))
     
-    # Create side-by-side comparison (use processed version)
+    # Create side-by-side comparison
     comparison = create_comparison_image(original_gray, processed, doc_name)
     comparison_path = output_path / f"{doc_name}_comparison.png"
     pil_comp = Image.fromarray(comparison)
     pil_comp.save(str(comparison_path), dpi=(300, 300))
-    print(f"   📊 Comparison (with DPI 300): {comparison_path}")
+    print(f"   📊 Comparison saved: {comparison_path}")
     
     elapsed = time.time() - start_time
     
@@ -475,7 +550,7 @@ def create_comparison_image(original: np.ndarray,
                            restored: np.ndarray,
                            title: str) -> np.ndarray:
     """
-    Create side-by-side comparison image.
+    Create vertical comparison image (top-bottom).
     
     Args:
         original: Original grayscale image
@@ -483,7 +558,7 @@ def create_comparison_image(original: np.ndarray,
         title: Title text
     
     Returns:
-        comparison: Side-by-side comparison
+        comparison: Vertical comparison (BGR)
     """
     h, w = original.shape
     
@@ -491,27 +566,45 @@ def create_comparison_image(original: np.ndarray,
     orig_color = cv2.cvtColor(original, cv2.COLOR_GRAY2BGR)
     rest_color = cv2.cvtColor(restored, cv2.COLOR_GRAY2BGR)
     
-    # Gap separator
-    gap = 30
-    gap_img = np.ones((h, gap, 3), dtype=np.uint8) * 200
+    # Add label bars (header untuk setiap section)
+    label_height = 80
+    label_bar_orig = np.ones((label_height, w, 3), dtype=np.uint8) * 50  # Dark gray
+    label_bar_rest = np.ones((label_height, w, 3), dtype=np.uint8) * 50
     
-    # Stack horizontally
-    comparison = np.hstack([orig_color, gap_img, rest_color])
+    # Gap separator (horizontal bar)
+    gap = 20
+    gap_img = np.ones((gap, w, 3), dtype=np.uint8) * 200
     
-    # Add labels
+    # Stack vertically with label bars
+    comparison = np.vstack([
+        label_bar_orig,
+        orig_color,
+        gap_img,
+        label_bar_rest,
+        rest_color
+    ])
+    
+    # Add labels on the label bars
     font = cv2.FONT_HERSHEY_SIMPLEX
-    font_scale = 1.0
-    thickness = 2
+    font_scale = 1.2
+    thickness = 3
     
-    cv2.putText(comparison, "ORIGINAL (Degraded)", (20, 50),
+    # Label for original (on dark bar)
+    cv2.putText(comparison, "ORIGINAL (Degraded)", (20, 55),
                font, font_scale, (0, 0, 255), thickness, cv2.LINE_AA)
     
-    cv2.putText(comparison, "RESTORED (Grid-Based GAN)", (w + gap + 20, 50),
+    # Label for restored (on dark bar below)
+    cv2.putText(comparison, "RESTORED (Grid-Based GAN)", (20, label_height + h + gap + 55),
                font, font_scale, (0, 255, 0), thickness, cv2.LINE_AA)
     
-    # Add title at bottom
-    cv2.putText(comparison, f"Document: {title}", (20, h - 20),
-               font, 0.7, (255, 255, 255), 2, cv2.LINE_AA)
+    # Add title at very bottom on white background
+    footer_height = 60
+    footer = np.ones((footer_height, w, 3), dtype=np.uint8) * 255
+    comparison = np.vstack([comparison, footer])
+    
+    total_h = comparison.shape[0]
+    cv2.putText(comparison, f"Document: {title}", (20, total_h - 20),
+               font, 0.9, (0, 0, 0), 2, cv2.LINE_AA)
     
     return comparison
 
@@ -520,26 +613,33 @@ def main():
     """Main function untuk testing."""
     import argparse
     
-    parser = argparse.ArgumentParser(description="Grid-Based Document Restoration")
+    parser = argparse.ArgumentParser(description="Grid-Based Document Restoration (Production V3 - Quality Enhanced)")
     parser.add_argument('--input', type=str, required=True, help='Input document path')
     parser.add_argument('--output_dir', type=str, default='outputs/grid_based',
                        help='Output directory')
     parser.add_argument('--generator', type=str,
-                       default='dual_modal_gan/outputs/checkpoints_fp32_smoke_test/best_model-12',
+                       default='dual_modal_gan/checkpoints/production_v3_academic_split_70_15_15/best_model/ckpt-88',
                        help='Generator checkpoint path')
-    parser.add_argument('--batch_size', type=int, default=8,
-                       help='Batch size for GAN processing')
+    parser.add_argument('--batch_size', type=int, default=2,
+                       help='Batch size for GAN processing (default: 2 for RTX A4000)')
     parser.add_argument('--save_tiles', action='store_true',
                        help='Save individual tiles (debug mode)')
+    parser.add_argument('--no-postprocess', action='store_true',
+                       help='Disable post-processing (get raw GAN output)')
     
     args = parser.parse_args()
     
     print("=" * 80)
-    print("GRID-BASED DOCUMENT RESTORATION PIPELINE")
+    print("GRID-BASED DOCUMENT RESTORATION PIPELINE (Production V3 - Quality Enhanced)")
     print("=" * 80)
     print(f"Tile size: {TILE_WIDTH}×{TILE_HEIGHT}")
-    print(f"Overlap: {OVERLAP}px")
+    print(f"Overlap: {OVERLAP}px (gradient blending)")
     print(f"Batch size: {args.batch_size}")
+    print(f"Model: Enhanced U-Net (ResBlocks + Attention)")
+    if args.no_postprocess:
+        print(f"Post-processing: DISABLED (raw GAN output)")
+    else:
+        print(f"Post-processing: CLAHE + Morphological Closing + Unsharp Mask")
     print("=" * 80)
     
     # Load GAN model
@@ -553,7 +653,8 @@ def main():
         args.output_dir,
         generator,
         batch_size=args.batch_size,
-        save_tiles=args.save_tiles
+        save_tiles=args.save_tiles,
+        no_postprocess=args.no_postprocess
     )
     
     print("\n" + "=" * 80)
