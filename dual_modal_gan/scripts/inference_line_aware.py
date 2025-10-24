@@ -166,12 +166,12 @@ def main():
                        help='GPU device ID (default: 1, -1 for CPU)')
     parser.add_argument('--image_ext', type=str, default='.jpg',
                        help='Image extension (for compatibility, not used)')
+    parser.add_argument('--sr_scale', type=int, default=2, choices=[1, 2, 4],
+                       help='Upscaling factor: 1=no upscaling, 2=2x (default), 4=4x - uses Lanczos4')
     parser.add_argument('--use_sr', action='store_true',
-                       help='Enable EDSR super-resolution')
-    parser.add_argument('--sr_scale', type=int, default=2, choices=[2, 4],
-                       help='SR upscaling factor (2x or 4x)')
+                       help='(Deprecated) SR is now always enabled via --sr_scale')
     parser.add_argument('--sr_efficient', action='store_true',
-                       help='Use lightweight EDSR for faster inference')
+                       help='(Deprecated) Using Lanczos4 by default')
     
     args = parser.parse_args()
     
@@ -192,16 +192,14 @@ def main():
     
     logging.info("="*70)
     logging.info("LINE-AWARE DOCUMENT RESTORATION")
-    if args.use_sr:
+    if args.sr_scale > 1:
         logging.info(f"  + HIGH-QUALITY UPSCALING (Lanczos4 {args.sr_scale}x)")
     logging.info("="*70)
     logging.info(f"Checkpoint: {args.checkpoint_dir}/{args.checkpoint_name}")
     logging.info(f"Input: {args.input}")
     logging.info(f"Output: {args.output_dir}")
     logging.info(f"GPU: {args.gpu_id}")
-    if args.use_sr:
-        logging.info(f"SR Scale: {args.sr_scale}x")
-        logging.info(f"SR Model: {'Efficient' if args.sr_efficient else 'Baseline'}")
+    logging.info(f"Upscaling: {args.sr_scale}x (Lanczos4)")
     logging.info("")
     
     # Configure GPU
@@ -213,13 +211,9 @@ def main():
     
     # Load SR model if enabled
     sr_model = None
-    if args.use_sr:
-        logging.info("ℹ️  Using Lanczos4 interpolation for super-resolution")
-        logging.info("ℹ️  (EDSR disabled - requires training for good quality)")
-        # We pass None as sr_model since we use Lanczos4 instead
-        sr_model = "lanczos4"  # Placeholder to enable SR path
-    
-    # Load input image
+    # SR is always enabled via --sr_scale (default: 2)
+    # sr_scale=1 means no upscaling (original size)
+    sr_enabled = args.sr_scale > 1
     logging.info(f"Loading image: {args.input}")
     image = cv2.imread(args.input, cv2.IMREAD_GRAYSCALE)
     if image is None:
@@ -244,6 +238,12 @@ def main():
         restored = apply_super_resolution(restored, sr_model, scale=args.sr_scale)
         logging.info(f"  SR output size: {restored.shape}")
     
+    # Apply upscaling if sr_scale > 1
+    if sr_enabled:
+        logging.info(f"Applying high-quality upscaling (Lanczos4 {args.sr_scale}x)...")
+        restored = apply_super_resolution(restored, None, scale=args.sr_scale)
+        logging.info(f"  Upscaled output size: {restored.shape}")
+    
     # Save results
     input_name = Path(args.input).stem
     
@@ -253,7 +253,7 @@ def main():
     logging.info(f"✓ Saved restored: {restored_path}")
     
     # Save side-by-side comparison
-    if args.use_sr:
+    if sr_enabled:
         # Upscale original for comparison
         h_orig, w_orig = image.shape
         h_new = h_orig * args.sr_scale
@@ -274,10 +274,10 @@ def main():
         'input': str(args.input),
         'input_size': image.shape,
         'output_size': restored.shape,
-        'super_resolution': {
-            'enabled': args.use_sr,
-            'scale': args.sr_scale if args.use_sr else None,
-            'model': 'efficient' if args.sr_efficient else 'baseline' if args.use_sr else None
+        'upscaling': {
+            'enabled': sr_enabled,
+            'scale': args.sr_scale,
+            'method': 'Lanczos4'
         }
     }
     
