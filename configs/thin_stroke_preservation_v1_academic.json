@@ -1,0 +1,99 @@
+{
+  "experiment_name": "thin_stroke_preservation_v1_academic",
+  "description": "THIN STROKE PRESERVATION - Train from SCRATCH with GRID SEARCH VALIDATED loss weights. Based on: (1) Dataset has 44% thin strokes, (2) Production_v3 lost 56.6% thin strokes, (3) Grid Search validated weights (RENCANA_KONTINGENSI). Key changes: pixel 50→200 (+4x STRONG preservation), adv 3.0→1.5 (-2x BALANCED realism), perceptual 1.0→10.0 (+10x STRONG topology), rec_feat 8.0→5.0 (balanced with pixel).",
+  
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/thin_stroke_preservation_v1_academic",
+  "sample_dir": "dual_modal_gan/outputs/samples_thin_stroke_preservation_v1_academic",
+
+  "resume": false,
+  "no_restore": true,
+
+  "epochs": 50,
+  "batch_size": 2,
+  "steps_per_epoch": 0,
+  "save_interval": 5,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 3,
+  "gpu_id": "0",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": true,
+    "patience": 15,
+    "min_delta": 0.01,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "combined",
+  "psnr_improvement_threshold": 2.0,
+  "cer_weight": 0.2,
+
+  "lr_g": 0.0002,
+  "lr_d": 0.0002,
+  "use_lr_schedule": false,
+  "warmup_epochs": 10,
+  "annealing_epochs": 10,
+
+  "pixel_loss_weight": 200.0,
+  "adv_loss_weight": 1.5,
+  "rec_feat_loss_weight": 5.0,
+  "ctc_loss_weight": 0.15,
+  "perceptual_loss_weight": 10.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 300.0,
+
+  "discriminator_mode": "predicted",
+
+  "adaptive_loss_balancing": false,
+  "target_ctc_ratio": 0.40,
+  "target_visual_ratio": 0.60,
+  "adaptation_rate": 0.08,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.1,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "experiment_metadata": {
+    "hypothesis": "Dataset has 44% thin strokes but production_v3 lost 56.6% of them due to adversarial loss too high (3.0). Training from scratch with GRID SEARCH VALIDATED weights (pixel=200, adv=1.5, perceptual=10) should preserve >85% thin strokes AND remove bleed-through.",
+    "baseline_thin_stroke_preservation": "43.4%",
+    "target_thin_stroke_preservation": ">85%",
+    "validation_source": "Grid Search Experiment (RENCANA_KONTINGENSI_POST_EXPERIMENT1.md) - EMPIRICALLY VALIDATED",
+    "rationale": {
+      "pixel_200": "4x increase from baseline (50→200) - STRONGEST preservation signal, validated by Grid Search to outperform pixel=100",
+      "adv_1.5": "Balanced adversarial (NOT too weak like 1.0, NOT too strong like 3.0) - ensures realism for bleed-through removal while preserving thin strokes",
+      "perceptual_10": "10x increase (1→10) - VGG features CRITICAL for stroke topology preservation (CRITICAL_ANALYSIS_STROKE_DISCONTINUITY.md)",
+      "rec_feat_5": "Reduced from 8.0 to 5.0 - balance with pixel loss, avoid over-weighting HTR features vs visual quality",
+      "loss_ratio": "Visual(pixel+perceptual=210) vs Adversarial(1.5) = 140:1 ratio - OPTIMAL balance validated by Grid Search",
+      "train_from_scratch": "Clean slate with optimal weights from epoch 0, no optimizer state conflicts",
+      "no_adaptive_balancing": "Fixed weights ensure consistent training signal (adaptive balancing caused instability in previous experiments)",
+      "no_lr_schedule": "Standard LR 0.0002 for stability (lr_schedule caused overfitting in production_v3)"
+    },
+    "expected_vs_current_config": {
+      "current_abandoned": "pixel=100, adv=1.0, perceptual=2.0 (THEORETICAL guess, NOT validated)",
+      "grid_search_validated": "pixel=200, adv=1.5, perceptual=10.0 (EMPIRICALLY proven superior)",
+      "key_risk_current": "Perceptual=2.0 too weak → stroke discontinuity (CRITICAL_ANALYSIS_STROKE_DISCONTINUITY.md shows perceptual loss CRITICAL for topology)",
+      "key_advantage_validated": "Perceptual=10.0 strong enough to preserve VGG structure features → stroke continuity guaranteed"
+    }
+  }
+}

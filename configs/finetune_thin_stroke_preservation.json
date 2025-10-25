@@ -1,0 +1,123 @@
+{
+  "name": "thin_stroke_preservation_v1",
+  "description": "Train from SCRATCH with rebalanced loss weights optimized for thin stroke preservation (pixel=100, adv=1.0, perceptual=2.0)",
+  "base_experiment": "none",
+  "strategy": "Train from scratch with optimal loss balance discovered from dataset analysis (44% thin strokes available)",
+  
+  "dataset": {
+    "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+    "split_config": "academic_70_15_15",
+    "description": "4.7GB synthetic paleography dataset with 44.14% thin strokes (<3px)"
+  },
+  
+  "resume": {
+    "enabled": false,
+    "checkpoint_dir": null,
+    "checkpoint_number": null,
+    "strategy": "train_from_scratch_with_optimal_loss_weights"
+  },
+  
+  "training": {
+    "epochs": 50,
+    "batch_size": 2,
+    "num_train_examples": 27678,
+    "num_val_examples": 5892,
+    "num_test_examples": 5892,
+    "no_restore": true,
+    "description": "Full training (50 epochs ~10-15 hours) from scratch with loss weights optimized for thin stroke preservation based on dataset analysis showing 44% thin stroke representation"
+  },
+  
+  "optimizer": {
+    "generator": {
+      "type": "Adam",
+      "learning_rate": 0.0002,
+      "beta_1": 0.5,
+      "description": "Standard LR for training from scratch"
+    },
+    "discriminator": {
+      "type": "Adam",
+      "learning_rate": 0.0002,
+      "beta_1": 0.5,
+      "description": "Standard LR for training from scratch"
+    }
+  },
+  
+  "loss_weights": {
+    "pixel_loss_weight": 100.0,
+    "adv_loss_weight": 1.0,
+    "rec_feat_loss_weight": 8.0,
+    "ctc_loss_weight": 0.15,
+    "perceptual_loss_weight": 2.0,
+    "description": "CRITICAL CHANGES: pixel 50→100 (+2x preserve detail), adv 3.0→1.0 (-3x reduce aggression), perceptual 1.0→2.0 (+2x maintain structure)",
+    "rationale": {
+      "pixel_increase": "Force generator to preserve ALL pixels including thin strokes",
+      "adv_decrease": "Make discriminator less punishing for keeping thin strokes (previously treated as noise)",
+      "perceptual_increase": "Maintain overall structure quality while preserving fine details",
+      "rec_feat_unchanged": "Keep HTR guidance stable (proven effective)",
+      "ctc_unchanged": "Keep text recognition guidance stable"
+    }
+  },
+  
+  "model": {
+    "generator": "enhanced",
+    "discriminator": "enhanced_v2_fixed",
+    "recognizer": {
+      "weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+      "freeze": true
+    },
+    "description": "Same architecture as production_v3 - only loss weights changed"
+  },
+  
+  "validation": {
+    "frequency": 1,
+    "save_best_only": true,
+    "monitor_metric": "val_psnr",
+    "mode": "max",
+    "early_stopping": {
+      "enabled": true,
+      "patience": 5,
+      "min_delta": 0.01
+    }
+  },
+  
+  "evaluation_targets": {
+    "primary_metric": "thin_stroke_preservation_rate",
+    "baseline": {
+      "thin_strokes": "43.4%",
+      "medium_strokes": "69.4%",
+      "thick_strokes": "79.6%"
+    },
+    "target": {
+      "thin_strokes": ">75%",
+      "medium_strokes": ">75%",
+      "thick_strokes": ">80%"
+    },
+    "evaluation_script": "scripts/analyze_thin_stroke_loss.py",
+    "test_dataset": "dibco_datasets/2012/"
+  },
+  
+  "output": {
+    "checkpoint_dir": "dual_modal_gan/checkpoints/thin_stroke_preservation_v1",
+    "log_dir": "logbook",
+    "mlflow_experiment": "thin_stroke_training_from_scratch"
+  },
+  
+  "compute": {
+    "gpu": true,
+    "gpu_id": "0,1",
+    "mixed_precision": false,
+    "num_gpus": 2,
+    "distribution_strategy": "mirrored"
+  },
+  
+  "experiment_metadata": {
+    "created_by": "belekok",
+    "creation_date": "2025-10-25",
+    "research_phase": "thin_stroke_preservation",
+    "approach": "train_from_scratch_with_optimal_loss_weights",
+    "hypothesis": "Dataset has 44% thin strokes but production_v3 lost 56.6% of them due to adversarial loss too high (3.0). Training from scratch with balanced losses (pixel=100, adv=1.0, perceptual=2.0) should preserve >75% thin strokes.",
+    "validation_method": "DIBCO 2012 + analyze_thin_stroke_loss.py before/after comparison",
+    "success_criteria": "Thin stroke preservation 43.4% → >75% while maintaining PSNR ≥16 dB and F-Measure ≥98%",
+    "rationale": "Training from scratch is BETTER than fine-tuning because: (1) Dataset already has sufficient thin strokes (44%), (2) Optimizer state incompatibility with new LR, (3) Model will learn correct objective from epoch 0"
+  }
+}

@@ -52,18 +52,23 @@ try:
         return current.get(keys[-1], default) if isinstance(current, dict) else default
     
     # Extract experiment name for logging
-    exp_name = config.get('experiment_name', 'experiment')
+    exp_name = config.get('name', config.get('experiment_name', 'experiment'))
     
     # Build training arguments
     training_args = []
     
     # Model architecture - map architecture names to valid choices
-    gen_arch = get_value(config, ['model', 'generator', 'architecture'], 'enhanced')
+    # Support both flat 'generator' key and nested 'model.generator' structure
+    gen_arch = config.get('generator', get_value(config, ['model', 'generator'], 'enhanced'))
+    if isinstance(gen_arch, dict):
+        gen_arch = gen_arch.get('architecture', 'enhanced')
     # Map common names to valid choices
     gen_map = {'unet': 'enhanced', 'enhanced': 'enhanced', 'enhanced_v2': 'enhanced_v2', 'base': 'base'}
     gen_version = gen_map.get(gen_arch, 'enhanced')
     
-    disc_arch = get_value(config, ['model', 'discriminator', 'architecture'], 'enhanced_v2_fixed')
+    disc_arch = config.get('discriminator', get_value(config, ['model', 'discriminator'], 'enhanced_v2_fixed'))
+    if isinstance(disc_arch, dict):
+        disc_arch = disc_arch.get('architecture', 'enhanced_v2_fixed')
     disc_map = {'patchgan': 'enhanced_v2', 'enhanced_v2': 'enhanced_v2', 'enhanced_v2_fixed': 'enhanced_v2_fixed', 'base': 'base'}
     disc_version = disc_map.get(disc_arch, 'enhanced_v2_fixed')
     
@@ -71,12 +76,13 @@ try:
     training_args.append(f\"--discriminator_version {disc_version}\")
     
     # Data paths - use correct defaults
-    training_args.append(f\"--tfrecord_path {get_value(config, ['data', 'tfrecord_path'], 'dual_modal_gan/data/dataset_gan.tfrecord')}\")
+    tfrecord = get_value(config, ['dataset', 'tfrecord_path'], get_value(config, ['data', 'tfrecord_path'], 'dual_modal_gan/data/dataset_gan.tfrecord'))
+    training_args.append(f\"--tfrecord_path {tfrecord}\")
     training_args.append(f\"--charset_path {get_value(config, ['data', 'charset_path'], 'real_data_preparation/real_data_charlist.txt')}\")
     training_args.append(f\"--recognizer_weights {get_value(config, ['data', 'recognizer_weights'], 'models/best_htr_recognizer/best_model.weights.h5')}\")
     
     # GPU configuration
-    training_args.append(f\"--gpu_id {get_value(config, ['training', 'gpu_id'], '0')}\")
+    training_args.append(f\"--gpu_id {get_value(config, ['training', 'gpu_id'], get_value(config, ['compute', 'gpu_id'], '0'))}\")
     
     # Checkpoint and output directories
     training_args.append(f\"--checkpoint_dir dual_modal_gan/checkpoints/{exp_name}\")
@@ -99,12 +105,12 @@ try:
     training_args.append(f\"--save_interval {save_interval}\")
     
     # Evaluation interval
-    eval_interval = get_value(config, ['training', 'eval_interval'], 1)
+    eval_interval = get_value(config, ['training', 'eval_interval'], get_value(config, ['validation', 'frequency'], 1))
     training_args.append(f\"--eval_interval {eval_interval}\")
     
-    # Learning rates
-    lr_g = get_value(config, ['training', 'learning_rate_g'], 0.0002)
-    lr_d = get_value(config, ['training', 'learning_rate_d'], 0.0002)
+    # Learning rates - support nested optimizer structure
+    lr_g = get_value(config, ['optimizer', 'generator', 'learning_rate'], get_value(config, ['training', 'learning_rate_g'], 0.0002))
+    lr_d = get_value(config, ['optimizer', 'discriminator', 'learning_rate'], get_value(config, ['training', 'learning_rate_d'], 0.0002))
     training_args.append(f\"--lr_g {lr_g}\")
     training_args.append(f\"--lr_d {lr_d}\")
     
@@ -170,8 +176,9 @@ try:
         training_args.append(f\"--lr_decay_epochs {get_value(config, ['training', 'lr_decay_epochs'], 50)}\")
         training_args.append(f\"--lr_alpha {get_value(config, ['training', 'lr_alpha'], 0.0)}\")
     
-    # Checkpoint resume (optional)
-    if get_value(config, ['training', 'resume_from_checkpoint'], False):
+    # Checkpoint resume (optional) - support nested resume structure
+    resume_enabled = get_value(config, ['resume', 'enabled'], get_value(config, ['training', 'resume_from_checkpoint'], False))
+    if resume_enabled:
         training_args.append('--resume')
     
     # No restore flag (optional - for clean slate training)

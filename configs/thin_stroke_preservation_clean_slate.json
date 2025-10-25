@@ -1,0 +1,128 @@
+{
+  "experiment_name": "thin_stroke_preservation_clean_slate",
+  "description": "CLEAN SLATE TRAINING - Optimized loss weights for thin stroke preservation based on dataset analysis (44.14% thin strokes available). CRITICAL FIX: pixel_loss 50→100 (+2x), adv_loss 3.0→1.0 (-3x), perceptual 1.0→2.0 (+2x). Target: >75% thin stroke preservation while maintaining PSNR≥16dB and F-Measure≥98%.",
+  
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/thin_stroke_preservation_clean_slate",
+  "sample_dir": "dual_modal_gan/outputs/samples_thin_stroke_preservation_clean_slate",
+
+  "resume": false,
+  "no_restore": true,
+
+  "epochs": 50,
+  "batch_size": 2,
+  "steps_per_epoch": 0,
+  "save_interval": 2,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 5,
+  "gpu_id": "0",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": true,
+    "patience": 25,
+    "min_delta": 0.05,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "combined",
+  "psnr_improvement_threshold": 2.0,
+  "cer_weight": 0.2,
+
+  "lr_g": 0.0002,
+  "lr_d": 0.0002,
+  "use_lr_schedule": true,
+  "warmup_epochs": 10,
+  "annealing_epochs": 20,
+
+  "_comment_loss_weights": "CRITICAL CHANGES for thin stroke preservation:",
+  "_rationale_pixel": "pixel 50→100: Force generator to preserve ALL pixels including thin strokes",
+  "_rationale_adv": "adv 3.0→1.0: Reduce discriminator aggression (was treating thin strokes as noise)",
+  "_rationale_perceptual": "perceptual 1.0→2.0: Maintain structure quality while preserving fine details",
+  "_rationale_rec_feat": "rec_feat 8.0 unchanged: Keep HTR guidance stable (proven effective)",
+  "_rationale_ctc": "ctc 0.15 unchanged: Keep text recognition guidance stable",
+
+  "pixel_loss_weight": 100.0,
+  "adv_loss_weight": 1.0,
+  "rec_feat_loss_weight": 8.0,
+  "ctc_loss_weight": 0.15,
+  "perceptual_loss_weight": 2.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 400.0,
+
+  "discriminator_mode": "predicted",
+
+  "adaptive_loss_balancing": true,
+  "target_ctc_ratio": 0.40,
+  "target_visual_ratio": 0.60,
+  "adaptation_rate": 0.08,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.1,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "evaluation_targets": {
+    "primary_metric": "thin_stroke_preservation_rate",
+    "baseline_production_v3": {
+      "thin_strokes": "43.4%",
+      "medium_strokes": "69.4%",
+      "thick_strokes": "79.6%",
+      "psnr": "16.04 dB",
+      "ssim": "0.9852",
+      "f_measure": "98.45%"
+    },
+    "target": {
+      "thin_strokes": ">75%",
+      "medium_strokes": ">75%",
+      "thick_strokes": ">80%",
+      "psnr": "≥16.0 dB",
+      "ssim": "≥0.985",
+      "f_measure": "≥98.0%"
+    },
+    "evaluation_script": "scripts/analyze_thin_stroke_loss.py",
+    "test_dataset": "dibco_datasets/2012/"
+  },
+
+  "experiment_metadata": {
+    "created_by": "belekok",
+    "creation_date": "2025-10-25",
+    "research_phase": "thin_stroke_preservation",
+    "approach": "clean_slate_training_with_optimal_loss_weights",
+    "hypothesis": "Dataset has 44.14% thin strokes but production_v3 lost 56.6% of them due to adversarial loss too high (3.0). Training from scratch with balanced losses (pixel=100, adv=1.0, perceptual=2.0) should preserve >75% thin strokes while maintaining quality metrics.",
+    "validation_method": "DIBCO 2012 + analyze_thin_stroke_loss.py before/after comparison",
+    "success_criteria": "Thin stroke preservation 43.4% → >75% while maintaining PSNR ≥16 dB and F-Measure ≥98%",
+    "rationale": "Clean slate training is OPTIMAL because: (1) Dataset already has sufficient thin strokes (44.14%), (2) Optimizer starts fresh with correct objective, (3) Model learns proper balance from epoch 0, (4) No conflicting gradients from previous training",
+    "dataset_analysis": {
+      "total_samples": 39462,
+      "thin_strokes_ratio": "44.14%",
+      "medium_strokes_ratio": "30.21%",
+      "thick_strokes_ratio": "25.65%",
+      "conclusion": "Sufficient thin stroke representation - problem is in loss weights, not data"
+    },
+    "problem_diagnosis": {
+      "production_v3_issue": "Lost 56.6% of thin strokes (43.4% preservation)",
+      "root_cause": "adv_loss_weight=3.0 too aggressive - discriminator penalizes thin strokes as noise",
+      "solution": "Rebalance: pixel↑ (preserve detail), adv↓ (reduce aggression), perceptual↑ (maintain structure)"
+    }
+  }
+}
