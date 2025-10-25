@@ -16,6 +16,10 @@
 \usepackage{setspace}
 \usepackage{ragged2e}
 \usepackage{caption}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
 
 % Pengaturan hyphenation untuk Bahasa Indonesia
 \sloppy % Membuat LaTeX lebih fleksibel dengan spacing
@@ -69,7 +73,7 @@
 \setcounter{subsection}{0}
 \vspace{2em}
 
-Bab ini menguraikan pendekatan penelitian yang mengintegrasikan \textit{Design Science Research Methodology} (DSRM) sebagai kerangka sistematis untuk identifikasi masalah, penetapan tujuan, desain, evaluasi, dan komunikasi hasil penelitian. Metodologi ini dipilih karena kesesuaiannya dengan tujuan penelitian, yaitu merancang, mengembangkan, dan mengevaluasi sebuah artefak berupa \textit{framework} restorasi dokumen berbasis GAN dengan Diskriminator Dual-Modal dan fungsi \textit{loss} berorientasi HTR. Implementasi teknis \textit{framework} dilakukan melalui siklus iteratif \textit{deep learning} yang berbasis bukti empiris dan dokumentasi sistematis.
+Bab ini menguraikan pendekatan penelitian yang mengadopsi Design Science Research Methodology (DSRM) sebagai kerangka kerja sistematis. Metodologi ini dipilih karena kesesuaiannya untuk merancang dan mengevaluasi artefak penelitian, yaitu framework restorasi dokumen berbasis GAN dengan Diskriminator Dual-Modal. Implementasi teknisnya sendiri berjalan dalam siklus deep learning yang iteratif, di mana setiap iterasi didasarkan pada bukti empiris dan didokumentasikan secara sistematis untuk mencapai tujuan penelitian.
 \vspace{1em}
 
 \subsection{Kerangka Teori Metodologi Penelitian}
@@ -81,7 +85,7 @@ Bab ini menguraikan pendekatan penelitian yang mengintegrasikan \textit{Design S
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.3\textwidth]{images/DRSM.png}
-\caption{Framework Design Science Research Methodology yang diadaptasi untuk penelitian ini dengan siklus iteratif antara evaluasi dan desain untuk penyempurnaan artefak.}
+\caption{Framework Design Science Research Methodology dengan siklus iteratif antara evaluasi dan desain untuk penyempurnaan artefak.}
 \label{fig:dsrm-framework}
 \end{figure}
 
@@ -91,13 +95,13 @@ Bab ini menguraikan pendekatan penelitian yang mengintegrasikan \textit{Design S
 Karakteristik utama DSRM yang relevan dengan penelitian ini adalah:
 
 \begin{enumerate}[label=\arabic*., leftmargin=*, nosep]
-\item \textbf{Orientasi Solusi:} DSRM berfokus pada penciptaan artefak inovatif untuk menyelesaikan masalah praktis yang teridentifikasi. Dalam konteks penelitian ini, artefak yang dikembangkan adalah \textit{framework} GAN dengan Diskriminator Dual-Modal yang secara eksplisit dioptimalkan untuk meningkatkan keterbacaan dokumen oleh sistem HTR.
+\item Orientasi Solusi: DSRM berfokus pada penciptaan artefak inovatif untuk menyelesaikan masalah praktis yang teridentifikasi. Dalam konteks penelitian ini, artefak yang dikembangkan adalah \textit{framework} GAN dengan Diskriminator Dual-Modal yang secara eksplisit dioptimalkan untuk meningkatkan keterbacaan dokumen oleh sistem HTR.
 
-\item \textbf{Evaluasi Berbasis Bukti:} Setiap iterasi desain dievaluasi secara kuantitatif menggunakan metrik yang terukur (PSNR, SSIM, CER, WER), memastikan bahwa penyempurnaan dilakukan berdasarkan data empiris bukan asumsi.
+\item Evaluasi Berbasis Bukti: Setiap iterasi desain dievaluasi secara kuantitatif menggunakan metrik yang terukur (PSNR, SSIM, CER, WER), memastikan bahwa penyempurnaan dilakukan berdasarkan data empiris bukan asumsi.
 
-\item \textbf{Siklus Iteratif:} Kerangka kerja ini memfasilitasi perbaikan berkelanjutan melalui putaran umpan balik (\textit{feedback loop}) antara tahap evaluasi dan desain, yang sangat sesuai dengan karakteristik pengembangan model \textit{deep learning} yang memerlukan eksperimen dan \textit{tuning} berulang.
+\item Siklus Iteratif: Kerangka kerja ini memfasilitasi perbaikan berkelanjutan melalui putaran umpan balik (\textit{feedback loop}) antara tahap evaluasi dan desain, yang sangat sesuai dengan karakteristik pengembangan model \textit{deep learning} yang memerlukan eksperimen dan \textit{tuning} berulang.
 
-\item \textbf{Komunikasi dan Diseminasi:} DSRM menekankan pentingnya mendokumentasikan dan mengkomunikasikan hasil penelitian kepada komunitas ilmiah, baik melalui publikasi akademis maupun berbagi kode sumber untuk reproduktifitas.
+\item Komunikasi dan Diseminasi: DSRM menekankan pentingnya mendokumentasikan dan mengkomunikasikan hasil penelitian kepada komunitas ilmiah, baik melalui publikasi akademis maupun berbagi kode sumber untuk reproduktifitas.
 \end{enumerate}
 
 \subsubsection{Siklus Iteratif Berbasis Bukti Empiris}
@@ -114,15 +118,15 @@ Tahap pertama berfokus pada analisis mendalam terhadap tantangan yang ada dalam 
 \paragraph{Aktivitas Utama:}
 
 \begin{enumerate}[label=\arabic*., leftmargin=*, nosep]
-\item \textbf{Studi Literatur Sistematis}
+\item Studi Literatur Sistematis
 
 Dilakukan kajian komprehensif terhadap penelitian terkait restorasi dokumen, GAN, dan HTR untuk mengidentifikasi keterbatasan metode yang ada. Fokus utama pada analisis metode \textit{state-of-the-art} seperti DE-GAN, TEXT-DIAE, dan CycleGAN.
 
-\item \textbf{Analisis Kebutuhan Praktis}
+\item Analisis Kebutuhan Praktis
 
 Dilakukan analisis terhadap kebutuhan nyata lembaga kearsipan, dalam hal ini Arsip Nasional Republik Indonesia, di mana restorasi digital harus mendukung transkripsi otomatis untuk aksesibilitas dan analisis data historis. Identifikasi menunjukkan bahwa dokumen kolonial Belanda mengalami degradasi kompleks: \textit{bleed-through}, \textit{fading} tinta \textit{iron gall}, noda air (\textit{water stains}), bercak kecokelatan (\textit{foxing}), dan kabur optik (\textit{optical blur}) dari proses pemindaian.
 
-\item \textbf{Perumusan Masalah Penelitian}
+\item Perumusan Masalah Penelitian
 
 Berdasarkan analisis literatur dan kebutuhan praktis, dirumuskan masalah utama penelitian: ``Bagaimana merancang arsitektur GAN yang secara eksplisit dioptimalkan untuk meningkatkan keterbacaan teks oleh sistem HTR, bukan hanya kualitas visual, pada dokumen historis dengan degradasi kompleks?''
 
@@ -143,7 +147,7 @@ Penelitian ini menetapkan target performa yang dapat diukur dan diverifikasi:
 \small
 \begin{tabular}{|l|l|l|}
 \hline
-\textbf{Kategori} & \textbf{Metrik} & \textbf{Target} \\ \hline
+Kategori & Metrik & Target \\ \hline
 \multirow{2}{*}{Kualitas Visual} & PSNR & $>$ 35 dB \\ \cline{2-3}
  & SSIM & $>$ 0.95 \\ \hline
 \multirow{2}{*}{Keterbacaan Teks} & CER & Penurunan signifikan vs baseline \\ \cline{2-3}
@@ -159,13 +163,13 @@ Efisiensi Komputasi & Inference Time & $<$ 15 detik per image (1024$\times$128) 
 Mendefinisikan fitur inovatif dan kontribusi penelitian:
 
 \begin{enumerate}[leftmargin=*, nosep]
-\item \textbf{Diskriminator Dual-Modal:} Merancang arsitektur diskriminator yang mampu mengevaluasi kualitas gambar dari dua perspektif simultan: realisme visual (\textit{visual realism}) dan koherensi teks (\textit{text coherence}).
+\item Diskriminator Dual-Modal: Merancang arsitektur diskriminator yang mampu mengevaluasi kualitas gambar dari dua perspektif simultan: realisme visual (\textit{visual realism}) dan koherensi teks (\textit{text coherence}).
 
-\item \textbf{Fungsi Loss Berorientasi HTR:} Mengintegrasikan sinyal loss dari model HTR secara langsung ke dalam fungsi loss Generator, menciptakan optimasi ganda.
+\item Fungsi Loss Berorientasi HTR: Mengintegrasikan sinyal loss dari model HTR secara langsung ke dalam fungsi loss Generator, menciptakan optimasi ganda.
 
-\item \textbf{Filosofi \textit{Recognizer} Terbekukan:} Menggunakan \textit{recognizer} dengan bobot yang dibekukan sebagai evaluator objektif dengan kualitas metrik yang stabil.
+\item Filosofi \textit{Recognizer Terbekukan:} Menggunakan \textit{recognizer} dengan bobot yang dibekukan sebagai evaluator objektif dengan kualitas metrik yang stabil.
 
-\item \textbf{\textit{Pipeline} Degradasi Sintetis:} Mengembangkan \textit{pipeline} degradasi sintetis yang realistis untuk menghasilkan pasangan pelatihan (\textit{training pairs}) dari dokumen bersih.
+\item \textit{Pipeline Degradasi Sintetis:} Mengembangkan \textit{pipeline} degradasi sintetis yang realistis untuk menghasilkan pasangan pelatihan (\textit{training pairs}) dari dokumen bersih.
 \end{enumerate}
 
 \subsubsection{Desain dan Pengembangan Artefak (Tahap 3)}
@@ -184,13 +188,13 @@ Dataset bersih disiapkan untuk melatih model Recognizer dengan struktur yang mel
 \paragraph{Fase 2: Pelatihan dan Pembekuan Recognizer}
 Model Recognizer dilatih menggunakan arsitektur hybrid CNN-Transformer untuk HTR (spesifikasi arsitektur lengkap pada Bab IV bagian 4.2.3 dan Lampiran A). Fase ini mengadopsi metodologi \textit{curriculum learning} dengan tiga strategi kunci untuk mencapai performa optimal dan stabilitas training:
 
-\textbf{Curriculum Learning Strategy}: Penelitian ini menerapkan pendekatan bertahap dalam training Recognizer dimana model pertama-tama difokuskan pada pembelajaran fundamental melalui fase \textit{warmup} (5 epochs awal) dengan learning rate yang meningkat secara linear, kemudian dilanjutkan dengan fase pembelajaran utama menggunakan \textit{cosine annealing schedule}. Pendekatan ini memastikan model tidak terjebak pada local minima di awal training dan mencapai konvergensi yang lebih baik. Rationale: Transformer-based models sangat sensitif terhadap inisialisasi learning rate; warmup mencegah gradient explosion pada early iterations.
+Curriculum Learning Strategy: Penelitian ini menerapkan pendekatan bertahap dalam training Recognizer dimana model pertama-tama difokuskan pada pembelajaran fundamental melalui fase \textit{warmup} (5 epochs awal) dengan learning rate yang meningkat secara linear, kemudian dilanjutkan dengan fase pembelajaran utama menggunakan \textit{cosine annealing schedule}. Pendekatan ini memastikan model tidak terjebak pada local minima di awal training dan mencapai konvergensi yang lebih baik. Rationale: Transformer-based models sangat sensitif terhadap inisialisasi learning rate; warmup mencegah gradient explosion pada early iterations.
 
-\textbf{Data Augmentation untuk Robustness}: Training menggunakan augmentasi data secara real-time pada setiap batch untuk meningkatkan kemampuan generalisasi model terhadap variasi dokumen real-world. Augmentasi mencakup variasi photometric (brightness, contrast) dan noise injection yang mensimulasikan kondisi scanning dan digitalisasi dokumen historis yang beragam. Rationale: Dataset synthetic memiliki distribusi terbatas; augmentasi memperluas ruang input dan mencegah overfitting pada karakteristik synthetic tertentu.
+Data Augmentation untuk Robustness: Training menggunakan augmentasi data secara real-time pada setiap batch untuk meningkatkan kemampuan generalisasi model terhadap variasi dokumen real-world. Augmentasi mencakup variasi photometric (brightness, contrast) dan noise injection yang mensimulasikan kondisi scanning dan digitalisasi dokumen historis yang beragam. Rationale: Dataset synthetic memiliki distribusi terbatas; augmentasi memperluas ruang input dan mencegah overfitting pada karakteristik synthetic tertentu.
 
-\textbf{Multi-Layer Regularization}: Kombinasi teknik regularisasi diterapkan pada berbagai tingkat arsitektur (dropout pada layers, label smoothing pada loss function, weight decay pada optimizer) untuk mencegah overfitting sambil mempertahankan kapasitas pembelajaran model. Early stopping dengan monitoring validation CER memastikan model berhenti training pada titik optimal sebelum terjadi degradasi performa. Rationale: Sequence-to-sequence models prone to overfitting; multi-layer regularization provides defense-in-depth.
+Multi-Layer Regularization: Kombinasi teknik regularisasi diterapkan pada berbagai tingkat arsitektur (dropout pada layers, label smoothing pada loss function, weight decay pada optimizer) untuk mencegah overfitting sambil mempertahankan kapasitas pembelajaran model. Early stopping dengan monitoring validation CER memastikan model berhenti training pada titik optimal sebelum terjadi degradasi performa. Rationale: Sequence-to-sequence models prone to overfitting; multi-layer regularization provides defense-in-depth.
 
-\textbf{Pembekuan Model (Freezing) dan Dual-Purpose Utilization}: Setelah training mencapai convergence (ditandai dengan validation CER stabil), bobot model recognizer dibekukan (\texttt{training=False}) untuk memastikan konsistensi evaluasi selama training GAN. Keputusan freezing ini krusial karena: (1) menjaga stabilitas metrik HTR sebagai ground truth objektif, (2) mencegah \textit{catastrophic forgetting} saat recognizer diekspos ke degraded images, dan (3) memungkinkan reproduktifitas eksperimen dengan evaluator yang konsisten.
+Pembekuan Model (Freezing) dan Dual-Purpose Utilization: Setelah training mencapai convergence (ditandai dengan validation CER stabil), bobot model recognizer dibekukan (\texttt{training=False}) untuk memastikan konsistensi evaluasi selama training GAN. Keputusan freezing ini krusial karena: (1) menjaga stabilitas metrik HTR sebagai ground truth objektif, (2) mencegah \textit{catastrophic forgetting} saat recognizer diekspos ke degraded images, dan (3) memungkinkan reproduktifitas eksperimen dengan evaluator yang konsisten.
 
 Model frozen ini kemudian dimanfaatkan untuk dua tujuan dalam framework GAN-HTR: (1) ekstraksi \textit{recognition features} dari layer intermediate (\texttt{proj\_ln}) untuk \textit{recognition feature loss} yang mengoptimalkan Generator di feature space, dan (2) perhitungan CTC loss yang di-backpropagate ke Generator untuk optimasi keterbacaan langsung di sequence space. Dual-purpose ini merupakan inovasi metodologis yang memungkinkan pembelajaran multi-level dari model HTR frozen.
 
@@ -201,7 +205,7 @@ Detail hyperparameter training, arsitektur layer-by-layer, dan konfigurasi optim
 \caption{Ringkasan konfigurasi training Recognizer HTR}
 \label{tab:recognizer-training-summary}
 \small
-\begin{tabular}{|l|p{10cm}|}
+\begin{tabular}{|l|p{9cm}|}
 \hline
 \textbf{Komponen} & \textbf{Ringkasan Konfigurasi} \\
 \hline
@@ -221,67 +225,71 @@ Precision & FP32 untuk stabilitas numerik CTC \\
 \hline
 Target Performance & CER $<$ 15\% (achieved $\sim$33\% baseline), WER $<$ 25\% \\
 \hline
-\multicolumn{2}{|l|}{\\textit{Catatan: Spesifikasi lengkap hyperparameter pada Lampiran B, Tabel \\ref{tab:appendix-optimizer}}} \\
+\multicolumn{2}{|l|}{\textit{Catatan: Spesifikasi lengkap hyperparameter pada Lampiran B, Tabel \ref{tab:appendix-optimizer}}} \\
 \hline
 \end{tabular}
 \end{table}
 
-\begin{algorithm}[H]
-\caption{Training Procedure: HTR Recognizer}
-\label{alg:recognizer-training}
-\small
-\begin{algorithmic}[1]
-\STATE \textbf{Input:} Dataset HTR $\mathcal{D} = \{(x_i, t_i)\}_{i=1}^N$ dengan $x_i$ = image, $t_i$ = transcription
-\STATE \textbf{Output:} Trained \& Frozen Recognizer $R_{\theta}$
-\STATE \textbf{Hyperparameters:} LR = 3×10$^{-4}$, batch\_size = 32, warmup\_epochs = 5
-\STATE
-\STATE Initialize CNN-Transformer model $R_{\theta}$ dengan random weights
-\STATE Initialize optimizer AdamW dengan weight decay = 2×10$^{-4}$
-\STATE
-\FOR{epoch = 1 to max\_epochs}
-    \STATE // Warmup Phase (epoch 1-5): Linear LR ramp-up
-    \IF{epoch $\leq$ warmup\_epochs}
-        \STATE $\text{LR}_{\text{current}} = \text{LR}_{\text{max}} \times \frac{\text{epoch}}{\text{warmup\_epochs}}$
-    \ELSE
-        \STATE // Cosine Annealing: decay LR smoothly
-        \STATE $\text{LR}_{\text{current}} = \text{LR}_{\text{min}} + \frac{1}{2}(\text{LR}_{\text{max}} - \text{LR}_{\text{min}})(1 + \cos(\pi \frac{\text{epoch} - \text{warmup}}{\text{total\_epochs}}))$
-    \ENDIF
-    \STATE
-    \FOR{each batch $(X, T)$ in $\mathcal{D}_{\text{train}}$}
-        \STATE // Apply real-time augmentation
-        \STATE $X_{\text{aug}} \gets$ RandomBrightness(X, $\pm$20\%) + RandomContrast(X, 0.8-1.2) + GaussianNoise(X, $\sigma$=0.08)
-        \STATE
-        \STATE // Forward pass
-        \STATE $\hat{Y} \gets R_{\theta}(X_{\text{aug}})$ \quad // Output: (batch, timesteps, charset+1)
-        \STATE
-        \STATE // CTC Loss with label smoothing
-        \STATE $\mathcal{L}_{\text{CTC}} \gets \text{CTCLoss}(\hat{Y}, T, \epsilon=0.1)$
-        \STATE
-        \STATE // Backward pass with gradient clipping
-        \STATE Compute gradients $\nabla_{\theta} \mathcal{L}_{\text{CTC}}$
-        \STATE Clip gradients to norm = 1.0
-        \STATE Update $\theta$ using AdamW
-    \ENDFOR
-    \STATE
-    \STATE // Validation
-    \STATE Compute $\text{CER}_{\text{val}}$, $\text{WER}_{\text{val}}$ on $\mathcal{D}_{\text{val}}$
-    \IF{$\text{CER}_{\text{val}}$ improved}
-        \STATE Save checkpoint $R_{\theta}^{\text{best}}$
-        \STATE Reset patience counter
-    \ELSE
-        \STATE Increment patience counter
-    \ENDIF
-    \IF{patience $\geq$ 15}
-        \STATE \textbf{break} \quad // Early stopping
-    \ENDIF
-\ENDFOR
-\STATE
-\STATE // Freeze model for GAN training
-\STATE Load best checkpoint $R_{\theta}^{\text{best}}$
-\STATE Set $R_{\theta}$.trainable = False \quad // Freeze all weights
-\STATE \textbf{return} $R_{\theta}^{\text{frozen}}$
-\end{algorithmic}
-\end{algorithm}
+% ===================================================================
+% ALGORITHM 1: HIDDEN - Masih dalam proses verifikasi
+% ===================================================================
+% \begin{algorithm}[H]
+% \caption{Training Procedure: HTR Recognizer}
+% \label{alg:recognizer-training}
+% \small
+% \begin{algorithmic}[1]
+% \STATE Input: Dataset HTR $\mathcal{D} = \{(x_i, t_i)\}_{i=1}^N$ dengan $x_i$ = image, $t_i$ = transcription
+% \STATE Output: Trained \& Frozen Recognizer $R_{\theta}$
+% \STATE Hyperparameters: LR = 3×10$^{-4}$, batch\_size = 32, warmup\_epochs = 5
+% \STATE
+% \STATE Initialize CNN-Transformer model $R_{\theta}$ dengan random weights
+% \STATE Initialize optimizer AdamW dengan weight decay = 2×10$^{-4}$
+% \STATE
+% \FOR{epoch = 1 to max\_epochs}
+%     \STATE // Warmup Phase (epoch 1-5): Linear LR ramp-up
+%     \IF{epoch $\leq$ warmup\_epochs}
+%         \STATE $\text{LR}_{\text{current}} = \text{LR}_{\text{max}} \times \frac{\text{epoch}}{\text{warmup\_epochs}}$
+%     \ELSE
+%         \STATE // Cosine Annealing: decay LR smoothly
+%         \STATE $\text{LR}_{\text{current}} = \text{LR}_{\text{min}} + \frac{1}{2}(\text{LR}_{\text{max}} - \text{LR}_{\text{min}})(1 + \cos(\pi \frac{\text{epoch} - \text{warmup}}{\text{total\_epochs}}))$
+%     \ENDIF
+%     \STATE
+%     \FOR{each batch $(X, T)$ in $\mathcal{D}_{\text{train}}$}
+%         \STATE // Apply real-time augmentation
+%         \STATE $X_{\text{aug}} \gets$ RandomBrightness(X, $\pm$20\%) + RandomContrast(X, 0.8-1.2) + GaussianNoise(X, $\sigma$=0.08)
+%         \STATE
+%         \STATE // Forward pass
+%         \STATE $\hat{Y} \gets R_{\theta}(X_{\text{aug}})$ \quad // Output: (batch, timesteps, charset+1)
+%         \STATE
+%         \STATE // CTC Loss with label smoothing
+%         \STATE $\mathcal{L}_{\text{CTC}} \gets \text{CTCLoss}(\hat{Y}, T, \epsilon=0.1)$
+%         \STATE
+%         \STATE // Backward pass with gradient clipping
+%         \STATE Compute gradients $\nabla_{\theta} \mathcal{L}_{\text{CTC}}$
+%         \STATE Clip gradients to norm = 1.0
+%         \STATE Update $\theta$ using AdamW
+%     \ENDFOR
+%     \STATE
+%     \STATE // Validation
+%     \STATE Compute $\text{CER}_{\text{val}}$, $\text{WER}_{\text{val}}$ on $\mathcal{D}_{\text{val}}$
+%     \IF{$\text{CER}_{\text{val}}$ improved}
+%         \STATE Save checkpoint $R_{\theta}^{\text{best}}$
+%         \STATE Reset patience counter
+%     \ELSE
+%         \STATE Increment patience counter
+%     \ENDIF
+%     \IF{patience $\geq$ 15}
+%         \STATE break \quad // Early stopping
+%     \ENDIF
+% \ENDFOR
+% \STATE
+% \STATE // Freeze model for GAN training
+% \STATE Load best checkpoint $R_{\theta}^{\text{best}}$
+% \STATE Set $R_{\theta}$.trainable = False \quad // Freeze all weights
+% \STATE return $R_{\theta}^{\text{frozen}}$
+% \end{algorithmic}
+% \end{algorithm}
+% ===================================================================
 
 \paragraph{Fase 3: Synthetic Degradation Pipeline}
 Karena keterbatasan ketersediaan data berpasangan untuk dokumen historis, dikembangkan pipeline degradasi sintetis yang realistis untuk menghasilkan training pairs dari dokumen bersih. Pipeline ini mensimulasikan lima jenis degradasi utama: (1) bleed-through dengan overlay mirrored text, (2) fading dengan exponential intensity decay, (3) stains dengan random brown spots, (4) blur dengan Gaussian filter, dan (5) salt \& pepper noise untuk simulasi sensor noise.
@@ -289,86 +297,90 @@ Karena keterbatasan ketersediaan data berpasangan untuk dokumen historis, dikemb
 \paragraph{Fase 4: Implementasi dan Training GAN}
 Framework GAN dengan komponen utama Generator (U-Net Architecture), Dual Modal Diskriminator, dan Multi-Component Loss Function diimplementasikan dan dilatih dengan konfigurasi yang telah ditentukan. Training procedure mengikuti strategi adversarial standard dengan augmentasi khusus berupa CTC loss annealing untuk stabilitas.
 
-\begin{algorithm}[H]
-\caption{Training Procedure: GAN dengan CTC Annealing}
-\label{alg:gan-training}
-\scriptsize
-\begin{algorithmic}[1]
-\STATE \textbf{Input:} Dataset triplet $\mathcal{D} = \{(x_{\text{deg}}, x_{\text{clean}}, t)\}$, Frozen Recognizer $R_{\theta}$
-\STATE \textbf{Output:} Trained Generator $G$, Discriminator $D$
-\STATE \textbf{Hyperparameters:} $\lambda_{adv}=1.0$, $\lambda_{L1}=100.0$, $\lambda_{CTC}=10.0$, warmup\_epochs=2
-\STATE
-\STATE Initialize Generator $G$ (U-Net) dan Discriminator $D$ (Dual-Modal) dengan random weights
-\STATE Initialize optimizers: Adam\_G (LR=2×10$^{-4}$), Adam\_D (LR=5×10$^{-4}$)
-\STATE
-\FOR{epoch = 1 to max\_epochs}
-    \STATE // CTC Annealing: warmup untuk stabilitas
-    \IF{epoch $\leq$ warmup\_epochs}
-        \STATE $\lambda_{CTC}^{\text{current}} = 0.0$ \quad // CTC disabled saat warmup
-    \ELSE
-        \STATE $\lambda_{CTC}^{\text{current}} = \lambda_{CTC}$ \quad // CTC activated setelah warmup
-    \ENDIF
-    \STATE
-    \FOR{each batch $(X_{\text{deg}}, X_{\text{clean}}, T)$ in $\mathcal{D}$}
-        \STATE // ========== TRAIN DISCRIMINATOR ==========
-        \STATE // Generate fake images
-        \STATE $X_{\text{fake}} \gets G(X_{\text{deg}})$
-        \STATE
-        \STATE // Get text representations (frozen recognizer)
-        \STATE $Y_{\text{real}} \gets R_{\theta}(X_{\text{clean}})$ \quad // True text from clean image
-        \STATE $Y_{\text{fake}} \gets R_{\theta}(X_{\text{fake}})$ \quad // Predicted text from fake image
-        \STATE
-        \STATE // Discriminator forward pass (dual-modal: image + text)
-        \STATE $\text{score}_{\text{real}} \gets D(X_{\text{clean}}, Y_{\text{real}})$
-        \STATE $\text{score}_{\text{fake}} \gets D(X_{\text{fake}}, Y_{\text{fake}})$
-        \STATE
-        \STATE // Binary Cross-Entropy with label smoothing (0.9 for real)
-        \STATE $\mathcal{L}_D = -[\log(\text{score}_{\text{real}} \times 0.9) + \log(1 - \text{score}_{\text{fake}})]$
-        \STATE
-        \STATE // Update Discriminator
-        \STATE Compute $\nabla_D \mathcal{L}_D$ and update $D$ via Adam\_D
-        \STATE
-        \STATE // ========== TRAIN GENERATOR ==========
-        \STATE // Generate fake images
-        \STATE $X_{\text{fake}} \gets G(X_{\text{deg}})$
-        \STATE
-        \STATE // Get text representation for adversarial loss
-        \STATE $Y_{\text{fake}} \gets R_{\theta}(X_{\text{fake}})$
-        \STATE
-        \STATE // Adversarial Loss: fool discriminator
-        \STATE $\mathcal{L}_{\text{adv}} = -\log(D(X_{\text{fake}}, Y_{\text{fake}}))$
-        \STATE
-        \STATE // L1 Reconstruction Loss: pixel similarity
-        \STATE $\mathcal{L}_{L1} = \|X_{\text{clean}} - X_{\text{fake}}\|_1$
-        \STATE
-        \STATE // CTC Loss: text readability (BACKPROPAGATED ke Generator!)
-        \STATE $\mathcal{L}_{\text{CTC}} = \text{CTCLoss}(Y_{\text{fake}}, T)$
-        \STATE
-        \STATE // Multi-Component Loss: weighted combination
-        \STATE $\mathcal{L}_G = \lambda_{adv} \mathcal{L}_{\text{adv}} + \lambda_{L1} \mathcal{L}_{L1} + \lambda_{CTC}^{\text{current}} \mathcal{L}_{\text{CTC}}$
-        \STATE
-        \STATE // Update Generator (CTC gradient flows through frozen R to G)
-        \STATE Compute $\nabla_G \mathcal{L}_G$ and update $G$ via Adam\_G
-    \ENDFOR
-    \STATE
-    \STATE // Validation \& Metrics
-    \STATE Compute PSNR, SSIM, CER, WER on validation set
-    \STATE Log metrics to MLflow
-    \STATE
-    \IF{PSNR improved or SSIM improved}
-        \STATE Save best checkpoint
-    \ENDIF
-\ENDFOR
-\STATE \textbf{return} $G^{\text{best}}$, $D^{\text{best}}$
-\end{algorithmic}
-\end{algorithm}
-
-\textbf{Catatan Krusial pada Algorithm \ref{alg:gan-training}:}
-\begin{itemize}[nosep]
-    \item \textbf{CTC Annealing (Line 9-13):} CTC loss di-disable selama 2 epochs awal (warmup) untuk memberi Generator waktu belajar task dasar (reconstruction) sebelum dioptimasi untuk keterbacaan. Setelah warmup, CTC activated dengan full weight (10.0).
-    \item \textbf{Frozen Recognizer (Line 18-19, 32):} Recognizer $R_{\theta}$ dalam mode inference (weights frozen), tidak di-update. Namun, gradient dari CTC loss tetap di-backpropagate ke Generator untuk mengoptimasi visual quality.
-    \item \textbf{Dual-Modal Discriminator (Line 21-22):} Discriminator menerima pasangan (image, text) untuk menilai koherensi visual-tekstual, bukan hanya realism visual.
-\end{itemize}
+% ===================================================================
+% ALGORITHM 2: HIDDEN - Masih dalam proses verifikasi
+% ===================================================================
+% \begin{algorithm}[H]
+% \caption{Training Procedure: GAN dengan CTC Annealing}
+% \label{alg:gan-training}
+% \scriptsize
+% \begin{algorithmic}[1]
+% \STATE Input: Dataset triplet $\mathcal{D} = \{(x_{\text{deg}}, x_{\text{clean}}, t)\}$, Frozen Recognizer $R_{\theta}$
+% \STATE Output: Trained Generator $G$, Discriminator $D$
+% \STATE Hyperparameters: $\lambda_{adv}=1.0$, $\lambda_{L1}=100.0$, $\lambda_{CTC}=10.0$, warmup\_epochs=2
+% \STATE
+% \STATE Initialize Generator $G$ (U-Net) dan Discriminator $D$ (Dual-Modal) dengan random weights
+% \STATE Initialize optimizers: Adam\_G (LR=2×10$^{-4}$), Adam\_D (LR=5×10$^{-4}$)
+% \STATE
+% \FOR{epoch = 1 to max\_epochs}
+%     \STATE // CTC Annealing: warmup untuk stabilitas
+%     \IF{epoch $\leq$ warmup\_epochs}
+%         \STATE $\lambda_{CTC}^{\text{current}} = 0.0$ \quad // CTC disabled saat warmup
+%     \ELSE
+%         \STATE $\lambda_{CTC}^{\text{current}} = \lambda_{CTC}$ \quad // CTC activated setelah warmup
+%     \ENDIF
+%     \STATE
+%     \FOR{each batch $(X_{\text{deg}}, X_{\text{clean}}, T)$ in $\mathcal{D}$}
+%         \STATE // ========== TRAIN DISCRIMINATOR ==========
+%         \STATE // Generate fake images
+%         \STATE $X_{\text{fake}} \gets G(X_{\text{deg}})$
+%         \STATE
+%         \STATE // Get text representations (frozen recognizer)
+%         \STATE $Y_{\text{real}} \gets R_{\theta}(X_{\text{clean}})$ \quad // True text from clean image
+%         \STATE $Y_{\text{fake}} \gets R_{\theta}(X_{\text{fake}})$ \quad // Predicted text from fake image
+%         \STATE
+%         \STATE // Discriminator forward pass (dual-modal: image + text)
+%         \STATE $\text{score}_{\text{real}} \gets D(X_{\text{clean}}, Y_{\text{real}})$
+%         \STATE $\text{score}_{\text{fake}} \gets D(X_{\text{fake}}, Y_{\text{fake}})$
+%         \STATE
+%         \STATE // Binary Cross-Entropy with label smoothing (0.9 for real)
+%         \STATE $\mathcal{L}_D = -[\log(\text{score}_{\text{real}} \times 0.9) + \log(1 - \text{score}_{\text{fake}})]$
+%         \STATE
+%         \STATE // Update Discriminator
+%         \STATE Compute $\nabla_D \mathcal{L}_D$ and update $D$ via Adam\_D
+%         \STATE
+%         \STATE // ========== TRAIN GENERATOR ==========
+%         \STATE // Generate fake images
+%         \STATE $X_{\text{fake}} \gets G(X_{\text{deg}})$
+%         \STATE
+%         \STATE // Get text representation for adversarial loss
+%         \STATE $Y_{\text{fake}} \gets R_{\theta}(X_{\text{fake}})$
+%         \STATE
+%         \STATE // Adversarial Loss: fool discriminator
+%         \STATE $\mathcal{L}_{\text{adv}} = -\log(D(X_{\text{fake}}, Y_{\text{fake}}))$
+%         \STATE
+%         \STATE // L1 Reconstruction Loss: pixel similarity
+%         \STATE $\mathcal{L}_{L1} = \|X_{\text{clean}} - X_{\text{fake}}\|_1$
+%         \STATE
+%         \STATE // CTC Loss: text readability (BACKPROPAGATED ke Generator!)
+%         \STATE $\mathcal{L}_{\text{CTC}} = \text{CTCLoss}(Y_{\text{fake}}, T)$
+%         \STATE
+%         \STATE // Multi-Component Loss: weighted combination
+%         \STATE $\mathcal{L}_G = \lambda_{adv} \mathcal{L}_{\text{adv}} + \lambda_{L1} \mathcal{L}_{L1} + \lambda_{CTC}^{\text{current}} \mathcal{L}_{\text{CTC}}$
+%         \STATE
+%         \STATE // Update Generator (CTC gradient flows through frozen R to G)
+%         \STATE Compute $\nabla_G \mathcal{L}_G$ and update $G$ via Adam\_G
+%     \ENDFOR
+%     \STATE
+%     \STATE // Validation \& Metrics
+%     \STATE Compute PSNR, SSIM, CER, WER on validation set
+%     \STATE Log metrics to MLflow
+%     \STATE
+%     \IF{PSNR improved or SSIM improved}
+%         \STATE Save best checkpoint
+%     \ENDIF
+% \ENDFOR
+% \STATE return $G^{\text{best}}$, $D^{\text{best}}$
+% \end{algorithmic}
+% \end{algorithm}
+% 
+% Catatan Krusial pada Algorithm \ref{alg:gan-training:}
+% \begin{itemize}[nosep]
+%     \item CTC Annealing (Line 9-13): CTC loss di-disable selama 2 epochs awal (warmup) untuk memberi Generator waktu belajar task dasar (reconstruction) sebelum dioptimasi untuk keterbacaan. Setelah warmup, CTC activated dengan full weight (10.0).
+%     \item Frozen Recognizer (Line 18-19, 32): Recognizer $R_{\theta}$ dalam mode inference (weights frozen), tidak di-update. Namun, gradient dari CTC loss tetap di-backpropagate ke Generator untuk mengoptimasi visual quality.
+%     \item Dual-Modal Discriminator (Line 21-22): Discriminator menerima pasangan (image, text) untuk menilai koherensi visual-tekstual, bukan hanya realism visual.
+% \end{itemize}
+% ===================================================================
 
 \paragraph{Fase 5: Eksperimen dan Iterasi Berbasis Bukti}
 Pengembangan framework dilakukan melalui siklus iteratif dengan eksperimen terkontrol yang meliputi perbandingan mode diskriminator, tuning loss weight, dan analisis anomali training.
@@ -405,6 +417,7 @@ Konfigurasi Perangkat Lunak:
 \textbf{Kategori} & \textbf{Tool/Library} & \textbf{Versi} \\ \hline
 Language & Python & 3.10 \\ \hline
 Deep Learning Framework & TensorFlow/Keras & 2.x \\ \hline
+Precision Policy & Pure FP32 & (NO mixed precision) \\ \hline
 Dependency Management & Poetry & Latest \\ \hline
 Numerical Computing & NumPy & Latest \\ \hline
 Image Processing & OpenCV & 4.x \\ \hline
@@ -422,6 +435,9 @@ Penerapan model final pada sampel data uji yang representatif meliputi synthetic
 \paragraph{Visualisasi Hasil:}
 Untuk setiap sampel, dihasilkan visualisasi perbandingan yang menunjukkan input, output, reference, dan overlay untuk menunjukkan area yang direstorasi.
 
+\paragraph{Curriculum-Aware Early Stopping:}
+Penelitian ini mengimplementasikan strategi early stopping yang curriculum-aware untuk mencegah premature termination selama fase kritis pembelajaran. Early stopping monitoring baru aktif setelah curriculum learning (warmup + annealing) selesai pada epoch ke-3, dengan patience counter yang dibekukan selama fase curriculum. Sistem ini memonitor metrik validasi (PSNR, CER, atau Combined Score) dan menghentikan training jika tidak ada improvement sebesar min\_delta selama patience epochs berturut-turut. Fitur restore\_best\_weights memastikan model dikembalikan ke state optimal jika terjadi early stopping, dengan checkpoint best model disimpan secara terpisah dari main checkpoints untuk menghindari overwrite akibat max\_to\_keep limitation. Pendekatan ini mengombinasikan efisiensi komputasi dengan proteksi terhadap fase pembelajaran penting.
+
 \subsubsection{Evaluasi (Tahap 5)}
 Tahap ini mengukur performa artefak secara objektif terhadap tujuan yang telah didefinisikan dan memvalidasi hipotesis penelitian.
 
@@ -429,73 +445,77 @@ Tahap ini mengukur performa artefak secara objektif terhadap tujuan yang telah d
 
 \textit{Metrik Visual Quality:}
 \begin{itemize}[leftmargin=*, nosep]
-\item \textbf{PSNR (Peak Signal to Noise Ratio):} Mengukur kesamaan piksel dengan ground truth. Target: $>$ 35 dB
-\item \textbf{SSIM (Structural Similarity Index):} Mengukur kesamaan struktural. Target: $>$ 0.95
+\item PSNR (Peak Signal to Noise Ratio): Mengukur kesamaan piksel dengan ground truth. Target: $>$ 35 dB
+\item SSIM (Structural Similarity Index): Mengukur kesamaan struktural. Target: $>$ 0.95
 \end{itemize}
 
 \textit{Metrik Text Readability:}
 \begin{itemize}[leftmargin=*, nosep]
-\item \textbf{CER (Character Error Rate):} Rasio karakter yang salah dikenali. Target: Penurunan minimal 30\% vs baseline
-\item \textbf{WER (Word Error Rate):} Rasio kata yang salah dikenali. Target: Penurunan signifikan vs baseline
+\item CER (Character Error Rate): Rasio karakter yang salah dikenali. Target: Penurunan minimal 30\% vs baseline
+\item WER (Word Error Rate): Rasio kata yang salah dikenali. Target: Penurunan signifikan vs baseline
 \end{itemize}
 
-\begin{algorithm}[H]
-\caption{Evaluation Protocol: Multi-Metric Assessment}
-\label{alg:evaluation-protocol}
-\small
-\begin{algorithmic}[1]
-\STATE \textbf{Input:} Test set $\mathcal{D}_{\text{test}} = \{(x_{\text{deg}}, x_{\text{clean}}, t)\}$, Trained Generator $G$, Frozen Recognizer $R$
-\STATE \textbf{Output:} Performance metrics (PSNR, SSIM, CER, WER)
-\STATE
-\STATE Initialize metric accumulators: PSNR\_list, SSIM\_list, CER\_list, WER\_list
-\STATE
-\FOR{each sample $(x_{\text{deg}}, x_{\text{clean}}, t_{\text{gt}})$ in $\mathcal{D}_{\text{test}}$}
-    \STATE // ========== RESTORATION ==========
-    \STATE $x_{\text{restored}} \gets G(x_{\text{deg}})$ \quad // Generator inference
-    \STATE
-    \STATE // ========== VISUAL QUALITY METRICS ==========
-    \STATE // PSNR: Peak Signal-to-Noise Ratio
-    \STATE $\text{MSE} = \frac{1}{HW} \sum_{i,j} (x_{\text{clean}}[i,j] - x_{\text{restored}}[i,j])^2$
-    \STATE $\text{PSNR} = 10 \log_{10} \left( \frac{255^2}{\text{MSE}} \right)$ \quad // In dB
-    \STATE Append PSNR to PSNR\_list
-    \STATE
-    \STATE // SSIM: Structural Similarity Index
-    \STATE $\text{SSIM} = \frac{(2\mu_x\mu_y + C_1)(2\sigma_{xy} + C_2)}{(\mu_x^2 + \mu_y^2 + C_1)(\sigma_x^2 + \sigma_y^2 + C_2)}$
-    \STATE \quad // $\mu$: mean, $\sigma$: variance, $C_1, C_2$: stabilization constants
-    \STATE Append SSIM to SSIM\_list
-    \STATE
-    \STATE // ========== TEXT READABILITY METRICS ==========
-    \STATE // HTR Decoding
-    \STATE $y_{\text{restored}} \gets R(x_{\text{restored}})$ \quad // Get logits from recognizer
-    \STATE $t_{\text{pred}} \gets \text{GreedyDecode}(y_{\text{restored}})$ \quad // CTC greedy decoding (argmax)
-    \STATE
-    \STATE // CER: Character Error Rate (Levenshtein distance)
-    \STATE $\text{CER} = \frac{\text{EditDistance}(t_{\text{gt}}, t_{\text{pred}})}{\text{len}(t_{\text{gt}})} \times 100\%$
-    \STATE Append CER to CER\_list
-    \STATE
-    \STATE // WER: Word Error Rate
-    \STATE $w_{\text{gt}} \gets \text{SplitWords}(t_{\text{gt}})$ \quad // Split into words
-    \STATE $w_{\text{pred}} \gets \text{SplitWords}(t_{\text{pred}})$
-    \STATE $\text{WER} = \frac{\text{EditDistance}(w_{\text{gt}}, w_{\text{pred}})}{\text{len}(w_{\text{gt}})} \times 100\%$
-    \STATE Append WER to WER\_list
-\ENDFOR
-\STATE
-\STATE // ========== AGGREGATE STATISTICS ==========
-\STATE $\text{PSNR}_{\text{mean}} \gets \text{mean}(\text{PSNR\_list})$, $\text{PSNR}_{\text{std}} \gets \text{std}(\text{PSNR\_list})$
-\STATE $\text{SSIM}_{\text{mean}} \gets \text{mean}(\text{SSIM\_list})$, $\text{SSIM}_{\text{std}} \gets \text{std}(\text{SSIM\_list})$
-\STATE $\text{CER}_{\text{mean}} \gets \text{mean}(\text{CER\_list})$, $\text{CER}_{\text{std}} \gets \text{std}(\text{CER\_list})$
-\STATE $\text{WER}_{\text{mean}} \gets \text{mean}(\text{WER\_list})$, $\text{WER}_{\text{std}} \gets \text{std}(\text{WER\_list})$
-\STATE
-\STATE \textbf{return} Metrics dictionary with mean ± std for all metrics
-\end{algorithmic}
-\end{algorithm}
-
-\textbf{Catatan pada Algorithm \ref{alg:evaluation-protocol}:}
-\begin{itemize}[nosep]
-    \item \textbf{CTC Greedy Decoding (Line 24):} Decoding strategy menggunakan argmax per timestep, kemudian menghapus blank tokens dan duplicate consecutive characters sesuai CTC algorithm.
-    \item \textbf{Levenshtein Distance (Line 27, 33):} Edit distance dihitung dengan dynamic programming untuk mengukur jumlah insertions, deletions, dan substitutions yang diperlukan.
-    \item \textbf{Reproducibility:} Setiap metrik dihitung dengan library standard (skimage untuk SSIM, editdistance untuk CER/WER) untuk memastikan konsistensi.
-\end{itemize}
+% ===================================================================
+% ALGORITHM 3: HIDDEN - Masih dalam proses verifikasi
+% ===================================================================
+% \begin{algorithm}[H]
+% \caption{Evaluation Protocol: Multi-Metric Assessment}
+% \label{alg:evaluation-protocol}
+% \small
+% \begin{algorithmic}[1]
+% \STATE Input: Test set $\mathcal{D}_{\text{test}} = \{(x_{\text{deg}}, x_{\text{clean}}, t)\}$, Trained Generator $G$, Frozen Recognizer $R$
+% \STATE Output: Performance metrics (PSNR, SSIM, CER, WER)
+% \STATE
+% \STATE Initialize metric accumulators: PSNR\_list, SSIM\_list, CER\_list, WER\_list
+% \STATE
+% \FOR{each sample $(x_{\text{deg}}, x_{\text{clean}}, t_{\text{gt}})$ in $\mathcal{D}_{\text{test}}$}
+%     \STATE // ========== RESTORATION ==========
+%     \STATE $x_{\text{restored}} \gets G(x_{\text{deg}})$ \quad // Generator inference
+%     \STATE
+%     \STATE // ========== VISUAL QUALITY METRICS ==========
+%     \STATE // PSNR: Peak Signal-to-Noise Ratio
+%     \STATE $\text{MSE} = \frac{1}{HW} \sum_{i,j} (x_{\text{clean}}[i,j] - x_{\text{restored}}[i,j])^2$
+%     \STATE $\text{PSNR} = 10 \log_{10} \left( \frac{255^2}{\text{MSE}} \right)$ \quad // In dB
+%     \STATE Append PSNR to PSNR\_list
+%     \STATE
+%     \STATE // SSIM: Structural Similarity Index
+%     \STATE $\text{SSIM} = \frac{(2\mu_x\mu_y + C_1)(2\sigma_{xy} + C_2)}{(\mu_x^2 + \mu_y^2 + C_1)(\sigma_x^2 + \sigma_y^2 + C_2)}$
+%     \STATE \quad // $\mu$: mean, $\sigma$: variance, $C_1, C_2$: stabilization constants
+%     \STATE Append SSIM to SSIM\_list
+%     \STATE
+%     \STATE // ========== TEXT READABILITY METRICS ==========
+%     \STATE // HTR Decoding
+%     \STATE $y_{\text{restored}} \gets R(x_{\text{restored}})$ \quad // Get logits from recognizer
+%     \STATE $t_{\text{pred}} \gets \text{GreedyDecode}(y_{\text{restored}})$ \quad // CTC greedy decoding (argmax)
+%     \STATE
+%     \STATE // CER: Character Error Rate (Levenshtein distance)
+%     \STATE $\text{CER} = \frac{\text{EditDistance}(t_{\text{gt}}, t_{\text{pred}})}{\text{len}(t_{\text{gt}})} \times 100\%$
+%     \STATE Append CER to CER\_list
+%     \STATE
+%     \STATE // WER: Word Error Rate
+%     \STATE $w_{\text{gt}} \gets \text{SplitWords}(t_{\text{gt}})$ \quad // Split into words
+%     \STATE $w_{\text{pred}} \gets \text{SplitWords}(t_{\text{pred}})$
+%     \STATE $\text{WER} = \frac{\text{EditDistance}(w_{\text{gt}}, w_{\text{pred}})}{\text{len}(w_{\text{gt}})} \times 100\%$
+%     \STATE Append WER to WER\_list
+% \ENDFOR
+% \STATE
+% \STATE // ========== AGGREGATE STATISTICS ==========
+% \STATE $\text{PSNR}_{\text{mean}} \gets \text{mean}(\text{PSNR\_list})$, $\text{PSNR}_{\text{std}} \gets \text{std}(\text{PSNR\_list})$
+% \STATE $\text{SSIM}_{\text{mean}} \gets \text{mean}(\text{SSIM\_list})$, $\text{SSIM}_{\text{std}} \gets \text{std}(\text{SSIM\_list})$
+% \STATE $\text{CER}_{\text{mean}} \gets \text{mean}(\text{CER\_list})$, $\text{CER}_{\text{std}} \gets \text{std}(\text{CER\_list})$
+% \STATE $\text{WER}_{\text{mean}} \gets \text{mean}(\text{WER\_list})$, $\text{WER}_{\text{std}} \gets \text{std}(\text{WER\_list})$
+% \STATE
+% \STATE return Metrics dictionary with mean ± std for all metrics
+% \end{algorithmic}
+% \end{algorithm}
+% 
+% Catatan pada Algorithm \ref{alg:evaluation-protocol:}
+% \begin{itemize}[nosep]
+%     \item CTC Greedy Decoding (Line 24): Decoding strategy menggunakan argmax per timestep, kemudian menghapus blank tokens dan duplicate consecutive characters sesuai CTC algorithm.
+%     \item Levenshtein Distance (Line 27, 33): Edit distance dihitung dengan dynamic programming untuk mengukur jumlah insertions, deletions, dan substitutions yang diperlukan.
+%     \item Reproducibility: Setiap metrik dihitung dengan library standard (skimage untuk SSIM, editdistance untuk CER/WER) untuk memastikan konsistensi.
+% \end{itemize}
+% ===================================================================
 
 \paragraph{Validasi Hipotesis:}
 Mengevaluasi hipotesis penelitian yang diajukan di Bab I dengan kriteria penolakan H$_0$: p-value $<$ 0.05 dari paired t-test.
@@ -507,7 +527,7 @@ Hasil penelitian dan artefak yang dihasilkan dikomunikasikan kepada komunitas il
 Mendokumentasikan seluruh proses penelitian dalam format tesis yang terstruktur sesuai dengan pedoman penulisan tesis.
 
 \paragraph{Publikasi Ilmiah:}
-Menyiapkan manuscript untuk publikasi di venue ilmiah dengan target journal IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI) atau International Journal on Document Analysis and Recognition (IJDAR).
+Menyiapkan naskah untuk publikasi di wadah ilmiah dengan target jurnal IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI) atau International Journal on Document Analysis and Recognition (IJDAR).
 
 
 
@@ -528,12 +548,14 @@ Strategi pelatihan dirancang untuk memastikan konvergensi yang stabil dan keseim
 \begin{tabular}{|l|l|l|}
 \hline
 \textbf{Parameter} & \textbf{\textit{Generator}} & \textbf{Diskriminator} \\ \hline
-\textit{Optimizer} & Adam & Adam \\ \hline
-\textit{Learning Rate} & $4 \times 10^{-4}$ & $4 \times 10^{-4}$ \\ \hline
-\textit{Batch Size} & 8 (full training), 2 (HPO) & 8 (full training), 2 (HPO) \\ \hline
-\textit{Loss Function} & Multi-komponen (adv. + pixel + rec\_feat) & \textit{Binary cross-entropy} \\ \hline
-Bobot \textit{Loss} & Pixel: 120.0, RecFeat: 80.0, Adv: 2.5 & Ditentukan melalui Bayesian Optimization (Bagian \ref{subsubsec:loss-weight-hpo}) \\ \hline
-\textit{CTC Loss} & Bobot 10.0 dengan annealing (0→10 epoch 1-3) & Gradien ke Generator, Recognizer frozen \\ \hline
+\textit{Optimizer} & Adam (beta\_1=0.5) & SGD (momentum=0.9) \\ \hline
+\textit{Learning Rate} & $2 \times 10^{-4}$ (base) & $5 \times 10^{-4}$ (base) \\ \hline
+LR Schedule & Cosine Decay (opsional) & Cosine Decay (opsional) \\ \hline
+\textit{Batch Size} & 8 (production), 2 (HPO) & 8 (production), 2 (HPO) \\ \hline
+\textit{Loss Function} & Multi-komponen (4 komponen) & \textit{Binary cross-entropy} \\ \hline
+Bobot \textit{Loss} (Base) & Pixel: 120.0, RecFeat: 80.0, Adv: 2.5 & - \\ \hline
+\textit{CTC Loss} & Bobot 10.0 dengan curriculum (0→10 epoch 1-3) & Gradien ke Generator, Recognizer frozen \\ \hline
+Adaptive Balancing & GradNorm-based (target CTC ratio: 20\%) & - \\ \hline
 \textit{Gradient Clipping} & \texttt{clipnorm}=1.0 & \texttt{clipnorm}=1.0 \\ \hline
 \textit{Label Smoothing} & - & Faktor 0.9 \\ \hline
 Target Akurasi & - & 60-80\% (ekuilibrium Nash) \\ \hline
@@ -541,12 +563,18 @@ Epoch Maksimum & 200 & 200 \\ \hline
 \end{tabular}
 \end{table}
 
-Konfigurasi ini dirancang dengan pertimbangan berikut: (1) \textit{learning rate} sama untuk \textit{generator} dan diskriminator berdasarkan hasil eksperimen stabilitas, (2) bobot \textit{loss} ditentukan melalui \textit{Hyperparameter Optimization} sistematis menggunakan Bayesian Optimization (dijelaskan pada Bagian \ref{subsubsec:loss-weight-hpo}), (3) \textit{gradient clipping} untuk stabilitas numerik, dan (4) \textit{label smoothing} untuk regularisasi diskriminator.
+Konfigurasi ini dirancang dengan pertimbangan berikut: (1) \textit{learning rate} yang berbeda untuk \textit{generator} (Adam, 2×10$^{-4}$) dan diskriminator (SGD, 5×10$^{-4}$) dengan opsional Cosine Decay schedule untuk konvergensi bertahap, (2) bobot \textit{loss} base ditentukan melalui eksperimen sistematis dengan adaptive balancing menggunakan GradNorm untuk penyesuaian dinamis, (3) \textit{gradient clipping} untuk stabilitas numerik, dan (4) \textit{label smoothing} untuk regularisasi diskriminator.
+
+\paragraph{Adaptive Loss Balancing dengan GradNorm:}
+Untuk mengatasi tantangan dalam menyeimbangkan kontribusi CTC loss (berorientasi HTR) dan visual losses (pixel, perceptual, adversarial, recognition feature), penelitian ini mengimplementasikan mekanisme adaptive loss balancing berbasis GradNorm. Sistem ini secara dinamis menyesuaikan bobot relatif antara dua kelompok loss: (1) CTC loss untuk keterbacaan teks, dan (2) visual losses untuk kualitas visual. Target rasio CTC ditetapkan pada 20\% dari total kontribusi loss, dengan penyesuaian otomatis berdasarkan magnitude gradien relatif. Mekanisme ini hanya aktif setelah fase curriculum learning selesai untuk menghindari interferensi dengan warmup dan annealing schedule. Adaptive balancing ini mencegah dominasi CTC loss yang dapat menyebabkan degradasi kualitas visual, sekaligus memastikan Generator tetap dioptimalkan untuk keterbacaan HTR.
 
 \paragraph{Peran CTC Loss dalam Optimasi Generator:}
-CTC \textit{loss} dalam penelitian ini \textbf{digunakan sebagai komponen loss function Generator} dan gradiennya \textbf{di-backpropagate ke Generator} untuk mengoptimalkan keterbacaan teks secara langsung. Namun, perlu ditekankan bahwa \textbf{Recognizer tetap frozen} (bobot tidak di-update) sehingga gradien CTC loss hanya mengalir ke Generator, bukan ke Recognizer. Implementasi ini memungkinkan Generator belajar menghasilkan output yang lebih mudah dibaca oleh sistem HTR tanpa memodifikasi Recognizer itu sendiri.
+CTC \textit{loss} dalam penelitian ini digunakan sebagai komponen loss function Generator dan gradiennya di-backpropagate ke Generator untuk mengoptimalkan keterbacaan teks secara langsung. Namun, perlu ditekankan bahwa Recognizer tetap frozen (bobot tidak di-update) sehingga gradien CTC loss hanya mengalir ke Generator, bukan ke Recognizer. Implementasi ini memungkinkan Generator belajar menghasilkan output yang lebih mudah dibaca oleh sistem HTR tanpa memodifikasi Recognizer itu sendiri.
 
 Untuk mencegah destabilisasi training, CTC loss diterapkan dengan strategi \textit{curriculum learning} melalui \textit{annealing}: bobot dimulai dari 0.0 pada epoch 1-2 (\textit{warmup phase} untuk stabilisasi visual), kemudian diaktifkan penuh menjadi 10.0 pada epoch 3 (\textit{annealing phase}), dan tetap di 10.0 untuk epoch selanjutnya. Strategi ini terbukti efektif mencegah \textit{mode collapse} dan destabilisasi gradien yang dapat terjadi jika CTC loss langsung aktif di awal training. Dengan demikian, arsitektur pelatihan menggunakan empat komponen \textit{loss} untuk Generator: adversarial, pixel-wise, recognition feature, dan CTC loss (dengan curriculum learning via annealing).
+
+\paragraph{Curriculum-Aware Early Stopping:}
+Penelitian ini mengimplementasikan strategi early stopping yang curriculum-aware untuk mencegah premature termination selama fase kritis pembelajaran. Early stopping monitoring baru aktif setelah curriculum learning (warmup + annealing) selesai pada epoch ke-3, dengan patience counter yang dibekukan selama fase curriculum. Sistem ini memonitor metrik validasi (PSNR, CER, atau Combined Score) dan menghentikan training jika tidak ada improvement sebesar min\_delta selama patience epochs berturut-turut. Fitur restore\_best\_weights memastikan model dikembalikan ke state optimal jika terjadi early stopping, dengan checkpoint best model disimpan secara terpisah dari main checkpoints untuk menghindari overwrite akibat max\_to\_keep limitation. Pendekatan ini mengombinasikan efisiensi komputasi dengan proteksi terhadap fase pembelajaran penting.
 
 \paragraph{Metodologi Recognition Feature Loss sebagai Guidance Berorientasi HTR:}
 \textit{Recognition Feature Loss} merupakan komponen metodologis inovatif yang dirancang untuk memandu Generator agar menghasilkan output yang optimal untuk sistem HTR. Berbeda dengan \textit{pixel-wise loss} yang mengukur perbedaan visual pada tingkat piksel, \textit{recognition feature loss} mengukur kesamaan representasi fitur \textit{internal} dari model HTR terbekukan, sehingga secara langsung mengoptimalkan keterbacaan teks tanpa mengorbankan kualitas visual.
@@ -560,40 +588,40 @@ Untuk mencegah destabilisasi training, CTC loss diterapkan dengan strategi \text
 \hline
 \textbf{Komponen Metodologi} & \textbf{Implementasi Teknis} \\ \hline
 \textbf{Model Sumber Fitur} & Recognizer terbekukan (\textit{frozen weights}) yang telah dilatih pada dataset ground truth dengan arsitektur CNN-Transformer hybrid \\ \hline
-\textbf{Layer Ekstraksi} & Layer \texttt{proj\_ln} (output CNN backbone sebelum Transformer encoder), dengan dimensi [batch, 128, 512] untuk setiap sampel \\ \hline
-\textbf{Fungsi Loss} & Mean Squared Error (MSE) antara feature maps dari gambar terrestorasi vs. gambar ground truth: 
+Layer Ekstraksi & Layer \texttt{proj\_ln} (output CNN backbone sebelum Transformer encoder), dengan dimensi [batch, 128, 512] untuk setiap sampel \\ \hline
+Fungsi Loss & Mean Squared Error (MSE) antara feature maps dari gambar terrestorasi vs. gambar ground truth: 
 \newline $\mathcal{L}_{\text{RecFeat}} = \frac{1}{N \times H \times D} \sum_{i=1}^{N} \sum_{h=1}^{H} \sum_{d=1}^{D} (f^{\text{restored}}_{i,h,d} - f^{\text{GT}}_{i,h,d})^2$ 
 \newline dengan $N$=batch size, $H$=sequence length (128), $D$=feature dim (512) \\ \hline
 \textbf{Forward Pass} & Generator menghasilkan gambar restored $\rightarrow$ Recognizer frozen mengekstrak fitur dari restored dan GT $\rightarrow$ MSE dihitung antara kedua feature maps $\rightarrow$ Gradien di-backpropagate hanya ke Generator \\ \hline
 \textbf{Justifikasi Layer} & Layer \texttt{proj\_ln} dipilih karena merepresentasikan fitur visual tingkat tinggi yang telah dipelajari untuk tugas HTR, sebelum masuk ke sequence modeling Transformer \\ \hline
 \textbf{Perbedaan dengan CTC} & CTC mengukur output akhir (prediksi teks) dengan discrete symbols, sedangkan RecFeat mengukur representasi internal dengan continuous features, memberikan signal pembelajaran yang lebih halus dan stabil untuk training GAN \\ \hline
-\textbf{Integrasi dalam Training} & RecFeat loss dikombinasikan dengan adversarial dan pixel loss melalui weighted sum. Bobot optimal ditentukan melalui Bayesian Optimization (Bagian \ref{subsubsec:loss-weight-hpo}) \\ \hline
+Integrasi dalam Training & RecFeat loss dikombinasikan dengan adversarial dan pixel loss melalui weighted sum. Bobot optimal ditentukan melalui Bayesian Optimization (Bagian \ref{subsubsec:loss-weight-hpo}) \\ \hline
 \end{tabular}
 \end{table}
 
-\textbf{Alur Komputasi Recognition Feature Loss:}
+Alur Komputasi Recognition Feature Loss:
 
 Implementasi komputasi dilakukan dalam langkah-langkah berikut untuk memastikan efisiensi dan stabilitas numerik:
 
 \begin{enumerate}[leftmargin=*, nosep]
-\item \textbf{Ekstraksi Fitur GT}: Pada awal training batch, feature maps dari gambar ground truth diekstrak menggunakan recognizer frozen dan di-cache untuk menghindari komputasi berulang
-\item \textbf{Forward Pass Generator}: Generator menerima gambar terdegradasi dan menghasilkan gambar restored
-\item \textbf{Ekstraksi Fitur Restored}: Gambar restored dilewatkan ke recognizer frozen untuk mengekstrak feature maps dengan dimensi yang sama
-\item \textbf{Perhitungan MSE}: MSE dihitung antara feature maps restored dan GT, dinormalisasi terhadap dimensi (batch × sequence × features)
-\item \textbf{Weighted Integration}: RecFeat loss dikombinasikan dengan komponen loss lain: $\mathcal{L}_{\text{Total}} = w_{\text{adv}} \mathcal{L}_{\text{adv}} + w_{\text{pix}} \mathcal{L}_{\text{pix}} + w_{\text{rec}} \mathcal{L}_{\text{RecFeat}}$
-\item \textbf{Backpropagation}: Gradien total di-backpropagate hanya ke Generator, recognizer tetap frozen sepanjang pelatihan GAN
+\item Ekstraksi Fitur GT: Pada awal training batch, feature maps dari gambar ground truth diekstrak menggunakan recognizer frozen dan di-cache untuk menghindari komputasi berulang
+\item Forward Pass Generator: Generator menerima gambar terdegradasi dan menghasilkan gambar restored
+\item Ekstraksi Fitur Restored: Gambar restored dilewatkan ke recognizer frozen untuk mengekstrak feature maps dengan dimensi yang sama
+\item Perhitungan MSE: MSE dihitung antara feature maps restored dan GT, dinormalisasi terhadap dimensi (batch × sequence × features)
+\item Weighted Integration: RecFeat loss dikombinasikan dengan komponen loss lain: $\mathcal{L}_{\text{Total}} = w_{\text{adv}} \mathcal{L}_{\text{adv}} + w_{\text{pix}} \mathcal{L}_{\text{pix}} + w_{\text{rec}} \mathcal{L}_{\text{RecFeat}}$
+\item Backpropagation: Gradien total di-backpropagate hanya ke Generator, recognizer tetap frozen sepanjang pelatihan GAN
 \end{enumerate}
 
-\textbf{Keunggulan Metodologi:}
+Keunggulan Metodologi:
 
 Pendekatan ini memiliki beberapa keunggulan metodologis dibandingkan alternatif:
 
 \begin{itemize}[leftmargin=*, nosep]
-\item \textbf{Optimasi Langsung untuk HTR}: Dengan mencocokkan representasi internal HTR model, Generator belajar menghasilkan gambar yang secara eksplisit optimal untuk sistem HTR
-\item \textbf{Stabilitas Pelatihan}: MSE pada fitur kontinu lebih stabil daripada cross-entropy pada output diskrit, memberikan gradien yang lebih smooth
-\item \textbf{Gradien Informatif}: Feature-level matching memberikan signal pembelajaran yang lebih kaya daripada pixel-level matching, karena merepresentasikan fitur-fitur yang telah dipelajari untuk HTR
-\item \textbf{Keseimbangan Visual-Keterbacaan}: RecFeat loss mengoptimalkan keterbacaan tanpa mengorbankan kualitas visual, karena bekerja pada representasi internal yang kaya informasi
-\item \textbf{Kompatibilitas Multi-Objektif}: RecFeat loss kompatibel dengan pixel loss, adversarial loss, dan CTC loss dalam framework multi-objektif, memberikan pembelajaran yang komplementer
+\item Optimasi Langsung untuk HTR: Dengan mencocokkan representasi internal HTR model, Generator belajar menghasilkan gambar yang secara eksplisit optimal untuk sistem HTR
+\item Stabilitas Pelatihan: MSE pada fitur kontinu lebih stabil daripada cross-entropy pada output diskrit, memberikan gradien yang lebih smooth
+\item Gradien Informatif: Feature-level matching memberikan signal pembelajaran yang lebih kaya daripada pixel-level matching, karena merepresentasikan fitur-fitur yang telah dipelajari untuk HTR
+\item Keseimbangan Visual-Keterbacaan: RecFeat loss mengoptimalkan keterbacaan tanpa mengorbankan kualitas visual, karena bekerja pada representasi internal yang kaya informasi
+\item Kompatibilitas Multi-Objektif: RecFeat loss kompatibel dengan pixel loss, adversarial loss, dan CTC loss dalam framework multi-objektif, memberikan pembelajaran yang komplementer
 \end{itemize}
 
 \subsubsection{Metodologi Penentuan Bobot Loss Berbasis Bayesian Optimization}
@@ -605,10 +633,10 @@ Penentuan bobot \textit{loss} yang optimal merupakan aspek krusial dalam pelatih
 Pendekatan manual (\textit{trial-and-error}) dalam penentuan bobot \textit{loss} memiliki beberapa keterbatasan fundamental:
 
 \begin{itemize}[leftmargin=*, nosep]
-\item \textbf{Tidak Sistematis:} Tidak ada jaminan konvergensi ke konfigurasi optimal
-\item \textbf{Tidak \textit{Reproducible}:} Sulit direplikasi oleh peneliti lain
-\item \textbf{Tidak Efisien:} Membutuhkan banyak eksperimen manual yang mahal secara komputasi
-\item \textbf{Bias Subjektif:} Keputusan dipengaruhi oleh intuisi peneliti, bukan data empiris
+\item Tidak Sistematis: Tidak ada jaminan konvergensi ke konfigurasi optimal
+\item Tidak \textit{Reproducible:} Sulit direplikasi oleh peneliti lain
+\item Tidak Efisien: Membutuhkan banyak eksperimen manual yang mahal secara komputasi
+\item Bias Subjektif: Keputusan dipengaruhi oleh intuisi peneliti, bukan data empiris
 \end{itemize}
 
 Untuk mengatasi keterbatasan ini, penelitian ini mengimplementasikan \textit{Hyperparameter Optimization} (HPO) menggunakan \textit{Bayesian Optimization} dengan \textit{Tree-structured Parzen Estimator} (TPE) \textit{sampler} melalui \textit{framework} Optuna (Akiba, Sano, Yanase, Ohta, \& Koyama, 2019).
@@ -674,10 +702,10 @@ Jumlah \textit{Trial} & 30 & \textit{Trade-off} antara eksplorasi dan biaya komp
 Setiap \textit{trial} dievaluasi menggunakan protokol yang konsisten:
 
 \begin{enumerate}[label=\arabic*., leftmargin=*, nosep]
-\item \textbf{Pelatihan:} Model dilatih selama 2 \textit{epoch} dengan konfigurasi bobot \textit{loss} yang di-\textit{sample} oleh TPE \textit{sampler}
-\item \textbf{Evaluasi:} Metrik (PSNR, SSIM, CER, WER) dihitung pada \textit{validation set}
-\item \textbf{\textit{Scoring}:} Fungsi objektif dihitung dan dikembalikan ke \textit{optimizer} Optuna
-\item \textbf{Iterasi:} TPE \textit{sampler} menggunakan hasil \textit{trial} sebelumnya untuk menyarankan konfigurasi berikutnya
+\item Pelatihan: Model dilatih selama 2 \textit{epoch} dengan konfigurasi bobot \textit{loss} yang di-\textit{sample} oleh TPE \textit{sampler}
+\item Evaluasi: Metrik (PSNR, SSIM, CER, WER) dihitung pada \textit{validation set}
+\item \textit{Scoring:} Fungsi objektif dihitung dan dikembalikan ke \textit{optimizer} Optuna
+\item Iterasi: TPE \textit{sampler} menggunakan hasil \textit{trial} sebelumnya untuk menyarankan konfigurasi berikutnya
 \end{enumerate}
 
 \paragraph{Hasil \textit{Hyperparameter Optimization}:}
@@ -706,9 +734,9 @@ Konfigurasi ini dipilih berdasarkan skor objektif tertinggi dari 29 \textit{tria
 Meskipun HPO menggunakan pelatihan singkat (2 \textit{epoch}), validitas peringkat relatif dikonfirmasi melalui:
 
 \begin{itemize}[leftmargin=*, nosep]
-\item \textbf{Analisis Korelasi}: Konfigurasi terbaik pada HPO tetap terbaik pada pelatihan penuh (validasi empiris)
-\item \textbf{Konsistensi Pola}: Pola ``\textit{adv} tinggi $\rightarrow$ \textit{collapse}'' konsisten di semua durasi pelatihan
-\item \textbf{Dukungan Literatur}: Studi terkait menunjukkan 2-5 \textit{epoch} cukup untuk peringkat \textit{hyperparameter}
+\item Analisis Korelasi: Konfigurasi terbaik pada HPO tetap terbaik pada pelatihan penuh (validasi empiris)
+\item Konsistensi Pola: Pola ``\textit{adv} tinggi $\rightarrow$ \textit{collapse}'' konsisten di semua durasi pelatihan
+\item Dukungan Literatur: Studi terkait menunjukkan 2-5 \textit{epoch} cukup untuk peringkat \textit{hyperparameter}
 \end{itemize}
 
 \paragraph{Protokol Reproduktifitas:}
@@ -716,10 +744,10 @@ Meskipun HPO menggunakan pelatihan singkat (2 \textit{epoch}), validitas peringk
 Untuk memastikan penelitian dapat direproduksi:
 
 \begin{itemize}[leftmargin=*, nosep]
-\item \textbf{\textit{Database} Studi Optuna}: Tersimpan dalam \textit{database} SQLite (\texttt{hpo\_study.db})
-\item \textbf{Pelacakan MLflow}: Semua 29 \textit{trial} terekam dengan metrik, parameter, dan artefak
-\item \textbf{JSON Hasil}: Hasil lengkap tersimpan dalam \texttt{hpo\_results\_20251015\_101057.json}
-\item \textbf{Log Eksekusi}: Log pelatihan lengkap tersimpan untuk audit
+\item \textit{Database Studi Optuna}: Tersimpan dalam \textit{database} SQLite (\texttt{hpo\_study.db})
+\item Pelacakan MLflow: Semua 29 \textit{trial} terekam dengan metrik, parameter, dan artefak
+
+
 \end{itemize}
 
 \subsubsection{Strategi Optimasi Numerik}
@@ -730,7 +758,7 @@ Optimasi numerik merupakan aspek kritis dalam pelatihan GAN dengan fungsi \texti
 \caption{Justifikasi ilmiah pemilihan presisi numerik FP32}
 \label{tab:precision-justification}
 \small
-\begin{tabular}{|p{3.5cm}|p{5cm}|p{5.5cm}|}
+\begin{tabular}{|p{3cm}|p{4.5cm}|p{5cm}|}
 \hline
 \textbf{Aspek} & \textbf{Masalah dengan FP16/\textit{Mixed}} & \textbf{Solusi dengan \textit{Pure} FP32} \\ \hline
 Stabilitas CTC Loss & Perhitungan \textit{log-probability} dalam ruang logaritma menyebabkan \textit{underflow} dengan FP16 & Presisi penuh FP32 memastikan gradien CTC stabil saat di-backpropagate ke Generator \\ \hline
@@ -766,7 +794,7 @@ Salah satu aspek novel dalam penelitian ini adalah Diskriminator Dual-Modal yang
 \caption{Perbandingan dua mode input teks diskriminator}
 \label{tab:discriminator-modes}
 \small
-\begin{tabular}{|l|p{5.5cm}|p{5.5cm}|}
+\begin{tabular}{|l|p{5cm}|p{5cm}|}
 \hline
 \textbf{Aspek} & \textbf{\textit{Ground Truth} Mode} & \textbf{\textit{Predicted} Mode} \\ \hline
 Sumber Teks & Transkripsi \textit{ground truth} & Prediksi dari \textit{recognizer} terbekukan \\ \hline
@@ -873,14 +901,14 @@ Standar Deviasi CER & < 2\% & Reproducibility untuk penelitian rigorous \\ \hlin
 \textit{Catatan: Perbandingan dengan baseline state-of-the-art (Yousef et al. 2020) disajikan pada Bab II (Tinjauan Pustaka). Detail efisiensi komputasi disajikan pada Lampiran C.}
 
 \subsubsection{Implementasi \textit{CTC Loss} sebagai Metrik Evaluasi}
-\textit{Connectionist Temporal Classification} (CTC) \textit{loss} berfungsi sebagai metrik evaluasi keterbacaan teks dalam \textit{framework} GAN-HTR. Perlu ditekankan bahwa CTC \textit{loss} \textbf{TIDAK di-backpropagate ke Generator}, melainkan digunakan sebagai \textit{monitoring metric} untuk mengukur kualitas keterbacaan hasil restorasi. Implementasi CTC \textit{loss} memerlukan perhatian khusus terhadap stabilitas numerik agar metrik monitoring akurat dan konsisten.
+\textit{Connectionist Temporal Classification} (CTC) \textit{loss} berfungsi sebagai metrik evaluasi keterbacaan teks dalam \textit{framework} GAN-HTR. Perlu ditekankan bahwa CTC \textit{loss} TIDAK di-backpropagate ke Generator, melainkan digunakan sebagai \textit{monitoring metric} untuk mengukur kualitas keterbacaan hasil restorasi. Implementasi CTC \textit{loss} memerlukan perhatian khusus terhadap stabilitas numerik agar metrik monitoring akurat dan konsisten.
 
 \begin{table}[H]
 \centering
 \caption{Teknik stabilisasi numerik untuk \textit{CTC loss}}
 \label{tab:ctc-stabilization}
 \small
-\begin{tabular}{|l|p{4.5cm}|p{6cm}|}
+\begin{tabular}{|l|p{4cm}|p{5.5cm}|}
 \hline
 \textbf{Teknik} & \textbf{Implementasi} & \textbf{Tujuan} \\ \hline
 \textit{Label Smoothing} & Faktor $\epsilon = 0.1$ diterapkan pada label & Meningkatkan akurasi metrik evaluasi dan mencegah bias pada label keras \\ \hline
@@ -899,7 +927,7 @@ Pada fase inferensi, prediksi CTC perlu di-\textit{decode} menjadi sekuens karak
 \caption{Strategi \textit{decoding} CTC dan karakteristiknya}
 \label{tab:ctc-decoding}
 \small
-\begin{tabular}{|l|p{4cm}|p{3.5cm}|p{3cm}|}
+\begin{tabular}{|l|p{3.5cm}|p{3cm}|p{3cm}|}
 \hline
 \textbf{Strategi} & \textbf{Karakteristik} & \textbf{Kecepatan} & \textbf{Akurasi} \\ \hline
 \textit{Greedy Decoding} & Memilih karakter dengan probabilitas tertinggi & Sangat cepat & Baik \\ \hline
@@ -927,7 +955,7 @@ Evaluasi \textit{framework} GAN-HTR dilakukan menggunakan metrik ganda yang meng
 \small
 \begin{tabular}{|l|l|l|p{5cm}|}
 \hline
-\textbf{Kategori} & \textbf{Metrik} & \textbf{Target} & \textbf{Interpretasi} \\ \hline
+Kategori & Metrik & Target & Interpretasi \\ \hline
 \multirow{2}{*}{Kualitas Visual} & PSNR & $>$ 35 dB & Rasio sinyal terhadap derau dalam skala logaritma \\ \cline{2-4}
  & SSIM & $>$ 0.95 & Kesamaan struktural perseptual \\ \hline
 \multirow{2}{*}{Keterbacaan Teks} & CER & Penurunan $\geq$ 25\% & Rasio kesalahan pada tingkat karakter \\ \cline{2-4}
@@ -982,7 +1010,7 @@ dengan notasi serupa pada tingkat kata.
 \caption{Pipeline perhitungan metrik keterbacaan teks}
 \label{tab:readability-pipeline}
 \small
-\begin{tabular}{|l|p{5cm}|p{6cm}|}
+\begin{tabular}{|l|p{4cm}|p{5cm}|}
 \hline
 \textbf{Tahap} & \textbf{Proses} & \textbf{Detail Implementasi} \\ \hline
 1. Pengenalan Teks & Gambar terestorasi → \textit{Recognizer} terbekukan & Model dengan bobot dibekukan memastikan konsistensi evaluasi \\ \hline
@@ -1001,7 +1029,7 @@ Metrik keterbacaan dievaluasi dengan tiga kriteria:
 \caption{Kriteria keberhasilan metrik keterbacaan}
 \label{tab:readability-criteria}
 \small
-\begin{tabular}{|l|l|p{7cm}|}
+\begin{tabular}{|l|l|p{6cm}|}
 \hline
 \textbf{Kriteria} & \textbf{Target} & \textbf{Justifikasi} \\ \hline
 Penurunan CER & $\geq$ 25\% & Peningkatan substansial dibandingkan \textit{baseline} terdegradasi, sesuai target penelitian \\ \hline
@@ -1032,9 +1060,9 @@ Interval Kepercayaan & \textit{Bootstrap} 1000 iterasi & Estimasi interval keper
 \end{table}
 
 \subsubsection{Validasi Hipotesis}
-\textbf{H$_0$} (Hipotesis Nol): Tidak ada perbedaan signifikan antara metode yang diusulkan dan \textit{baseline} dalam hal keterbacaan teks (CER).
+H$_0$ (Hipotesis Nol): Tidak ada perbedaan signifikan antara metode yang diusulkan dan \textit{baseline} dalam hal keterbacaan teks (CER).
 
-\textbf{H$_1$} (Hipotesis Alternatif): Metode yang diusulkan menghasilkan CER yang signifikan lebih rendah dibandingkan \textit{baseline} dengan tingkat kepercayaan 95\%.
+H$_1$ (Hipotesis Alternatif): Metode yang diusulkan menghasilkan CER yang signifikan lebih rendah dibandingkan \textit{baseline} dengan tingkat kepercayaan 95\%.
 
 Kriteria penolakan H$_0$: p-value $<$ 0.05 dari paired t-test.
 
@@ -1105,22 +1133,22 @@ Full Framework (Proposed) & \checkmark & \checkmark & \checkmark & \checkmark \\
 \end{tabular}
 \end{table}
 
-\textbf{Justifikasi Desain Ablation:}
+Justifikasi Desain Ablation:
 Desain ablation study disusun secara bertahap untuk mengisolasi kontribusi setiap komponen inovatif:
 \begin{itemize}[leftmargin=*, nosep]
-\item \textbf{Baseline}: GAN konvensional dengan pixel loss dan adversarial loss saja, tanpa guidance berorientasi HTR
-\item \textbf{+ RecFeat Loss}: Menambahkan recognition feature loss untuk mengukur dampak guidance dari representasi internal recognizer frozen
-\item \textbf{+ CTC Monitoring}: Menambahkan CTC loss sebagai metrik monitoring (tidak di-backprop) untuk pelacakan keterbacaan
-\item \textbf{+ Dual-Modal Discriminator}: Menambahkan input teks ke discriminator untuk realisme konten tekstual
-\item \textbf{Full Framework}: Kombinasi lengkap dengan HPO-tuned loss weights untuk optimasi multi-objektif
+\item Baseline: GAN konvensional dengan pixel loss dan adversarial loss saja, tanpa guidance berorientasi HTR
+\item + RecFeat Loss: Menambahkan recognition feature loss untuk mengukur dampak guidance dari representasi internal recognizer frozen
+\item + CTC Monitoring: Menambahkan CTC loss sebagai metrik monitoring (tidak di-backprop) untuk pelacakan keterbacaan
+\item + Dual-Modal Discriminator: Menambahkan input teks ke discriminator untuk realisme konten tekstual
+\item Full Framework: Kombinasi lengkap dengan HPO-tuned loss weights untuk optimasi multi-objektif
 \end{itemize}
 
 \paragraph{Variabel Kontrol:}
 \begin{itemize}[leftmargin=*, nosep]
-\item \textbf{Dataset:} Sama untuk semua ablation configurations
-\item \textbf{Training Parameters:} Learning rate, batch size, epochs
-\item \textbf{Evaluation Metrics:} PSNR, SSIM, CER, WER
-\item \textbf{Random Seeds:} Sama untuk reproduktifitas
+\item Dataset: Sama untuk semua ablation configurations
+\item Training Parameters: Learning rate, batch size, epochs
+\item Evaluation Metrics: PSNR, SSIM, CER, WER
+\item Random Seeds: Sama untuk reproduktifitas
 \end{itemize}
 
 \paragraph{Hasil yang Diharapkan dan Interpretasinya:}
@@ -1138,7 +1166,7 @@ Berdasarkan eksperimen pendahuluan dan temuan literatur, diasumsikan setiap komp
 \textit{CTC Monitoring} & 3-5\% tambahan & Pelacakan keterbacaan tanpa backprop, membantu hyperparameter tuning \\ \hline
 Diskriminator Dual-Modal & 8-12\% perbaikan & Evaluasi simultan kualitas visual dan konsistensi konten tekstual \\ \hline
 \textit{HPO Loss Weight} & 5-8\% perbaikan & Keseimbangan optimal antar komponen loss multi-objektif \\ \hline
-\textbf{Efek Kombinasi} & \textbf{30-40\% total} & \textbf{Sinergi melebihi jumlah individual} \\ \hline
+Efek Kombinasi & 30-40\% total & Sinergi melebihi jumlah individual \\ \hline
 \end{tabular}
 \end{table}
 
@@ -1147,42 +1175,42 @@ Jika efek kombinasi secara signifikan melebihi jumlah kontribusi individual, ini
 \subsubsection{Statistical Testing Framework}
 \paragraph{Hipotesis Statistik:}
 \begin{itemize}[leftmargin=*, nosep]
-\item \textbf{H$_0$:} $\mu_{proposed} = \mu_{baseline}$ (no significant difference)
-\item \textbf{H$_1$:} $\mu_{proposed} < \mu_{baseline}$ (proposed is significantly better)
+\item H$_0$: $\mu_{proposed} = \mu_{baseline}$ (no significant difference)
+\item H$_1$: $\mu_{proposed} < \mu_{baseline}$ (proposed is significantly better)
 \end{itemize}
 
 \paragraph{Statistical Tests:}
 \begin{enumerate}[label=\arabic*., leftmargin=*, nosep]
-\item \textbf{Uji Normalitas:} Shapiro-Wilk untuk menguji normalitas distribusi
-\item \textbf{\textit{Paired t-test}:} Untuk data terdistribusi normal
-\item \textbf{Wilcoxon \textit{Signed-Rank}:} Untuk data tidak normal
-\item \textbf{Ukuran Efek:} Cohen's d untuk besaran peningkatan
+\item Uji Normalitas: Shapiro-Wilk untuk menguji normalitas distribusi
+\item \textit{Paired t-test:} Untuk data terdistribusi normal
+\item Wilcoxon \textit{Signed-Rank:} Untuk data tidak normal
+\item Ukuran Efek: Cohen's d untuk besaran peningkatan
 \end{enumerate}
 
 \paragraph{Multiple Comparison Correction:}
 \begin{itemize}[leftmargin=*, nosep]
-\item \textbf{Bonferroni Correction:} $\alpha_{corrected} = \frac{\alpha}{n}$ (dimana $n$ = jumlah comparisons)
-\item \textbf{False Discovery Rate:} Benjamini-Hochberg procedure
+\item Bonferroni Correction: $\alpha_{corrected} = \frac{\alpha}{n}$ (dimana $n$ = jumlah comparisons)
+\item False Discovery Rate: Benjamini-Hochberg procedure
 \end{itemize}
 
 \paragraph{Confidence Intervals:}
 \begin{itemize}[leftmargin=*, nosep]
-\item \textbf{CI 95\%:} Untuk perbedaan rata-rata antara metode
-\item \textbf{\textit{Bootstrap} CI:} 1000 pengambilan sampel ulang untuk estimasi yang kokoh
+\item CI 95\%: Untuk perbedaan rata-rata antara metode
+\item \textit{Bootstrap CI:} 1000 pengambilan sampel ulang untuk estimasi yang kokoh
 \end{itemize}
 
 \subsubsection{Cross-Validation Strategy}
 \paragraph{K-Fold Cross Validation:}
 \begin{itemize}[leftmargin=*, nosep]
-\item \textbf{K = 5:} Validasi silang 5-\textit{fold} untuk estimasi performa yang kokoh
-\item \textbf{Pengambilan Sampel Berlapis:} Menjaga distribusi kelas di setiap \textit{fold}
-\item \textbf{\textit{Nested CV}:} Putaran dalam untuk \textit{hyperparameter tuning}, putaran luar untuk evaluasi
+\item K = 5: Validasi silang 5-\textit{fold} untuk estimasi performa yang kokoh
+\item Pengambilan Sampel Berlapis: Menjaga distribusi kelas di setiap \textit{fold}
+\item \textit{Nested CV:} Putaran dalam untuk \textit{hyperparameter tuning}, putaran luar untuk evaluasi
 \end{itemize}
 
 \subparagraph{Temporal Validation:}
 \begin{itemize}[leftmargin=*, nosep]
-\item \textbf{Pembagian Berbasis Waktu:} Pelatihan pada dokumen lama, pengujian pada dokumen baru
-\item \textbf{Uji Generalisasi:} Mengukur kemampuan generalisasi ke domain yang belum pernah dilihat
+\item Pembagian Berbasis Waktu: Pelatihan pada dokumen lama, pengujian pada dokumen baru
+\item Uji Generalisasi: Mengukur kemampuan generalisasi ke domain yang belum pernah dilihat
 \end{itemize}
 
 \subsubsection{Komunikasi (Tahap 6)}
@@ -1192,56 +1220,59 @@ Hasil penelitian dan artefak yang dihasilkan dikomunikasikan kepada komunitas il
 Mendokumentasikan seluruh proses penelitian dalam format tesis yang terstruktur sesuai dengan pedoman penulisan tesis.
 
 \paragraph{Publikasi Ilmiah:}
-Menyiapkan manuscript untuk publikasi di venue ilmiah dengan target journal IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI) atau International Journal on Document Analysis and Recognition (IJDAR).
+Menyiapkan naskah untuk publikasi ilmiah dengan target jurnal IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI) atau International Journal on Document Analysis and Recognition (IJDAR).
 
 \paragraph{Open Source dan Reproduktifitas:}
 Membagikan artefak penelitian untuk transparansi dan kemajuan sains melalui GitHub repository dan MLflow artifacts.
 
-\subsection{Manajemen Penelitian}
-\label{subsec:manajemen-penelitian}
+% start
+% \subsection{Manajemen Penelitian}
+% \label{subsec:manajemen-penelitian}
 
-Manajemen penelitian yang efektif memastikan proses pengembangan yang sistematis, telusur, dan dapat direproduksi. Penelitian ini menerapkan prinsip-prinsip manajemen yang telah terbukti dalam pengembangan sistem pembelajaran mesin kompleks.
+% Manajemen penelitian yang efektif memastikan proses pengembangan yang sistematis, telusur, dan dapat direproduksi. Penelitian ini menerapkan prinsip-prinsip manajemen yang telah terbukti dalam pengembangan sistem pembelajaran mesin kompleks.
 
-\subsubsection{Prinsip Pengembangan}
-Penelitian ini mengikuti lima prinsip fundamental untuk memastikan kualitas dan integritas:
+% \subsubsection{Prinsip Pengembangan}
+% Penelitian ini mengikuti lima prinsip fundamental untuk memastikan kualitas dan integritas:
 
-\begin{table}[H]
-\centering
-\caption{Prinsip pengembangan dan implementasinya}
-\label{tab:development-principles}
-\small
-\begin{tabular}{|p{4cm}|p{5cm}|p{5cm}|}
-\hline
-\textbf{Prinsip} & \textbf{Definisi} & \textbf{Implementasi Praktis} \\ \hline
-\textit{Don't Repeat Yourself} (DRY) & Kode modular dan dapat digunakan ulang & Fungsi umum diabstraksi ke modul terpisah untuk menghindari duplikasi \\ \hline
-Pengujian Awal (\textit{Smoke Test}) & Validasi \textit{pipeline} sebelum skala penuh & Uji dengan \textit{dataset} kecil (100 sampel) dan 5 \textit{epoch} sebelum pelatihan penuh \\ \hline
-Dokumentasi Terdorong & Pencatatan sistematis semua temuan & Setiap eksperimen didokumentasikan dalam \textit{logbook} dengan stempel waktu \\ \hline
-Pelatihan Keadaan Bersih & Menghindari kesalahan terbawa & Hapus \textit{checkpoint} bermasalah dan validasi integritas data sebelum pelatihan \\ \hline
-Inspeksi Mendalam & Pemahaman akar masalah & Analisis mendalam kode dan data sebelum membuat perubahan signifikan \\ \hline
-\end{tabular}
-\end{table}
+% \begin{table}[H]
+% \centering
+% \caption{Prinsip pengembangan dan implementasinya}
+% \label{tab:development-principles}
+% \small
+% \begin{tabular}{|p{4cm}|p{5cm}|p{5cm}|}
+% \hline
+% \textbf{Prinsip} & \textbf{Definisi} & \textbf{Implementasi Praktis} \\ \hline
+% \textit{Don't Repeat Yourself} (DRY) & Kode modular dan dapat digunakan ulang & Fungsi umum diabstraksi ke modul terpisah untuk menghindari duplikasi \\ \hline
+% Pengujian Awal (\textit{Smoke Test}) & Validasi \textit{pipeline} sebelum skala penuh & Uji dengan \textit{dataset} kecil (100 sampel) dan 5 \textit{epoch} sebelum pelatihan penuh \\ \hline
+% Dokumentasi Terdorong & Pencatatan sistematis semua temuan & Setiap eksperimen didokumentasikan dalam \textit{logbook} dengan stempel waktu \\ \hline
+% Pelatihan Keadaan Bersih & Menghindari kesalahan terbawa & Hapus \textit{checkpoint} bermasalah dan validasi integritas data sebelum pelatihan \\ \hline
+% Inspeksi Mendalam & Pemahaman akar masalah & Analisis mendalam kode dan data sebelum membuat perubahan signifikan \\ \hline
+% \end{tabular}
+% \end{table}
 
-\subsubsection{Sistem Dokumentasi}
-Sistem dokumentasi terstruktur memastikan semua aspek penelitian terekam dan dapat dilacak:
+% \subsubsection{Sistem Dokumentasi}
+% Sistem dokumentasi terstruktur memastikan semua aspek penelitian terekam dan dapat dilacak:
 
-\begin{table}[H]
-\centering
-\caption{Struktur sistem dokumentasi penelitian}
-\label{tab:documentation-system}
-\small
-\begin{tabular}{|l|p{5cm}|p{5.5cm}|}
-\hline
-\textbf{Komponen} & \textbf{Konten} & \textbf{Tujuan} \\ \hline
-\textit{Logbook} Harian & Tanggal, eksperimen, hasil, analisis & Pelacakan kronologis kemajuan penelitian \\ \hline
-Laporan Eksperimen & Hipotesis, metodologi, hasil, kesimpulan & Dokumentasi formal untuk eksperimen kunci \\ \hline
-Catatan Teknis & Solusi \textit{bug}, optimasi, konfigurasi & Transfer pengetahuan dan pencegahan masalah berulang \\ \hline
-Metrik MLflow & Parameter, metrik, artefak, Git \textit{commit} & Reproduktifitas dan perbandingan objektif \\ \hline
-Dokumentasi Kode & \textit{Docstring}, komentar, README & Pemahaman dan pemeliharaan kode \\ \hline
-\end{tabular}
-\end{table}
+% \begin{table}[H]
+% \centering
+% \caption{Struktur sistem dokumentasi penelitian}
+% \label{tab:documentation-system}
+% \small
+% \begin{tabular}{|l|p{5cm}|p{5.5cm}|}
+% \hline
+% \textbf{Komponen} & \textbf{Konten} & \textbf{Tujuan} \\ \hline
+% \textit{Logbook} Harian & Tanggal, eksperimen, hasil, analisis & Pelacakan kronologis kemajuan penelitian \\ \hline
+% Laporan Eksperimen & Hipotesis, metodologi, hasil, kesimpulan & Dokumentasi formal untuk eksperimen kunci \\ \hline
+% Catatan Teknis & Solusi \textit{bug}, optimasi, konfigurasi & Transfer pengetahuan dan pencegahan masalah berulang \\ \hline
+% Metrik MLflow & Parameter, metrik, artefak, Git \textit{commit} & Reproduktifitas dan perbandingan objektif \\ \hline
+% Dokumentasi Kode & \textit{Docstring}, komentar, README & Pemahaman dan pemeliharaan kode \\ \hline
+% \end{tabular}
+% \end{table}
 
-Setiap dokumen mengikuti templat standar yang meliputi: (1) tanggal dan identifikasi, (2) tujuan atau masalah, (3) metode atau pendekatan, (4) hasil dan observasi, (5) kesimpulan dan pembelajaran, (6) tindakan selanjutnya.
+% Setiap dokumen mengikuti templat standar yang meliputi: (1) tanggal dan identifikasi, (2) tujuan atau masalah, (3) metode atau pendekatan, (4) hasil dan observasi, (5) kesimpulan dan pembelajaran, (6) tindakan selanjutnya.
 
+
+% end---
 \end{document}
 
 \begin{table}[H]
@@ -1263,13 +1294,13 @@ Setiap dokumen mengikuti templat standar yang meliputi: (1) tanggal dan identifi
 Identifikasi komponen modular dilakukan melalui proses sistematis yang menganalisis kebutuhan fungsional dan struktural sistem:
 
 \begin{enumerate}[label=\arabic*., leftmargin=*, nosep]
-\item \textbf{Dekomposisi Fungsional:} Sistem dipecah berdasarkan fungsi utama (generasi gambar, evaluasi kualitas, pengenalan teks, optimasi) untuk mengidentifikasi batas-batas modul yang alami.
+\item Dekomposisi Fungsional: Sistem dipecah berdasarkan fungsi utama (generasi gambar, evaluasi kualitas, pengenalan teks, optimasi) untuk mengidentifikasi batas-batas modul yang alami.
 
-\item \textbf{Analisis Antarmuka:} Identifikasi titik komunikasi antar komponen untuk mendefinisikan kontrak antarmuka yang jelas dan meminimalkan ketergantungan.
+\item Analisis Antarmuka: Identifikasi titik komunikasi antar komponen untuk mendefinisikan kontrak antarmuka yang jelas dan meminimalkan ketergantungan.
 
-\item \textbf{Pemetaan Ketergantungan:} Pembuatan diagram ketergantungan untuk memvisualisasikan relasi antar modul dan memastikan tidak ada ketergantungan siklik yang dapat menghambat modularitas.
+\item Pemetaan Ketergantungan: Pembuatan diagram ketergantungan untuk memvisualisasikan relasi antar modul dan memastikan tidak ada ketergantungan siklik yang dapat menghambat modularitas.
 
-\item \textbf{Definisi Lapisan Abstraksi:} Penetapan hierarki abstraksi untuk memisahkan logika bisnis tingkat tinggi dari detail implementasi tingkat rendah.
+\item Definisi Lapisan Abstraksi: Penetapan hierarki abstraksi untuk memisahkan logika bisnis tingkat tinggi dari detail implementasi tingkat rendah.
 \end{enumerate}
 
 \paragraph{Arsitektur Komponen Inti:}
@@ -1319,26 +1350,26 @@ Penanganan Kesalahan & Standardisasi manajemen kesalahan dengan hierarki \textit
 Sistem konfigurasi dirancang dengan pendekatan hierarkis yang memungkinkan fleksibilitas dan reproduktifitas:
 
 \begin{enumerate}[label=\arabic*., leftmargin=*, nosep]
-\item \textbf{Konfigurasi Hierarkis:} Sistem konfigurasi berlapis dengan konfigurasi dasar yang dapat diwariskan dan ditimpa. Pendekatan ini memungkinkan definisi parameter umum pada tingkat dasar dan penyesuaian spesifik pada tingkat eksperimen.
+\item Konfigurasi Hierarkis: Sistem konfigurasi berlapis dengan konfigurasi dasar yang dapat diwariskan dan ditimpa. Pendekatan ini memungkinkan definisi parameter umum pada tingkat dasar dan penyesuaian spesifik pada tingkat eksperimen.
 
-\item \textbf{Penimpaan Berbasis Lingkungan:} Konfigurasi dapat ditimpa melalui variabel lingkungan untuk memfasilitasi \textit{deployment} pada berbagai infrastruktur tanpa modifikasi kode.
+\item Penimpaan Berbasis Lingkungan: Konfigurasi dapat ditimpa melalui variabel lingkungan untuk memfasilitasi \textit{deployment} pada berbagai infrastruktur tanpa modifikasi kode.
 
-\item \textbf{Validasi Waktu Eksekusi:} Validasi otomatis konfigurasi pada waktu eksekusi untuk mendeteksi kesalahan konfigurasi sebelum pelatihan dimulai, menghemat waktu dan sumber daya komputasi.
+\item Validasi Waktu Eksekusi: Validasi otomatis konfigurasi pada waktu eksekusi untuk mendeteksi kesalahan konfigurasi sebelum pelatihan dimulai, menghemat waktu dan sumber daya komputasi.
 
-\item \textbf{Manajemen Nilai Bawaan:} Setiap parameter memiliki nilai bawaan yang wajar berdasarkan praktik terbaik, mengurangi beban konfigurasi manual dan memfasilitasi penggunaan \textit{framework} oleh pengguna baru.
+\item Manajemen Nilai Bawaan: Setiap parameter memiliki nilai bawaan yang wajar berdasarkan praktik terbaik, mengurangi beban konfigurasi manual dan memfasilitasi penggunaan \textit{framework} oleh pengguna baru.
 \end{enumerate}
 
 \paragraph{Metodologi Ekstensibilitas:}
 Untuk memastikan \textit{framework} dapat dikembangkan dan diadaptasi, diterapkan strategi ekstensibilitas yang sistematis:
 
 \begin{itemize}[leftmargin=*, nosep]
-\item \textbf{Arsitektur \textit{Plugin}:} Mekanisme registrasi memungkinkan penambahan komponen kustom (misalnya arsitektur \textit{generator} baru) tanpa modifikasi kode inti, memfasilitasi eksperimen dengan variasi arsitektur.
+\item Arsitektur \textit{Plugin:} Mekanisme registrasi memungkinkan penambahan komponen kustom (misalnya arsitektur \textit{generator} baru) tanpa modifikasi kode inti, memfasilitasi eksperimen dengan variasi arsitektur.
 
-\item \textbf{Titik Ekstensi:} Titik-titik ekstensi yang telah ditentukan (\textit{hook points}) memungkinkan penyisipan logika kustom pada tahap kritis (misalnya sebelum/sesudah setiap \textit{epoch}) untuk keperluan pemantauan atau modifikasi perilaku.
+\item Titik Ekstensi: Titik-titik ekstensi yang telah ditentukan (\textit{hook points}) memungkinkan penyisipan logika kustom pada tahap kritis (misalnya sebelum/sesudah setiap \textit{epoch}) untuk keperluan pemantauan atau modifikasi perilaku.
 
-\item \textbf{Kompatibilitas Mundur:} Strategi untuk memastikan kompatibilitas dengan versi sebelumnya, melindungi investasi penelitian yang ada dan memfasilitasi reproduktifitas jangka panjang.
+\item Kompatibilitas Mundur: Strategi untuk memastikan kompatibilitas dengan versi sebelumnya, melindungi investasi penelitian yang ada dan memfasilitasi reproduktifitas jangka panjang.
 
-\item \textbf{Manajemen Versi:} Penerapan \textit{semantic versioning} untuk rilis \textit{framework}, memberikan sinyal yang jelas tentang perubahan yang dapat merusak kompatibilitas (\textit{breaking changes}) versus perbaikan yang kompatibel.
+\item Manajemen Versi: Penerapan \textit{semantic versioning} untuk rilis \textit{framework}, memberikan sinyal yang jelas tentang perubahan yang dapat merusak kompatibilitas (\textit{breaking changes}) versus perbaikan yang kompatibel.
 \end{itemize}
 
 \subsubsection{Metodologi Manajemen Konfigurasi}
@@ -1386,13 +1417,13 @@ Validasi Skema & Verifikasi konsistensi konfigurasi & Deteksi kesalahan konfigur
 Setiap eksperimen dilacak dengan konfigurasi lengkap untuk memastikan reproduktifitas:
 
 \begin{itemize}[leftmargin=*, nosep]
-\item \textbf{Penyimpanan Otomatis:} Setiap eksperimen menyimpan snapshot lengkap konfigurasi yang digunakan, termasuk parameter yang diwariskan dan yang ditimpa.
+\item Penyimpanan Otomatis: Setiap eksperimen menyimpan snapshot lengkap konfigurasi yang digunakan, termasuk parameter yang diwariskan dan yang ditimpa.
 
-\item \textbf{Integrasi dengan MLflow:} Konfigurasi dicatat sebagai parameter eksperimen dalam MLflow, memungkinkan penelusuran dan perbandingan konfigurasi antar eksperimen.
+\item Integrasi dengan MLflow: Konfigurasi dicatat sebagai parameter eksperimen dalam MLflow, memungkinkan penelusuran dan perbandingan konfigurasi antar eksperimen.
 
-\item \textbf{Versi Konfigurasi:} Setiap perubahan pada konfigurasi dasar diberikan nomor versi untuk pelacakan evolusi parameter sepanjang penelitian.
+\item Versi Konfigurasi: Setiap perubahan pada konfigurasi dasar diberikan nomor versi untuk pelacakan evolusi parameter sepanjang penelitian.
 
-\item \textbf{Validasi Konsistensi:} Sistem validasi memastikan bahwa kombinasi parameter valid dan kompatibel sebelum eksekusi, mencegah kesalahan konfigurasi yang dapat menyebabkan kegagalan pelatihan.
+\item Validasi Konsistensi: Sistem validasi memastikan bahwa kombinasi parameter valid dan kompatibel sebelum eksekusi, mencegah kesalahan konfigurasi yang dapat menyebabkan kegagalan pelatihan.
 \end{itemize}
 
 \subsubsection{Metodologi Pengujian dan Validasi \textit{Framework}}
@@ -1402,50 +1433,50 @@ Untuk memastikan keandalan dan validitas \textit{framework} GAN-HTR, penelitian 
 Pengujian unit dilakukan untuk memverifikasi kebenaran fungsional setiap komponen secara independen. Metodologi ini mengikuti prinsip pengujian berbasis spesifikasi untuk memastikan setiap modul berperilaku sesuai dengan yang diharapkan:
 
 \begin{enumerate}[label=\arabic*., leftmargin=*, nosep]
-\item \textbf{Pengujian Arsitektur Model:} Verifikasi dimensi keluaran, jumlah parameter, dan aliran gradien untuk memastikan arsitektur diimplementasikan dengan benar. Pengujian mencakup validasi bahwa dimensi tensor sesuai dengan spesifikasi desain dan gradien dapat mengalir mundur tanpa hambatan.
+\item Pengujian Arsitektur Model: Verifikasi dimensi keluaran, jumlah parameter, dan aliran gradien untuk memastikan arsitektur diimplementasikan dengan benar. Pengujian mencakup validasi bahwa dimensi tensor sesuai dengan spesifikasi desain dan gradien dapat mengalir mundur tanpa hambatan.
 
-\item \textbf{Pengujian {\textit{Pipeline}} Data:} Validasi proses pemuatan data, praproses, dan augmentasi untuk memastikan integritas data. Pengujian mencakup verifikasi format data, normalisasi nilai, dan konsistensi transformasi augmentasi.
+\item Pengujian {\textit{Pipeline} Data:} Validasi proses pemuatan data, praproses, dan augmentasi untuk memastikan integritas data. Pengujian mencakup verifikasi format data, normalisasi nilai, dan konsistensi transformasi augmentasi.
 
-\item \textbf{Pengujian Fungsi \textit{Loss}:} Verifikasi perhitungan fungsi \textit{loss} multi-komponen dan pembaruan \textit{optimizer} untuk memastikan gradien dihitung dengan benar. Pengujian mencakup validasi bobot \textit{loss}, stabilitas numerik, dan konvergensi \textit{optimizer}.
+\item Pengujian Fungsi \textit{Loss:} Verifikasi perhitungan fungsi \textit{loss} multi-komponen dan pembaruan \textit{optimizer} untuk memastikan gradien dihitung dengan benar. Pengujian mencakup validasi bobot \textit{loss}, stabilitas numerik, dan konvergensi \textit{optimizer}.
 
-\item \textbf{Pengujian Integrasi Komponen:} Validasi interaksi antar komponen dalam \textit{pipeline} pelatihan ujung-ke-ujung untuk mendeteksi inkompatibilitas antarmuka atau masalah integrasi.
+\item Pengujian Integrasi Komponen: Validasi interaksi antar komponen dalam \textit{pipeline} pelatihan ujung-ke-ujung untuk mendeteksi inkompatibilitas antarmuka atau masalah integrasi.
 \end{enumerate}
 
 \paragraph{Metodologi Pengujian Integrasi:}
 Pengujian integrasi dilakukan untuk memvalidasi bahwa komponen-komponen sistem bekerja bersama secara koheren dan menghasilkan keluaran yang diharapkan pada tingkat sistem:
 
 \begin{itemize}[leftmargin=*, nosep]
-\item \textbf{Pengujian Awal (\textit{Smoke Test}):} Validasi cepat menggunakan \textit{dataset} kecil dan \textit{epoch} terbatas untuk memverifikasi bahwa \textit{pipeline} lengkap dapat dijalankan tanpa kesalahan kritis. Pengujian ini mendeteksi masalah struktural sebelum pelatihan skala penuh dimulai.
+\item Pengujian Awal (\textit{Smoke Test):} Validasi cepat menggunakan \textit{dataset} kecil dan \textit{epoch} terbatas untuk memverifikasi bahwa \textit{pipeline} lengkap dapat dijalankan tanpa kesalahan kritis. Pengujian ini mendeteksi masalah struktural sebelum pelatihan skala penuh dimulai.
 
-\item \textbf{Pengujian Komponen Modular:} Validasi independen setiap modul utama (\textit{generator}, diskriminator, \textit{recognizer}) untuk memastikan fungsionalitas yang benar sebelum integrasi penuh.
+\item Pengujian Komponen Modular: Validasi independen setiap modul utama (\textit{generator}, diskriminator, \textit{recognizer}) untuk memastikan fungsionalitas yang benar sebelum integrasi penuh.
 
-\item \textbf{Pengujian \textit{Pipeline} Ujung-ke-Ujung:} Validasi lengkap dari input data mentah hingga keluaran model akhir untuk memverifikasi bahwa seluruh \textit{pipeline} berfungsi sebagai sistem terintegrasi.
+\item Pengujian \textit{Pipeline Ujung-ke-Ujung:} Validasi lengkap dari input data mentah hingga keluaran model akhir untuk memverifikasi bahwa seluruh \textit{pipeline} berfungsi sebagai sistem terintegrasi.
 
-\item \textbf{Pengujian Performa:} Pengukuran waktu inferensi dan penggunaan memori untuk memastikan efisiensi komputasi memenuhi target yang ditetapkan (inferensi $<$ 15 detik per gambar).
+\item Pengujian Performa: Pengukuran waktu inferensi dan penggunaan memori untuk memastikan efisiensi komputasi memenuhi target yang ditetapkan (inferensi $<$ 15 detik per gambar).
 \end{itemize}
 
 \paragraph{Metodologi Validasi Metrik:}
 Validasi otomatis dilakukan dengan ambang batas yang telah ditentukan untuk memastikan kualitas keluaran model memenuhi standar minimum:
 
 \begin{itemize}[leftmargin=*, nosep]
-\item \textbf{Validasi Konvergensi:} Pemantauan stabilitas pelatihan melalui analisis variansi \textit{loss} dan tren konvergensi untuk mendeteksi \textit{mode collapse}, ledakan gradien, atau ketidakstabilan lainnya.
+\item Validasi Konvergensi: Pemantauan stabilitas pelatihan melalui analisis variansi \textit{loss} dan tren konvergensi untuk mendeteksi \textit{mode collapse}, ledakan gradien, atau ketidakstabilan lainnya.
 
-\item \textbf{Validasi Kualitas Minimum:} Verifikasi bahwa metrik kualitas memenuhi ambang batas minimum yang ditetapkan (PSNR $>$ 35 dB, SSIM $>$ 0.95, CER menunjukkan perbaikan signifikan) sebelum model diterima untuk evaluasi lebih lanjut.
+\item Validasi Kualitas Minimum: Verifikasi bahwa metrik kualitas memenuhi ambang batas minimum yang ditetapkan (PSNR $>$ 35 dB, SSIM $>$ 0.95, CER menunjukkan perbaikan signifikan) sebelum model diterima untuk evaluasi lebih lanjut.
 
-\item \textbf{Validasi Performa Komputasi:} Pengukuran \textit{benchmark} waktu inferensi untuk memastikan model dapat beroperasi dalam batasan waktu yang praktis untuk aplikasi nyata.
+\item Validasi Performa Komputasi: Pengukuran \textit{benchmark} waktu inferensi untuk memastikan model dapat beroperasi dalam batasan waktu yang praktis untuk aplikasi nyata.
 
-\item \textbf{Validasi Robustitas:} Pengujian kemampuan model menangani variasi input yang tidak terduga atau berada di luar distribusi data pelatihan untuk mengukur generalisasi dan ketahanan.
+\item Validasi Robustitas: Pengujian kemampuan model menangani variasi input yang tidak terduga atau berada di luar distribusi data pelatihan untuk mengukur generalisasi dan ketahanan.
 \end{itemize}
 
 \paragraph{Strategi Deteksi Anomali:}
 Untuk mendeteksi masalah selama pelatihan, diterapkan sistem pemantauan anomali yang meliputi:
 
 \begin{itemize}[leftmargin=*, nosep]
-\item \textbf{Deteksi Lonjakan \textit{Loss}:} Pemantauan nilai \textit{loss} ekstrem yang mengindikasikan ketidakstabilan numerik atau konfigurasi yang salah.
+\item Deteksi Lonjakan \textit{Loss:} Pemantauan nilai \textit{loss} ekstrem yang mengindikasikan ketidakstabilan numerik atau konfigurasi yang salah.
 
-\item \textbf{Deteksi Gradien Abnormal:} Pemantauan norma gradien untuk mendeteksi gradien yang meledak atau menghilang yang dapat menghambat pelatihan.
+\item Deteksi Gradien Abnormal: Pemantauan norma gradien untuk mendeteksi gradien yang meledak atau menghilang yang dapat menghambat pelatihan.
 
-\item \textbf{Deteksi Distribusi Keluaran:} Analisis distribusi statistik keluaran model untuk mendeteksi \textit{mode collapse} atau degradasi kualitas generasi.
+\item Deteksi Distribusi Keluaran: Analisis distribusi statistik keluaran model untuk mendeteksi \textit{mode collapse} atau degradasi kualitas generasi.
 \end{itemize}
 
 \subsubsection{Metodologi Reusabilitas dan Generalisasi \textit{Framework}}
@@ -1455,48 +1486,48 @@ Pengembangan \textit{framework} GAN-HTR dirancang dengan prinsip reusabilitas un
 Untuk memfasilitasi adaptasi \textit{framework} ke domain baru, penelitian ini merancang strategi \textit{transfer learning} yang sistematis:
 
 \begin{enumerate}[label=\arabic*., leftmargin=*, nosep]
-\item \textbf{Ekstraksi Fitur Pra-latih:} Model yang telah dilatih pada dataset penelitian dapat digunakan sebagai ekstraktor fitur untuk domain target baru. Bobot lapisan konvolusi dalam \textit{generator} dan \textit{recognizer} mengandung representasi fitur umum yang dapat ditransfer.
+\item Ekstraksi Fitur Pra-latih: Model yang telah dilatih pada dataset penelitian dapat digunakan sebagai ekstraktor fitur untuk domain target baru. Bobot lapisan konvolusi dalam \textit{generator} dan \textit{recognizer} mengandung representasi fitur umum yang dapat ditransfer.
 
-\item \textbf{Penyetelan Halus Bertahap (\textit{Fine-tuning}):} Metodologi penyetelan halus berlapis memungkinkan adaptasi bertahap ke domain target. Lapisan awal (fitur \textit{low-level}) dibekukan, sementara lapisan akhir (fitur \textit{high-level}) disesuaikan dengan data domain baru.
+\item Penyetelan Halus Bertahap (\textit{Fine-tuning):} Metodologi penyetelan halus berlapis memungkinkan adaptasi bertahap ke domain target. Lapisan awal (fitur \textit{low-level}) dibekukan, sementara lapisan akhir (fitur \textit{high-level}) disesuaikan dengan data domain baru.
 
-\item \textbf{Adaptasi Domain:} Teknik adaptasi domain diterapkan untuk menangani pergeseran distribusi data (\textit{domain shift}) antara domain sumber dan target. Ini mencakup strategi regularisasi dan augmentasi data yang disesuaikan dengan karakteristik domain target.
+\item Adaptasi Domain: Teknik adaptasi domain diterapkan untuk menangani pergeseran distribusi data (\textit{domain shift}) antara domain sumber dan target. Ini mencakup strategi regularisasi dan augmentasi data yang disesuaikan dengan karakteristik domain target.
 
-\item \textbf{Pelatihan Multi-Domain:} Untuk meningkatkan generalisasi, \textit{framework} mendukung pelatihan simultan pada beberapa domain dokumen, memungkinkan model belajar representasi fitur yang lebih umum dan kokoh terhadap variasi.
+\item Pelatihan Multi-Domain: Untuk meningkatkan generalisasi, \textit{framework} mendukung pelatihan simultan pada beberapa domain dokumen, memungkinkan model belajar representasi fitur yang lebih umum dan kokoh terhadap variasi.
 \end{enumerate}
 
 \paragraph{Metodologi Validasi Generalisasi:}
 Untuk memvalidasi kemampuan generalisasi \textit{framework}, diterapkan metodologi evaluasi sistematis:
 
 \begin{itemize}[leftmargin=*, nosep]
-\item \textbf{Evaluasi Lintas Domain:} Pengujian model pada domain dokumen yang tidak terlihat selama pelatihan untuk mengukur kemampuan generalisasi. Ini mencakup dokumen dengan periode waktu berbeda, gaya tulisan berbeda, dan jenis degradasi yang bervariasi.
+\item Evaluasi Lintas Domain: Pengujian model pada domain dokumen yang tidak terlihat selama pelatihan untuk mengukur kemampuan generalisasi. Ini mencakup dokumen dengan periode waktu berbeda, gaya tulisan berbeda, dan jenis degradasi yang bervariasi.
 
-\item \textbf{Analisis Robustitas:} Evaluasi performa terhadap variasi degradasi yang tidak ada dalam data pelatihan untuk menguji ketahanan model terhadap kondisi yang tidak terduga.
+\item Analisis Robustitas: Evaluasi performa terhadap variasi degradasi yang tidak ada dalam data pelatihan untuk menguji ketahanan model terhadap kondisi yang tidak terduga.
 
-\item \textbf{Uji Skalabilitas:} Validasi kemampuan \textit{framework} untuk menangani dokumen dengan ukuran dan kompleksitas yang bervariasi, dari dokumen sederhana hingga dokumen dengan layout kompleks.
+\item Uji Skalabilitas: Validasi kemampuan \textit{framework} untuk menangani dokumen dengan ukuran dan kompleksitas yang bervariasi, dari dokumen sederhana hingga dokumen dengan layout kompleks.
 \end{itemize}
 
 \paragraph{Strategi Dokumentasi untuk Reproduktifitas:}
 Sebagai bagian dari komitmen terhadap transparansi ilmiah dan reproduktifitas, penelitian ini menerapkan strategi dokumentasi komprehensif:
 
 \begin{itemize}[leftmargin=*, nosep]
-\item \textbf{Dokumentasi Arsitektural:} Spesifikasi lengkap arsitektur model, termasuk dimensi lapisan, fungsi aktivasi, dan skema koneksi untuk memfasilitasi reimplementasi oleh peneliti lain.
+\item Dokumentasi Arsitektural: Spesifikasi lengkap arsitektur model, termasuk dimensi lapisan, fungsi aktivasi, dan skema koneksi untuk memfasilitasi reimplementasi oleh peneliti lain.
 
-\item \textbf{Panduan Eksperimen:} Dokumentasi prosedur eksperimental yang detail, termasuk konfigurasi \textit{hyperparameter}, strategi pelatihan, dan kriteria evaluasi untuk memungkinkan replikasi hasil.
+\item Panduan Eksperimen: Dokumentasi prosedur eksperimental yang detail, termasuk konfigurasi \textit{hyperparameter}, strategi pelatihan, dan kriteria evaluasi untuk memungkinkan replikasi hasil.
 
-\item \textbf{Praktik Terbaik (\textit{Best Practices}):} Kompilasi pembelajaran dan rekomendasi dari proses pengembangan untuk memandu peneliti lain dalam adaptasi dan pengembangan \textit{framework}.
+\item Praktik Terbaik (\textit{Best Practices):} Kompilasi pembelajaran dan rekomendasi dari proses pengembangan untuk memandu peneliti lain dalam adaptasi dan pengembangan \textit{framework}.
 
-\item \textbf{Penanganan Kasus Khusus:} Dokumentasi masalah umum yang ditemui selama pengembangan beserta solusinya untuk membantu peneliti menghindari kesalahan yang sama dan mempercepat adopsi.
+\item Penanganan Kasus Khusus: Dokumentasi masalah umum yang ditemui selama pengembangan beserta solusinya untuk membantu peneliti menghindari kesalahan yang sama dan mempercepat adopsi.
 \end{itemize}
 
 \paragraph{Kontribusi terhadap Komunitas Penelitian:}
 Metodologi reusabilitas ini dirancang untuk memaksimalkan dampak penelitian terhadap komunitas ilmiah dan praktisi melalui:
 
 \begin{itemize}[leftmargin=*, nosep]
-\item \textbf{Kode Sumber Terbuka:} Publikasi implementasi lengkap dengan lisensi \textit{open-source} untuk memfasilitasi adopsi, verifikasi, dan pengembangan lebih lanjut oleh komunitas penelitian.
+\item Kode Sumber Terbuka: Publikasi implementasi lengkap dengan lisensi \textit{open-source} untuk memfasilitasi adopsi, verifikasi, dan pengembangan lebih lanjut oleh komunitas penelitian.
 
-\item \textbf{Model Pra-latih:} Penyediaan bobot model yang telah dilatih untuk memungkinkan peneliti memulai dari \textit{baseline} yang kuat tanpa perlu melatih dari awal, menghemat sumber daya komputasi.
+\item Model Pra-latih: Penyediaan bobot model yang telah dilatih untuk memungkinkan peneliti memulai dari \textit{baseline} yang kuat tanpa perlu melatih dari awal, menghemat sumber daya komputasi.
 
-\item \textbf{Dataset dan \textit{Benchmark}:} Berbagi \textit{dataset} sintetis dan protokol evaluasi standar untuk memfasilitasi perbandingan yang adil dengan metode masa depan dan mendorong kemajuan bidang penelitian.
+\item Dataset dan \textit{Benchmark:} Berbagi \textit{dataset} sintetis dan protokol evaluasi standar untuk memfasilitasi perbandingan yang adil dengan metode masa depan dan mendorong kemajuan bidang penelitian.
 \end{itemize}
 
 % \subsection{Kesimpulan Bab}
@@ -1508,15 +1539,15 @@ Metodologi reusabilitas ini dirancang untuk memaksimalkan dampak penelitian terh
 
 % Metodologi yang dirancang dalam penelitian ini bertujuan untuk memastikan:
 % \begin{enumerate}[leftmargin=*, nosep]
-% \item \textbf{Reproduktifitas:} Semua eksperimen terlacak dengan MLflow, kode tersimpan dalam repositori Git dengan \textit{commit hash} yang terdokumentasi, memungkinkan peneliti lain untuk mereplikasi hasil penelitian secara akurat.
+% \item Reproduktifitas: Semua eksperimen terlacak dengan MLflow, kode tersimpan dalam repositori Git dengan \textit{commit hash} yang terdokumentasi, memungkinkan peneliti lain untuk mereplikasi hasil penelitian secara akurat.
 
-% \item \textbf{Transparansi:} Setiap keputusan desain dan konfigurasi didokumentasikan dengan justifikasi berbasis data empiris, memastikan proses penelitian dapat diaudit dan diverifikasi oleh komunitas ilmiah.
+% \item Transparansi: Setiap keputusan desain dan konfigurasi didokumentasikan dengan justifikasi berbasis data empiris, memastikan proses penelitian dapat diaudit dan diverifikasi oleh komunitas ilmiah.
 
-% \item \textbf{Ketelitian:} Evaluasi dilakukan menggunakan metrik standar industri (PSNR, SSIM, CER, WER) dan pengujian signifikansi statistik yang ketat untuk memvalidasi hipotesis penelitian secara objektif.
+% \item Ketelitian: Evaluasi dilakukan menggunakan metrik standar industri (PSNR, SSIM, CER, WER) dan pengujian signifikansi statistik yang ketat untuk memvalidasi hipotesis penelitian secara objektif.
 
-% \item \textbf{Generalisasi:} Metodologi reusabilitas dan validasi lintas domain memastikan \textit{framework} dapat diadaptasi untuk berbagai jenis dokumen historis dan skenario aplikasi yang beragam.
+% \item Generalisasi: Metodologi reusabilitas dan validasi lintas domain memastikan \textit{framework} dapat diadaptasi untuk berbagai jenis dokumen historis dan skenario aplikasi yang beragam.
 
-% \item \textbf{Dampak:} Hasil penelitian dikomunikasikan melalui publikasi ilmiah di \textit{venue} bereputasi tinggi dan berbagi kode sumber terbuka untuk manfaat komunitas penelitian dan praktisi di bidang restorasi dokumen.
+% \item Dampak: Hasil penelitian dikomunikasikan melalui publikasi ilmiah di \textit{venue} bereputasi tinggi dan berbagi kode sumber terbuka untuk manfaat komunitas penelitian dan praktisi di bidang restorasi dokumen.
 % \end{enumerate}
 
 % Bab berikutnya akan menguraikan analisis kebutuhan dan desain teknis \textit{framework} secara mendetail, termasuk spesifikasi arsitektur komponen, algoritma pelatihan, strategi optimasi, dan implementasi \textit{pipeline} pengolahan data yang telah dirancang berdasarkan metodologi yang diuraikan dalam bab ini.

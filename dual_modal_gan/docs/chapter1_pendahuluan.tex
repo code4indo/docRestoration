@@ -115,7 +115,7 @@ Pendekatan untuk mengatasi masalah degradasi dokumen telah berkembang dari tekni
 GAN memanfaatkan dua jaringan neural yang saling berkompetisi: \textit{generator} yang mencoba menghasilkan citra dokumen yang lebih bersih, dan \textit{discriminator} yang menilai keaslian citra tersebut. Proses adversarial ini memungkinkan GAN untuk mempelajari pola degradasi yang kompleks dan menghasilkan hasil restorasi yang lebih baik secara visual. Namun, evaluasi mendalam terhadap berbagai arsitektur GAN mengungkap pola yang menarik.
 
 \vspace{0.8em}
-Penelitian terkini menunjukkan bahwa performa metode-metode tersebut sangat bergantung pada bagaimana keterbacaan teks dievaluasi. DE-GAN, misalnya, melaporkan penurunan CER yang signifikan dari 0.37 menjadi 0.01 pada eksperimen tertentu, namun evaluasi keterbacaan ini dilakukan secara pasca-pelatihan, bukan sebagai bagian dari fungsi objektif (Souibgui \& Kessentini, 2021). Sebaliknya, DocEnTr mencapai PSNR tertinggi (35.2 dB) dengan arsitektur transformer-only, namun pendekatan ini tanpa komponen adversarial cenderung menghasilkan keluaran yang terlalu halus \textit{(over-smoothed)} yang dapat menghilangkan detail tekstur penting (Souibgui, Biswas, Khamekhem Jemni, Kessentini, Fornés, Lladós, \& Pal, 2022).
+Penelitian terkini menunjukkan bahwa performa metode-metode tersebut sangat bergantung pada bagaimana keterbacaan teks dievaluasi. DE-GAN, misalnya, melaporkan penurunan CER yang signifikan dari 0.37 menjadi 0.01 pada eksperimen tertentu, namun evaluasi keterbacaan ini dilakukan secara pasca-pelatihan, bukan sebagai bagian dari fungsi objektif (Souibgui \& Kessentini, 2021). Sebaliknya, DocEnTr mencapai PSNR tertinggi (22.29 dB) dengan arsitektur transformer-only, namun pendekatan ini tanpa komponen adversarial cenderung menghasilkan keluaran yang terlalu halus \textit{(over-smoothed)} yang dapat menghilangkan detail tekstur penting (Souibgui, Biswas, Khamekhem Jemni, Kessentini, Fornés, Lladós, \& Pal, 2022).
 
 \vspace{0.8em}
 Pola ini mengindikasikan adanya tarik-ulur \textit{(trade-off)}  fundamental antara optimasi visual dan keterbacaan teks. Metode yang difokuskan pada metrik visual seperti PSNR seringkali mengabaikan karakteristik spesifik yang penting untuk HTR. Diskriminator pada arsitektur GAN umumnya dirancang untuk evaluasi visual semata, tidak mempertimbangkan apakah struktur karakter tetap dapat dibaca oleh sistem HTR. Akibatnya, peningkatan kualitas visual tidak selalu berbanding lurus dengan peningkatan akurasi pengenalan teks.
@@ -142,16 +142,16 @@ Berdasarkan analisis latar belakang, penelitian ini mengidentifikasi empat masal
 
 \begin{enumerate}[label=\arabic*., leftmargin=0.5cm]
     \item Kesenjangan Fundamental antara Optimasi Visual dan Keterbacaan Teks \\
-    Metode State-of-the-art seperti DE-GAN, Text-DIAE, dan DocEnTr mengoptimalkan metrik visual (PSNR/SSIM) tanpa integrasi eksplisit dengan evaluasi HTR. DE-GAN menunjukkan penurunan CER dari 0.37 menjadi 0.01 namun evaluasi hanya dilakukan pasca-pelatihan. DocEnTr mencapai PSNR tertinggi (35.2 dB) namun MSE loss tidak membedakan noise yang mengganggu HTR dengan noise tidak signifikan. Terbukti bahwa peningkatan visual tidak selalu berkorelasi dengan penurunan CER.
+    Metode State-of-the-art seperti DE-GAN, Text-DIAE, dan DocEnTr mengoptimalkan metrik visual (PSNR/SSIM) tanpa integrasi eksplisit dengan evaluasi HTR. DE-GAN menunjukkan penurunan CER dari 0.37 menjadi 0.01 namun evaluasi hanya dilakukan pasca-pelatihan. DocEnTr mencapai PSNR tertinggi (22.29 dB) namun MSE loss tidak membedakan noise yang mengganggu HTR dengan noise tidak signifikan. Terbukti bahwa peningkatan visual tidak selalu berkorelasi dengan penurunan CER.
 
     \item Keterbatasan Diskriminator Single Modal dan Arsitektur Transformer-Only \\
     Metode berbasis GAN (DE-GAN, ERB-MultiTask) hanya menggunakan diskriminator visual yang tidak mempertimbangkan koherensi teks. Sementara DocEnTr dengan transformer-only menghilangkan komponen adversarial sama sekali, menyebabkan output yang over-smoothed. Text-DIAE tanpa adversarial training menghasilkan tekstur kurang realistis. Diperlukan sebuah arsitektur yang menggabungkan keunggulan CNN dalam mengekstraksi fitur lokal dengan kemampuan transformer dalam memahami konteks global.
 
     \item Kurangnya Integrasi HTR Eksplisit dalam Siklus Pelatihan \\
-    Meskipun ERB-MultiTask sebagai penelitian terdahulu mengintegrasikan GAN dengan CRNN, integrasi bersifat parsial dan evaluasi HTR terpisah dari training loop. Text-DIAE berfokus pada invariansi terhadap degradasi, bukan pada keterbacaan teks secara eksplisit. Hingga saat ini, belum ada metode yang mengintegrasikan CTC loss secara langsung ke dalam fungsi objektif Generator untuk pengoptimalan keterbacaan teks secara end-to-end.
+    Meskipun pendekatan sebelumnya seperti ERB-MultiTaskAdversarial telah mengintegrasikan sinyal HTR (CTC loss) ke dalam fungsi objektif generator, pendekatan tersebut masih mengandalkan diskriminator yang murni visual. Kelemahan dari arsitektur ini adalah diskriminator tidak dapat menilai apakah teks yang dihasilkan koheren atau masuk akal, ia hanya menilai realisme visual citra.
 
-    \item Kompleksitas Data dan Kurangnya Framework Evaluasi Komprehensif \\
-    CycleGAN menawarkan solusi pembelajaran tidak berpasangan namun mengalami mode collapse dan ketidakstabilan. Alur proses degradasi sintetis sering tidak representatif terhadap degradasi alami dokumen historis. Benchmark standar (DIBCO) hanya mengevaluasi metrik visual tanpa metrik keterbacaan (CER/WER). Tidak ada standar evaluasi yang menggabungkan kualitas visual dan performa HTR secara terpadu.
+    % \item Kompleksitas Data dan Kurangnya Framework Evaluasi Komprehensif \\
+    % CycleGAN menawarkan solusi pembelajaran tidak berpasangan namun mengalami mode collapse dan ketidakstabilan. Alur proses degradasi sintetis sering tidak representatif terhadap degradasi alami dokumen historis. Benchmark standar (DIBCO) hanya mengevaluasi metrik visual tanpa metrik keterbacaan (CER/WER). Tidak ada standar evaluasi yang menggabungkan kualitas visual dan performa HTR secara terpadu.
 \end{enumerate}
 
 \vspace{0pt}
@@ -170,16 +170,14 @@ Berdasarkan identifikasi masalah di atas, penelitian ini merumuskan pertanyaan p
 
 \begin{enumerate}[label=\arabic*., leftmargin=0.5cm]
     \item \textbf{Arsitektur Dual-Modal:} \\
-    Bagaimana merancang arsitektur Diskriminator Dual-Modal yang dapat mengevaluasi koherensi antara konten visual dan representasi tekstual secara simultan untuk mengatasi keterbatasan diskriminator visual-only pada metode yang sudah ada?.
+    Bagaimana merancang arsitektur Diskriminator Dual-Modal yang dapat mengevaluasi koherensi antara konten visual dan representasi tekstual secara simultan untuk mengatasi keterbatasan diskriminator visual-only pada metode yang sudah ada.
 
     \item \textbf{Integrasi HTR Eksplisit:} \\
-    Bagaimana mengintegrasikan sinyal CTC loss dari model HTR ke dalam fungsi objektif Generator untuk optimasi end-to-end keterbacaan teks tanpa menyebabkan ketidakstabilan training?.
+    Bagaimana mengintegrasikan sinyal CTC loss dari model HTR ke dalam fungsi objektif Generator untuk optimasi end-to-end keterbacaan teks tanpa menyebabkan ketidakstabilan training.
 
     \item \textbf{Optimasi Multi-Objective:} \\
-    Bagaimana menyeimbangkan bobot antara komponen loss (adversarial, reconstruction, recognition) untuk mencapai trade-off optimal antara kualitas visual (PSNR/SSIM) dan keterbacaan teks (CER/WER)?.
+    Bagaimana menyeimbangkan bobot antara komponen loss (adversarial, reconstruction, recognition) untuk mencapai trade-off optimal antara kualitas visual (PSNR/SSIM) dan keterbacaan teks (CER/WER).
 
-    \item \textbf{Evaluasi Komprehensif:} \\
-    Apakah framework yang diusulkan dapat menghasilkan peningkatan signifikan dalam metrik keterbacaan (minimal 25\% penurunan CER) dibandingkan dengan metode state-of-the-art (DE-GAN, DocEnTr, Text-DIAE) sambil mempertahankan kualitas visual (PSNR > 35 dB, SSIM > 0.95)?.
 \end{enumerate}
 \vspace{0.8em}
 \subsection{Tujuan Penelitian}
@@ -190,7 +188,7 @@ Tujuan utama penelitian ini adalah mengembangkan dan mengevaluasi framework rest
 \newpage
 \textbf{Tujuan Umum:}
 
-Merancang, mengimplementasikan, dan mengevaluasi framework GAN dengan dual-objective: (1) meningkatkan kualitas visual yang diukur dengan PSNR > 35 dB dan SSIM > 0.95, dan (2) meningkatkan keterbacaan teks dengan target penurunan CER minimal 25\% dibandingkan metode state-of-the-art.
+Merancang, mengimplementasikan, dan mengevaluasi framework GAN dengan dual-objective: (1) meningkatkan kualitas visual yang diukur dengan PSNR > 30 dB dan SSIM > 0.95, dan (2) meningkatkan keterbacaan teks dengan target penurunan CER minimal 25\% dibandingkan metode state-of-the-art.
 
 \vspace{0.8em}
 \textbf{Tujuan Khusus:}
@@ -231,6 +229,7 @@ Untuk memastikan fokus dan ketercapaian tujuan penelitian, ditetapkan ruang ling
     Penelitian ini berasumsi bahwa degradasi sintetis dapat mewakili kondisi nyata dan model HTR yang dibekukan sudah optimal pada data bersih. Selain itu, peningkatan metrik CER/WER dianggap berkorelasi dengan fungsionalitas transkripsi praktis, dan arsitektur dual-modal dinilai cukup untuk menangkap koherensi visual-tekstual.
 \end{enumerate}
 
+% ===================================Hipotesis Akhir=================================
 \vspace{0.8em}
 \subsection{Hipotesis Penelitian}
 \label{subsec:hipotesis}
@@ -238,31 +237,36 @@ Untuk memastikan fokus dan ketercapaian tujuan penelitian, ditetapkan ruang ling
 Berdasarkan analisis masalah dan kajian literatur, penelitian ini merumuskan hipotesis sebagai berikut:
 
 \vspace{0.5em}
-\textbf{Hipotesis Nol (H$_0$):}
+Penggunaan framework restorasi dokumen berbasis GAN dengan Diskriminator Dual-Modal dan optimasi loss function berorientasi HTR akan secara signifikan meningkatkan keterbacaan teks (penurunan nilai CER/WER) sekaligus menjaga kualitas visual (nilai PSNR/SSIM) lebih baik dibandingkan dengan metode state-of-the-art yang ada
 
-Framework restorasi dokumen berbasis GAN dengan Diskriminator Dual-Modal dan optimasi \textit{loss function} berorientasi HTR \textbf{tidak menghasilkan} peningkatan signifikan dalam metrik keterbacaan (CER/WER) dibandingkan dengan metode state-of-the-art (DE-GAN, DocEnTr, Text-DIAE).
 
-Secara matematis:
-\begin{equation}
-    \text{CER}_{\text{proposed}} \geq \text{CER}_{\text{SOTA}} \quad \text{dan} \quad \text{WER}_{\text{proposed}} \geq \text{WER}_{\text{SOTA}}
-\end{equation}
+% \textbf{Hipotesis Nol (H$_0$):}
 
-\vspace{0.5em}
-\textbf{Hipotesis Alternatif (H$_1$):}
+% Framework restorasi dokumen berbasis GAN dengan Diskriminator Dual-Modal dan optimasi \textit{loss function} berorientasi HTR \textbf{tidak menghasilkan} peningkatan signifikan dalam metrik keterbacaan (CER/WER) dibandingkan dengan metode state-of-the-art (DE-GAN, DocEnTr, Text-DIAE).
 
-Framework restorasi dokumen berbasis GAN dengan Diskriminator Dual-Modal dan optimasi \textit{loss function} berorientasi HTR \textbf{menghasilkan} penurunan signifikan dalam metrik keterbacaan (minimal 25\% CER dan WER) dibandingkan dengan metode state-of-the-art (DE-GAN, DocEnTr, Text-DIAE), sambil mempertahankan kualitas visual (PSNR $>$ 35 dB, SSIM $>$ 0.95).
+% Secara matematis:
+% \begin{equation}
+%     \text{CER}_{\text{proposed}} \geq \text{CER}_{\text{SOTA}} \quad \text{dan} \quad \text{WER}_{\text{proposed}} \geq \text{WER}_{\text{SOTA}}
+% \end{equation}
 
-Secara matematis:
-\begin{equation}
-    \text{CER}_{\text{proposed}} < 0.75 \times \text{CER}_{\text{SOTA}} \quad \text{dan} \quad \text{WER}_{\text{proposed}} < 0.75 \times \text{WER}_{\text{SOTA}}
-\end{equation}
-\begin{equation}
-    \text{PSNR}_{\text{proposed}} > 35 \text{ dB} \quad \text{dan} \quad \text{SSIM}_{\text{proposed}} > 0.95
-\end{equation}
+% \vspace{0.5em}
+% \textbf{Hipotesis Alternatif (H$_1$):}
 
-\vspace{0.5em}
-\textbf{Kriteria Pengujian Hipotesis:}
-Pengujian hipotesis dilakukan dengan paired t-test (tingkat signifikansi $\alpha = 0.05$) untuk membandingkan CER/WER antara framework yang diusulkan dan metode state-of-the-art, serta analisis ukuran efek menggunakan Cohen's d.
+% Framework restorasi dokumen berbasis GAN dengan Diskriminator Dual-Modal dan optimasi \textit{loss function} berorientasi HTR \textbf{menghasilkan} penurunan signifikan dalam metrik keterbacaan (minimal 25\% CER dan WER) dibandingkan dengan metode state-of-the-art (DE-GAN, DocEnTr, Text-DIAE), sambil mempertahankan kualitas visual (PSNR $>$ 35 dB, SSIM $>$ 0.95).
+
+% Secara matematis:
+% \begin{equation}
+%     \text{CER}_{\text{proposed}} < 0.75 \times \text{CER}_{\text{SOTA}} \quad \text{dan} \quad \text{WER}_{\text{proposed}} < 0.75 \times \text{WER}_{\text{SOTA}}
+% \end{equation}
+% \begin{equation}
+%     \text{PSNR}_{\text{proposed}} > 35 \text{ dB} \quad \text{dan} \quad \text{SSIM}_{\text{proposed}} > 0.95
+% \end{equation}
+
+% \vspace{0.5em}
+% \textbf{Kriteria Pengujian Hipotesis:}
+% Pengujian hipotesis dilakukan dengan paired t-test (tingkat signifikansi $\alpha = 0.05$) untuk membandingkan CER/WER antara framework yang diusulkan dan metode state-of-the-art, serta analisis ukuran efek menggunakan Cohen's d.
+
+% ===================================Hipotesis Akhir=================================
 
 \vspace{0.8em}
 \subsection{Kebaruan Penelitian}
@@ -271,10 +275,10 @@ Pengujian hipotesis dilakukan dengan paired t-test (tingkat signifikansi $\alpha
 \textbf{Kontribusi Teoritis:}
 \begin{enumerate}[label=\arabic*., leftmargin=1cm]
     \item Rancangan Arsitektur Diskriminator multi modal: \
-    Memperkenalkan sebuah arsitektur diskriminator baru yang mampu mengevaluasi koherensi visual dan tekstual secara simultan. Arsitektur ini berbeda dari diskriminator unimodal pada DE-GAN atau diskriminator yang hanya berbasis visual pada GAN konvensional.
+    Memperkenalkan sebuah arsitektur diskriminator baru yang mampu mengevaluasi koherensi visual dan tekstual secara simultan. Arsitektur ini berbeda dari diskriminator unimodal atau diskriminator yang hanya berbasis visual pada GAN konvensional.
 
-    \item Kerangka Kerja Pengoptimalan Objektif Ganda: \
-    Mengembangkan metodologi untuk menyeimbangkan dua objektif yang berpotensi bertentangan: fidelitas visual (PSNR/SSIM) dan keterbacaan teks (CER/WER) melalui fungsi kerugian multi-komponen berbobot dengan target terukur.
+    \item Mengembangkan metode pelatihan untuk menyeimbangkan dua tujuan utama: \
+     Kualitas visual gambar dan kemudahan teks untuk dibaca oleh komputer. Ini diperoleh dengan menggabungkan beberapa jenis loss yang diberi bobot, di mana sebagian untuk memperbaiki kesalahan visual dan sebagian lagi untuk memperbaiki kesalahan pengenalan teks.
 
     % \item \textbf{Strategi Frozen HTR sebagai Objective Evaluator:} \\
     % Memvalidasi pendekatan menggunakan pre-trained frozen HTR model sebagai komponen evaluator yang memberikan consistent supervision signal, berbeda dengan pendekatan end to end joint training yang dapat menyebabkan co adaptation dan unstable training.
@@ -284,35 +288,33 @@ Pengujian hipotesis dilakukan dengan paired t-test (tingkat signifikansi $\alpha
 \end{enumerate}
 
 \vspace{0.5em}
-\textbf{Kontribusi Metodologis:}
-\begin{enumerate}[label=\arabic*., leftmargin=1cm]
-    \item Pipeline Degradasi Sintetis Realistis: \\
-    Mengembangkan pipeline augmentasi yang  mengekstraksi tekstur latar belakang dari dokumen historis riil dan menerapkan degradasi yang bervariasi secara probabilistik untuk menghasilkan data berpasangan sintetis yang representatif.
+% \textbf{Kontribusi Metodologis:}
+% \begin{enumerate}[label=\arabic*., leftmargin=1cm]
+%     \item Pipeline Degradasi Sintetis Realistis: \\
+%     Mengembangkan pipeline augmentasi yang  mengekstraksi tekstur latar belakang dari dokumen historis riil dan menerapkan degradasi yang bervariasi secara probabilistik untuk menghasilkan data berpasangan sintetis yang representatif.
 
-    \item Kebijakan Presisi untuk Kestabilan Numerik: \\
-    Mendokumentasikan pentingnya pelatihan FP32 murni  (tanpa mixed precision FP16) untuk stabilitas komputasi CTC loss, dan  mekanisme gradient clipping dan loss clipping yang optimal.
+%     \item Kebijakan Presisi untuk Kestabilan Numerik: \\
+%     Mendokumentasikan pentingnya pelatihan FP32 murni  (tanpa mixed precision FP16) untuk stabilitas komputasi CTC loss, dan  mekanisme gradient clipping dan loss clipping yang optimal.
 
-    \item Discriminator Mode Analysis: \\
-    Memberikan analisis perbandingan antara mode prediksi (menggunakan prediksi HTR  untuk real pairs) vs mode ground truth mode (menggunakan true labels), dengan temuan bahwa ground truth mode memberikan training signal yang lebih stabil.
-\end{enumerate}
+% \end{enumerate}
 
 \newpage
 \textbf{Kontribusi Praktis:}
 \begin{enumerate}[label=\arabic*., leftmargin=1cm]
     \item Framework Open-Source: \\
-    Menyediakan implementasi lengkap yang dapat direproduksi dengan manajemen dependensi (Poetry), pelacakan eksperien (MLflow), dan dokumentasi untuk mendukung penelitian lanjutan dan adopsi praktis.
+    Menyediakan implementasi lengkap yang dapat direproduksi dengan manajemen dependensi (Poetry), pelacakan eksperimen (MLflow), dan dokumentasi untuk mendukung penelitian lanjutan.
 
     \item Solusi untuk Arsip Nasional: \\
     Memberikan perangkat praktis untuk mendukung program digitalisasi Arsip Nasional RI, memfasilitasi preservasi digital dan aksesibilitas informasi historis melalui transkripsi otomatis yang lebih akurat.
 
     \item Benchmark Dataset: \\
-    Menyediakan dataset terdegradasi sintetis dengan ground truth untuk mendukung penelitian komparatif dalam domain document restoration dan HTR.
+    Menyediakan dataset terdegradasi sintetis dengan ground truth untuk mendukung penelitian dalam domain restorasi dokumen dan HTR.
 \end{enumerate}
 
 \vspace{0.5em}
 \textbf{Perbedaan dengan Penelitian Sebelumnya:}
 \begin{itemize}[leftmargin=1cm, noitemsep]
-    \item ERB-MultiTaskAdversarial (2019): Penelitian awal yang mengintegrasikan GAN dengan CRNN namun menggunakan integrasi parsial dan evaluasi pasca-pelatihan, framework yang diusulkan mengintegrasikan HTR evaluation langsung dalam training loop dengan diskriminator dual-modal.
+    \item ERB-MultiTaskAdversarial (2019): Penelitian awal yang mengintegrasikan GAN dengan CRNN namun menggunakan integrasi parsial dan evaluasi pasca-pelatihan, framework yang diusulkan mengintegrasikan evaluasi HTR langsung dalam training loop dengan diskriminator dual-modal.
 
     \item DE-GAN (2021): Mengoptimalkan metrik visual saja tanpa evaluasi HTR terintegrasi, framework yang diusulkan mengintegrasikan CTC loss langsung dalam fungsi objektif generator.
 
@@ -320,7 +322,7 @@ Pengujian hipotesis dilakukan dengan paired t-test (tingkat signifikansi $\alpha
 
     \item DocEnTr (2022): Transformer-only tanpa komponen adversarial yang cenderung menghasilkan keluaran terlalu halus, framework yang diusulkan mempertahankan komponen adversarial untuk tekstur realistis.
 
-    \item \textbf{CycleGAN umum:} Tidak memiliki mekanisme untuk mempertahankan struktur teks, framework yang diusulkan secara eksplisit mengoptimalkan keterbacaan teks melalui CTC loss dan evaluasi koherensi teks.
+    % \item CycleGAN umum: Tidak memiliki mekanisme untuk mempertahankan struktur teks, framework yang diusulkan secara eksplisit mengoptimalkan keterbacaan teks melalui CTC loss dan evaluasi koherensi teks.
 \end{itemize}
 \newpage
 \subsection{Sistematika Penulisan}
@@ -331,12 +333,12 @@ Tesis ini disusun dalam enam bab dengan struktur sebagai berikut:
 \vspace{0.5em}
 \textbf{BAB I: Pendahuluan}
 
-Bab ini menyajikan pendahuluan  yang menjadi landasan bagi keseluruhan penelitian. Pembahasan diawali dengan pemaparan latar belakang mengenai urgensi pelestarian dokumen historis dan tantangan degradasi yang dihadapinya, serta menjelaskan keterbatasan metode restorasi yang ada saat ini. Berdasarkan permasalahan tersebut, dirumuskan masalah dan pertanyaan penelitian yang spesifik, yang menjadi acuan dalam penetapan tujuan dan ruang lingkup penelitian. Untuk menjawab tantangan tersebut, diajukan sebuah hipotesis yang akan diuji, serta diuraikan kebaruan dan kontribusi yang diharapkan dari penelitian ini. Sebagai penutup, bab ini menyajikan sistematika penulisan yang akan digunakan pada tesis ini.
+Bab ini menyajikan pendahuluan  yang menjadi landasan bagi keseluruhan penelitian. Pembahasan diawali dengan pemaparan latar belakang mengenai urgensi pelestarian dokumen historis dan tantangan degradasi yang dihadapi, serta menjelaskan keterbatasan metode restorasi yang ada saat ini. Berdasarkan permasalahan tersebut, dirumuskan masalah dan pertanyaan penelitian yang spesifik, yang menjadi acuan dalam penetapan tujuan dan ruang lingkup penelitian. Untuk menjawab tantangan tersebut, diajukan sebuah hipotesis yang akan diuji, serta diuraikan kebaruan dan kontribusi yang diharapkan dari penelitian ini. Diakhir bab, dijelaskan sistematika penulisan yang akan digunakan pada tesis ini.
 
 \vspace{0.5em}
 \textbf{BAB II: Tinjauan Pustaka}
 
-Bab ini menyajikan landasan teoretis dan tinjauan pustaka untuk membangun justifikasi penelitian. Kajian diawali dengan pembahasan teori fundamental (GAN, U-Net, HTR), kemudian menelusuri evolusi metode restorasi dokumen. Dari analisis  terhadap metode-metode tersebut beserta metrik evaluasinya, diidentifikasi celah penelitian yang signifikan: belum adanya mekanisme restorasi yang secara eksplisit menjaga keterbacaan teks melalui HTR-aware discriminator.
+Bab ini menyajikan landasan teoretis dan tinjauan pustaka untuk membangun justifikasi penelitian. Kajian diawali dengan pembahasan teori fundamental (GAN, U-Net, HTR), kemudian menelusuri evolusi metode restorasi dokumen. Dari analisis  terhadap metode-metode tersebut beserta metrik evaluasinya, diidentifikasi celah penelitian, yaitu: belum adanya mekanisme restorasi yang secara eksplisit menjaga keterbacaan teks melalui HTR-aware discriminator.
 
 \vspace{0.5em}
 \textbf{BAB III: Metodologi Penelitian}
@@ -351,12 +353,12 @@ Bab ini menyajikan hasil analisis dan implementasi teknis dari framework yang di
 \vspace{0.5em}
 \textbf{BAB V: Hasil dan Pembahasan}
 
-Setelah framework dirancang dan diimplementasikan pada bab sebelumnya, bab ini berfokus pada evaluasi eksperimental untuk mengukur kinerja dan efektivitasnya. Kinerja model dievaluasi secara komprehensif, diawali dengan analisis kuantitatif menggunakan metrik standar industri (PSNR, SSIM, CER, WER) yang kemudian diperkuat oleh analisis kualitatif melalui visualisasi hasil restorasi. Untuk memvalidasi keunggulan framework ini, dilakukan analisis komparatif terhadap beberapa metode state-of-the-art. Selain itu, studi ablasi juga disajikan untuk menunjukkan kontribusi signifikan dari setiap komponen yang diusulkan dalam arsitektur. Sebagai penutup, dilakukan pengujian hipotesis statistik untuk menjawab rumusan masalah penelitian secara formal berdasarkan data hasil eksperimen
+Setelah framework dirancang dan diimplementasikan pada bab sebelumnya, bab ini berfokus pada evaluasi eksperimental untuk mengukur kinerja dan efektivitasnya. Kinerja model dievaluasi secara komprehensif, diawali dengan analisis kuantitatif menggunakan metrik standar (PSNR, SSIM, CER, WER) yang kemudian diperkuat oleh analisis kualitatif melalui visualisasi hasil restorasi. Untuk memvalidasi keunggulan framework ini, dilakukan analisis komparatif terhadap beberapa metode state-of-the-art. Selain itu, studi ablasi juga diberikan untuk menunjukkan kontribusi signifikan dari setiap komponen yang diusulkan dalam arsitektur. Sebagai penutup, dilakukan pengujian hipotesis statistik untuk menjawab rumusan masalah penelitian secara formal berdasarkan data hasil eksperimen.
 
 \vspace{0.5em}
 \textbf{BAB VI: Kesimpulan dan Saran}
 
-Bab ini merupakan bagian penutup yang menyajikan sintesis dan refleksi atas keseluruhan rangkaian penelitian yang telah dilaksanakan. Pembahasan akan diawali dengan merangkum temuan-temuan utama yang diperoleh dari hasil analisis dan evaluasi. Berdasarkan temuan tersebut, akan dilakukan penilaian terhadap ketercapaian tujuan penelitian dan validasi hipotesis yang telah dirumuskan. Selanjutnya, akan diidentifikasi kontribusi signifikan dari penelitian ini, baik pada aspek teoretis (ilmiah) maupun implikasi praktisnya. Sebagai penutup, bab ini menyajikan rekomendasi yang konstruktif untuk pengembangan penelitian di masa depan serta saran untuk penerapan praktis.
+Bab ini merupakan bagian penutup yang menyajikan sintesis dan evaluasi atas keseluruhan rangkaian penelitian yang telah dilaksanakan. Pembahasan akan diawali dengan merangkum temuan-temuan utama yang diperoleh dari hasil analisis dan evaluasi. Berdasarkan temuan tersebut, akan dilakukan penilaian terhadap ketercapaian tujuan penelitian dan validasi hipotesis yang telah dirumuskan. Selanjutnya, akan diidentifikasi kontribusi signifikan dari penelitian ini, baik pada aspek teoretis (ilmiah) maupun implikasi praktisnya. Sebagai penutup, bab ini menyajikan rekomendasi yang konstruktif untuk pengembangan penelitian di masa depan serta saran untuk penerapan praktis.
 
 % ============================================================
 % CATATAN: DAFTAR PUSTAKA

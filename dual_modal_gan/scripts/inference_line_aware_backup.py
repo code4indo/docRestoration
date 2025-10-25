@@ -1,20 +1,21 @@
 #!/usr/bin/env python3
 """
-Single Line Inference with Optional EDSR Super-Resolution
-==========================================================
+Line-Aware Document Restoration with Tile-Based Processing
+===========================================================
 
-Simple inference script for single line images (128×1024).
-Supports optional EDSR super-resolution for high-resolution output.
+Inference script for documents of any size (single line or full page).
+Uses tile-based processing to maintain original dimensions and aspect ratio.
+Supports Lanczos4 upscaling (default 2x).
 
 Usage:
-    # Without SR
-    python inference_single_line_edsr.py --checkpoint_dir <path> --input <line.png> --output_dir <dir>
+    # Single line or full document (default 2x upscaling)
+    python inference_line_aware.py --checkpoint_dir <path> --input <img> --output_dir <dir>
     
-    # With SR (2x)
-    python inference_single_line_edsr.py --checkpoint_dir <path> --input <line.png> --output_dir <dir> --use_sr --sr_scale 2
+    # No upscaling (original size)
+    python inference_line_aware.py --checkpoint_dir <path> --input <img> --output_dir <dir> --sr_scale 1
     
-    # With SR (4x, efficient model)
-    python inference_single_line_edsr.py --checkpoint_dir <path> --input <line.png> --output_dir <dir> --use_sr --sr_scale 4 --sr_efficient
+    # 4x upscaling
+    python inference_line_aware.py --checkpoint_dir <path> --input <img> --output_dir <dir> --sr_scale 4
 """
 
 import os
@@ -89,15 +90,128 @@ def load_sr_model(scale: int = 2, use_efficient: bool = False):
     return model
 
 
-def preprocess_line(image: np.ndarray) -> np.ndarray:
-    """Preprocess line for generator input."""
-    # Ensure grayscale
-    if len(image.shape) == 3:
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+def preprocess_tile(tile: np.ndarray) -> np.ndarray:
+    """
+    Preprocess tile for generator input.
+    Tile is already 128×1024 from extract_tiles().
+    """
+    # Normalize to [0, 1]
+    tile = tile.astype(np.float32) / 255.0
     
-    # Ensure correct size (128, 1024)
-    if image.shape != (128, 1024):
-        image = cv2.resize(image, (1024, 128))
+    # Transpose (H, W) -> (W, H) for model
+    tile = tile.T
+    
+    # Add channel dimension (W, H, 1)
+    tile = tile[..., np.newaxis]
+    
+    # Normalize to [-1, 1] for tanh generator
+    tile = tile * 2.0 - 1.0
+    
+    return tile
+
+
+def extract_tiles(image: np.ndarray, tile_h=128, tile_w=1024, overlap=32):
+    """
+    Extract overlapping tiles from image.
+    
+    Args:
+        image: Input image (H, W) grayscale
+        tile_h: Tile height
+        tile_w: Tile width  
+        overlap: Overlap between tiles
+    
+    Returns:
+        List of dicts with 'tile', 'y', 'x', 'h', 'w'
+    """
+    h, w = image.shape
+    stride_h = tile_h - overlap
+    stride_w = tile_w - overlap
+    
+    tiles = []
+    y = 0
+    while y < h:
+        x = 0
+        while x < w:
+            # Extract tile
+            y_end = min(y + tile_h, h)
+            x_end = min(x + tile_w, w)
+            
+            tile = image[y:y_end, x:x_end]
+            
+            # Pad if needed
+            if tile.shape[0] < tile_h or tile.shape[1] < tile_w:
+                padded = np.ones((tile_h, tile_w), dtype=image.dtype) * 255
+                padded[:tile.shape[0], :tile.shape[1]] = tile
+                tile = padded
+            
+            tiles.append({
+                'tile': tile,
+                'y': y,
+                'x': x,
+                'h': y_end - y,
+                'w': x_end - x
+            })
+            
+            x += stride_w
+            if x >= w:
+                break
+        
+        y += stride_h
+        if y >= h:
+            break
+    
+    return tiles
+
+
+def reconstruct_from_tiles(tiles_data, original_shape, overlap=32):
+    """
+    Reconstruct image from overlapping tiles with alpha blending.
+    
+    Args:
+        tiles_data: List of dicts with 'restored', 'y', 'x', 'h', 'w'
+        original_shape: (H, W) of original image
+        overlap: Overlap used in tile extraction
+    
+    Returns:
+        Reconstructed image
+    """
+    h, w = original_shape
+    reconstructed = np.zeros((h, w), dtype=np.float32)
+    weights = np.zeros((h, w), dtype=np.float32)
+    
+    for tile_info in tiles_data:
+        restored = tile_info['restored']
+        y = tile_info['y']
+        x = tile_info['x']
+        tile_h = tile_info['h']
+        tile_w = tile_info['w']
+        
+        # Extract valid region (remove padding)
+        tile_valid = restored[:tile_h, :tile_w]
+        
+        # Create alpha blend weights (fade at edges)
+        alpha = np.ones((tile_h, tile_w), dtype=np.float32)
+        
+        if overlap > 0:
+            # Fade in from top
+            if y > 0:
+                fade = np.linspace(0, 1, overlap)
+                alpha[:overlap, :] *= fade[:, np.newaxis]
+            
+            # Fade in from left
+            if x > 0:
+                fade = np.linspace(0, 1, overlap)
+                alpha[:, :overlap] *= fade[np.newaxis, :]
+        
+        # Place tile with weighting
+        reconstructed[y:y+tile_h, x:x+tile_w] += tile_valid * alpha
+        weights[y:y+tile_h, x:x+tile_w] += alpha
+    
+    # Normalize by weights
+    mask = weights > 0
+    reconstructed[mask] /= weights[mask]
+    
+    return reconstructed.astype(np.uint8)
     
     # Normalize to [0, 1]
     image = image.astype(np.float32) / 255.0
@@ -131,29 +245,26 @@ def postprocess_line(output: np.ndarray) -> np.ndarray:
 
 
 def apply_super_resolution(restored_line: np.ndarray, sr_model, scale: int = 2) -> np.ndarray:
-    """Apply EDSR super-resolution to restored line."""
-    # Preprocess for EDSR (expects H, W)
-    line_prepared = preprocess_for_edsr(restored_line, normalize=True)
+    """
+    Apply super-resolution to restored line.
     
-    # EDSR expects (H=128, W=1024, C=1) - line_prepared is already (H, W, C)
-    # Add batch dimension
-    line_batch = np.expand_dims(line_prepared, axis=0)
+    NOTE: Since EDSR is untrained, we use high-quality Lanczos4 interpolation
+    which gives MUCH better results for document upscaling.
+    """
+    h, w = restored_line.shape
+    new_h = h * scale
+    new_w = w * scale
     
-    # Apply SR
-    sr_output = sr_model.predict(line_batch, verbose=0)
-    
-    # Remove batch dimension
-    sr_line = sr_output[0]
-    
-    # Postprocess
-    sr_line = postprocess_from_edsr(sr_line, denormalize=True)
+    # Use Lanczos4 - best quality for upscaling documents
+    # Better than untrained EDSR which produces noise/artifacts
+    sr_line = cv2.resize(restored_line, (new_w, new_h), interpolation=cv2.INTER_LANCZOS4)
     
     return sr_line
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Single Line Inference with Optional EDSR',
+        description='Line-Aware Document Restoration with Optional EDSR',
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
     
@@ -167,12 +278,14 @@ def main():
                        help='Output directory')
     parser.add_argument('--gpu_id', type=int, default=1,
                        help='GPU device ID (default: 1, -1 for CPU)')
+    parser.add_argument('--image_ext', type=str, default='.jpg',
+                       help='Image extension (for compatibility, not used)')
+    parser.add_argument('--sr_scale', type=int, default=2, choices=[1, 2, 4],
+                       help='Upscaling factor: 1=no upscaling, 2=2x (default), 4=4x - uses Lanczos4')
     parser.add_argument('--use_sr', action='store_true',
-                       help='Enable EDSR super-resolution')
-    parser.add_argument('--sr_scale', type=int, default=2, choices=[2, 4],
-                       help='SR upscaling factor (2x or 4x)')
+                       help='(Deprecated) SR is now always enabled via --sr_scale')
     parser.add_argument('--sr_efficient', action='store_true',
-                       help='Use lightweight EDSR for faster inference')
+                       help='(Deprecated) Using Lanczos4 by default')
     
     args = parser.parse_args()
     
@@ -192,17 +305,15 @@ def main():
     )
     
     logging.info("="*70)
-    logging.info("SINGLE LINE INFERENCE WITH OPTIONAL EDSR")
-    if args.use_sr:
-        logging.info(f"  + SUPER-RESOLUTION (EDSR {args.sr_scale}x)")
+    logging.info("LINE-AWARE DOCUMENT RESTORATION")
+    if args.sr_scale > 1:
+        logging.info(f"  + HIGH-QUALITY UPSCALING (Lanczos4 {args.sr_scale}x)")
     logging.info("="*70)
     logging.info(f"Checkpoint: {args.checkpoint_dir}/{args.checkpoint_name}")
     logging.info(f"Input: {args.input}")
     logging.info(f"Output: {args.output_dir}")
     logging.info(f"GPU: {args.gpu_id}")
-    if args.use_sr:
-        logging.info(f"SR Scale: {args.sr_scale}x")
-        logging.info(f"SR Model: {'Efficient' if args.sr_efficient else 'Baseline'}")
+    logging.info(f"Upscaling: {args.sr_scale}x (Lanczos4)")
     logging.info("")
     
     # Configure GPU
@@ -214,10 +325,9 @@ def main():
     
     # Load SR model if enabled
     sr_model = None
-    if args.use_sr:
-        sr_model = load_sr_model(scale=args.sr_scale, use_efficient=args.sr_efficient)
-    
-    # Load input image
+    # SR is always enabled via --sr_scale (default: 2)
+    # sr_scale=1 means no upscaling (original size)
+    sr_enabled = args.sr_scale > 1
     logging.info(f"Loading image: {args.input}")
     image = cv2.imread(args.input, cv2.IMREAD_GRAYSCALE)
     if image is None:
@@ -238,9 +348,15 @@ def main():
     
     # Apply SR if enabled
     if sr_model is not None:
-        logging.info(f"Applying EDSR super-resolution ({args.sr_scale}x)...")
+        logging.info(f"Applying high-quality upscaling (Lanczos4 {args.sr_scale}x)...")
         restored = apply_super_resolution(restored, sr_model, scale=args.sr_scale)
         logging.info(f"  SR output size: {restored.shape}")
+    
+    # Apply upscaling if sr_scale > 1
+    if sr_enabled:
+        logging.info(f"Applying high-quality upscaling (Lanczos4 {args.sr_scale}x)...")
+        restored = apply_super_resolution(restored, None, scale=args.sr_scale)
+        logging.info(f"  Upscaled output size: {restored.shape}")
     
     # Save results
     input_name = Path(args.input).stem
@@ -251,15 +367,17 @@ def main():
     logging.info(f"✓ Saved restored: {restored_path}")
     
     # Save side-by-side comparison
-    if args.use_sr:
+    if sr_enabled:
         # Upscale original for comparison
-        h_orig, w_orig = image.shape
-        h_new = h_orig * args.sr_scale
-        w_new = w_orig * args.sr_scale
-        image_upscaled = cv2.resize(image, (w_new, h_new), interpolation=cv2.INTER_CUBIC)
+        # Match restored output size for proper side-by-side display
+        h_restored, w_restored = restored.shape
+        image_upscaled = cv2.resize(image, (w_restored, h_restored), interpolation=cv2.INTER_CUBIC)
         comparison = np.hstack([image_upscaled, restored])
     else:
-        comparison = np.hstack([image, restored])
+        # Match sizes when no upscaling
+        h_restored, w_restored = restored.shape
+        image_resized = cv2.resize(image, (w_restored, h_restored), interpolation=cv2.INTER_CUBIC)
+        comparison = np.hstack([image_resized, restored])
     
     comparison_path = output_dir / f"{input_name}_comparison.png"
     cv2.imwrite(str(comparison_path), comparison)
@@ -272,10 +390,10 @@ def main():
         'input': str(args.input),
         'input_size': image.shape,
         'output_size': restored.shape,
-        'super_resolution': {
-            'enabled': args.use_sr,
-            'scale': args.sr_scale if args.use_sr else None,
-            'model': 'efficient' if args.sr_efficient else 'baseline' if args.use_sr else None
+        'upscaling': {
+            'enabled': sr_enabled,
+            'scale': args.sr_scale,
+            'method': 'Lanczos4'
         }
     }
     
