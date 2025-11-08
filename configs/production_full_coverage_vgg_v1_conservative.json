@@ -1,0 +1,80 @@
+{
+  "experiment_name": "production_full_coverage_vgg_v1_conservative",
+  "description": "PRODUCTION CONFIG (CONSERVATIVE) - Full Data Coverage + Minimal VGG. Strategy: (1) Keep batch_size=4 for stability, (2) Full coverage via 829 steps, (3) Lower VGG weight=2.0 to minimize risk, (4) 20 epochs (shorter than aggressive), (5) Safer alternative to aggressive v1",
+  
+  "_comment_strategy": "=== CONSERVATIVE PRODUCTION STRATEGY ===",
+  "_rationale": "Lower risk alternative: keep proven batch_size=4, add minimal VGG, full data coverage",
+  "_vs_aggressive": "Slower but safer - proven batch_size, lower VGG weight, fewer epochs",
+  
+  "_comment_data": "=== DATA CONFIGURATION ===",
+  "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/production_full_coverage_vgg_v1_conservative",
+  "sample_dir": "dual_modal_gan/outputs/samples_production_full_coverage_vgg_v1_conservative",
+  
+  "resume": false,
+  "no_restore": true,
+  
+  "_comment_model": "=== MODEL ARCHITECTURE ===",
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+  "discriminator_mode": "ground_truth",
+  "recognizer_trainable": false,
+  
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 512,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.1
+  },
+  
+  "text_lstm_units": 512,
+  
+  "_comment_training": "=== TRAINING CONFIGURATION ===",
+  "epochs": 20,
+  "batch_size": 4,
+  "_comment_batch_size": "CONSERVATIVE: Keep batch_size=4 (proven in QuickWin)",
+  
+  "steps_per_epoch": 829,
+  "_comment_steps": "FULL COVERAGE: 3,317 ÷ 4 = 829 steps (only 1 leftover)",
+  
+  "eval_interval": 1,
+  
+  "_comment_optimizer": "=== OPTIMIZER ===",
+  "lr_generator": 0.0002,
+  "lr_discriminator": 0.0002,
+  "beta_1": 0.5,
+  "beta_2": 0.999,
+  
+  "_comment_loss": "=== LOSS WEIGHTS ===",
+  "pixel_loss_weight": 20.0,
+  "adversarial_loss_weight": 3.0,
+  "perceptual_loss_weight": 2.0,
+  "_comment_perceptual": "CONSERVATIVE: Start with minimal VGG weight=2.0 (can increase if stable)",
+  "ctc_loss_weight": 5.0,
+  "rec_feat_loss_weight": 0.0,
+  "contrastive_loss_weight": 0.0,
+  
+  "_comment_curriculum": "=== CURRICULUM LEARNING ===",
+  "curriculum_learning": true,
+  "warmup_epochs": 0,
+  "annealing_epochs": 3,
+  
+  "_comment_callbacks": "=== CALLBACKS ===",
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": true
+  },
+  "patience": 8,
+  "min_delta": 0.01,
+  "monitor_metric": "combined",
+  
+  "_comment_system": "=== SYSTEM ===",
+  "mixed_precision": "float32",
+  "gpu": 0,
+  
+  "_comment_timeline": "=== TIMELINE ===",
+  "_per_epoch": "~18 minutes (829 steps @ 1.1s/step + validation)",
+  "_total_20_epochs": "~6 hours"
+}

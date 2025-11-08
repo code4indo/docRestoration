@@ -1,0 +1,73 @@
+{
+  "experiment_name": "h2a_lstm_only_text_branch",
+  "description": "H2A EXPERIMENT - LSTM-Only Discriminator (Text Sequential Only). Expected worst performance due to noisy predicted text input (CER ~27%). Validates importance of visual modal.",
+
+  "generator_version": "enhanced",
+  "discriminator_version": "lstm_only",
+
+  "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+
+  "checkpoint_dir": "dual_modal_gan/checkpoints/h2a_lstm_only",
+  "sample_dir": "dual_modal_gan/outputs/samples_h2a_lstm_only",
+
+  "resume": false,
+  "no_restore": true,
+
+  "epochs": 50,
+  "batch_size": 1,
+  "steps_per_epoch": 0,
+  "save_interval": 2,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 3,
+  "gpu_id": "0",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": true,
+    "patience": 25,
+    "min_delta": 0.05,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "combined",
+  "psnr_improvement_threshold": 2.0,
+  "cer_weight": 0.2,
+
+  "lr_g": 0.0002,
+  "lr_d": 0.0002,
+  "use_lr_schedule": true,
+  "warmup_epochs": 10,
+  "annealing_epochs": 20,
+
+  "pixel_loss_weight": 50.0,
+  "adv_loss_weight": 3.0,
+  "rec_feat_loss_weight": 8.0,
+  "ctc_loss_weight": 0.15,
+  "perceptual_loss_weight": 1.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 400.0,
+
+  "discriminator_mode": "predicted",
+
+  "adaptive_loss_balancing": true,
+  "target_ctc_ratio": 0.40,
+  "target_visual_ratio": 0.60,
+  "adaptation_rate": 0.08,
+
+  "discriminator_config": {
+    "lstm_units": 256,
+    "dropout_rate": 0.3,
+    "use_layer_norm": true,
+    "use_self_attention": true
+  }
+}

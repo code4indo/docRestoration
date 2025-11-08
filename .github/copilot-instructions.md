@@ -165,3 +165,13 @@ nohup ./scripts/universal_train_from_json.sh configs/configs/production_v3_acade
 
 generator yang digunakan adalah: enhanced
 discriminator yang digunakan adalah: enhanced_v2_fixed
+
+
+script inferensi utama yang digunakan adalah:
+inference_portrait_overlap_experiment.py 
+
+config yang digunakan untuk training:
+configs/production_v3_academic_split_70_15_15.json
+
+WARNING:
+Untuk penulisan paper penelitian, gunakan bahasa indonesia yang baik dan benar sesuai kaidah ilmiah dan kamus besar bahasa indonesia (KBBI). bahasa inggris hanya digunakan untuk istilah teknis yang tidak memiliki padanan baku dalam bahasa indonesia. istilah asing harus dicetak miring.

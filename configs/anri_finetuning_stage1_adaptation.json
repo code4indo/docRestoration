@@ -1,0 +1,126 @@
+{
+  "experiment_name": "anri_finetuning_stage1_full_model_v2",
+  "description": "STAGE 1 V2: FULL MODEL FINETUNING - Aggressive but controlled finetuning. Strategy: (1) NO layer freezing (full model trainable), (2) Higher LR 5e-6/1e-5 for faster adaptation, (3) Lower pixel loss (100) for flexibility, (4) Batch size 4 for better regularization, (5) Mixed dataset 70% base + 30% ANRI, (6) Dual validation with safety nets. Goal: Adapt to ANRI WITHOUT catastrophic forgetting.",
+  
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/mixed_stage1_70base_30anri.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  
+  "pretrained_checkpoint": "dual_modal_gan/checkpoints/thin_stroke_preservation_v1_academic/best_model/ckpt-99",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/anri_finetuning_stage1_full_model_v2",
+  "sample_dir": "dual_modal_gan/outputs/samples_anri_finetuning_stage1_full_model_v2",
+
+  "resume": true,
+  "no_restore": false,
+
+  "epochs": 10,
+  "batch_size": 4,
+  "steps_per_epoch": 0,
+  "save_interval": 1,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 10,
+  "gpu_id": "0",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": false,
+    "patience": 5,
+    "min_delta": 0.01,
+    "restore_best_weights": true,
+    "base_val_min_psnr": 29.0
+  },
+
+  "early_stopping_metric": "combined",
+  "psnr_improvement_threshold": 0.5,
+  "cer_weight": 0.0,
+
+  "lr_g": 0.000005,
+  "lr_d": 0.00001,
+  "use_lr_schedule": false,
+  "warmup_epochs": 0,
+  "annealing_epochs": 0,
+
+  "pixel_loss_weight": 100.0,
+  "adv_loss_weight": 1.0,
+  "rec_feat_loss_weight": 10.0,
+  "ctc_loss_weight": 0.0,
+  "perceptual_loss_weight": 15.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 300.0,
+
+  "discriminator_mode": "predicted",
+
+  "adaptive_loss_balancing": false,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.3,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "freeze_strategy": {
+    "enabled": false,
+    "generator_encoder_layers": [],
+    "generator_decoder_early_layers": [],
+    "discriminator_freeze": false,
+    "freeze_batchnorm": false
+  },
+
+  "dual_validation": {
+    "enabled": true,
+    "base_tfrecord": "dual_modal_gan/data/dataset_gan.tfrecord",
+    "base_val_split": 0.15,
+    "monitor_base_psnr": true,
+    "base_psnr_red_line": 27.0,
+    "base_psnr_warning_threshold": 28.5
+  },
+
+  "experiment_metadata": {
+    "stage": "1_feature_adaptation",
+    "base_model": "thin_stroke_preservation_v1_academic",
+    "base_model_psnr": 30.56,
+    "base_model_epoch": 49,
+    "previous_finetuning_failure": {
+      "config": "thin_stroke_preservation_v1_finetuning",
+      "psnr_drop": -6.81,
+      "final_psnr": 23.75,
+      "root_causes": [
+        "LR too high (1e-5)",
+        "Discriminator mode mismatch (predicted → ground_truth)",
+        "No freeze strategy",
+        "Dataset too small",
+        "No dual validation"
+      ]
+    },
+    "strategy": {
+      "learning_rate": "1e-6 (ultra-conservative, 1/200 of base)",
+      "freeze_layers": "Encoder + early decoder (only train output head)",
+      "loss_weights": "High pixel (300) + low adv (0.5) for preservation",
+      "discriminator_mode": "predicted (MATCH base model)",
+      "dual_validation": "Monitor both base + ANRI validation",
+      "safety": "Hard stop if base_psnr < 28.0 dB"
+    },
+    "expected_outcome": {
+      "anri_psnr": "24-26 dB (slight improvement from adaptation)",
+      "base_psnr": "30.0-30.5 dB (maintained)",
+      "risk": "LOW (conservative approach)"
+    },
+    "next_stage": "Stage 2: Full model refinement with LR 2e-6, mixed dataset (30% ANRI + 70% base)"
+  }
+}

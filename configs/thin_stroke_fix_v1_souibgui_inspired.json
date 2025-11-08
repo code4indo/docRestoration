@@ -1,0 +1,187 @@
+{
+  "experiment_name": "thin_stroke_fix_v1_souibgui_inspired",
+  "description": "CRITICAL FIX - Souibgui-Inspired Configuration. PROBLEM: thin_stroke_v1 achieved PSNR=30.56 but CER=27.3% (FAILED readability). ROOT CAUSE: (1) CTC loss 0.15 too weak (vs Souibgui optimal 1.0), (2) Pixel loss 200 too dominant vs perceptual 10 (ratio 20:1), (3) Discriminator mode 'predicted' bias removes thin strokes. SOLUTION: (1) CTC 0.15→1.0 (6.7x STRONGER text protection), (2) Pixel 200→50 (balanced), (3) Perceptual 10→25 (2.5x STRONGER topology), (4) Discriminator mode→ground_truth (less bias), (5) Enable LR schedule for stability. TARGET: CER <15% (vs 27.3%), PSNR >25 (vs 30.56 acceptable trade-off), Thin Stroke >75% (vs 43.4%).",
+  
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/thin_stroke_fix_v1_souibgui",
+  "sample_dir": "dual_modal_gan/outputs/samples_thin_stroke_fix_v1_souibgui",
+
+  "resume": false,
+  "no_restore": true,
+
+  "epochs": 50,
+  "batch_size": 2,
+  "steps_per_epoch": 100,
+  "save_interval": 1,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 3,
+  "gpu_id": "0",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": true,
+    "patience": 20,
+    "min_delta": 0.01,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "combined",
+  "psnr_improvement_threshold": 1.5,
+  "cer_weight": 0.3,
+
+  "lr_g": 0.0002,
+  "lr_d": 0.0002,
+  "use_lr_schedule": true,
+  "warmup_epochs": 5,
+  "annealing_epochs": 15,
+
+  "pixel_loss_weight": 50.0,
+  "adv_loss_weight": 2.0,
+  "rec_feat_loss_weight": 10.0,
+  "ctc_loss_weight": 1.0,
+  "perceptual_loss_weight": 25.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 300.0,
+
+  "discriminator_mode": "ground_truth",
+
+  "adaptive_loss_balancing": false,
+  "target_ctc_ratio": 0.40,
+  "target_visual_ratio": 0.60,
+  "adaptation_rate": 0.08,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.1,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "experiment_metadata": {
+    "hypothesis": "Previous config (thin_stroke_v1) FAILED readability test: CER=27.3% (target <15%). ROOT CAUSE ANALYSIS: (1) CTC loss 0.15 vs Souibgui optimal 1.0 (Table 2) = 6.7x TOO WEAK → text not protected, (2) Pixel loss 200 vs perceptual 10 = 20:1 ratio → model only optimizes pixels, ignores stroke topology, (3) Discriminator 'predicted' mode → bias removes all noise including thin strokes. SOLUTION: Match Souibgui proven baseline (CER=11.74%) with added perceptual loss for better visual quality. Expected: CER 27.3%→<15% (45% improvement), Thin stroke 43%→>75% (74% improvement), PSNR slight drop acceptable (30.56→>25).",
+    
+    "previous_config_failure": {
+      "experiment": "thin_stroke_preservation_v1_academic",
+      "psnr": 30.56,
+      "cer": "27.3%",
+      "thin_stroke_preservation": "~43.4%",
+      "problem": "High visual quality but POOR readability - model removes thin strokes"
+    },
+    
+    "souibgui_baseline_reference": {
+      "paper": "Souibgui et al. 2021 - Enhance to Read Better",
+      "ctc_lambda_optimal": 1.0,
+      "ctc_lambda_tested": [0.5, 1.0, 5.0, 10.0, 20.0],
+      "best_result_lambda_1": {
+        "psnr": 17.94,
+        "cer": "11.74%",
+        "wer": "31.05%"
+      },
+      "architecture": "U-Net Generator + CNN Discriminator + CRNN Recognizer",
+      "loss_function": "BCE (pixel) + Adversarial + CTC (λ=1.0)"
+    },
+    
+    "config_changes_rationale": {
+      "pixel_loss": {
+        "old": 200.0,
+        "new": 50.0,
+        "reason": "Reduce dominance - pixel loss alone cannot preserve stroke topology. Souibgui implicit ~1.0 (BCE), we use 50x for PSNR boost while maintaining balance."
+      },
+      "ctc_loss": {
+        "old": 0.15,
+        "new": 1.0,
+        "reason": "CRITICAL FIX - Match Souibgui optimal λ=1.0 from Table 2. This is the STRONGEST signal for text preservation. 6.7x increase ensures thin strokes protected as TEXT."
+      },
+      "perceptual_loss": {
+        "old": 10.0,
+        "new": 25.0,
+        "reason": "NOVELTY - Souibgui didn't use perceptual loss. We add it (ratio 1:2 with pixel) to preserve VGG feature topology, ensuring stroke connectivity while maintaining Souibgui readability."
+      },
+      "rec_feat_loss": {
+        "old": 5.0,
+        "new": 10.0,
+        "reason": "Support CTC - HTR feature-level preservation complements CTC character-level. Doubled to 10.0 for stronger semantic protection."
+      },
+      "adv_loss": {
+        "old": 1.5,
+        "new": 2.0,
+        "reason": "Slight increase for better noise removal. Not too high (production_v3 used 3.0 and lost 56.6% thin strokes), not too low (need to remove bleed-through)."
+      },
+      "discriminator_mode": {
+        "old": "predicted",
+        "new": "ground_truth",
+        "reason": "CRITICAL - 'predicted' mode causes D to learn 'remove all noise'. 'ground_truth' mode teaches D what 'clean' looks like, less bias towards removing thin strokes."
+      },
+      "lr_schedule": {
+        "old": false,
+        "new": true,
+        "reason": "Enable for GAN stability. Warmup prevents early divergence, annealing helps fine-tuning. Previous disable was based on wrong assumption."
+      },
+      "cer_weight_in_metric": {
+        "old": 0.2,
+        "new": 0.3,
+        "reason": "Increase CER importance in combined metric (early stopping). Focus on readability over pure PSNR."
+      },
+      "patience": {
+        "old": 15,
+        "new": 20,
+        "reason": "Give model more time to converge with new loss balance. Prevent premature stopping."
+      }
+    },
+    
+    "loss_ratio_analysis": {
+      "old_config": {
+        "visual_losses": "pixel(200) + perceptual(10) = 210",
+        "adversarial": 1.5,
+        "semantic_losses": "ctc(0.15) + rec_feat(5) = 5.15",
+        "ratio": "Visual:Adv:Semantic = 210:1.5:5.15 = 140:1:3.4",
+        "problem": "Visual TOO DOMINANT, Semantic TOO WEAK"
+      },
+      "new_config": {
+        "visual_losses": "pixel(50) + perceptual(25) = 75",
+        "adversarial": 2.0,
+        "semantic_losses": "ctc(1.0) + rec_feat(10) = 11",
+        "ratio": "Visual:Adv:Semantic = 75:2:11 = 37.5:1:5.5",
+        "improvement": "Visual REDUCED 64%, Semantic INCREASED 114%, Better balance!"
+      },
+      "expected_effect": {
+        "visual_reduction": "Less pixel-level over-fitting, allow more structure-based optimization",
+        "semantic_increase": "Strong text protection, thin strokes preserved as TEXT not pixels",
+        "adversarial_stable": "Sufficient for bleed-through removal, not over-aggressive"
+      }
+    },
+    
+    "expected_results": {
+      "target_psnr": ">25 dB (acceptable trade-off from 30.56)",
+      "target_cer": "<15% (match or beat Souibgui 11.74%)",
+      "target_thin_stroke_preservation": ">75% (vs current 43.4%)",
+      "target_ssim": ">0.90",
+      "novelty_claim": "First work combining Souibgui HTR-guided loss with perceptual loss for thin stroke preservation in historical handwritten document restoration"
+    },
+    
+    "validation_source": "Souibgui et al. 2021 Table 2 (λ=1.0 optimal) + CRITICAL_ANALYSIS_THIN_STROKE_CONFIG.md Strategy 1",
+    
+    "next_experiments": {
+      "if_success": "Proceed to Strategy 2 (High-Quality Balanced) for Q1 journal - aim PSNR 28-30 + CER <15%",
+      "if_partial_success": "Adjust perceptual weight (sweep 25→50→75) and re-train",
+      "if_failure": "Revert to Souibgui pure baseline (remove perceptual loss), debug HTR recognizer compatibility"
+    }
+  }
+}

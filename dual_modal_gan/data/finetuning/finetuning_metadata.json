@@ -1,0 +1,19 @@
+{
+  "creation_date": "1761790090.5079424",
+  "source_images": [
+    "DokumenRusak/manual_restoration/gt/ID-ANRI_K66b_082_0064.png"
+  ],
+  "total_strips": 155,
+  "splits": {
+    "train": 108,
+    "val": 23,
+    "test": 24
+  },
+  "augmentation": true,
+  "overlap": 0,
+  "strip_dimensions": "1024x128",
+  "aspect_ratio_preserved": true,
+  "resize_method": "maintain_aspect_ratio_with_padding",
+  "charset_size": 109,
+  "note": "Sequential split used to prevent data leakage (top\u2192train, middle\u2192val, bottom\u2192test)"
+}

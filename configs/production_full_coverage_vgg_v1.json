@@ -1,0 +1,178 @@
+{
+  "experiment_name": "production_full_coverage_vgg_v1",
+  "description": "PRODUCTION CONFIG - Full Data Coverage + VGG Perceptual Loss. Strategy: (1) Full 100% training data per epoch (552 steps, bs=6), (2) VGG perceptual loss weight=5.0 for texture quality, (3) Extended 30 epochs for thorough training, (4) QuickWin CTC activation maintained, (5) Target: PSNR >25 dB, SSIM >0.95",
+  
+  "_comment_strategy": "=== PRODUCTION STRATEGY ===",
+  "_rationale": "QuickWin verified PSNR ~22.7 dB with only 12% data coverage. Full coverage + VGG should push to 25+ dB",
+  "_key_changes": [
+    "steps_per_epoch: 100 → 829 (full 3,317 training samples)",
+    "batch_size: 4 (kept same, safe with VGG perceptual loss)",
+    "perceptual_loss_weight: 0 → 5.0 (VGG texture features)",
+    "epochs: 10 → 50 (more thorough training with full data)",
+    "eval_interval: 1 (validate every epoch for monitoring)"
+  ],
+  
+  "_comment_memory": "=== MEMORY ANALYSIS ===",
+  "_current_usage": "batch_size=4 → ~600 MB GPU (very low!)",
+  "_available": "~15 GB free on both GPUs",
+  "_new_usage": "batch_size=4 + VGG → ~1.2 GB (proven safe from QuickWin)",
+  "_vgg_overhead": "~400-600 MB for VGG19 features (5 layers)",
+  "_total_estimated": "~1.2 GB total (only 8% of available memory)",
+  "_safety_margin": "Excellent - can increase batch_size further if needed",
+  
+  "_comment_coverage": "=== DATA COVERAGE ===",
+  "_old_coverage": "100 steps × 4 bs = 400 samples/epoch (12.1% data)",
+  "_new_coverage": "829 steps × 4 bs = 3,316 samples/epoch (100% data!)",
+  "_improvement": "8.3× more data per epoch → better generalization",
+  "_validation": "710 samples (100% full validation)",
+  
+  "_comment_timeline": "=== EXPECTED TIMELINE ===",
+  "_training_per_epoch": "829 steps @ 1.1s/step = ~912s (~15 min)",
+  "_validation_per_epoch": "178 batches @ 3 batch/s = ~60s (1 min)",
+  "_total_per_epoch": "~16 minutes (vs 1.2 min QuickWin)",
+  "_total_50_epochs": "~13.3 hours MAX (if runs to completion)",
+  "_expected_early_stop": "~20-30 epochs based on patience=10 (~5.3-8.0 hours realistic)",
+  "_comparison": "9× slower per epoch BUT 8.3× more data → better quality!",
+  
+  "_comment_data": "=== DATA CONFIGURATION ===",
+  "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/production_full_coverage_vgg_v1",
+  "sample_dir": "dual_modal_gan/outputs/samples_production_full_coverage_vgg_v1",
+  
+  "resume": false,
+  "no_restore": true,
+  
+  "_comment_model": "=== MODEL ARCHITECTURE ===",
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+  "discriminator_mode": "ground_truth",
+  "recognizer_trainable": false,
+  
+  "_comment_discriminator": "=== DISCRIMINATOR CONFIG ===",
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 512,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.1
+  },
+  
+  "_comment_lstm": "=== TEXT LSTM ===",
+  "text_lstm_units": 512,
+  
+  "_comment_training": "=== TRAINING CONFIGURATION ===",
+  "epochs": 50,
+  "_comment_epochs": "Extended to 50 epochs - let early stopping (patience=10) find optimal point",
+  
+  "batch_size": 4,
+  "_comment_batch_size": "SAFE: Kept at 4 due to VGG memory requirements (batch_size=6 caused OOM)",
+  "_batch_size_rationale": "4 is proven safe: (1) ~1.2 GB GPU with VGG (tested), (2) 829 steps for 100% coverage, (3) Stable gradients",
+  
+  "steps_per_epoch": 829,
+  "_comment_steps": "FULL COVERAGE: 3,317 train samples ÷ 6 batch_size = 552 steps (99.8% coverage)",
+  "_steps_breakdown": "552 steps × 6 samples = 3,312 trained per epoch (only 5 leftover)",
+  
+  "_comment_validation": "=== VALIDATION CONFIGURATION ===",
+  "eval_interval": 1,
+  "_comment_eval_interval": "Validate every epoch for close monitoring",
+  "_comment_num_val_batches": "NOT SET: Use FULL 710 validation samples (verified legitimate in FULL_VALIDATION experiment)",
+  
+  "_comment_optimizer": "=== OPTIMIZER CONFIGURATION ===",
+  "lr_generator": 0.0002,
+  "lr_discriminator": 0.0002,
+  "beta_1": 0.5,
+  "beta_2": 0.999,
+  "_optimizer_g": "Adam with gradient clipping (clipnorm=1.0)",
+  "_optimizer_d": "SGD with momentum=0.9 and gradient clipping (clipnorm=1.0)",
+  
+  "_comment_loss": "=== LOSS WEIGHTS (VGG ADDED!) ===",
+  "pixel_loss_weight": 20.0,
+  "_comment_pixel": "L1 pixel loss - primary reconstruction objective",
+  
+  "adversarial_loss_weight": 3.0,
+  "_comment_adversarial": "Dual-modal adversarial loss (verified effective in QuickWin)",
+  
+  "perceptual_loss_weight": 5.0,
+  "_comment_perceptual": "⭐ NEW: VGG perceptual loss for texture quality and high-freq details",
+  "_perceptual_rationale": "Conservative start at 5.0 (1:4 ratio with pixel). Proven effective in thin_stroke experiments (10-20 range)",
+  "_vgg_model": "VGG19 block4_conv2 features (standard for perceptual loss)",
+  "_vgg_benefit": "Improves texture realism, preserves structure, captures high-level features",
+  "_vgg_risk": "Can produce large gradients occasionally (mitigated by clipnorm=1.0)",
+  
+  "ctc_loss_weight": 5.0,
+  "_comment_ctc": "CTC loss for text recognition guidance (QuickWin activation)",
+  
+  "rec_feat_loss_weight": 0.0,
+  "_comment_rec_feat": "Disabled - RecFeat ineffective per ablation study",
+  
+  "contrastive_loss_weight": 0.0,
+  "_comment_contrastive": "Disabled - not used in current architecture",
+  
+  "_comment_loss_summary": "=== LOSS WEIGHT SUMMARY ===",
+  "_total_weights": "Pixel(20) + Adv(3) + Perceptual(5) + CTC(5) = 33.0",
+  "_ratio_analysis": "Pixel 60.6%, CTC 15.2%, Perceptual 15.2%, Adv 9.1%",
+  "_balance_check": "Pixel still dominant (good), VGG and CTC equal partners, Adv supportive",
+  
+  "_comment_curriculum": "=== CURRICULUM LEARNING (QUICKWIN STRATEGY) ===",
+  "curriculum_learning": true,
+  "warmup_epochs": 0,
+  "_comment_warmup": "⭐ QuickWin: CTC active from Epoch 1 (verified effective)",
+  "annealing_epochs": 3,
+  "_comment_annealing": "CTC weight annealing: Epoch 1-3 gradual increase from 1.67→5.0",
+  "_annealing_schedule": "Epoch 1: 1.67×CTC, Epoch 2: 3.33×CTC, Epoch 3: 5.0×CTC, Epoch 4+: 5.0×CTC",
+  
+  "_comment_callbacks": "=== CALLBACKS ===",
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": true
+  },
+  "patience": 10,
+  "_comment_patience": "Increased to 10 (from 5) for extended 30-epoch training",
+  "min_delta": 0.01,
+  "monitor_metric": "combined",
+  "_comment_monitor": "Combined score = PSNR - CER_penalty (balanced metric)",
+  
+  "_comment_system": "=== SYSTEM CONFIGURATION ===",
+  "mixed_precision": "float32",
+  "_comment_precision": "Pure FP32 for numerical stability (proven in all experiments)",
+  "gpu": 0,
+  "_comment_gpu": "Primary GPU 0 (can switch to GPU 1 if needed, both have ~15 GB free)",
+  "_comment_expected": "=== EXPECTED RESULTS ===",
+  "_baseline_quickwin": "PSNR 22.68 dB, CER 0.3137, SSIM 0.9526 (12% data coverage, no VGG)",
+  "_target_production": "PSNR 25-28 dB, CER <0.30, SSIM >0.95",
+  "_improvement_sources": [
+    "Full data coverage (100% vs 12%) → better generalization → +1-2 dB PSNR",
+    "VGG perceptual loss (5.0) → better texture/detail → +1-2 dB PSNR", 
+    "Extended training (50 epochs max) → full convergence → +0.5-2 dB PSNR",
+    "Early stopping ensures best model without overfitting",
+    "Combined expected gain: +2.5-5.5 dB → 25-28 dB PSNR range"
+  ],
+  
+  "_comment_comparison": "=== COMPARISON WITH BASELINES ===",
+  "_single_modal_baseline": "PSNR 20.01 dB, CER 0.3233 (ablation_single_modal)",
+  "_dual_modal_baseline": "PSNR 20.23 dB, CER 0.3140 (exp_proof_gt_v2_balanced)",
+  "_quickwin_verified": "PSNR 22.68 dB, CER 0.3137 (QuickWin full validation)",
+  "_production_target": "PSNR 25-27 dB, CER <0.30 (this config)",
+  "_final_target": "PSNR 30 dB, SSIM 0.95 (research goal, may need further optimization)",
+  
+  "_comment_success": "=== SUCCESS CRITERIA ===",
+  "_criterion_1": "PSNR ≥ 25 dB (surpass QuickWin by +2.3 dB minimum)",
+  "_criterion_2": "SSIM ≥ 0.95 (maintain or improve from QuickWin's 0.9526)",
+  "_criterion_3": "CER ≤ 0.30 (improve from QuickWin's 0.3137 by 4%)",
+  "_criterion_4": "Visual quality improvement visible in sample outputs",
+  "_criterion_5": "Stable training (no NaN, no collapse, gradients healthy)",
+  "_comment_risks": "=== POTENTIAL RISKS & MITIGATIONS ===",
+  "_risk_1_vgg_gradients": "VGG can produce large gradients → MITIGATED by clipnorm=1.0",
+  "_risk_2_longer_training": "50 epochs may overfit → MITIGATED by early stopping patience=10",
+  "_risk_3_memory": "VGG adds memory → MITIGATED by batch_size=6 (conservative)",
+  "_risk_4_time": "9.2 hours MAX training time → ACCEPTABLE for overnight run",
+  "_risk_5_early_stop": "May stop too early → patience=10 gives 10 epochs grace period",
+  
+  "_comment_next_steps": "=== IF THIS SUCCEEDS ===",
+  "_step_1": "Analyze which loss component contributed most (ablation)",
+  "_step_2": "Try perceptual_weight=10 or 15 for further improvement",
+  "_step_3": "Consider batch_size=8 if training stable",
+  "_step_4": "Extend to 50 epochs if convergence not reached",
+  "_step_5": "Fine-tune on DIBCO/ANRI real data for domain adaptation"
+}

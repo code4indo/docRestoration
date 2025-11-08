@@ -1,0 +1,82 @@
+{
+  "experiment_name": "exp_proof_predicted_v2_balanced",
+  "description": "PROOF FIX V2: Balanced image-text features (512:512) to fix attention imbalance. PREDICTED text mode with equal feature dimensions.",
+  
+  "_comment_data": "=== DATA CONFIGURATION ===",
+  "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/exp_proof_predicted_v2_balanced",
+  "sample_dir": "dual_modal_gan/outputs/samples_exp_proof_predicted_v2_balanced",
+  
+  "resume": false,
+  "no_restore": true,
+  
+  "_comment_model": "=== MODEL ARCHITECTURE ===",
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+  "_comment_disc_note": "Using enhanced_v2_fixed with balanced config (auto-adjusts LSTM units)",
+  "discriminator_mode": "predicted",
+  "recognizer_trainable": false,
+  
+  "_comment_discriminator": "=== DISCRIMINATOR BALANCED CONFIG (FIX) ===",
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 512,
+    "_comment_fix1": "CRITICAL FIX: Increased from 128 → 512 to match image features",
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.1
+  },
+  
+  "_comment_lstm": "=== TEXT LSTM BALANCED (FIX) ===",
+  "text_lstm_units": 512,
+  "_comment_fix2": "CRITICAL FIX: Increased from 256 → 512. BiLSTM output = 2*512 = 1024, then projected to 512 via GlobalAvgPool + Dense",
+  
+  "_comment_training": "=== TRAINING CONFIGURATION (Memory Optimized) ===",
+  "epochs": 10,
+  "batch_size": 1,
+  "_comment_batch": "Reduced to 1 due to discriminator 24M params + recognizer 53M = high memory",
+  "steps_per_epoch": 100,
+  "_comment_steps": "Increased from 50 to compensate for batch_size reduction (same data volume)",
+  
+  "_comment_optimizer": "=== OPTIMIZER ===",
+  "lr_generator": 0.0001,
+  "lr_discriminator": 0.0001,
+  "beta_1": 0.5,
+  "beta_2": 0.999,
+  
+  "_comment_loss": "=== LOSS WEIGHTS (VGG DISABLED for memory) ===",
+  "pixel_loss_weight": 50.0,
+  "adversarial_loss_weight": 3.0,
+  "perceptual_loss_weight": 0.0,
+  "_comment_vgg": "Disabled VGG to prevent GPU OOM (16MB allocation failed)",
+  "ctc_loss_weight": 2.0,
+  "rec_feat_loss_weight": 0.0,
+  "contrastive_loss_weight": 0.0,
+  
+  "_comment_curriculum": "=== CURRICULUM LEARNING ===",
+  "curriculum_learning": true,
+  "warmup_epochs": 2,
+  "annealing_epochs": 3,
+  
+  "_comment_callbacks": "=== CALLBACKS ===",
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": true
+  },
+  "patience": 5,
+  "min_delta": 0.01,
+  "monitor_metric": "combined",
+  
+  "_comment_system": "=== SYSTEM ===",
+  "mixed_precision": "float32",
+  "_comment_precision": "MUST use FP32 to match GT V2 for fair comparison",
+  "gpu": 0,
+  "_comment_gpu": "Will use GPU 0 after ablation training finishes",
+  
+  "_comment_expected": "=== EXPECTED RESULTS ===",
+  "_expected_psnr_epoch10": "20.5-21.5 dB (vs 19.76 dB baseline)",
+  "_expected_improvement": "+1-2 dB from balanced features, potentially better than GT mode",
+  "_expected_d_loss_diff": ">0.2 (vs 0.0076 baseline)",
+  "_hypothesis": "Balanced 512:512 features will force discriminator to use text information, improving predicted mode performance. Expected to match or exceed GT V2 results (20.23 dB)."
+}

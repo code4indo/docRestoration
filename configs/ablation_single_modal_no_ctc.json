@@ -1,0 +1,90 @@
+{
+  "experiment_name": "ablation_single_modal_no_ctc",
+  "description": "ABLATION STUDY: Dual-Modal discriminator WITHOUT CTC loss (only RecFeat). Tests importance of explicit text loss. Fast training with reduced eval.",
+  
+  "_comment_novelty": "=== NOVELTY CLAIM EXPERIMENT ===",
+  "_hypothesis": "CTC loss provides explicit text guidance → removing it should reduce PSNR by 0.5-1.5 dB",
+  "_expected_psnr": "19.0-19.5 dB (lower than full dual-modal 20.23 dB)",
+  "_expected_gap": "CTC loss contribution: +0.5 to +1.5 dB",
+  
+  "_comment_data": "=== DATA CONFIGURATION ===",
+  "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/ablation_single_modal_no_ctc",
+  "sample_dir": "dual_modal_gan/outputs/samples_ablation_single_modal_no_ctc",
+  
+  "resume": false,
+  "no_restore": true,
+  
+  "_comment_model": "=== MODEL ARCHITECTURE - DUAL-MODAL (NO CTC) ===",
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+  "_comment_disc": "Full dual-modal architecture BUT without CTC loss",
+  "discriminator_mode": "ground_truth",
+  "_comment_mode": "Use GT text (same as best config)",
+  "recognizer_trainable": false,
+  
+  "_comment_discriminator": "=== DISCRIMINATOR BALANCED CONFIG ===",
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 512,
+    "_comment_balanced": "Same balanced config as GT V2",
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.1
+  },
+  
+  "_comment_lstm": "=== TEXT LSTM BALANCED ===",
+  "text_lstm_units": 512,
+  "_comment_lstm": "Text features extracted BUT no CTC supervision",
+  
+  "_comment_training": "=== TRAINING CONFIGURATION (FAST) ===",
+  "epochs": 10,
+  "batch_size": 1,
+  "steps_per_epoch": 100,
+  
+  "_comment_speed": "=== SPEED OPTIMIZATION ===",
+  "eval_interval": 2,
+  "_comment_eval": "Evaluate every 2 epochs (2x faster)",
+  "save_interval": 5,
+  
+  "_comment_optimizer": "=== OPTIMIZER ===",
+  "lr_generator": 0.0001,
+  "lr_discriminator": 0.0001,
+  "beta_1": 0.5,
+  "beta_2": 0.999,
+  
+  "_comment_loss": "=== LOSS WEIGHTS (NO CTC) ===",
+  "pixel_loss_weight": 50.0,
+  "adversarial_loss_weight": 3.0,
+  "perceptual_loss_weight": 0.0,
+  "ctc_loss_weight": 0.0,
+  "_comment_ctc": "⚠️ ABLATION: CTC loss DISABLED - testing its importance",
+  "rec_feat_loss_weight": 0.0,
+  "_comment_rec_feat": "RecFeat also disabled for clean ablation",
+  "contrastive_loss_weight": 0.0,
+  
+  "_comment_curriculum": "=== CURRICULUM LEARNING ===",
+  "curriculum_learning": true,
+  "warmup_epochs": 2,
+  "annealing_epochs": 3,
+  
+  "_comment_callbacks": "=== CALLBACKS ===",
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": true
+  },
+  "patience": 5,
+  "min_delta": 0.01,
+  "monitor_metric": "combined",
+  
+  "_comment_system": "=== SYSTEM ===",
+  "mixed_precision": "float32",
+  "gpu": 1,
+  "_comment_gpu": "GPU 1 (can run parallel with image-only on GPU 0)",
+  
+  "_comment_expected": "=== EXPECTED RESULTS ===",
+  "_expected_psnr": "19.0-19.5 dB (vs 20.23 dB with CTC)",
+  "_ctc_contribution": "+0.7 to +1.2 dB from CTC loss",
+  "_novelty_claim": "CTC loss provides explicit character-level supervision that improves restoration quality"
+}

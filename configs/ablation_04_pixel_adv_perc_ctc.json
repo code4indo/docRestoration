@@ -1,0 +1,56 @@
+{
+  "experiment_name": "ablation_04_pixel_adv_perc_ctc",
+  "description": "ABLATION STEP 4: Pixel + Adversarial + Perceptual + CTC Loss",
+
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+
+  "checkpoint_dir": "dual_modal_gan/checkpoints/ablation_04_pixel_adv_perc_ctc",
+  "sample_dir": "dual_modal_gan/outputs/samples_ablation_04_pixel_adv_perc_ctc",
+
+  "resume": false,
+  "no_restore": true,
+
+  "epochs": 15,
+  "batch_size": 2,
+  "steps_per_epoch": 200,
+  "save_interval": 5,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 2,
+  "gpu_id": "1",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "early_stopping": {
+    "enabled": false
+  },
+
+  "lr_g": 0.0002,
+  "lr_d": 0.0002,
+  "use_lr_schedule": false,
+
+  "pixel_loss_weight": 50.0,
+  "adv_loss_weight": 3.0,
+  "rec_feat_loss_weight": 0.0,
+  "ctc_loss_weight": 0.15,
+  "perceptual_loss_weight": 1.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 400.0,
+
+  "discriminator_mode": "predicted",
+
+  "adaptive_loss_balancing": false,
+
+  "_notes": {
+    "purpose": "Add CTC loss for direct text-awareness signal to generator",
+    "hypothesis": "CTC loss directly guides generator to produce more recognizable characters",
+    "expected_psnr": "29-30.5 dB",
+    "expected_cer": "28-35%"
+  }
+}

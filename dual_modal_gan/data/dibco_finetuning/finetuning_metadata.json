@@ -1,0 +1,43 @@
+{
+  "created_at": "2025-10-30T10:57:23.117613",
+  "method": "ANRI-style strips (horizontal slicing + aspect ratio preservation)",
+  "strip_height_before_resize": 128,
+  "target_dimensions": {
+    "height": 128,
+    "width": 1024,
+    "channels": 1
+  },
+  "augmentation_factor": 5,
+  "split_method": "sequential (70/15/15)",
+  "stats_per_year": {
+    "2009": 46,
+    "2010": 43,
+    "2011": 80,
+    "2013": 112,
+    "2014": 48,
+    "2016": 60,
+    "2017": 162,
+    "2018": 54,
+    "PALM": 212
+  },
+  "splits": {
+    "train": {
+      "original_strips": 571,
+      "total_samples": 2855,
+      "augmentation": "yes",
+      "tfrecord_path": "finetuning_train.tfrecord"
+    },
+    "val": {
+      "original_strips": 122,
+      "total_samples": 122,
+      "augmentation": "no",
+      "tfrecord_path": "finetuning_val.tfrecord"
+    },
+    "test": {
+      "original_strips": 124,
+      "total_samples": 124,
+      "augmentation": "no",
+      "tfrecord_path": "finetuning_test.tfrecord"
+    }
+  }
+}

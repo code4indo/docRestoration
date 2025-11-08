@@ -1,0 +1,96 @@
+{
+  "experiment_name": "ablation_single_modal_image_only",
+  "description": "ABLATION STUDY: Single-Modal (Image-Only) discriminator WITHOUT text features. Baseline untuk prove dual-modal superiority. Fast training with reduced eval.",
+  
+  "_comment_novelty": "=== NOVELTY CLAIM EXPERIMENT ===",
+  "_hypothesis": "Dual-modal (image+text) SHOULD outperform single-modal (image-only) by 1-2 dB PSNR",
+  "_expected_psnr": "18-19 dB (lower than dual-modal 20.23 dB)",
+  "_expected_gap": "Dual-modal advantage: +1.5 to +2.5 dB",
+  
+  "_comment_data": "=== DATA CONFIGURATION ===",
+  "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/ablation_single_modal_image_only",
+  "sample_dir": "dual_modal_gan/outputs/samples_ablation_single_modal_image_only",
+  
+  "resume": false,
+  "no_restore": true,
+  
+  "_comment_model": "=== MODEL ARCHITECTURE - SINGLE MODAL ===",
+  "generator_version": "enhanced",
+  "discriminator_version": "single_modal",
+  "_comment_disc_critical": "⚠️ ABLATION: Using single_modal discriminator (NO text pathway)",
+  "discriminator_mode": "ground_truth",
+  "_comment_mode": "Discriminator ignores text completely - pure image adversarial training",
+  "recognizer_trainable": false,
+  
+  "_comment_discriminator": "=== DISCRIMINATOR CONFIG (Image Branch Only) ===",
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 512,
+    "_comment_note": "Common dim kept same for fair comparison, but NO text fusion",
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.1
+  },
+  
+  "_comment_lstm": "=== TEXT FEATURES DISABLED ===",
+  "text_lstm_units": 0,
+  "_comment_lstm_disabled": "LSTM not used in image-only mode",
+  
+  "_comment_training": "=== TRAINING CONFIGURATION (FAST) ===",
+  "epochs": 10,
+  "batch_size": 1,
+  "steps_per_epoch": 100,
+  "_comment_steps": "Same as dual-modal for fair comparison",
+  
+  "_comment_speed": "=== SPEED OPTIMIZATION ===",
+  "eval_interval": 2,
+  "_comment_eval": "Evaluate every 2 epochs instead of 1 (2x faster)",
+  "save_interval": 5,
+  "_comment_save": "Save samples every 5 epochs",
+  
+  "_comment_optimizer": "=== OPTIMIZER (Same as Dual-Modal) ===",
+  "lr_generator": 0.0001,
+  "lr_discriminator": 0.0001,
+  "beta_1": 0.5,
+  "beta_2": 0.999,
+  
+  "_comment_loss": "=== LOSS WEIGHTS (NO TEXT LOSSES) ===",
+  "pixel_loss_weight": 50.0,
+  "adversarial_loss_weight": 3.0,
+  "perceptual_loss_weight": 0.0,
+  "_comment_vgg": "VGG disabled (consistent with dual-modal)",
+  "ctc_loss_weight": 0.0,
+  "_comment_ctc": "⚠️ ABLATION: CTC loss DISABLED (no text supervision)",
+  "rec_feat_loss_weight": 0.0,
+  "_comment_rec_feat": "⚠️ ABLATION: RecFeat loss DISABLED (no text features)",
+  "contrastive_loss_weight": 0.0,
+  
+  "_comment_curriculum": "=== CURRICULUM LEARNING ===",
+  "curriculum_learning": true,
+  "warmup_epochs": 2,
+  "annealing_epochs": 3,
+  "_comment_curriculum_note": "Keep curriculum for fair comparison, but CTC weight stays 0",
+  
+  "_comment_callbacks": "=== CALLBACKS ===",
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": true
+  },
+  "patience": 5,
+  "min_delta": 0.01,
+  "monitor_metric": "combined",
+  
+  "_comment_system": "=== SYSTEM ===",
+  "mixed_precision": "float32",
+  "gpu": 0,
+  "_comment_gpu": "GPU 0 for parallel training with dual-modal on GPU 1",
+  
+  "_comment_expected": "=== EXPECTED RESULTS (for Novelty Claim) ===",
+  "_baseline_psnr": "18.5 ± 0.5 dB (single-modal image-only)",
+  "_dual_modal_psnr": "20.23 dB (GT) / 20.07 dB (Pred)",
+  "_improvement": "+1.5 to +2.0 dB from dual-modal architecture",
+  "_novelty_claim": "Dual-modal discriminator with balanced features achieves significant improvement over single-modal baseline",
+  "_paper_contribution": "This experiment proves that text information provides meaningful guidance for document restoration"
+}

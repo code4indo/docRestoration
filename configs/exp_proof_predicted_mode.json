@@ -1,0 +1,81 @@
+{
+  "experiment_name": "exp_proof_predicted_mode",
+  "description": "EXPERIMENT A - BASELINE with discriminator_mode='predicted' (like V4). Quick 10 epoch proof-of-concept to show that PREDICTED mode gives WORSE PSNR than GROUND_TRUTH mode. Uses 50 steps/epoch for fast iteration. Expected PSNR @ epoch 10: 28-29 dB.",
+
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/exp_proof_predicted",
+  "sample_dir": "dual_modal_gan/outputs/samples_exp_proof_predicted",
+
+  "resume": false,
+  "no_restore": true,
+
+  "_experiment_setup": {
+    "hypothesis": "PREDICTED mode (noisy text) gives WORSE PSNR than GROUND_TRUTH mode",
+    "discriminator_mode": "predicted",
+    "expected_psnr_epoch10": "28-29 dB",
+    "expected_cer_epoch10": "40-50%",
+    "comparison": "Will be WORSE than ground_truth experiment"
+  },
+
+  "epochs": 10,
+  "batch_size": 2,
+  "steps_per_epoch": 50,
+  "save_interval": 2,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 5,
+  "gpu_id": "1",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": false
+  },
+
+  "early_stopping_metric": "combined",
+  "psnr_improvement_threshold": 2.0,
+  "cer_weight": 0.2,
+
+  "lr_g": 0.0002,
+  "lr_d": 0.0002,
+  "use_lr_schedule": false,
+  
+  "warmup_epochs": 2,
+  "annealing_epochs": 3,
+
+  "pixel_loss_weight": 50.0,
+  "adv_loss_weight": 3.0,
+  "rec_feat_loss_weight": 0.0,
+  "ctc_loss_weight": 2.0,
+  "perceptual_loss_weight": 1.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 400.0,
+
+  "discriminator_mode": "predicted",
+
+  "adaptive_loss_balancing": true,
+  "target_ctc_ratio": 0.50,
+  "target_visual_ratio": 0.50,
+  "adaptation_rate": 0.12,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.1,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  }
+}

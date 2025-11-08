@@ -61,6 +61,8 @@ from dual_modal_gan.src.models.recognizer_fixed import load_frozen_recognizer_fi
 from dual_modal_gan.src.models.discriminator import build_dual_modal_discriminator
 from dual_modal_gan.src.models.discriminator_enhanced_v2 import build_dual_modal_discriminator_enhanced_v2
 from dual_modal_gan.src.models.discriminator_enhanced_v2_fixed import build_dual_modal_discriminator_enhanced_v2_fixed
+from dual_modal_gan.src.models.discriminator_single_modal import build_single_modal_discriminator_enhanced
+from dual_modal_gan.src.models.discriminator_lstm_only import build_lstm_only_discriminator
 from dual_modal_gan.losses.perceptual_loss import create_perceptual_loss
 from dual_modal_gan.models.gradnorm import SimpleAdaptiveBalancer
 
@@ -320,6 +322,224 @@ def create_dataset(tfrecord_path, batch_size, train_split=0.7, val_split=0.15):
     
     return train_dataset, val_dataset, test_dataset, train_size, val_size, test_size
 
+# --- ANRI Finetuning Support: Layer Freezing ---
+def apply_freeze_strategy(generator, discriminator, freeze_config):
+    """
+    Apply layer freezing strategy for fine-tuning.
+    
+    Args:
+        generator: Generator model
+        discriminator: Discriminator model
+        freeze_config: Dictionary with freeze strategy from config
+            {
+                "enabled": bool,
+                "generator_encoder_layers": [layer_indices],
+                "generator_decoder_early_layers": [layer_indices],
+                "discriminator_freeze": bool,
+                "freeze_batchnorm": bool
+            }
+    
+    Returns:
+        tuple: (num_frozen_gen, num_frozen_disc)
+    """
+    if not freeze_config or not freeze_config.get('enabled', False):
+        print("   ⚠️  Layer freezing: DISABLED (all layers trainable)")
+        return 0, 0
+    
+    print("\n🔒 Applying Layer Freezing Strategy...")
+    num_frozen_gen = 0
+    num_frozen_disc = 0
+    
+    # Freeze generator encoder layers
+    encoder_indices = freeze_config.get('generator_encoder_layers', [])
+    if encoder_indices and hasattr(generator, 'layers'):
+        print(f"   → Freezing generator encoder layers: {encoder_indices}")
+        for idx in encoder_indices:
+            if idx < len(generator.layers):
+                layer = generator.layers[idx]
+                layer.trainable = False
+                num_frozen_gen += 1
+                print(f"      ✓ Frozen layer {idx}: {layer.name}")
+    
+    # Freeze generator decoder early layers
+    decoder_indices = freeze_config.get('generator_decoder_early_layers', [])
+    if decoder_indices and hasattr(generator, 'layers'):
+        print(f"   → Freezing generator decoder early layers: {decoder_indices}")
+        # Assume decoder layers start after encoder
+        encoder_len = len(encoder_indices) if encoder_indices else 0
+        for idx in decoder_indices:
+            actual_idx = encoder_len + idx
+            if actual_idx < len(generator.layers):
+                layer = generator.layers[actual_idx]
+                layer.trainable = False
+                num_frozen_gen += 1
+                print(f"      ✓ Frozen layer {actual_idx}: {layer.name}")
+    
+    # Freeze BatchNorm layers if specified
+    if freeze_config.get('freeze_batchnorm', False):
+        print("   → Freezing ALL BatchNormalization layers...")
+        for layer in generator.layers:
+            if 'batch_normalization' in layer.name.lower():
+                layer.trainable = False
+                num_frozen_gen += 1
+    
+    # Freeze entire discriminator if specified
+    if freeze_config.get('discriminator_freeze', False):
+        print("   → Freezing ENTIRE discriminator")
+        discriminator.trainable = False
+        num_frozen_disc = len(discriminator.layers)
+    
+    print(f"\n✅ Freezing complete:")
+    print(f"   Generator: {num_frozen_gen} layers frozen")
+    print(f"   Discriminator: {num_frozen_disc} layers frozen")
+    
+    return num_frozen_gen, num_frozen_disc
+
+# --- ANRI Finetuning Support: Dual Validation ---
+def run_triple_validation_step(
+    base_val_dataset, 
+    anri_val_dataset,
+    dibco_val_dataset,
+    generator, 
+    recognizer, 
+    charset, 
+    base_metrics,
+    anri_metrics,
+    dibco_metrics,
+    base_psnr_red_line=28.0,
+    base_psnr_warning_threshold=29.0,
+    anri_psnr_red_line=30.0,
+    anri_psnr_warning_threshold=31.5,
+    dibco_psnr_red_line=25.0,
+    dibco_psnr_warning_threshold=27.0
+):
+    """
+    Run validation on THREE datasets: Base synthetic, ANRI, and DIBCO.
+    
+    Args:
+        base_val_dataset: Validation set from base synthetic dataset (can be None)
+        anri_val_dataset: Validation set from ANRI dataset (can be None)
+        dibco_val_dataset: Validation set from DIBCO dataset (can be None)
+        generator: Generator model
+        recognizer: Recognizer model (can be None for visual-only)
+        charset: Character list
+        base_metrics: Dictionary of metric objects for base validation
+        anri_metrics: Dictionary of metric objects for ANRI validation
+        dibco_metrics: Dictionary of metric objects for DIBCO validation
+        base_psnr_red_line: Hard stop threshold for base (default: 28.0 dB)
+        base_psnr_warning_threshold: Warning threshold for base (default: 29.0 dB)
+        anri_psnr_red_line: Hard stop threshold for ANRI (default: 30.0 dB)
+        anri_psnr_warning_threshold: Warning threshold for ANRI (default: 31.5 dB)
+        dibco_psnr_red_line: Hard stop threshold for DIBCO (default: 25.0 dB)
+        dibco_psnr_warning_threshold: Warning threshold for DIBCO (default: 27.0 dB)
+    
+    Returns:
+        dict: {
+            'base': {...stats...} or None,
+            'anri': {...stats...} or None,
+            'dibco': {...stats...} or None,
+            'warning': bool,
+            'red_line_triggered': bool
+        }
+    """
+    num_datasets = sum([base_val_dataset is not None, anri_val_dataset is not None, dibco_val_dataset is not None])
+    print(f"\n📊 TRIPLE VALIDATION: Evaluating on {num_datasets} dataset(s)...")
+    
+    base_stats = None
+    anri_stats = None
+    dibco_stats = None
+    base_psnr = None
+    anri_psnr = None
+    dibco_psnr = None
+    
+    # Run validation on base dataset (if available)
+    if base_val_dataset is not None:
+        print("\n   [1/3] Validating on BASE SYNTHETIC dataset...")
+        base_stats = run_validation_step(
+            base_val_dataset, generator, recognizer, charset,
+            base_metrics['psnr'], base_metrics['ssim'], base_metrics['cer'], base_metrics['wer'],
+            base_metrics['clean_cer'], base_metrics['clean_wer'],
+            base_metrics['noise_variance'], base_metrics['isolated_white'], base_metrics['local_variance']
+        )
+        base_psnr = base_stats['psnr']['mean']
+    
+    # Run validation on ANRI dataset (if available)
+    if anri_val_dataset is not None:
+        print("\n   [2/3] Validating on ANRI dataset...")
+        anri_stats = run_validation_step(
+            anri_val_dataset, generator, recognizer, charset,
+            anri_metrics['psnr'], anri_metrics['ssim'], anri_metrics['cer'], anri_metrics['wer'],
+            anri_metrics['clean_cer'], anri_metrics['clean_wer'],
+            anri_metrics['noise_variance'], anri_metrics['isolated_white'], anri_metrics['local_variance']
+        )
+        anri_psnr = anri_stats['psnr']['mean']
+    
+    # Run validation on DIBCO dataset (if available)
+    if dibco_val_dataset is not None:
+        print("\n   [3/3] Validating on DIBCO dataset...")
+        dibco_stats = run_validation_step(
+            dibco_val_dataset, generator, recognizer, charset,
+            dibco_metrics['psnr'], dibco_metrics['ssim'], dibco_metrics['cer'], dibco_metrics['wer'],
+            dibco_metrics['clean_cer'], dibco_metrics['clean_wer'],
+            dibco_metrics['noise_variance'], dibco_metrics['isolated_white'], dibco_metrics['local_variance']
+        )
+        dibco_psnr = dibco_stats['psnr']['mean']
+    
+    # Safety checks
+    warning = False
+    red_line = False
+    
+    if base_psnr is not None:
+        if base_psnr < base_psnr_red_line:
+            red_line = True
+        elif base_psnr < base_psnr_warning_threshold:
+            warning = True
+    
+    if anri_psnr is not None:
+        if anri_psnr < anri_psnr_red_line:
+            red_line = True
+        elif anri_psnr < anri_psnr_warning_threshold:
+            warning = True
+    
+    # Print summary
+    print("\n" + "="*80)
+    print("TRIPLE VALIDATION SUMMARY:")
+    print("="*80)
+    if base_psnr is not None:
+        print(f"   BASE PSNR:  {base_psnr:.2f} dB (target: ≥{base_psnr_warning_threshold} dB)")
+    if anri_psnr is not None:
+        print(f"   ANRI PSNR:  {anri_psnr:.2f} dB (target: ≥{anri_psnr_warning_threshold} dB)")
+    if dibco_psnr is not None:
+        print(f"   DIBCO PSNR: {dibco_psnr:.2f} dB (target: ≥{dibco_psnr_warning_threshold} dB)")
+    
+    if red_line:
+        print("\n   🚨 RED LINE TRIGGERED!")
+        if base_psnr is not None and base_psnr < base_psnr_red_line:
+            print(f"      → Base PSNR ({base_psnr:.2f} dB) < {base_psnr_red_line} dB")
+        if anri_psnr is not None and anri_psnr < anri_psnr_red_line:
+            print(f"      → ANRI PSNR ({anri_psnr:.2f} dB) < {anri_psnr_red_line} dB")
+        print(f"      → CATASTROPHIC FORGETTING DETECTED!")
+        print(f"      → Training should STOP immediately!")
+    elif warning:
+        print("\n   ⚠️  WARNING: Performance degradation detected!")
+        if base_psnr is not None and base_psnr < base_psnr_warning_threshold:
+            print(f"      → Base PSNR ({base_psnr:.2f} dB) < {base_psnr_warning_threshold} dB")
+        if anri_psnr is not None and anri_psnr < anri_psnr_warning_threshold:
+            print(f"      → ANRI PSNR ({anri_psnr:.2f} dB) < {anri_psnr_warning_threshold} dB")
+        print(f"      → Monitor closely, consider reducing LR or stopping")
+    else:
+        print(f"\n   ✅ All monitored domains performing above warning thresholds")
+    
+    print("="*80)
+    
+    return {
+        'base': base_stats,
+        'anri': anri_stats,
+        'dibco': dibco_stats,
+        'warning': warning,
+        'red_line_triggered': red_line
+    }
+
 # --- Main Training & Evaluation Logic ---
 def run_validation_step(val_dataset, generator, recognizer, charset, psnr_metric, ssim_metric, cer_metric, wer_metric, clean_cer_metric, clean_wer_metric, noise_variance_metric, isolated_white_metric, local_variance_metric):
     """Run validation step with visual (PSNR/SSIM), textual (CER/WER), and noise artifact metrics.
@@ -375,64 +595,81 @@ def run_validation_step(val_dataset, generator, recognizer, charset, psnr_metric
             all_isolated_white.append(noise_metrics['isolated_white_ratio'])
             all_local_var.append(noise_metrics['local_variance'])
         
-        # Textual metrics: CER/WER
-        # ✅ CRITICAL FIX: Run recognizer on NORMALIZED images [0,1], not tanh [-1,1]!
-        # Get HTR predictions for clean (ground truth quality) and generated (enhanced) images
-        recognizer_output_clean = recognizer(clean_images_normalized, training=False)
-        recognizer_output_generated = recognizer(generated_images_normalized, training=False)
-        
-        # Extract logits (handle both tuple and single output)
-        if isinstance(recognizer_output_clean, (list, tuple)):
-            clean_logits = recognizer_output_clean[0]
-            generated_logits = recognizer_output_generated[0]
+        # Textual metrics: CER/WER (only if recognizer is available)
+        # ✅ FIX: Skip recognizer inference if in visual-only mode
+        if recognizer is not None:
+            # ✅ CRITICAL FIX: Run recognizer on NORMALIZED images [0,1], not tanh [-1,1]!
+            # Get HTR predictions for clean (ground truth quality) and generated (enhanced) images
+            recognizer_output_clean = recognizer(clean_images_normalized, training=False)
+            recognizer_output_generated = recognizer(generated_images_normalized, training=False)
+            
+            # Extract logits (handle both tuple and single output)
+            if isinstance(recognizer_output_clean, (list, tuple)):
+                clean_logits = recognizer_output_clean[0]
+                generated_logits = recognizer_output_generated[0]
+            else:
+                clean_logits = recognizer_output_clean
+                generated_logits = recognizer_output_generated
+            
+            # ✅ CRITICAL FIX: Use manual CTC decode, not tf.argmax!
+            # Decode predictions using manual CTC decoding (same as training script)
+            clean_predictions_text = decode_ctc_predictions(clean_logits.numpy(), charset)
+            generated_predictions_text = decode_ctc_predictions(generated_logits.numpy(), charset)
+            
+            # Convert labels to numpy for text decoding
+            labels_np = labels.numpy()
+            
+            # Calculate CER/WER for each sample in batch
+            batch_cer = []  # CER for generated image vs ground truth
+            batch_wer = []  # WER for generated image vs ground truth
+            batch_clean_cer = []  # CER for clean image vs ground truth (baseline)
+            batch_clean_wer = []  # WER for clean image vs ground truth (baseline)
+            
+            for i in range(labels_np.shape[0]):
+                # Decode ground truth
+                gt_text = decode_label(labels_np[i], charset)
+                
+                # Get decoded HTR predictions (already decoded by manual CTC decode)
+                clean_text = clean_predictions_text[i]
+                generated_text = generated_predictions_text[i]
+                
+                # FIXED: Calculate CER/WER against GROUND TRUTH (not clean prediction)
+                # This is the CORRECT way to measure HTR accuracy
+                cer = calculate_cer(gt_text, generated_text)
+                wer = calculate_wer(gt_text, generated_text)
+                
+                # Also calculate clean baseline (for comparison)
+                clean_cer = calculate_cer(gt_text, clean_text)
+                clean_wer = calculate_wer(gt_text, clean_text)
+                
+                # Collect individual samples for statistics
+                all_cer.append(cer)
+                all_wer.append(wer)
+                all_clean_cer.append(clean_cer)
+                all_clean_wer.append(clean_wer)
+                
+                # Log first sample for debugging
+                if i == 0 and first_batch:
+                    print(f"\n📝 [SAMPLE TEXT RECOGNITION VALIDATION]")
+                    print(f"  🎯 Ground Truth:    '{gt_text}'")
+                    print(f"  ✨ Clean Image:     '{clean_text}' (CER: {clean_cer:.3f})")
+                    print(f"  🤖 Generated Image: '{generated_text}' (CER: {cer:.3f})")
+                    print(f"  📊 Quality Gap:     ΔCER = {cer - clean_cer:+.3f} (generated vs clean)")
         else:
-            clean_logits = recognizer_output_clean
-            generated_logits = recognizer_output_generated
-        
-        # ✅ CRITICAL FIX: Use manual CTC decode, not tf.argmax!
-        # Decode predictions using manual CTC decoding (same as training script)
-        clean_predictions_text = decode_ctc_predictions(clean_logits.numpy(), charset)
-        generated_predictions_text = decode_ctc_predictions(generated_logits.numpy(), charset)
-        
-        # Convert labels to numpy for text decoding
-        labels_np = labels.numpy()
-        
-        # Calculate CER/WER for each sample in batch
-        batch_cer = []  # CER for generated image vs ground truth
-        batch_wer = []  # WER for generated image vs ground truth
-        batch_clean_cer = []  # CER for clean image vs ground truth (baseline)
-        batch_clean_wer = []  # WER for clean image vs ground truth (baseline)
-        
-        for i in range(labels_np.shape[0]):
-            # Decode ground truth
-            gt_text = decode_label(labels_np[i], charset)
+            # Visual-only mode: Set dummy CER/WER values (1.0 = 100% error, worst case)
+            # This ensures metrics exist but clearly indicate "not applicable"
+            dummy_cer = 1.0
+            dummy_wer = 1.0
+            for i in range(labels.shape[0]):
+                all_cer.append(dummy_cer)
+                all_wer.append(dummy_wer)
+                all_clean_cer.append(dummy_cer)
+                all_clean_wer.append(dummy_wer)
             
-            # Get decoded HTR predictions (already decoded by manual CTC decode)
-            clean_text = clean_predictions_text[i]
-            generated_text = generated_predictions_text[i]
-            
-            # FIXED: Calculate CER/WER against GROUND TRUTH (not clean prediction)
-            # This is the CORRECT way to measure HTR accuracy
-            cer = calculate_cer(gt_text, generated_text)
-            wer = calculate_wer(gt_text, generated_text)
-            
-            # Also calculate clean baseline (for comparison)
-            clean_cer = calculate_cer(gt_text, clean_text)
-            clean_wer = calculate_wer(gt_text, clean_text)
-            
-            # Collect individual samples for statistics
-            all_cer.append(cer)
-            all_wer.append(wer)
-            all_clean_cer.append(clean_cer)
-            all_clean_wer.append(clean_wer)
-            
-            # Log first sample for debugging
-            if i == 0 and first_batch:
-                print(f"\n📝 [SAMPLE TEXT RECOGNITION VALIDATION]")
-                print(f"  🎯 Ground Truth:    '{gt_text}'")
-                print(f"  ✨ Clean Image:     '{clean_text}' (CER: {clean_cer:.3f})")
-                print(f"  🤖 Generated Image: '{generated_text}' (CER: {cer:.3f})")
-                print(f"  📊 Quality Gap:     ΔCER = {cer - clean_cer:+.3f} (generated vs clean)")
+            if first_batch:
+                print(f"\n📝 [VISUAL-ONLY MODE]")
+                print(f"  ⚠️  CER/WER metrics DISABLED (no recognizer loaded)")
+                print(f"  ✅ Focus: PSNR, SSIM, visual quality only")
         
         first_batch = False
         batch_count += 1
@@ -487,7 +724,27 @@ def run_validation_step(val_dataset, generator, recognizer, charset, psnr_metric
     }
 
 def main(args):
+    # ✅ FIX BUG #1: Properly enforce GPU assignment at TensorFlow level
+    # Setting CUDA_VISIBLE_DEVICES alone is not sufficient for subprocesses
     os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu_id
+    
+    # Configure TensorFlow to use only specified GPU
+    gpus = tf.config.list_physical_devices('GPU')
+    if gpus:
+        try:
+            # Parse GPU ID from string (e.g., "0" or "1")
+            gpu_idx = int(args.gpu_id.split(',')[0]) if ',' not in args.gpu_id else int(args.gpu_id)
+            if gpu_idx < len(gpus):
+                tf.config.set_visible_devices(gpus[gpu_idx], 'GPU')
+                tf.config.experimental.set_memory_growth(gpus[gpu_idx], True)
+                print(f"✅ GPU {gpu_idx} configured exclusively: {gpus[gpu_idx].name}")
+            else:
+                print(f"⚠️  GPU {gpu_idx} not found, using default GPU 0")
+                tf.config.set_visible_devices(gpus[0], 'GPU')
+                tf.config.experimental.set_memory_growth(gpus[0], True)
+        except (ValueError, RuntimeError) as e:
+            print(f"⚠️  GPU configuration failed: {e}, using all available GPUs")
+    
     print(f"--- Configuring to use GPU: {args.gpu_id} ---")
     print("--- Dual-Modal GAN-HTR Training (Pure FP32 - OPTIMIZED) ---")
     print("    Version: train32.py (Perfected)")
@@ -521,6 +778,90 @@ def main(args):
     )
     print(f"Dataset created: {train_count} training, {val_count} validation, {test_count} test samples.")
     print(f"⚠️  Test set is LOCKED - will only be evaluated after training completion!")
+    
+    # Check for triple validation mode (progressive finetuning)
+    dual_validation_config = getattr(args, 'dual_validation', None)
+    if dual_validation_config and dual_validation_config.get('enabled', False):
+        print("\n🔍 TRIPLE VALIDATION MODE ENABLED:")
+        
+        # Load BASE validation dataset (if configured)
+        base_tfrecord = dual_validation_config.get('base_tfrecord', None)
+        if base_tfrecord and dual_validation_config.get('monitor_base_psnr', False):
+            base_val_split = dual_validation_config.get('base_val_split', 0.15)
+            print(f"   Loading BASE validation dataset from: {base_tfrecord}")
+            _, base_val_dataset, _, _, base_val_count, _ = create_dataset(
+                base_tfrecord,
+                args.batch_size,
+                train_split=0.7,
+                val_split=base_val_split
+            )
+            print(f"   ✅ Base validation set: {base_val_count} samples")
+            base_psnr_red_line = dual_validation_config.get('base_psnr_red_line', 28.0)
+            base_psnr_warning = dual_validation_config.get('base_psnr_warning_threshold', 29.0)
+        else:
+            base_val_dataset = None
+            base_psnr_red_line = None
+            base_psnr_warning = None
+        
+        # Load ANRI validation dataset (if configured)
+        anri_tfrecord = dual_validation_config.get('anri_tfrecord', None)
+        if anri_tfrecord and dual_validation_config.get('monitor_anri_psnr', False):
+            anri_val_split = dual_validation_config.get('anri_val_split', 0.15)
+            print(f"   Loading ANRI validation dataset from: {anri_tfrecord}")
+            _, anri_val_dataset, _, _, anri_val_count, _ = create_dataset(
+                anri_tfrecord,
+                args.batch_size,
+                train_split=0.7,
+                val_split=anri_val_split
+            )
+            print(f"   ✅ ANRI validation set: {anri_val_count} samples")
+            anri_psnr_red_line = dual_validation_config.get('anri_psnr_red_line', 30.0)
+            anri_psnr_warning = dual_validation_config.get('anri_psnr_warning_threshold', 31.5)
+        else:
+            anri_val_dataset = None
+            anri_psnr_red_line = None
+            anri_psnr_warning = None
+        
+        # Load DIBCO validation dataset (if configured)
+        dibco_tfrecord = dual_validation_config.get('dibco_tfrecord', None)
+        if dibco_tfrecord and dual_validation_config.get('monitor_dibco_psnr', False):
+            dibco_val_split = dual_validation_config.get('dibco_val_split', 0.15)
+            print(f"   Loading DIBCO validation dataset from: {dibco_tfrecord}")
+            _, dibco_val_dataset, _, _, dibco_val_count, _ = create_dataset(
+                dibco_tfrecord,
+                args.batch_size,
+                train_split=0.7,
+                val_split=dibco_val_split
+            )
+            print(f"   ✅ DIBCO validation set: {dibco_val_count} samples")
+            dibco_psnr_red_line = dual_validation_config.get('dibco_psnr_red_line', 25.0)
+            dibco_psnr_warning = dual_validation_config.get('dibco_psnr_warning_threshold', 27.0)
+        else:
+            dibco_val_dataset = None
+            dibco_psnr_red_line = None
+            dibco_psnr_warning = None
+        
+        # Print safety thresholds
+        if base_psnr_red_line is not None:
+            print(f"   🚨 Base red line: PSNR < {base_psnr_red_line} dB (emergency stop)")
+            print(f"   ⚠️  Base warning:  PSNR < {base_psnr_warning} dB (degradation alert)")
+        if anri_psnr_red_line is not None:
+            print(f"   🚨 ANRI red line: PSNR < {anri_psnr_red_line} dB (emergency stop)")
+            print(f"   ⚠️  ANRI warning:  PSNR < {anri_psnr_warning} dB (degradation alert)")
+        if dibco_psnr_red_line is not None:
+            print(f"   🚨 DIBCO red line: PSNR < {dibco_psnr_red_line} dB (sanity check)")
+            print(f"   ⚠️  DIBCO warning:  PSNR < {dibco_psnr_warning} dB (quality alert)")
+    else:
+        base_val_dataset = None
+        anri_val_dataset = None
+        dibco_val_dataset = None
+        base_psnr_red_line = None
+        base_psnr_warning = None
+        anri_psnr_red_line = None
+        anri_psnr_warning = None
+        dibco_psnr_red_line = None
+        dibco_psnr_warning = None
+        print("\n   Standard validation mode (single dataset)")
 
     # Calculate steps per epoch if not provided
     steps_per_epoch = args.steps_per_epoch or (train_count // args.batch_size)
@@ -544,15 +885,47 @@ def main(args):
             generator_name = "U-Net (30M params, no dropout)"
         
         # Load recognizer with multi-output for Recognition Feature Loss
+        # ✅ FIX: Only load recognizer if needed (not for pure visual-only training)
         use_rec_feat_loss = args.rec_feat_loss_weight > 0.0
-        recognizer = load_frozen_recognizer(
-            weights_path=args.recognizer_weights, 
-            charset_size=vocab_size - 1,
-            return_feature_map=use_rec_feat_loss
-        )
+        use_ctc_loss = args.ctc_loss_weight > 0.0
+        
+        if args.recognizer_weights and (use_rec_feat_loss or use_ctc_loss):
+            print("   🔧 Loading recognizer for CTC/RecFeat losses...")
+            recognizer = load_frozen_recognizer(
+                weights_path=args.recognizer_weights, 
+                charset_size=vocab_size - 1,
+                return_feature_map=use_rec_feat_loss
+            )
+            print(f"   ✅ Recognizer loaded: {args.recognizer_weights}")
+        else:
+            print("   ⚠️  VISUAL-ONLY MODE: Skipping recognizer (CTC=0, RecFeat=0)")
+            recognizer = None
         
         # Build discriminator based on version
-        if args.discriminator_version == 'enhanced_v2_fixed':
+        if args.discriminator_version == 'single_modal':
+            # Load discriminator config from additional args if available
+            disc_config = getattr(args, 'discriminator_config', {})
+            discriminator = build_single_modal_discriminator_enhanced(
+                img_shape=(1024, 128, 1),
+                config=disc_config
+            )
+            print(f"✅ Discriminator selected: SINGLE-MODAL (CNN-Only, ~19M params)")
+            print(f"   🎯 CONTROL GROUP untuk H2A Experiment")
+            print(f"   📊 Expected: Higher CER (worse text readability)")
+            print(f"   ⚖️  Fair comparison dengan dual-modal (~19M params)")
+        elif args.discriminator_version == 'lstm_only':
+            # Load discriminator config from additional args if available
+            disc_config = getattr(args, 'discriminator_config', {})
+            discriminator = build_lstm_only_discriminator(
+                text_shape=(128, vocab_size),  # (max_text_len, vocab_size)
+                config=disc_config
+            )
+            print(f"✅ Discriminator selected: LSTM-ONLY (Text Sequential, ~19M params)")
+            print(f"   🎯 ABLATION STUDY: Text-Only Branch")
+            print(f"   📊 Expected: WORST performance (relies on noisy text CER ~27%)")
+            print(f"   ⚖️  Fair comparison: ~19M params (matches CNN-only & Dual-Modal)")
+            print(f"   🧪 Validates: Importance of visual modal in dual-modal architecture")
+        elif args.discriminator_version == 'enhanced_v2_fixed':
             # Load discriminator config from additional args if available
             disc_config = getattr(args, 'discriminator_config', {})
             discriminator = build_dual_modal_discriminator_enhanced_v2_fixed(
@@ -574,6 +947,13 @@ def main(args):
             print(f"✅ Discriminator selected: BASE (137M params, Simple CNN + LSTM)")
         
         print("All models built.")
+        
+        # Apply layer freezing strategy (if enabled)
+        freeze_config = getattr(args, 'freeze_strategy', None)
+        if freeze_config and freeze_config.get('enabled', False):
+            num_frozen_gen, num_frozen_disc = apply_freeze_strategy(generator, discriminator, freeze_config)
+        else:
+            print("   ⚠️  Layer freezing: DISABLED (all layers trainable)")
 
     with strategy.scope():
         print("\n[Phase 3/6] Setting up Optimizers and Checkpoints...")
@@ -627,9 +1007,52 @@ def main(args):
         
         # Epoch tracking for resume capability
         epoch_info_path = os.path.join(args.checkpoint_dir, 'epoch_info.json')
+        checkpoint_manifest_path = os.path.join(args.checkpoint_dir, 'checkpoint_manifest.json')
         start_epoch = 0
         
-        if ckpt_manager.latest_checkpoint:
+        # Initialize checkpoint manifest for better tracking
+        experiment_name = os.path.basename(args.checkpoint_dir)
+        checkpoint_manifest = {
+            "experiment_name": experiment_name,
+            "created_at": datetime.now().isoformat(),
+            "checkpoint_mapping": {},  # {checkpoint_name: {epoch, psnr, cer, timestamp}}
+            "naming_scheme": "tensorflow_global_step",
+            "note": "Checkpoint numbers are TensorFlow global step counters (not epoch numbers)"
+        }
+        if os.path.exists(checkpoint_manifest_path):
+            with open(checkpoint_manifest_path, 'r') as f:
+                checkpoint_manifest = json.load(f)
+        
+        # ✅ PRIORITY 1: Load pretrained checkpoint for fine-tuning (if specified)
+        # CRITICAL FIX: Ignore no_restore flag for pretrained checkpoint - this flag is ONLY for checkpoint_dir
+        if args.pretrained_checkpoint:
+            print(f"\n🔄 FINE-TUNING MODE: Loading pretrained checkpoint...")
+            print(f"   Source: {args.pretrained_checkpoint}")
+            print(f"   no_restore flag: {args.no_restore} (ignored for pretrained_checkpoint)")
+            
+            # Verify checkpoint exists
+            checkpoint_exists = (
+                os.path.exists(args.pretrained_checkpoint + '.index') or
+                os.path.exists(args.pretrained_checkpoint + '.data-00000-of-00001')
+            )
+            
+            if checkpoint_exists:
+                try:
+                    checkpoint.restore(args.pretrained_checkpoint).expect_partial()
+                    print(f"   ✅ Pretrained weights loaded successfully")
+                    print(f"   Starting fine-tuning from epoch 0/{args.epochs}")
+                    print(f"   ⚠️  Note: Optimizer state NOT restored (fresh optimizer for fine-tuning)")
+                    start_epoch = 0  # Always start from epoch 0 for fine-tuning
+                except Exception as e:
+                    print(f"   ❌ Error loading pretrained checkpoint: {e}")
+                    print(f"   Falling back to normal initialization...")
+            else:
+                print(f"   ❌ Pretrained checkpoint not found!")
+                print(f"   Checked: {args.pretrained_checkpoint}.index")
+                print(f"   Falling back to normal initialization...")
+        
+        # PRIORITY 2: Normal checkpoint restoration (only if no pretrained checkpoint)
+        elif ckpt_manager.latest_checkpoint:
             if args.resume and os.path.exists(epoch_info_path):
                 # Resume mode: restore checkpoint and continue from last epoch
                 checkpoint.restore(ckpt_manager.latest_checkpoint).expect_partial()
@@ -715,39 +1138,97 @@ def main(args):
                 
                 generated_images = generator(degraded_images_tanh, training=True)  # Output: [-1,1]
                 
-                # Denormalize to [0,1] ONLY for recognizer (HTR model expects [0,1])
-                clean_images_normalized = (clean_images_tanh + 1.0) / 2.0
-                generated_images_normalized = (generated_images + 1.0) / 2.0
-                
-                # Get recognizer outputs - handle both single and multi-output
-                recognizer_output_clean = recognizer(clean_images_normalized, training=False)
-                recognizer_output_generated = recognizer(generated_images_normalized, training=False)
-                
-                # Extract logits and feature maps (if available)
-                if isinstance(recognizer_output_clean, (list, tuple)):
-                    # Multi-output mode: (logits, feature_map)
-                    clean_logits = recognizer_output_clean[0]
-                    clean_feature_map = recognizer_output_clean[1]
-                    generated_logits = recognizer_output_generated[0]
-                    generated_feature_map = recognizer_output_generated[1]
+                # VISUAL-ONLY MODE: Skip recognizer if not loaded
+                if recognizer is not None:
+                    # Denormalize to [0,1] ONLY for recognizer (HTR model expects [0,1])
+                    clean_images_normalized = (clean_images_tanh + 1.0) / 2.0
+                    generated_images_normalized = (generated_images + 1.0) / 2.0
+                    
+                    # Get recognizer outputs - handle both single and multi-output
+                    recognizer_output_clean = recognizer(clean_images_normalized, training=False)
+                    recognizer_output_generated = recognizer(generated_images_normalized, training=False)
+                    
+                    # Extract logits and feature maps (if available)
+                    if isinstance(recognizer_output_clean, (list, tuple)):
+                        # Multi-output mode: (logits, feature_map)
+                        clean_logits = recognizer_output_clean[0]
+                        clean_feature_map = recognizer_output_clean[1]
+                        generated_logits = recognizer_output_generated[0]
+                        generated_feature_map = recognizer_output_generated[1]
+                    else:
+                        # Single output mode: logits only
+                        clean_logits = recognizer_output_clean
+                        generated_logits = recognizer_output_generated
+                        # Create dummy feature maps with same shape for consistency
+                        clean_feature_map = tf.zeros([args.batch_size, 1], dtype=tf.float32)
+                        generated_feature_map = tf.zeros([args.batch_size, 1], dtype=tf.float32)
+
+                    clean_text_pred = tf.argmax(clean_logits, axis=-1, output_type=tf.int32)
+                    generated_text_pred = tf.argmax(generated_logits, axis=-1, output_type=tf.int32)
                 else:
-                    # Single output mode: logits only
-                    clean_logits = recognizer_output_clean
-                    generated_logits = recognizer_output_generated
-                    # Create dummy feature maps with same shape for consistency
+                    # No recognizer loaded - create dummy predictions and logits
+                    # Use discriminator's max_text_len (128) for consistency
+                    clean_text_pred = tf.ones([args.batch_size, 128], dtype=tf.int32)
+                    generated_text_pred = tf.ones([args.batch_size, 128], dtype=tf.int32)
                     clean_feature_map = tf.zeros([args.batch_size, 1], dtype=tf.float32)
                     generated_feature_map = tf.zeros([args.batch_size, 1], dtype=tf.float32)
-
-                clean_text_pred = tf.argmax(clean_logits, axis=-1, output_type=tf.int32)
-                generated_text_pred = tf.argmax(generated_logits, axis=-1, output_type=tf.int32)
+                    # Dummy logits for CTC computation (won't be used since ctc_weight=0)
+                    # Shape: [batch, timesteps, num_classes] - use small timestep (1) to save memory
+                    num_classes = len(charset) + 1  # charset + blank token
+                    clean_logits = tf.zeros([args.batch_size, 1, num_classes], dtype=tf.float32)
+                    generated_logits = tf.zeros([args.batch_size, 1, num_classes], dtype=tf.float32)
+                
+                # ✅ FIX: When pure visual training (ctc_weight=0), force valid text for discriminator
+                # cuDNN LSTM requires right-padded masks, but argmax predictions from untrained recognizer
+                # create invalid masks (scattered blanks). Create uniform dummy text instead.
+                def create_valid_dummy_text():
+                    # CRITICAL: Use discriminator's max_text_len (128), NOT recognizer output length!
+                    # Recognizer output can be 256/512 timesteps, but discriminator expects 128
+                    # Fill with token 1 (non-blank character) to create valid right-padded mask
+                    dummy_text = tf.ones([args.batch_size, 128], dtype=tf.int32)
+                    return dummy_text, dummy_text
+                
+                def use_real_predictions():
+                    return clean_text_pred, generated_text_pred
+                
+                # Use dummy text only when CTC loss disabled (pure visual mode)
+                clean_text_pred, generated_text_pred = tf.cond(
+                    tf.equal(ctc_weight, 0.0),
+                    create_valid_dummy_text,
+                    use_real_predictions
+                )
 
                 # --- SWITCHABLE DISCRIMINATOR LOGIC ---
                 # Now using clean_images_tanh and generated_images (both [-1,1] range)
-                if args.discriminator_mode == 'ground_truth':
-                    real_output = discriminator([clean_images_tanh, ground_truth_text], training=True)
-                else: # Default to 'predicted' mode (original logic)
-                    real_output = discriminator([clean_images_tanh, clean_text_pred], training=True)
-                fake_output = discriminator([generated_images, generated_text_pred], training=True)
+                # ✅ FIX VISUAL-ONLY: When ctc_weight=0 (no labels), use dummy text even in ground_truth mode
+
+                # 🎯 H2A EXPERIMENT: Handle single-modal, lstm-only, and dual-modal discriminators
+                if args.discriminator_version == 'single_modal':
+                    # Single-modal discriminator: image only (CNN-only)
+                    real_output = discriminator(clean_images_tanh, training=True)
+                    fake_output = discriminator(generated_images, training=True)
+                elif args.discriminator_version == 'lstm_only':
+                    # LSTM-only discriminator: text sequence only (Text-only)
+                    # Uses logits (probabilities) from recognizer, not indices
+                    # Shape: (batch, seq_len, vocab_size) - direct output from recognizer
+                    # Apply softmax to convert logits to probabilities
+                    clean_text_probs = tf.nn.softmax(clean_logits, axis=-1)
+                    generated_text_probs = tf.nn.softmax(generated_logits, axis=-1)
+                    real_output = discriminator(clean_text_probs, training=True)  # Probs from clean image
+                    fake_output = discriminator(generated_text_probs, training=True)  # Probs from generated image
+                else:
+                    # Dual-modal discriminator: [image, text] input
+                    if args.discriminator_mode == 'ground_truth':
+                        # Use dummy text if pure visual mode (ctc_weight=0), otherwise use ground_truth_text
+                        discriminator_real_text = tf.cond(
+                            tf.equal(ctc_weight, 0.0),
+                            lambda: tf.ones([args.batch_size, 128], dtype=tf.int32),  # Dummy text for visual-only
+                            lambda: ground_truth_text  # Real labels when available
+                        )
+                        real_output = discriminator([clean_images_tanh, discriminator_real_text], training=True)
+                    else: # Default to 'predicted' mode (original logic)
+                        real_output = discriminator([clean_images_tanh, clean_text_pred], training=True)
+                    fake_output = discriminator([generated_images, generated_text_pred], training=True)
 
                 disc_loss_real = bce_loss_fn(real_labels_disc, real_output)
                 disc_loss_fake = bce_loss_fn(fake_labels_disc, fake_output)
@@ -768,9 +1249,26 @@ def main(args):
                 
                 # Always calculate CTC loss; its contribution is controlled by ctc_weight.
                 # This avoids conditional graph structures that break gradient flow in @tf.function.
-                label_len = tf.math.count_nonzero(ground_truth_text, axis=1, keepdims=True, dtype=tf.int32)
-                label_len = tf.reshape(label_len, [-1])
-                logit_len = tf.fill([args.batch_size], generated_logits.shape[1])
+                # ✅ FIX: When ctc_weight=0 (pure visual training like DIBCO), use dummy lengths
+                # to avoid cuDNN LSTM mask error with empty labels
+                def compute_normal_lengths():
+                    label_len_val = tf.math.count_nonzero(ground_truth_text, axis=1, keepdims=True, dtype=tf.int32)
+                    label_len_val = tf.reshape(label_len_val, [-1])
+                    logit_len_val = tf.fill([args.batch_size], generated_logits.shape[1])
+                    return label_len_val, logit_len_val
+                
+                def compute_dummy_lengths():
+                    # Pure visual mode: use dummy lengths to avoid cuDNN errors
+                    # Set all lengths to 1 (minimum valid value) since loss will be ignored anyway
+                    label_len_val = tf.ones([args.batch_size], dtype=tf.int32)
+                    logit_len_val = tf.ones([args.batch_size], dtype=tf.int32)
+                    return label_len_val, logit_len_val
+                
+                label_len, logit_len = tf.cond(
+                    tf.greater(ctc_weight, 0.0),
+                    compute_normal_lengths,
+                    compute_dummy_lengths
+                )
                 
                 ctc_loss_raw = tf.reduce_mean(tf.nn.ctc_loss(labels=tf.cast(ground_truth_text, tf.int32), logits=generated_logits, label_length=label_len, logit_length=logit_len, logits_time_major=False, blank_index=0))
                 # Clip CTC loss to prevent spikes that cause training instability
@@ -1088,67 +1586,275 @@ def main(args):
         
             # --- End of Epoch Actions ---
             if (epoch + 1) % args.eval_interval == 0:
-                print("  Running validation on full validation set...")
-                val_stats = run_validation_step(
-                    val_dataset, generator, recognizer, charset,
-                    val_psnr_metric, val_ssim_metric, val_cer_metric, val_wer_metric,
-                    val_clean_cer_metric, val_clean_wer_metric,
-                    val_noise_variance_metric, val_isolated_white_metric, val_local_variance_metric
-                )
-                
-                psnr_result = val_psnr_metric.result()
-                ssim_result = val_ssim_metric.result()
-                cer_result = val_cer_metric.result()
-                wer_result = val_wer_metric.result()
-                clean_cer_result = val_clean_cer_metric.result()
-                clean_wer_result = val_clean_wer_metric.result()
-                noise_var_result = val_noise_variance_metric.result()
-                isolated_white_result = val_isolated_white_metric.result()
-                local_var_result = val_local_variance_metric.result()
-                
-                # Note: Detailed statistics already printed by run_validation_step()
-                
-                # Add validation metrics to epoch data (with statistics)
-                epoch_metrics["validation"] = {
-                    "psnr": float(psnr_result.numpy()),
-                    "psnr_std": float(val_stats['psnr']['std']),
-                    "psnr_ci_95": float(val_stats['psnr']['ci_95']),
-                    "psnr_n": int(val_stats['psnr']['n']),
-                    "ssim": float(ssim_result.numpy()),
-                    "ssim_std": float(val_stats['ssim']['std']),
-                    "ssim_ci_95": float(val_stats['ssim']['ci_95']),
-                    "ssim_n": int(val_stats['ssim']['n']),
-                    "cer": float(cer_result.numpy()),
-                    "cer_std": float(val_stats['cer']['std']),
-                    "cer_n": int(val_stats['cer']['n']),
-                    "wer": float(wer_result.numpy()),
-                    "wer_std": float(val_stats['wer']['std']),
-                    "wer_n": int(val_stats['wer']['n']),
-                    "clean_cer": float(clean_cer_result.numpy()),
-                    "clean_wer": float(clean_wer_result.numpy()),
-                    "noise_variance": float(noise_var_result.numpy()),
-                    "isolated_white_ratio": float(isolated_white_result.numpy()),
-                    "local_variance": float(local_var_result.numpy())
-                }
-                
-                # Log validation metrics to MLflow (with statistics)
-                mlflow.log_metrics({
-                    "val/psnr": float(psnr_result.numpy()),
-                    "val/psnr_std": float(val_stats['psnr']['std']),
-                    "val/psnr_ci_95": float(val_stats['psnr']['ci_95']),
-                    "val/ssim": float(ssim_result.numpy()),
-                    "val/ssim_std": float(val_stats['ssim']['std']),
-                    "val/ssim_ci_95": float(val_stats['ssim']['ci_95']),
-                    "val/cer": float(cer_result.numpy()),
-                    "val/cer_std": float(val_stats['cer']['std']),
-                    "val/wer": float(wer_result.numpy()),
-                    "val/wer_std": float(val_stats['wer']['std']),
-                    "val/clean_cer": float(clean_cer_result.numpy()),
-                    "val/clean_wer": float(clean_wer_result.numpy()),
-                    "val/noise_variance": float(noise_var_result.numpy()),
-                    "val/isolated_white_ratio": float(isolated_white_result.numpy()),
-                    "val/local_variance": float(local_var_result.numpy())
-                }, step=epoch+1)
+                # Check if triple validation mode is enabled
+                if base_val_dataset is not None or anri_val_dataset is not None or dibco_val_dataset is not None:
+                    num_val_datasets = sum([base_val_dataset is not None, anri_val_dataset is not None, dibco_val_dataset is not None])
+                    print(f"  Running TRIPLE validation ({num_val_datasets} dataset(s))...")
+                    
+                    # Create metric sets for base, ANRI, and DIBCO
+                    base_metrics = {
+                        'psnr': tf.keras.metrics.Mean(name='base_psnr'),
+                        'ssim': tf.keras.metrics.Mean(name='base_ssim'),
+                        'cer': tf.keras.metrics.Mean(name='base_cer'),
+                        'wer': tf.keras.metrics.Mean(name='base_wer'),
+                        'clean_cer': tf.keras.metrics.Mean(name='base_clean_cer'),
+                        'clean_wer': tf.keras.metrics.Mean(name='base_clean_wer'),
+                        'noise_variance': tf.keras.metrics.Mean(name='base_noise_var'),
+                        'isolated_white': tf.keras.metrics.Mean(name='base_iso_white'),
+                        'local_variance': tf.keras.metrics.Mean(name='base_local_var')
+                    }
+                    anri_metrics = {
+                        'psnr': tf.keras.metrics.Mean(name='anri_psnr'),
+                        'ssim': tf.keras.metrics.Mean(name='anri_ssim'),
+                        'cer': tf.keras.metrics.Mean(name='anri_cer'),
+                        'wer': tf.keras.metrics.Mean(name='anri_wer'),
+                        'clean_cer': tf.keras.metrics.Mean(name='anri_clean_cer'),
+                        'clean_wer': tf.keras.metrics.Mean(name='anri_clean_wer'),
+                        'noise_variance': tf.keras.metrics.Mean(name='anri_noise_var'),
+                        'isolated_white': tf.keras.metrics.Mean(name='anri_iso_white'),
+                        'local_variance': tf.keras.metrics.Mean(name='anri_local_var')
+                    }
+                    dibco_metrics = {
+                        'psnr': tf.keras.metrics.Mean(name='dibco_psnr'),
+                        'ssim': tf.keras.metrics.Mean(name='dibco_ssim'),
+                        'cer': tf.keras.metrics.Mean(name='dibco_cer'),
+                        'wer': tf.keras.metrics.Mean(name='dibco_wer'),
+                        'clean_cer': tf.keras.metrics.Mean(name='dibco_clean_cer'),
+                        'clean_wer': tf.keras.metrics.Mean(name='dibco_clean_wer'),
+                        'noise_variance': tf.keras.metrics.Mean(name='dibco_noise_var'),
+                        'isolated_white': tf.keras.metrics.Mean(name='dibco_iso_white'),
+                        'local_variance': tf.keras.metrics.Mean(name='dibco_local_var')
+                    }
+                    
+                    # Run triple validation
+                    triple_val_results = run_triple_validation_step(
+                        base_val_dataset,
+                        anri_val_dataset,
+                        dibco_val_dataset,
+                        generator,
+                        recognizer,
+                        charset,
+                        base_metrics,
+                        anri_metrics,
+                        dibco_metrics,
+                        base_psnr_red_line=base_psnr_red_line or 28.0,
+                        base_psnr_warning_threshold=base_psnr_warning or 29.0,
+                        anri_psnr_red_line=anri_psnr_red_line or 30.0,
+                        anri_psnr_warning_threshold=anri_psnr_warning or 31.5,
+                        dibco_psnr_red_line=dibco_psnr_red_line or 25.0,
+                        dibco_psnr_warning_threshold=dibco_psnr_warning or 27.0
+                    )
+                    
+                    # Extract results
+                    base_stats = triple_val_results['base']
+                    anri_stats = triple_val_results['anri']
+                    dibco_stats = triple_val_results['dibco']
+                    
+                    # Use main training dataset validation for checkpoint management
+                    val_stats = {
+                        'psnr': {'mean': val_psnr_metric.result().numpy()},
+                        'ssim': {'mean': val_ssim_metric.result().numpy()},
+                        'cer': {'mean': val_cer_metric.result().numpy()}
+                    }
+                    
+                    psnr_result = val_psnr_metric.result()
+                    ssim_result = val_ssim_metric.result()
+                    cer_result = val_cer_metric.result()
+                    wer_result = val_wer_metric.result()
+                    clean_cer_result = val_clean_cer_metric.result()
+                    clean_wer_result = val_clean_wer_metric.result()
+                    noise_var_result = val_noise_variance_metric.result()
+                    isolated_white_result = val_isolated_white_metric.result()
+                    local_var_result = val_local_variance_metric.result()
+                    
+                    # Log main training dataset validation metrics
+                    # NOTE: In triple validation mode, main dataset validation is handled by base validation
+                    # Use base validation metrics for early stopping when available
+                    if base_stats is not None:
+                        # Use base PSNR as the primary metric for early stopping
+                        psnr_result = tf.constant(base_stats['psnr']['mean'], dtype=tf.float32)
+                        ssim_result = tf.constant(base_stats['ssim']['mean'], dtype=tf.float32)
+                        cer_result = tf.constant(base_stats['cer']['mean'], dtype=tf.float32)
+                        wer_result = tf.constant(base_stats['wer']['mean'], dtype=tf.float32)
+                        from_stats = base_stats  # Use base stats for main training metrics
+                    else:
+                        from_stats = val_stats  # Fallback to main dataset stats
+                    epoch_metrics["validation"] = {
+                        "psnr": float(psnr_result.numpy()),
+                        "psnr_std": 0.0,  # Will be populated from actual validation run
+                        "psnr_ci_95": 0.0,
+                        "psnr_n": 0,
+                        "ssim": float(ssim_result.numpy()),
+                        "ssim_std": 0.0,
+                        "ssim_ci_95": 0.0,
+                        "ssim_n": 0,
+                        "cer": float(cer_result.numpy()),
+                        "cer_std": 0.0,
+                        "cer_n": 0,
+                        "wer": float(wer_result.numpy()),
+                        "wer_std": 0.0,
+                        "wer_n": 0,
+                        "clean_cer": float(clean_cer_result.numpy()),
+                        "clean_wer": float(clean_wer_result.numpy()),
+                        "noise_variance": float(noise_var_result.numpy()),
+                        "isolated_white_ratio": float(isolated_white_result.numpy()),
+                        "local_variance": float(local_var_result.numpy())
+                    }
+                    
+                    # Add base validation metrics (if available)
+                    if base_stats is not None:
+                        epoch_metrics["base_validation"] = {
+                            "psnr": float(base_stats['psnr']['mean']),
+                            "psnr_std": float(base_stats['psnr']['std']),
+                            "psnr_ci_95": float(base_stats['psnr']['ci_95']),
+                            "psnr_n": int(base_stats['psnr']['n']),
+                            "ssim": float(base_stats['ssim']['mean']),
+                            "cer": float(base_stats['cer']['mean']),
+                            "wer": float(base_stats['wer']['mean'])
+                        }
+                    
+                    # Add ANRI validation metrics (if available)
+                    if anri_stats is not None:
+                        epoch_metrics["anri_validation"] = {
+                            "psnr": float(anri_stats['psnr']['mean']),
+                            "psnr_std": float(anri_stats['psnr']['std']),
+                            "psnr_ci_95": float(anri_stats['psnr']['ci_95']),
+                            "psnr_n": int(anri_stats['psnr']['n']),
+                            "ssim": float(anri_stats['ssim']['mean']),
+                            "cer": float(anri_stats['cer']['mean']),
+                            "wer": float(anri_stats['wer']['mean'])
+                        }
+                    
+                    # Add DIBCO validation metrics (if available)
+                    if dibco_stats is not None:
+                        epoch_metrics["dibco_validation"] = {
+                            "psnr": float(dibco_stats['psnr']['mean']),
+                            "psnr_std": float(dibco_stats['psnr']['std']),
+                            "psnr_ci_95": float(dibco_stats['psnr']['ci_95']),
+                            "psnr_n": int(dibco_stats['psnr']['n']),
+                            "ssim": float(dibco_stats['ssim']['mean']),
+                            "cer": float(dibco_stats['cer']['mean']),
+                            "wer": float(dibco_stats['wer']['mean'])
+                        }
+                    
+                    # Log to MLflow
+                    mlflow_metrics = {
+                        "val/psnr": float(psnr_result.numpy()),
+                        "val/ssim": float(ssim_result.numpy()),
+                        "val/cer": float(cer_result.numpy())
+                    }
+                    
+                    if base_stats is not None:
+                        mlflow_metrics.update({
+                            "val/base_psnr": float(base_stats['psnr']['mean']),
+                            "val/base_ssim": float(base_stats['ssim']['mean']),
+                            "val/base_cer": float(base_stats['cer']['mean'])
+                        })
+                    
+                    if anri_stats is not None:
+                        mlflow_metrics.update({
+                            "val/anri_psnr": float(anri_stats['psnr']['mean']),
+                            "val/anri_ssim": float(anri_stats['ssim']['mean']),
+                            "val/anri_cer": float(anri_stats['cer']['mean'])
+                        })
+                    
+                    if dibco_stats is not None:
+                        mlflow_metrics.update({
+                            "val/dibco_psnr": float(dibco_stats['psnr']['mean']),
+                            "val/dibco_ssim": float(dibco_stats['ssim']['mean']),
+                            "val/dibco_cer": float(dibco_stats['cer']['mean'])
+                        })
+                    
+                    mlflow.log_metrics(mlflow_metrics, step=epoch+1)
+                    
+                    # SAFETY CHECK: Red line triggered?
+                    if triple_val_results['red_line_triggered']:
+                        print("\n" + "="*80)
+                        print("🚨 EMERGENCY STOP: CATASTROPHIC FORGETTING DETECTED!")
+                        if base_stats is not None and base_stats['psnr']['mean'] < (base_psnr_red_line or 28.0):
+                            print(f"   Base PSNR dropped to {base_stats['psnr']['mean']:.2f} dB")
+                            print(f"   Below red line threshold of {base_psnr_red_line} dB")
+                        if anri_stats is not None and anri_stats['psnr']['mean'] < (anri_psnr_red_line or 30.0):
+                            print(f"   ANRI PSNR dropped to {anri_stats['psnr']['mean']:.2f} dB")
+                            print(f"   Below red line threshold of {anri_psnr_red_line} dB")
+                        print("   Restoring best checkpoint and STOPPING training...")
+                        print("="*80)
+                        
+                        # Restore best checkpoint (use best_model_ckpt_manager if available)
+                        if best_model_ckpt_manager and best_model_ckpt_manager.latest_checkpoint:
+                            checkpoint.restore(best_model_ckpt_manager.latest_checkpoint)
+                            print(f"✅ Restored best checkpoint: {best_model_ckpt_manager.latest_checkpoint}")
+                        elif ckpt_manager.latest_checkpoint:
+                            checkpoint.restore(ckpt_manager.latest_checkpoint)
+                            print(f"✅ Restored latest checkpoint: {ckpt_manager.latest_checkpoint}")
+                        else:
+                            print("⚠️  No checkpoint available to restore")
+                        
+                        break  # Stop training immediately
+                    
+                else:
+                    # Standard single validation
+                    print("  Running validation on full validation set...")
+                    val_stats = run_validation_step(
+                        val_dataset, generator, recognizer, charset,
+                        val_psnr_metric, val_ssim_metric, val_cer_metric, val_wer_metric,
+                        val_clean_cer_metric, val_clean_wer_metric,
+                        val_noise_variance_metric, val_isolated_white_metric, val_local_variance_metric
+                    )
+                    
+                    psnr_result = val_psnr_metric.result()
+                    ssim_result = val_ssim_metric.result()
+                    cer_result = val_cer_metric.result()
+                    wer_result = val_wer_metric.result()
+                    clean_cer_result = val_clean_cer_metric.result()
+                    clean_wer_result = val_clean_wer_metric.result()
+                    noise_var_result = val_noise_variance_metric.result()
+                    isolated_white_result = val_isolated_white_metric.result()
+                    local_var_result = val_local_variance_metric.result()
+                    
+                    # Note: Detailed statistics already printed by run_validation_step()
+                    
+                    # Add validation metrics to epoch data (with statistics)
+                    epoch_metrics["validation"] = {
+                        "psnr": float(psnr_result.numpy()),
+                        "psnr_std": float(val_stats['psnr']['std']),
+                        "psnr_ci_95": float(val_stats['psnr']['ci_95']),
+                        "psnr_n": int(val_stats['psnr']['n']),
+                        "ssim": float(ssim_result.numpy()),
+                        "ssim_std": float(val_stats['ssim']['std']),
+                        "ssim_ci_95": float(val_stats['ssim']['ci_95']),
+                        "ssim_n": int(val_stats['ssim']['n']),
+                        "cer": float(cer_result.numpy()),
+                        "cer_std": float(val_stats['cer']['std']),
+                        "cer_n": int(val_stats['cer']['n']),
+                        "wer": float(wer_result.numpy()),
+                        "wer_std": float(val_stats['wer']['std']),
+                        "wer_n": int(val_stats['wer']['n']),
+                        "clean_cer": float(clean_cer_result.numpy()),
+                        "clean_wer": float(clean_wer_result.numpy()),
+                        "noise_variance": float(noise_var_result.numpy()),
+                        "isolated_white_ratio": float(isolated_white_result.numpy()),
+                        "local_variance": float(local_var_result.numpy())
+                    }
+                    
+                    # Log validation metrics to MLflow (with statistics)
+                    mlflow.log_metrics({
+                        "val/psnr": float(psnr_result.numpy()),
+                        "val/psnr_std": float(val_stats['psnr']['std']),
+                        "val/psnr_ci_95": float(val_stats['psnr']['ci_95']),
+                        "val/ssim": float(ssim_result.numpy()),
+                        "val/ssim_std": float(val_stats['ssim']['std']),
+                        "val/ssim_ci_95": float(val_stats['ssim']['ci_95']),
+                        "val/cer": float(cer_result.numpy()),
+                        "val/cer_std": float(val_stats['cer']['std']),
+                        "val/wer": float(wer_result.numpy()),
+                        "val/wer_std": float(val_stats['wer']['std']),
+                        "val/clean_cer": float(clean_cer_result.numpy()),
+                        "val/clean_wer": float(clean_wer_result.numpy()),
+                        "val/noise_variance": float(noise_var_result.numpy()),
+                        "val/isolated_white_ratio": float(isolated_white_result.numpy()),
+                        "val/local_variance": float(local_var_result.numpy())
+                    }, step=epoch+1)
             
                 # --- Checkpoint Management: Dual objective (PSNR + CER) ---
                 # Best model = High PSNR (visual quality) + Low CER (text readability)
@@ -1176,11 +1882,18 @@ def main(args):
                 # SANITY CHECK: Override early stopping if PSNR improvement is significant
                 # This prevents premature stopping due to CER fluctuations when visual quality is improving
                 if hasattr(args, 'psnr_improvement_threshold') and (epoch + 1) > 1:
-                    # ✅ FIXED: Get previous epoch's PSNR from training_history
-                    if epoch > 0 and len(training_history["epochs"]) > 0:
-                        prev_epoch_data = training_history["epochs"][-1]
-                        prev_psnr = prev_epoch_data.get("validation", {}).get("psnr", float(psnr_result.numpy()))
-                    else:
+                    # ✅ FIX BUG #2: Safely get previous PSNR (handle warmup epochs and sparse eval_interval)
+                    try:
+                        if epoch > 0 and len(training_history["epochs"]) > 0:
+                            prev_epoch_data = training_history["epochs"][-1]
+                            if prev_epoch_data and isinstance(prev_epoch_data, dict) and "validation" in prev_epoch_data:
+                                prev_psnr = float(prev_epoch_data["validation"].get("psnr", psnr_result.numpy()))
+                            else:
+                                prev_psnr = float(psnr_result.numpy())
+                        else:
+                            prev_psnr = float(psnr_result.numpy())
+                    except (KeyError, TypeError, IndexError, AttributeError):
+                        # Fallback for any error accessing previous epoch data
                         prev_psnr = float(psnr_result.numpy())
                     
                     psnr_improvement = float(psnr_result.numpy()) - prev_psnr
@@ -1218,19 +1931,61 @@ def main(args):
                         best_weights_path = best_model_path  # Track for restoration
                         print(f"  ✅ New best model saved! (Improvement: {improvement:.2f})")
                         print(f"     💾 Best model preserved: {best_model_path}")
+                        print(f"     📋 Epoch {epoch+1} → Checkpoint {os.path.basename(best_model_path)}")
+
+                        # Update checkpoint manifest
+                        ckpt_name = os.path.basename(best_model_path)
+                        checkpoint_manifest["checkpoint_mapping"][ckpt_name] = {
+                            "epoch": epoch + 1,
+                            "psnr": float(psnr_result),
+                            "cer": float(cer_result),
+                            "combined_score": float(combined_score),
+                            "is_best": True,
+                            "timestamp": datetime.now().isoformat()
+                        }
+                        with open(checkpoint_manifest_path, 'w') as f:
+                            json.dump(checkpoint_manifest, f, indent=2)
 
                         # For disk efficiency, ONLY save regular checkpoint if needed for resume capability
                         # With max_checkpoints=1, this maintains single checkpoint for debugging
                         saved_path = ckpt_manager.save()
                         print(f"     📄 Debug checkpoint: {saved_path}")
                         print(f"     💰 Total disk usage: 2 checkpoints (best + debug)")
+                        
+                        # Track debug checkpoint too
+                        debug_ckpt_name = os.path.basename(saved_path)
+                        checkpoint_manifest["checkpoint_mapping"][debug_ckpt_name] = {
+                            "epoch": epoch + 1,
+                            "psnr": float(psnr_result),
+                            "cer": float(cer_result),
+                            "combined_score": float(combined_score),
+                            "is_best": False,
+                            "is_debug": True,
+                            "timestamp": datetime.now().isoformat()
+                        }
+                        with open(checkpoint_manifest_path, 'w') as f:
+                            json.dump(checkpoint_manifest, f, indent=2)
                     else:
                         # Fallback: Save regular checkpoint only
                         saved_path = ckpt_manager.save()
                         best_weights_path = saved_path
                         print(f"  ✅ New best model saved! (Improvement: {improvement:.2f})")
                         print(f"     📄 Checkpoint: {saved_path} (Best = Regular)")
-                        print(f"     💰 Disk usage: 1 checkpoint only")
+                        print(f"     � Epoch {epoch+1} → Checkpoint {os.path.basename(saved_path)}")
+                        print(f"     �💰 Disk usage: 1 checkpoint only")
+                        
+                        # Update checkpoint manifest
+                        ckpt_name = os.path.basename(saved_path)
+                        checkpoint_manifest["checkpoint_mapping"][ckpt_name] = {
+                            "epoch": epoch + 1,
+                            "psnr": float(psnr_result),
+                            "cer": float(cer_result),
+                            "combined_score": float(combined_score),
+                            "is_best": True,
+                            "timestamp": datetime.now().isoformat()
+                        }
+                        with open(checkpoint_manifest_path, 'w') as f:
+                            json.dump(checkpoint_manifest, f, indent=2)
 
                     print(f"     PSNR: {psnr_result:.2f}, CER: {cer_result:.4f}")
                     print(f"     Combined Score: {combined_score:.2f} (PSNR: +{psnr_contribution:.2f}, CER: -{cer_penalty:.2f})")
@@ -1501,32 +2256,35 @@ def main(args):
                     mlflow.log_image(comparison, key=f"sample_{i}_comparison", step=epoch+1)
 
                 # --- [NEW] Log recognition text for samples ---
-                recognition_results = []
-                # ✅ FIX: Run recognizer on NORMALIZED samples [0,1], not tanh [-1,1]
-                # Recognizer expects input in [0,1] range
-                recognizer_output = recognizer(generated_samples_normalized, training=False)
-                if isinstance(recognizer_output, (list, tuple)):
-                    predicted_logits = recognizer_output[0]
+                if recognizer is not None:
+                    recognition_results = []
+                    # ✅ FIX: Run recognizer on NORMALIZED samples [0,1], not tanh [-1,1]
+                    # Recognizer expects input in [0,1] range
+                    recognizer_output = recognizer(generated_samples_normalized, training=False)
+                    if isinstance(recognizer_output, (list, tuple)):
+                        predicted_logits = recognizer_output[0]
+                    else:
+                        predicted_logits = recognizer_output
+                    
+                    # ✅ CRITICAL FIX: Use manual CTC decode, not tf.argmax!
+                    # This is the same decode method as in standalone test script
+                    predicted_texts = decode_ctc_predictions(predicted_logits.numpy(), charset)
+                    ground_truth_labels_np = ground_truth_labels.numpy()
+
+                    for i in range(num_vis_samples):  # ✅ FIX: Loop exactly 5 samples
+                        gt_text = decode_label(ground_truth_labels_np[i], charset)
+                        pred_text = predicted_texts[i]
+                        recognition_results.append(f"--- Sample {i} ---\n")
+                        recognition_results.append(f"Ground Truth: {gt_text}\n")
+                        recognition_results.append(f"Prediction  : {pred_text}\n\n")
+
+                    # Write results to a text file and log to MLflow as text
+                    text_content = ''.join(recognition_results)
+                    mlflow.log_text(text_content, f"recognition_epoch_{epoch+1:04d}.txt")
+                    
+                    print(f"  💾 Saved sample images and recognition text to {args.sample_dir}")
                 else:
-                    predicted_logits = recognizer_output
-                
-                # ✅ CRITICAL FIX: Use manual CTC decode, not tf.argmax!
-                # This is the same decode method as in standalone test script
-                predicted_texts = decode_ctc_predictions(predicted_logits.numpy(), charset)
-                ground_truth_labels_np = ground_truth_labels.numpy()
-
-                for i in range(num_vis_samples):  # ✅ FIX: Loop exactly 5 samples
-                    gt_text = decode_label(ground_truth_labels_np[i], charset)
-                    pred_text = predicted_texts[i]
-                    recognition_results.append(f"--- Sample {i} ---\n")
-                    recognition_results.append(f"Ground Truth: {gt_text}\n")
-                    recognition_results.append(f"Prediction  : {pred_text}\n\n")
-
-                # Write results to a text file and log to MLflow as text
-                text_content = ''.join(recognition_results)
-                mlflow.log_text(text_content, f"recognition_epoch_{epoch+1:04d}.txt")
-                
-                print(f"  💾 Saved sample images and recognition text to {args.sample_dir}")
+                    print(f"  💾 Saved sample images to {args.sample_dir} (visual-only mode, no recognition)")
 
             epoch_time = time.time() - epoch_start_time
             epoch_metrics["epoch_time_seconds"] = float(epoch_time)
@@ -1608,13 +2366,14 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Train Dual-Modal GAN-HTR with Pure FP32 (OPTIMIZED)')
     parser.add_argument('--generator_version', type=str, default='base', choices=['base', 'enhanced', 'enhanced_v2'], help='Version of the generator to use: base, enhanced, or enhanced_v2 as SOTA version.')
-    parser.add_argument('--discriminator_version', type=str, default='base', choices=['base', 'enhanced_v2', 'enhanced_v2_fixed'], help='Version of the discriminator to use: base (137M params), enhanced_v2 (18M params), or enhanced_v2_fixed (18M params, reduced artifacts)')
+    parser.add_argument('--discriminator_version', type=str, default='base', choices=['base', 'enhanced_v2', 'enhanced_v2_fixed', 'single_modal', 'lstm_only'], help='Version of the discriminator to use: base (137M params), enhanced_v2 (18M params), enhanced_v2_fixed (18M params, reduced artifacts), single_modal (CNN-only, ~19M params, untuk H2A experiment), or lstm_only (Text Sequential, ~19M params, ablation study)')
     parser.add_argument('--tfrecord_path', type=str, default='dual_modal_gan/data/dataset_gan.tfrecord', help='Path to the training TFRecord file.')
     parser.add_argument('--charset_path', type=str, default='real_data_preparation/real_data_charlist.txt', help='Path to the character set file.')
     parser.add_argument('--recognizer_weights', type=str, default='models/best_htr_recognizer/best_model.weights.h5', help='Path to pre-trained recognizer weights from Stage 3 with CER 33.72 percent.')
     parser.add_argument('--gpu_id', type=str, default='1', help='ID of the GPU to use (e.g., "0" or "1").')
     parser.add_argument('--no_restore', action='store_true', help='Do not restore from checkpoint, start from scratch.')
     parser.add_argument('--resume', action='store_true', help='Resume training from last completed epoch (requires epoch_info.json in checkpoint dir).')
+    parser.add_argument('--pretrained_checkpoint', type=str, default=None, help='Path to pretrained checkpoint for fine-tuning (e.g., path/to/ckpt-99). Loads weights but resets epoch to 0.')
     parser.add_argument('--checkpoint_dir', type=str, default='dual_modal_gan/outputs/checkpoints_fp32', help='Directory to save model checkpoints.')
     parser.add_argument('--max_checkpoints', type=int, default=1, help='Maximum number of checkpoints to keep (default: 1 for disk efficiency).')
     parser.add_argument('--save_best_model_separately', action='store_true', default=True, help='Save best model separately to prevent loss due to max_checkpoints limitation.')
@@ -1657,6 +2416,98 @@ if __name__ == '__main__':
     parser.add_argument('--target_ctc_ratio', type=float, default=0.65, help='Target contribution ratio for CTC loss, default is 0.65 or 65 percent.')
     parser.add_argument('--target_visual_ratio', type=float, default=0.35, help='Target contribution ratio for visual losses including pixel, perceptual, adversarial, and recognition feature losses. Default is 0.35 or 35 percent.')
     parser.add_argument('--adaptation_rate', type=float, default=0.15, help='Adaptation rate for SimpleAdaptiveBalancer ranging from 0.1 to 0.5, default is 0.15.')
+    
+    # ANRI Finetuning Parameters
+    parser.add_argument('--config_json', type=str, default=None, help='Path to JSON config file (if provided, will override command-line args)')
+    parser.add_argument('--train_split', type=float, default=0.7, help='Training data split ratio (default: 0.7 = 70%%)')
+    parser.add_argument('--val_split', type=float, default=0.15, help='Validation data split ratio (default: 0.15 = 15%%)')
 
     args = parser.parse_args()
+    
+    # Load config from JSON if provided (overrides command-line args)
+    if args.config_json:
+        print(f"\n📄 Loading configuration from JSON: {args.config_json}")
+        with open(args.config_json, 'r') as f:
+            config = json.load(f)
+        
+        # Override args with config values
+        for key, value in config.items():
+            if key == 'experiment_metadata':
+                continue  # Skip metadata
+            if key == 'checkpoints':
+                # Handle nested checkpoints config
+                if 'save_best_model_separately' in value:
+                    args.save_best_model_separately = value['save_best_model_separately']
+                continue
+            if key == 'early_stopping':
+                # Handle nested early stopping config
+                if 'enabled' in value:
+                    args.early_stopping = value['enabled']
+                if 'curriculum_aware' in value:
+                    args.curriculum_aware_early_stopping = value['curriculum_aware']
+                if 'patience' in value:
+                    args.patience = value['patience']
+                if 'min_delta' in value:
+                    args.min_delta = value['min_delta']
+                if 'restore_best_weights' in value:
+                    args.restore_best_weights = value['restore_best_weights']
+                if 'base_val_min_psnr' in value:
+                    setattr(args, 'base_val_min_psnr', value['base_val_min_psnr'])
+                continue
+            
+            # Map JSON keys to arg names (handle naming differences)
+            key_mapping = {
+                'experiment_name': 'checkpoint_dir',  # Will be appended to checkpoint_dir
+                'tfrecord_path': 'tfrecord_path',
+                'charset_path': 'charset_path',
+                'recognizer_weights': 'recognizer_weights',
+                'checkpoint_dir': 'checkpoint_dir',
+                'sample_dir': 'sample_dir',
+                'resume': 'resume',
+                'no_restore': 'no_restore',
+                'pretrained_checkpoint': 'pretrained_checkpoint',
+                'epochs': 'epochs',
+                'batch_size': 'batch_size',
+                'steps_per_epoch': 'steps_per_epoch',
+                'save_interval': 'save_interval',
+                'eval_interval': 'eval_interval',
+                'seed': 'seed',
+                'max_checkpoints': 'max_checkpoints',
+                'gpu_id': 'gpu_id',
+                'train_split': 'train_split',
+                'val_split': 'val_split',
+                'lr_g': 'lr_g',
+                'lr_d': 'lr_d',
+                'use_lr_schedule': 'use_lr_schedule',
+                'warmup_epochs': 'warmup_epochs',
+                'annealing_epochs': 'annealing_epochs',
+                'pixel_loss_weight': 'pixel_loss_weight',
+                'adv_loss_weight': 'adv_loss_weight',
+                'rec_feat_loss_weight': 'rec_feat_loss_weight',
+                'ctc_loss_weight': 'ctc_loss_weight',
+                'perceptual_loss_weight': 'perceptual_loss_weight',
+                'gradient_clip_norm': 'gradient_clip_norm',
+                'ctc_loss_clip_max': 'ctc_loss_clip_max',
+                'discriminator_mode': 'discriminator_mode',
+                'psnr_improvement_threshold': 'psnr_improvement_threshold',
+                'cer_weight': 'cer_weight',
+                'adaptive_loss_balancing': 'adaptive_loss_balancing',
+                'target_ctc_ratio': 'target_ctc_ratio',
+                'target_visual_ratio': 'target_visual_ratio',
+                'adaptation_rate': 'adaptation_rate',
+                'early_stopping_metric': 'early_stopping_metric',
+                'generator_version': 'generator_version',
+                'discriminator_version': 'discriminator_version'
+            }
+            
+            if key in key_mapping:
+                arg_name = key_mapping[key]
+                setattr(args, arg_name, value)
+                print(f"   ✓ {key}: {value}")
+            else:
+                # Set as custom attribute for special configs
+                setattr(args, key, value)
+        
+        print("✅ Configuration loaded from JSON")
+    
     main(args)

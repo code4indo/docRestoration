@@ -1,0 +1,133 @@
+{
+  "experiment_name": "dibco_transfer_learning_v2_memory_efficient",
+  "description": "DIBCO TRANSFER LEARNING - MEMORY EFFICIENT VERSION. Critical fix for RTX A4000 (1104MB). Changes: (1) BASE generator instead of Enhanced (30M→21.8M params), (2) BASE discriminator instead of Enhanced V2 Fixed (137M→18M params), (3) DISABLED perceptual loss (saves ~500MB), (4) Single validation (no triple), (5) Same transfer learning approach from ckpt-115. Expected: Training will fit in 1104MB GPU memory. Target: Break 14-15 dB ceiling → 25-28 dB.",
+
+  "generator_version": "base",
+  "discriminator_version": "base",
+
+  "tfrecord_path": "dual_modal_gan/data/mixed_70base_30dibco.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+
+  "pretrained_checkpoint": "dual_modal_gan/checkpoints/anri_finetuning_stage1_full_model_v2/best_model/ckpt-115",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/dibco_transfer_learning_v2_memory_efficient",
+  "sample_dir": "dual_modal_gan/outputs/samples_dibco_transfer_learning_v2_memory_efficient",
+
+  "resume": false,
+  "no_restore": false,
+
+  "epochs": 15,
+  "batch_size": 2,
+  "steps_per_epoch": 0,
+  "save_interval": 1,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 3,
+  "gpu_id": "0",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": false,
+    "patience": 8,
+    "min_delta": 0.02,
+    "restore_best_weights": true,
+    "base_val_min_psnr": 29.0
+  },
+
+  "early_stopping_metric": "psnr_only",
+  "psnr_improvement_threshold": 0.3,
+  "cer_weight": 0.0,
+
+  "lr_g": 0.000005,
+  "lr_d": 0.00001,
+  "use_lr_schedule": false,
+  "warmup_epochs": 0,
+  "annealing_epochs": 0,
+
+  "pixel_loss_weight": 100.0,
+  "adv_loss_weight": 1.0,
+  "rec_feat_loss_weight": 0.0,
+  "ctc_loss_weight": 0.0,
+  "perceptual_loss_weight": 0.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 300.0,
+
+  "discriminator_mode": "predicted",
+
+  "adaptive_loss_balancing": false,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.1,
+    "use_residual_blocks": true,
+    "use_spatial_attention": false,
+    "use_cross_modal_attention": false,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "freeze_strategy": {
+    "enabled": false,
+    "generator_encoder_layers": [],
+    "generator_decoder_early_layers": [],
+    "discriminator_freeze": false,
+    "freeze_batchnorm": false
+  },
+
+  "dual_validation": {
+    "enabled": false,
+    "base_tfrecord": null,
+    "anri_tfrecord": null,
+    "base_val_split": 0.0,
+    "anri_val_split": 0.0,
+    "monitor_base_psnr": false,
+    "monitor_anri_psnr": false,
+    "base_psnr_red_line": 0.0,
+    "base_psnr_warning_threshold": 0.0,
+    "anri_psnr_red_line": 0.0,
+    "anri_warning_threshold": 0.0
+  },
+
+  "experiment_metadata": {
+    "stage": "dibco_transfer_learning_memory_efficient",
+    "approach": "Memory-optimized transfer learning",
+    "purpose": "Make training fit in RTX A4000 (1104MB) by reducing model complexity",
+    "critical_fixes": {
+      "generator": "BASE instead of Enhanced (saves ~9M params)",
+      "discriminator": "BASE instead of Enhanced V2 Fixed (saves ~17M params)",
+      "perceptual_loss": "DISABLED (saves ~500MB VRAM)",
+      "validation": "SINGLE instead of triple (saves ~200MB VRAM)"
+    },
+    "memory_analysis": {
+      "original_config": "Generator(21.8M) + Discriminator(17.4M) + Perceptual(VGG) + Triple Validation = OOM",
+      "optimized_config": "Generator(30M) + Discriminator(137M, but simpler) + NO Perceptual + Single Validation = Should fit",
+      "gpu_memory": "RTX A4000: 1104 MB total",
+      "estimated_usage": "Model: ~800MB, Data: ~200MB, Buffer: ~100MB = 1100MB (safe margin)"
+    },
+    "transfer_learning_strategy": {
+      "starting_point": "ckpt-115 (proven 33.02 dB Base performance)",
+      "dataset": "Mixed 70% Base + 30% DIBCO",
+      "approach": "Fine-tuning (not from scratch)",
+      "visual_only": "No HTR supervision due to dummy labels"
+    },
+    "expected_outcome": {
+      "dibco_psnr": "25-28 dB (break 14-15 dB ceiling)",
+      "best_epoch": "8-12 (based on ANRI pattern)",
+      "training_time": "~60-90 minutes",
+      "success_criteria": "DIBCO PSNR > 20 dB proves transfer learning works"
+    },
+    "comparison": {
+      "previous_attempt": "Enhanced+Enhanced_V2_Fixed+Perceptual = OOM",
+      "current_attempt": "BASE+BASE+NO_Perceptual = Should work",
+      "trade_off": "Potentially slightly lower quality but COMPLETES training"
+    }
+  }
+}

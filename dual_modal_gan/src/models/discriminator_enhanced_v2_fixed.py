@@ -286,6 +286,15 @@ def build_dual_modal_discriminator_enhanced_v2_fixed(
     common_dim = config.get('cross_modal_common_dim', 128)
     batchnorm_momentum = config.get('batchnorm_momentum', 0.9)
     dropout_rate = config.get('dropout_rate', 0.1)
+    
+    # CRITICAL FIX FOR BALANCED FEATURES:
+    # If common_dim > 128, increase lstm_units to maintain text feature strength
+    # This ensures text features (2*lstm_units after BiLSTM) can compete with image features (512)
+    if common_dim >= 256:
+        lstm_units = 512  # BiLSTM outputs 2*512=1024, sufficient to match image 512
+        print(f"\n⚠️  BALANCED MODE DETECTED: common_dim={common_dim}")
+        print(f"   Auto-adjusting lstm_units: 256 → {lstm_units}")
+        print(f"   BiLSTM output: {2*lstm_units} dim → matches image features better")
 
     print("\n" + "="*80)
     print("BUILDING ENHANCED DUAL-MODAL DISCRIMINATOR V2 - FIXED")
@@ -342,8 +351,11 @@ def build_dual_modal_discriminator_enhanced_v2_fixed(
     text = Dropout(0.2)(text)  # Keep this dropout for embedding regularization
 
     # Bidirectional LSTM (captures both forward and backward context)
+    # CRITICAL FIX: Disable cuDNN to avoid mask assertion errors with DIBCO/pure visual training
+    # cuDNN requires right-padded masks, but dummy/empty labels don't satisfy this
+    # Setting recurrent_activation='sigmoid' forces standard LSTM implementation (no cuDNN)
     text = Bidirectional(
-        LSTM(lstm_units, return_sequences=True),
+        LSTM(lstm_units, return_sequences=True, recurrent_activation='sigmoid'),
         name='bidirectional_lstm'
     )(text)  # (batch, max_text_len, 2*lstm_units)
 

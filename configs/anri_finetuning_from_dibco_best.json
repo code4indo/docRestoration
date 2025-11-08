@@ -1,0 +1,274 @@
+{
+  "experiment_name": "anri_finetuning_from_dibco_best",
+  "description": "TRANSFER LEARNING FROM DIBCO BEST MODEL (epoch 105, PSNR 21.75 dB) TO ANRI REAL PALEOGRAPHIC DATASET. Source: DIBCO synthetic degradation (256 samples, PSNR 21.75 dB). Target: ANRI real 16-18th century handwritten documents (~1200 samples). Strategy: Fine-tuning with conservative LR, strong regularization, domain adaptation for paleographic complexity. Goal: Adapt synthetic-trained model to handle real historical document degradation patterns (ink bleeding, severe aging, paleographic handwriting).",
+  
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/finetuning/finetuning_combined.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  
+  "pretrained_checkpoint": "dual_modal_gan/checkpoints/dibco_transfer_from_production_v3_fixed/best_model/ckpt-285",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/anri_finetuning_from_dibco_best",
+  "sample_dir": "dual_modal_gan/outputs/samples_anri_finetuning_from_dibco_best",
+
+  "resume": false,
+  "no_restore": false,
+
+  "epochs": 200,
+  "batch_size": 2,
+  "steps_per_epoch": 0,
+  "save_interval": 1,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 5,
+  "gpu_id": "0",
+
+  "train_split": 0.824,
+  "val_split": 0.176,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": true,
+    "patience": 25,
+    "min_delta": 0.01,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "psnr_only",
+  "psnr_improvement_threshold": 0.05,
+  "cer_weight": 0.0,
+
+  "lr_g": 0.000005,
+  "lr_d": 0.00001,
+  "use_lr_schedule": true,
+  "warmup_epochs": 5,
+  "annealing_epochs": 20,
+
+  "pixel_loss_weight": 100.0,
+  "adv_loss_weight": 1.0,
+  "rec_feat_loss_weight": 5.0,
+  "ctc_loss_weight": 0.0,
+  "perceptual_loss_weight": 5.0,
+  "gradient_clip_norm": 5.0,
+  "ctc_loss_clip_max": 300.0,
+
+  "discriminator_mode": "predicted",
+
+  "adaptive_loss_balancing": false,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.4,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "freeze_strategy": {
+    "enabled": false,
+    "generator_encoder_layers": [],
+    "generator_decoder_early_layers": [],
+    "discriminator_freeze": false,
+    "freeze_batchnorm": false
+  },
+
+  "dual_validation": {
+    "enabled": false
+  },
+
+  "experiment_metadata": {
+    "purpose": "DOMAIN_ADAPTATION_REAL_PALEOGRAPHIC",
+    "methodology": "Transfer learning from DIBCO best model to ANRI real paleographic dataset",
+    "architecture": "Enhanced Generator + Enhanced V2 Fixed Discriminator",
+    "novelty": "First transfer learning from synthetic DIBCO to real 16-18th century paleographic documents",
+    "training_strategy": "Conservative fine-tuning with strong regularization for domain adaptation",
+    
+    "transfer_context": {
+      "source_experiment": "dibco_transfer_from_production_v3_fixed",
+      "source_checkpoint": "ckpt-268 (epoch 105, PSNR 21.75 dB)",
+      "source_domain": "DIBCO synthetic degradation (clean → degraded)",
+      "target_domain": "ANRI real paleographic (degraded → clean)",
+      "domain_gap": "Synthetic vs Real, Modern vs 16-18th century, Printed vs Handwritten",
+      "adaptation_challenge": "Real ink bleeding, severe aging, paleographic handwriting complexity"
+    },
+
+    "source_training_results": {
+      "experiment": "dibco_transfer_from_production_v3_fixed",
+      "best_psnr": 21.75,
+      "best_epoch": 105,
+      "total_epochs": 113,
+      "data_samples": 256,
+      "status": "Converged, early stopped at patience 9/10"
+    },
+
+    "target_dataset": {
+      "name": "ANRI Real Paleographic",
+      "source": "Indonesian National Archives (16-18th century)",
+      "train_size": "~800-1000 images (113 MB TFRecord)",
+      "val_size": "~150-200 images (24 MB TFRecord)",
+      "test_size": "~150-200 images (25 MB TFRecord)",
+      "total_estimated": "~1200 images",
+      "complexity": "HIGH - real paleographic handwriting, severe degradation",
+      "degradation_types": [
+        "Ink bleeding and fading",
+        "Paper aging and discoloration",
+        "Physical damage and tears",
+        "Background noise and stains",
+        "Paleographic script variations"
+      ]
+    },
+
+    "fine_tuning_strategy": {
+      "approach": "Conservative domain adaptation",
+      "lr_reduction": "50% from DIBCO (0.00001 → 0.000005 for generator)",
+      "regularization": "Strong dropout 0.4 (vs 0.3 in DIBCO)",
+      "gradient_stabilization": "Adopted from tuned_stabilized (5.0 clipping)",
+      "loss_weights": "Reduced perceptual/RecFeat (5.0 vs 10.0) for stability",
+      "batch_size": "Small (2) to avoid overfitting on smaller dataset",
+      "early_stopping": "Patient (15) due to higher task complexity",
+      "curriculum": "20 epochs annealing (longer warmup for domain shift)"
+    },
+
+    "key_differences_from_dibco": {
+      "learning_rate": {
+        "dibco": "lr_g=0.00001, lr_d=0.00002",
+        "anri": "lr_g=0.000005, lr_d=0.00001 (50% reduction)",
+        "rationale": "Smaller dataset, avoid overfitting, gentler domain adaptation"
+      },
+      "dropout": {
+        "dibco": "0.3",
+        "anri": "0.4",
+        "rationale": "Stronger regularization for smaller dataset, prevent overfitting"
+      },
+      "early_stopping_patience": {
+        "dibco": "10 epochs",
+        "anri": "15 epochs",
+        "rationale": "Allow more exploration due to domain gap and higher complexity"
+      },
+      "perceptual_loss_weight": {
+        "dibco": "10.0",
+        "anri": "5.0",
+        "rationale": "Gradient stabilization, avoid spikes on different domain"
+      },
+      "rec_feat_loss_weight": {
+        "dibco": "10.0",
+        "anri": "5.0",
+        "rationale": "Gradient stabilization, consistent with perceptual reduction"
+      },
+      "gradient_clip_norm": {
+        "dibco": "1.0",
+        "anri": "5.0",
+        "rationale": "Prevent gradient explosion on unfamiliar data distribution"
+      },
+      "warmup_epochs": {
+        "dibco": "5",
+        "anri": "5 (same)",
+        "rationale": "Standard warmup sufficient"
+      },
+      "annealing_epochs": {
+        "dibco": "15",
+        "anri": "20",
+        "rationale": "Longer curriculum for gradual domain adaptation"
+      }
+    },
+
+    "expected_challenges": {
+      "domain_shift": "Synthetic DIBCO degradation vs real historical degradation",
+      "complexity_increase": "Modern printed text vs paleographic handwriting",
+      "data_scarcity": "256 DIBCO samples vs ~1200 ANRI (but ANRI more varied)",
+      "quality_metrics": "PSNR may be lower due to higher task difficulty",
+      "overfitting_risk": "HIGH - real data more varied, less samples per degradation type"
+    },
+
+    "success_criteria": {
+      "minimum": "PSNR ≥ 18.0 dB (acceptable for real paleographic)",
+      "target": "PSNR ≥ 20.0 dB (good restoration quality)",
+      "ambitious": "PSNR ≥ 21.0 dB (match DIBCO performance on real data)",
+      "visual_quality": "Legible text, preserved paleographic features, minimal artifacts",
+      "htr_improvement": "CER reduction ≥ 10% on degraded vs restored"
+    },
+
+    "expected_results": {
+      "validation_psnr": "18.0-21.0 dB (lower than DIBCO due to real data complexity)",
+      "convergence_epoch": "25-40 (slower due to domain adaptation)",
+      "training_time": "~3-4 hours (100 epochs max, expect early stop ~35-40)",
+      "disk_usage": "~3-4 GB (5 checkpoints + best_model)",
+      "gpu_memory": "~8-10 GB (batch_size=2)"
+    },
+
+    "risk_mitigation": {
+      "overfitting": "Dropout 0.4, small LR, early stopping patience 15",
+      "domain_gap": "Conservative LR (50% reduction), long annealing (20 epochs)",
+      "gradient_instability": "Clip norm 5.0, reduced perceptual/RecFeat weights (5.0)",
+      "poor_performance": "If PSNR < 16.0 at epoch 20 → consider further LR reduction or freeze encoder",
+      "catastrophic_forgetting": "Monitor validation loss, if diverges → restore checkpoint and reduce LR"
+    },
+
+    "monitoring_plan": {
+      "check_interval": "Every 5 epochs",
+      "critical_checkpoints": [
+        "Epoch 5: Check warmup stability (no NaN, loss decreasing)",
+        "Epoch 10: First evaluation (expect PSNR 16-18 dB)",
+        "Epoch 20: Annealing complete (target PSNR 18-19 dB)",
+        "Epoch 30: Mid-training (target PSNR 19-20 dB)",
+        "Epoch 40: Convergence check (target PSNR 20-21 dB)"
+      ],
+      "stop_conditions": [
+        "Early stopping triggered (15 epochs no improvement)",
+        "NaN loss detected (gradient explosion)",
+        "PSNR plateau < 16.0 dB for 10 epochs (poor domain adaptation)",
+        "Target 21.0 dB reached (mission accomplished)"
+      ],
+      "intervention_triggers": [
+        "Epoch 10: PSNR < 15.0 → reduce LR to 0.000003, increase gradient clip to 10.0",
+        "Epoch 20: PSNR < 17.0 → freeze encoder layers, only train decoder",
+        "Epoch 30: PSNR decreasing → restore best checkpoint, reduce LR by 50%"
+      ]
+    },
+
+    "comparison_baseline": {
+      "dibco_performance": {
+        "psnr": 21.75,
+        "data": "Synthetic degradation",
+        "samples": 256
+      },
+      "anri_target": {
+        "psnr": "18-21 dB (acceptable range)",
+        "data": "Real paleographic",
+        "samples": "~1200",
+        "quality_gap": "Expected 1-3 dB lower due to real data complexity"
+      }
+    },
+
+    "validation_strategy": {
+      "metric": "PSNR only (CER weight = 0.0)",
+      "rationale": "Focus on image quality restoration, HTR is separate downstream task",
+      "val_data": "finetuning_val.tfrecord (~150-200 real images)",
+      "test_data": "finetuning_test.tfrecord (~150-200 real images, held out for final evaluation)"
+    },
+
+    "post_training_evaluation": {
+      "test_set": "finetuning_test.tfrecord (never seen during training/validation)",
+      "metrics": [
+        "PSNR, SSIM (image quality)",
+        "CER, WER (HTR accuracy on degraded vs restored)",
+        "Visual inspection (preservation of paleographic features)",
+        "Artifact detection (over-smoothing, text distortion)"
+      ],
+      "comparison": [
+        "Degraded input vs Restored output (quality improvement)",
+        "DIBCO test set vs ANRI test set (domain transfer effectiveness)",
+        "Baseline (no restoration) vs GAN restoration (HTR improvement)"
+      ]
+    }
+  }
+}

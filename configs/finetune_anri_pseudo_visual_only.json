@@ -1,0 +1,77 @@
+{
+  "experiment_name": "finetune_anri_pseudo_visual_only",
+  "description": "FINE-TUNING on 33 ANRI pages via pseudo-labeling. Visual-only mode (no text labels). Domain adaptation from synthetic to real paleographic documents. Patch-based training with conservative hyperparameters to prevent overfitting.",
+
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "DokumenRusak/anri_tfrecords/train_anri_pseudo.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/finetune_anri_pseudo_v1",
+  "sample_dir": "dual_modal_gan/outputs/samples_finetune_anri_pseudo_v1",
+
+  "resume": true,
+  "resume_from": "dual_modal_gan/checkpoints/thin_stroke_preservation_v1_academic/best_model/ckpt-99",
+  "no_restore": false,
+
+  "epochs": 15,
+  "batch_size": 8,
+  "steps_per_epoch": 0,
+  "save_interval": 1,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 10,
+  "gpu_id": "0",
+
+  "train_split": 1.0,
+  "val_split": 0.0,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": false,
+    "patience": 5,
+    "min_delta": 0.001,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "pixel_loss",
+  "psnr_improvement_threshold": 0.5,
+  "cer_weight": 0.0,
+
+  "lr_g": 1e-6,
+  "lr_d": 1e-6,
+  "use_lr_schedule": false,
+  "warmup_epochs": 0,
+  "annealing_epochs": 0,
+
+  "pixel_loss_weight": 50.0,
+  "adv_loss_weight": 2.0,
+  "rec_feat_loss_weight": 0.0,
+  "ctc_loss_weight": 0.0,
+  "perceptual_loss_weight": 1.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 400.0,
+
+  "discriminator_mode": "predicted",
+
+  "adaptive_loss_balancing": false,
+  "target_ctc_ratio": 0.0,
+  "target_visual_ratio": 1.0,
+  "adaptation_rate": 0.0,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.1,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  }
+}

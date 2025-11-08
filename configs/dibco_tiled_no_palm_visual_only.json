@@ -1,0 +1,95 @@
+{
+  "experiment_name": "dibco_tiled_no_palm_visual_only",
+  "description": "CLEAN VISUAL-ONLY FINE-TUNING on DIBCO 2009-2018 (NO PALM) with tiling augmentation. 256 samples from 102 images (2.5x augmentation). Pure visual restoration without recognizer overhead. Fixed pairing issue by excluding PALM dataset.",
+  
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/dibco_tiled_no_palm.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": null,
+  "checkpoint_dir": "dual_modal_gan/checkpoints/dibco_tiled_no_palm_visual_only",
+  "sample_dir": "dual_modal_gan/outputs/samples_dibco_tiled_no_palm",
+
+  "resume": false,
+  "no_restore": false,
+  "pretrained_checkpoint": "dual_modal_gan/checkpoints/thin_stroke_preservation_v1_academic/best_model/ckpt-99",
+
+  "epochs": 50,
+  "batch_size": 4,
+  "steps_per_epoch": 0,
+  "save_interval": 3,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 3,
+  "gpu_id": "0",
+
+  "train_split": 0.8,
+  "val_split": 0.1,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": false,
+    "patience": 12,
+    "min_delta": 0.05,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "psnr_only",
+  "psnr_improvement_threshold": 0.3,
+  "cer_weight": 0.0,
+
+  "lr_g": 0.00005,
+  "lr_d": 0.00005,
+  "use_lr_schedule": false,
+  "warmup_epochs": 0,
+  "annealing_epochs": 0,
+
+  "pixel_loss_weight": 200.0,
+  "adv_loss_weight": 1.5,
+  "rec_feat_loss_weight": 0.0,
+  "ctc_loss_weight": 0.0,
+  "perceptual_loss_weight": 10.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 300.0,
+
+  "discriminator_mode": "predicted",
+
+  "adaptive_loss_balancing": false,
+  "target_ctc_ratio": 0.0,
+  "target_visual_ratio": 1.0,
+  "adaptation_rate": 0.0,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.15,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "experiment_metadata": {
+    "fixes_applied": [
+      "REMOVED PALM dataset (28% suspicious correlation) - now 256 clean samples",
+      "SET recognizer_weights to NULL - true visual-only mode",
+      "NO recognizer loading = saves ~2GB GPU memory",
+      "Clean DIBCO 2009-2018 pairs only (mean correlation 0.77)"
+    ],
+    "dataset": {
+      "source": "DIBCO 2009-2018 (excluding 2012 test set and PALM)",
+      "source_images": 102,
+      "output_tiles": 256,
+      "augmentation": "2.5x (tiling with 320x1280, 25% overlap)",
+      "mean_correlation": "0.77 (high quality pairs)"
+    },
+    "training_mode": "PURE VISUAL-ONLY (no recognizer, no CTC, no rec_feat)",
+    "target": "PSNR >25 dB on clean historical document pairs"
+  }
+}

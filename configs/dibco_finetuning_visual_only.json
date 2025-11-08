@@ -1,0 +1,109 @@
+{
+  "experiment_name": "dibco_finetuning_visual_only",
+  "description": "FINE-TUNING on DIBCO real documents for VISUAL QUALITY ONLY. Loads best checkpoint from thin_stroke_preservation_v1_academic (ckpt-99), disables CTC loss (no text labels in DIBCO), focuses on pixel-level restoration with lower LR. Target: Improve generalization to real historical degradation patterns (bleed-through, fading, stains) not seen in synthetic data.",
+  
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/dibco_finetuning.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/dibco_finetuning_visual_only",
+  "sample_dir": "dual_modal_gan/outputs/samples_dibco_finetuning",
+
+  "resume": true,
+  "no_restore": false,
+  "pretrained_checkpoint": "dual_modal_gan/checkpoints/thin_stroke_preservation_v1_academic/best_model/ckpt-99",
+
+  "epochs": 20,
+  "batch_size": 4,
+  "steps_per_epoch": 0,
+  "save_interval": 2,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 2,
+  "gpu_id": "0",
+
+  "train_split": 0.8,
+  "val_split": 0.1,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": false,
+    "patience": 8,
+    "min_delta": 0.05,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "psnr_only",
+  "psnr_improvement_threshold": 0.5,
+  "cer_weight": 0.0,
+
+  "lr_g": 0.00005,
+  "lr_d": 0.00005,
+  "use_lr_schedule": false,
+  "warmup_epochs": 0,
+  "annealing_epochs": 0,
+
+  "pixel_loss_weight": 200.0,
+  "adv_loss_weight": 1.5,
+  "rec_feat_loss_weight": 0.0,
+  "ctc_loss_weight": 0.0,
+  "perceptual_loss_weight": 10.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 300.0,
+
+  "discriminator_mode": "predicted",
+
+  "adaptive_loss_balancing": false,
+  "target_ctc_ratio": 0.0,
+  "target_visual_ratio": 1.0,
+  "adaptation_rate": 0.0,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.1,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "experiment_metadata": {
+    "hypothesis": "Model trained on synthetic data (thin_stroke_preservation_v1) will improve on REAL historical documents through fine-tuning with lower LR and visual-only objectives.",
+    "baseline_model": "thin_stroke_preservation_v1_academic (ckpt-99)",
+    "baseline_psnr": "~30 dB (synthetic dataset)",
+    "target_psnr": ">32 dB (DIBCO real documents)",
+    "training_strategy": "Fine-tuning with VISUAL-ONLY loss (no CTC, no HTR)",
+    "rationale": {
+      "ctc_loss_0": "DIBCO has NO text annotations - pure binarization task. CTC loss disabled completely.",
+      "rec_feat_loss_0": "No HTR features needed - focus purely on visual restoration quality.",
+      "lr_reduced_40x": "LR reduced from 0.0002 to 0.00005 (40x lower) - prevents catastrophic forgetting of synthetic knowledge, allows gentle adaptation to real degradation.",
+      "pixel_200": "Maintained from baseline - STRONGEST preservation signal for thin strokes.",
+      "adv_1.5": "Maintained from baseline - balanced adversarial for realistic output.",
+      "perceptual_10": "Maintained from baseline - VGG features preserve topology and structure.",
+      "no_warmup_annealing": "Not needed - starting from well-trained checkpoint, not from scratch.",
+      "early_stopping_psnr_only": "Monitor PSNR only (no CER available without labels). Patience=8 for real data variability.",
+      "batch_size_4": "Increased from 2 to 4 - DIBCO images are smaller/simpler than synthetic paleographic text.",
+      "epochs_20": "Conservative fine-tuning - avoid overfitting to limited DIBCO samples."
+    },
+    "dibco_characteristics": {
+      "degradation_types": "Bleed-through, fading, stains, uneven illumination, paper texture",
+      "difference_from_synthetic": "Real physical degradation vs simulated noise",
+      "expected_benefit": "Improved generalization to real-world historical documents",
+      "dataset_size": "~100-200 samples (all DIBCO years except 2012)",
+      "test_set": "DIBCO 2012 (held out, never seen during training)"
+    },
+    "risk_mitigation": {
+      "overfitting": "Low LR + early stopping + limited epochs",
+      "catastrophic_forgetting": "Very low LR (0.00005) + keep loss weights from baseline",
+      "domain_shift": "Gradual adaptation through fine-tuning, not retraining from scratch"
+    }
+  }
+}

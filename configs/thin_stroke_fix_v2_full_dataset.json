@@ -1,0 +1,202 @@
+{
+  "experiment_name": "thin_stroke_fix_v2_full_dataset",
+  "description": "FINE-TUNING v2 - Full Dataset Training (steps_per_epoch=0). Continues from thin_stroke_fix_v1_souibgui best checkpoint (ckpt-99). OBJECTIVE: Expose model to ENTIRE training set (not just 100 steps/epoch) for deeper convergence and better generalization. STRATEGY: Lower LR (5x reduction) to prevent catastrophic forgetting, longer training (100 epochs), conservative early stopping. Expected: CER <15%, PSNR >25, Thin Stroke >75%, better handling of edge cases and rare degradation patterns.",
+  
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/thin_stroke_fix_v2_full_dataset",
+  "sample_dir": "dual_modal_gan/outputs/samples_thin_stroke_fix_v2_full_dataset",
+
+  "resume": true,
+  "resume_from": "dual_modal_gan/checkpoints/thin_stroke_fix_v1_souibgui/best_model/ckpt-99",
+  "no_restore": false,
+
+  "epochs": 100,
+  "batch_size": 2,
+  "steps_per_epoch": 0,
+  "save_interval": 2,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 5,
+  "gpu_id": "0",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": true,
+    "patience": 15,
+    "min_delta": 0.005,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "combined",
+  "psnr_improvement_threshold": 1.0,
+  "cer_weight": 0.3,
+
+  "lr_g": 0.00004,
+  "lr_d": 0.00004,
+  "use_lr_schedule": true,
+  "warmup_epochs": 3,
+  "annealing_epochs": 30,
+
+  "pixel_loss_weight": 50.0,
+  "adv_loss_weight": 2.0,
+  "rec_feat_loss_weight": 10.0,
+  "ctc_loss_weight": 1.0,
+  "perceptual_loss_weight": 25.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 300.0,
+
+  "discriminator_mode": "ground_truth",
+
+  "adaptive_loss_balancing": false,
+  "target_ctc_ratio": 0.40,
+  "target_visual_ratio": 0.60,
+  "adaptation_rate": 0.08,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.1,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "experiment_metadata": {
+    "parent_experiment": "thin_stroke_fix_v1_souibgui_inspired",
+    "parent_checkpoint": "dual_modal_gan/checkpoints/thin_stroke_fix_v1_souibgui/best_model/ckpt-99",
+    "parent_results": {
+      "epochs_trained": 100,
+      "steps_per_epoch": 100,
+      "total_steps": 10000,
+      "estimated_psnr": "~25 dB",
+      "estimated_cer": "~15-20%",
+      "note": "Model trained on SUBSET of data (100 steps/epoch × batch_size=2 = 200 samples/epoch)"
+    },
+    
+    "hypothesis": "Parent experiment (thin_stroke_fix_v1) trained on LIMITED data subset (100 steps/epoch). By exposing model to FULL DATASET (steps_per_epoch=0 = ALL samples), model will: (1) Learn rare degradation patterns not seen in subset, (2) Reduce overfitting to specific subset samples, (3) Improve generalization to test set, (4) Achieve lower CER through better text understanding. Risk: Longer training time (~10x) but better convergence.",
+    
+    "config_changes_from_parent": {
+      "steps_per_epoch": {
+        "old": 100,
+        "new": 0,
+        "reason": "CRITICAL - Use FULL dataset instead of 100-step subset. steps_per_epoch=0 means 'use all available samples'. Estimated ~5000-10000 steps/epoch (depending on tfrecord size). This exposes model to ENTIRE data distribution."
+      },
+      "epochs": {
+        "old": 50,
+        "new": 100,
+        "reason": "Compensate for full dataset usage. With full data, each epoch is more meaningful, so can train longer. Early stopping (patience=15) will prevent overtraining."
+      },
+      "lr_g": {
+        "old": 0.0002,
+        "new": 0.00004,
+        "reason": "CRITICAL - 5x LOWER LR (0.0002 → 0.00004) for fine-tuning from checkpoint. Prevents catastrophic forgetting of learned weights. This is CONSERVATIVE fine-tuning, not aggressive retraining."
+      },
+      "lr_d": {
+        "old": 0.0002,
+        "new": 0.00004,
+        "reason": "Match Generator LR reduction. Keep G and D learning rates synchronized."
+      },
+      "save_interval": {
+        "old": 1,
+        "new": 5,
+        "reason": "Reduce checkpoint frequency to save disk space. With full dataset, each epoch takes longer, so saving every 5 epochs is sufficient."
+      },
+      "patience": {
+        "old": 20,
+        "new": 15,
+        "reason": "Reduce patience since we're fine-tuning (not training from scratch). Model should converge faster from good starting point."
+      },
+      "min_delta": {
+        "old": 0.01,
+        "new": 0.005,
+        "reason": "More sensitive early stopping for fine-tuning. Expect smaller incremental improvements from already-good checkpoint."
+      },
+      "warmup_epochs": {
+        "old": 5,
+        "new": 3,
+        "reason": "Shorter warmup since starting from trained checkpoint (not random initialization)."
+      },
+      "annealing_epochs": {
+        "old": 15,
+        "new": 30,
+        "reason": "Longer annealing window for full dataset training. Gradual LR decay over 30 epochs for fine-tuning stability."
+      },
+      "max_checkpoints": {
+        "old": 3,
+        "new": 5,
+        "reason": "Keep more checkpoints for analysis. With save_interval=5, this covers 25 epochs of history."
+      },
+      "resume": {
+        "old": false,
+        "new": true,
+        "reason": "CRITICAL - Enable checkpoint resumption to continue from parent experiment."
+      },
+      "resume_from": {
+        "old": null,
+        "new": "dual_modal_gan/checkpoints/thin_stroke_fix_v1_souibgui/best_model/ckpt-99",
+        "reason": "CRITICAL - Load best checkpoint from parent experiment as starting point."
+      },
+      "no_restore": {
+        "old": true,
+        "new": false,
+        "reason": "Allow weight restoration from checkpoint (opposite of no_restore)."
+      }
+    },
+    
+    "loss_weights": {
+      "note": "UNCHANGED from parent - Keep proven loss balance from Souibgui-inspired config",
+      "visual_losses": "pixel(50) + perceptual(25) = 75",
+      "adversarial": 2.0,
+      "semantic_losses": "ctc(1.0) + rec_feat(10) = 11",
+      "ratio": "Visual:Adv:Semantic = 75:2:11 = 37.5:1:5.5"
+    },
+    
+    "expected_improvements": {
+      "cer": "15-20% → <12% (approach Souibgui 11.74%)",
+      "psnr": "~25 dB → 26-28 dB (more stable training)",
+      "thin_stroke_preservation": ">75% → >80% (see rare patterns)",
+      "generalization": "Better test set performance (less overfitting to 100-step subset)",
+      "edge_cases": "Handle rare degradation patterns not seen in subset"
+    },
+    
+    "training_time_estimate": {
+      "parent_v1": "100 epochs × 100 steps × 2 batch = 10K steps (~2-3 hours)",
+      "current_v2": "100 epochs × ~5000 steps × 2 batch = 500K steps (~20-30 hours with early stopping)",
+      "note": "Expect ~10x longer training time but significant quality improvement"
+    },
+    
+    "risk_mitigation": {
+      "catastrophic_forgetting": "Mitigated by 5x lower LR (0.00004)",
+      "overfitting": "Mitigated by early stopping (patience=15, min_delta=0.005)",
+      "training_cost": "Mitigated by save_interval=5 (reduce checkpoint I/O)",
+      "divergence": "Mitigated by LR schedule (warmup + annealing)"
+    },
+    
+    "validation_strategy": {
+      "compare_with_parent": "Test on SAME held-out set as parent experiment",
+      "metrics_to_track": ["PSNR", "SSIM", "CER", "Thin Stroke %"],
+      "visual_inspection": "Sample restored images every 10 epochs",
+      "decision_criteria": "If CER > parent after 30 epochs → stop and investigate"
+    },
+    
+    "next_steps": {
+      "if_success": "Proceed to ANRI fine-tuning (configs/finetune_anri_from_v2_checkpoint.json)",
+      "if_partial_success": "Analyze which degradation types improved vs degraded",
+      "if_failure": "Revert to parent checkpoint, try intermediate steps_per_epoch (e.g., 500)"
+    }
+  }
+}

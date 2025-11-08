@@ -1,0 +1,173 @@
+{
+  "experiment_name": "single_modal_fair_comparison",
+  "description": "FAIR COMPARISON - Single-Modal baseline with IDENTICAL settings to dual-modal production config. Same: (1) batch_size=4, (2) steps=829 (100% data), (3) VGG perceptual loss weight=5.0, (4) 50 epochs, (5) Same learning rates. ONLY DIFFERENCE: Image-only discriminator (NO text features, NO CTC loss). This proves whether dual-modal truly provides benefit.",
+  
+  "_comment_rationale": "=== WHY THIS CONFIG ===",
+  "_purpose": "Apple-to-apple comparison: dual-modal vs single-modal with ALL other factors controlled",
+  "_controlled_variables": [
+    "✅ Same batch_size: 4",
+    "✅ Same data coverage: 829 steps (100%)",
+    "✅ Same VGG perceptual loss: 5.0",
+    "✅ Same pixel loss: 20.0",
+    "✅ Same adversarial loss: 3.0",
+    "✅ Same epochs: 50 with patience=10",
+    "✅ Same learning rates: 0.0002",
+    "✅ Same early stopping: patience=10",
+    "✅ Same generator: enhanced",
+    "✅ Same validation: full 710 samples"
+  ],
+  "_only_difference": "Discriminator: single-modal IMAGE-ONLY (no text features, no HTR recognizer, no CTC loss)",
+  "_key_ablation": "CTC loss = 0.0 for single-modal (vs 5.0 for dual-modal) - this is THE critical difference",
+  
+  "_comment_claim": "=== RESEARCH CLAIM TO VALIDATE ===",
+  "_hypothesis": "Dual-modal discriminator (image + text features) provides better guidance → higher PSNR/CER",
+  "_null_hypothesis": "Text features provide no benefit, single-modal achieves same results",
+  "_expected_dual_modal": "PSNR 25-28 dB (if VGG helps)",
+  "_expected_single_modal": "PSNR ~24-26 dB (should be lower without text guidance)",
+  "_minimum_gap_for_claim": "Dual-modal must be ≥1.0 dB PSNR better to claim superiority",
+  
+  "_comment_comparison_table": "=== EXPECTED RESULTS TABLE ===",
+  "_baseline_quickwin_dual": "PSNR 22.68 dB, CER 0.3137 (12% data, no VGG)",
+  "_production_dual_modal": "PSNR 25-28 dB, CER <0.30 (target with 100% data + VGG)",
+  "_this_single_modal": "PSNR 24-26 dB, CER ~0.31 (should be lower than dual-modal)",
+  "_gap_interpretation": "If gap <0.5 dB → dual-modal not significant. If gap >1.5 dB → strong evidence",
+  
+  "_comment_data": "=== DATA CONFIGURATION ===",
+  "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "_comment_charset": "⚠️ NOT USED by single-modal discriminator, but required by launcher script",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  "_comment_recognizer": "⚠️ NOT USED by single-modal (CTC=0), but required by launcher script",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/single_modal_fair_comparison",
+  "sample_dir": "dual_modal_gan/outputs/samples_single_modal_fair_comparison",
+  
+  "resume": false,
+  "no_restore": true,
+  
+  "_comment_model": "=== MODEL ARCHITECTURE ===",
+  "generator_version": "enhanced",
+  "discriminator_version": "single_modal",
+  "_discriminator_note": "Image-only discriminator - NO text features, NO HTR recognizer needed",
+  "discriminator_mode": "ground_truth",
+  "recognizer_trainable": false,
+  
+  "_comment_discriminator": "=== DISCRIMINATOR CONFIG ===",
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 512,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.1
+  },
+  "_disc_note": "Config kept same as dual-modal, but NO text fusion happens in single_modal discriminator",
+  
+  "_comment_lstm": "=== TEXT FEATURES DISABLED ===",
+  "text_lstm_units": 0,
+  "_lstm_note": "⚠️ SINGLE-MODAL: LSTM not used (no text recognition)",
+  
+  "_comment_training": "=== TRAINING CONFIGURATION ===",
+  "epochs": 50,
+  "_comment_epochs": "Same as dual-modal production",
+  
+  "batch_size": 4,
+  "_comment_batch_size": "Same as dual-modal (safe with VGG)",
+  
+  "steps_per_epoch": 829,
+  "_comment_steps": "100% training data coverage (3,316/3,317 samples)",
+  
+  "eval_interval": 1,
+  "_comment_eval": "Validate every epoch for monitoring",
+  
+  "save_interval": 5,
+  "seed": 42,
+  
+  "_comment_optimizer": "=== OPTIMIZER SETTINGS ===",
+  "lr_generator": 0.0002,
+  "lr_discriminator": 0.0002,
+  "gradient_clip_norm": 1.0,
+  "_optimizer_note": "Identical to dual-modal production",
+  
+  "_comment_losses": "=== LOSS WEIGHTS (CRITICAL FOR FAIR COMPARISON) ===",
+  "pixel_loss_weight": 20.0,
+  "_pixel_note": "Same as dual-modal",
+  
+  "perceptual_loss_weight": 5.0,
+  "_perceptual_note": "VGG loss ACTIVE - same as dual-modal",
+  
+  "adversarial_loss_weight": 3.0,
+  "_adv_note": "Same total effective loss as dual-modal (which has adv=1.5 + ctc=5.0 = 6.5 total)",
+  
+  "ctc_loss_weight": 0.0,
+  "_ctc_note": "⚠️ CRITICAL: CTC loss DISABLED for single-modal (no text supervision)",
+  
+  "rec_feat_loss_weight": 0.0,
+  "_rec_feat_note": "⚠️ ABLATION: RecFeat loss DISABLED (no text features in discriminator)",
+  
+  "_comment_curriculum": "=== CURRICULUM LEARNING ===",
+  "curriculum_learning": false,
+  "_curriculum_note": "Disabled for single-modal (no CTC to anneal)",
+  "warmup_epochs": 0,
+  "_warmup_note": "⚠️ SINGLE-MODAL: No curriculum needed (no CTC to anneal)",
+  
+  "annealing_epochs": 0,
+  "_annealing_note": "⚠️ SINGLE-MODAL: No annealing (CTC weight stays 0.0)",
+  
+  "_comment_early_stopping": "=== EARLY STOPPING ===",
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": false
+  },
+  "_early_stopping_note": "curriculum_aware=false because no CTC annealing in single-modal",
+  "patience": 10,
+  "min_delta": 0.01,
+  "restore_best_weights": true,
+  "early_stopping_metric": "combined",
+  "psnr_improvement_threshold": 2.0,
+  "_stopping_note": "Same patience and criteria as dual-modal",
+  
+  "_comment_device": "=== HARDWARE ===",
+  "gpu_id": "1",
+  "_comment_gpu": "GPU 1 for parallel training (dual-modal runs on GPU 0)",
+  "max_checkpoints": 1,
+  "save_best_model_separately": true,
+  
+  "_comment_analysis": "=== POST-TRAINING ANALYSIS ===",
+  "_metrics_to_compare": [
+    "PSNR (primary metric)",
+    "SSIM (structural similarity)",
+    "CER (character error rate)",
+    "Training stability (gradient norms)",
+    "Convergence speed (epochs to best)",
+    "Visual quality (qualitative)"
+  ],
+  
+  "_statistical_test": "Use paired t-test on validation set to confirm significance",
+  "_significance_level": "p < 0.05 with effect size Cohen's d > 0.5",
+  
+  "_comment_expected_timeline": "=== TIMELINE ===",
+  "_per_epoch": "~15 minutes (829 steps, single-modal is slightly faster than dual-modal)",
+  "_expected_stop": "20-30 epochs (~5-7.5 hours)",
+  "_max_runtime": "50 epochs (~12.5 hours)",
+  
+  "_comment_success_criteria": "=== SUCCESS CRITERIA ===",
+  "_criterion_1": "PSNR ≥ 24 dB (should beat baseline 20.01 dB significantly)",
+  "_criterion_2": "PSNR < dual-modal by ≥1.0 dB (validates dual-modal superiority)",
+  "_criterion_3": "CER ≤ 0.32 (should be similar or slightly worse than dual-modal)",
+  "_criterion_4": "SSIM ≥ 0.94 (structural quality maintained)",
+  
+  "_comment_novelty": "=== FOR PAPER ===",
+  "_ablation_study": "This is Table X in ablation study section",
+  "_comparison_format": {
+    "method": "Single-Modal (Image Only)",
+    "discriminator": "Image features only",
+    "psnr_db": "24-26 (expected)",
+    "cer_percent": "~31 (expected)",
+    "ssim": "~0.94-0.95 (expected)"
+  },
+  "_paper_claim": "Dual-modal discriminator improves PSNR by X.X dB over single-modal baseline (p < 0.05)",
+  
+  "_comment_launch": "=== LAUNCH COMMAND ===",
+  "_command": "nohup ./scripts/universal_train_from_json.sh configs/single_modal_fair_comparison.json &",
+  "_monitor": "tail -f logs/single_modal_fair_comparison_*.log",
+  "_parallel_note": "Can run simultaneously with dual-modal (uses same GPU 0 but time-shared)",
+  "_recommendation": "Wait for dual-modal to finish first, then launch this for clean comparison"
+}

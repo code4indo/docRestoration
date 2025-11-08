@@ -1,0 +1,125 @@
+{
+  "experiment_name": "thin_stroke_fix_v1p5_intermediate",
+  "description": "INTERMEDIATE Fine-tuning - 500 steps/epoch (5x increase from v1). Balanced approach between subset (100 steps) and full dataset (1658 steps). Continues from v1 checkpoint. OBJECTIVE: Gradual data expansion to validate improvement before committing to full 55-hour training. Conservative strategy for cost optimization.",
+  
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/thin_stroke_fix_v1p5_intermediate",
+  "sample_dir": "dual_modal_gan/outputs/samples_thin_stroke_fix_v1p5_intermediate",
+
+  "resume": true,
+  "resume_from": "dual_modal_gan/checkpoints/thin_stroke_fix_v1_souibgui/best_model/ckpt-99",
+  "no_restore": false,
+
+  "epochs": 50,
+  "batch_size": 2,
+  "steps_per_epoch": 500,
+  "save_interval": 5,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 5,
+  "gpu_id": "0",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": true,
+    "patience": 15,
+    "min_delta": 0.005,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "combined",
+  "psnr_improvement_threshold": 1.0,
+  "cer_weight": 0.3,
+
+  "lr_g": 0.0001,
+  "lr_d": 0.0001,
+  "use_lr_schedule": true,
+  "warmup_epochs": 3,
+  "annealing_epochs": 20,
+
+  "pixel_loss_weight": 50.0,
+  "adv_loss_weight": 2.0,
+  "rec_feat_loss_weight": 10.0,
+  "ctc_loss_weight": 1.0,
+  "perceptual_loss_weight": 25.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 300.0,
+
+  "discriminator_mode": "ground_truth",
+
+  "adaptive_loss_balancing": false,
+  "target_ctc_ratio": 0.40,
+  "target_visual_ratio": 0.60,
+  "adaptation_rate": 0.08,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.1,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "experiment_metadata": {
+    "strategy": "INTERMEDIATE - Gradual data expansion before full dataset",
+    "parent_experiment": "thin_stroke_fix_v1_souibgui_inspired",
+    "parent_checkpoint": "ckpt-99",
+    
+    "rationale": {
+      "why_not_full_dataset_immediately": "Full dataset = 1658 steps/epoch × 100 epochs = 55-83 hours training. Too expensive without validation. Intermediate approach (500 steps × 50 epochs = 8-12 hours) allows quick validation before committing to full training.",
+      
+      "steps_per_epoch_progression": {
+        "v1": "100 steps (200 samples/epoch) - BASELINE",
+        "v1.5_this": "500 steps (1000 samples/epoch) - 5x increase",
+        "v2_future": "1658 steps (3317 samples/epoch) - 16.6x increase (if v1.5 successful)"
+      },
+      
+      "lr_strategy": {
+        "v1": "0.0002 (training from scratch on subset)",
+        "v1.5_this": "0.0001 (2x reduction for intermediate fine-tuning)",
+        "v2_future": "0.00004 (5x reduction for full dataset fine-tuning)"
+      }
+    },
+    
+    "training_time_comparison": {
+      "v1_baseline": "100 epochs × 100 steps = 2-3 hours",
+      "v1.5_this": "50 epochs × 500 steps = 8-12 hours",
+      "v2_full": "100 epochs × 1658 steps = 55-83 hours"
+    },
+    
+    "cost_optimization": {
+      "compute_hours_saved": "43-71 hours if v1.5 shows no improvement",
+      "validation_speed": "Get results in 8-12 hours vs 3 days",
+      "pivot_ability": "Can stop early if diverges, minimal cost"
+    },
+    
+    "expected_results": {
+      "if_improvement": "CER 15-20% → 12-15%, proceed to v2 full dataset",
+      "if_no_improvement": "CER stays ~15-20%, investigate why before v2",
+      "if_degradation": "CER > 20%, stop immediately, analyze root cause"
+    },
+    
+    "decision_tree": {
+      "after_v1.5": {
+        "if_cer_improvement_5_percent": "Proceed to v2 full dataset training",
+        "if_cer_improvement_2_percent": "Maybe proceed, but set realistic expectations",
+        "if_cer_improvement_0_percent": "STOP - Don't waste 55 hours on v2, pivot to ANRI fine-tuning instead"
+      }
+    }
+  }
+}

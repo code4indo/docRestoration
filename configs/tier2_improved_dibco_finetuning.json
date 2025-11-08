@@ -1,0 +1,73 @@
+{
+  "experiment_name": "tier2_improved_dibco_finetuning",
+  "description": "TIER 2 IMPROVEMENT - Fine-tuning on DIBCO with optimal hyperparameters: batch_size=8, LR scheduling with cosine annealing + warmup, SSIM loss component, improved early stopping. Target: +2-3 dB improvement over baseline (22.99 dB → 24-25 dB).",
+
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/dibco_tiled_no_palm.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/tier2_improved_dibco",
+  "sample_dir": "dual_modal_gan/outputs/samples_tier2_improved_dibco",
+
+  "resume": false,
+  "no_restore": false,
+
+  "epochs": 50,
+  "batch_size": 4,
+  "steps_per_epoch": 0,
+  "save_interval": 2,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 8,
+  "gpu_id": "0,1",
+
+  "train_split": 0.82,
+  "val_split": 0.18,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": false,
+    "patience": 8,
+    "min_delta": 0.1,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "psnr_only",
+  "psnr_improvement_threshold": 1.0,
+
+  "lr_g": 0.0002,
+  "lr_d": 0.0002,
+  "use_lr_schedule": true,
+  "lr_decay_epochs": 45,
+  "lr_alpha": 0.01,
+  "warmup_epochs": 5,
+  "annealing_epochs": 40,
+
+  "pixel_loss_weight": 100.0,
+  "adv_loss_weight": 1.5,
+  "rec_feat_loss_weight": 0.0,
+  "ctc_loss_weight": 0.0,
+  "perceptual_loss_weight": 5.0,
+  "gradient_clip_norm": 5.0,
+
+  "discriminator_mode": "predicted",
+
+  "adaptive_loss_balancing": false,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.3,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": false,
+    "attention_type": "scaled_dot_product"
+  }
+}

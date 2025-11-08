@@ -1,0 +1,76 @@
+{
+  "experiment_name": "tier2_dibco_from_scratch_improved_config",
+  "description": "TIER 2 IMPLEMENTATION: Train from SCRATCH dengan konfigurasi OPTIMAL berdasarkan analisis run a6a86fd6. Improvements: LR scheduling, batch 4, lower LR, reduced epochs, tighter early stopping. Target: 24-26 dB PSNR (+2-3 dB dari baseline 22.99 dB).",
+  
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/dibco_tiled_no_palm.tfrecord",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/tier2_dibco_from_scratch",
+  "sample_dir": "dual_modal_gan/outputs/samples_tier2_dibco_from_scratch",
+
+  "resume": false,
+
+  "epochs": 40,
+  "batch_size": 4,
+  "steps_per_epoch": 0,
+  "save_interval": 3,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 5,
+  "gpu_id": "0,1",
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "patience": 8,
+    "min_delta": 0.05,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "psnr_only",
+
+  "lr_g": 0.0001,
+  "lr_d": 0.0001,
+  "use_lr_schedule": true,
+  "lr_decay_epochs": 35,
+  "lr_alpha": 0.01,
+  "warmup_epochs": 5,
+
+  "pixel_loss_weight": 100.0,
+  "adv_loss_weight": 1.5,
+  "perceptual_loss_weight": 5.0,
+  "ctc_loss_weight": 0.0,
+  "rec_feat_loss_weight": 0.0,
+  "gradient_clip_norm": 1.0,
+
+  "discriminator_mode": "predicted",
+
+  "experiment_metadata": {
+    "baseline_run": "a6a86fd6a82445cf825e1b7c47ec8ff5",
+    "baseline_issues": {
+      "no_lr_scheduling": "Constant LR 0.0002 caused late-stage instability (std 0.50 dB)",
+      "high_lr": "LR too high for fine details → oscillation",
+      "late_overfitting": "Converged epoch 18, degraded to epoch 50",
+      "batch_size_4": "Small batch OK, but needs LR adjustment"
+    },
+    "tier2_solution": {
+      "lr_scheduling": "Cosine decay 0.0001 → 0.000001 over 35 epochs",
+      "lower_initial_lr": "0.0001 (vs 0.0002) → 50% reduction for stability",
+      "tighter_early_stopping": "Patience 8 (vs 12), min_delta 0.05",
+      "reduced_epochs": "40 (vs 50) → prevent late-stage overfitting",
+      "warmup": "5 epochs gradual LR increase for stable start",
+      "visual_only_mode": "CTC=0, RecFeat=0 → pure visual optimization"
+    },
+    "expected_outcome": {
+      "target_psnr": "24-26 dB (+2-3 dB from 22.99 dB baseline)",
+      "convergence": "Epoch 15-20 with stable plateau",
+      "no_degradation": "LR scheduling prevents late-epoch collapse",
+      "best_epoch_save": "Early stopping captures optimal model"
+    },
+    "training_strategy": "Clean slate training with all Tier 2 improvements applied from epoch 0"
+  }
+}

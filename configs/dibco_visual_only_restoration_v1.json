@@ -1,0 +1,220 @@
+{
+  "experiment_name": "dibco_visual_only_restoration_v1",
+  "description": "DIBCO VISUAL-ONLY RESTORATION BASELINE. Critical fix: Use STANDARD discriminator (visual-only) instead of enhanced_v2_fixed (dual-modal). Root cause: DIBCO has dummy text labels (all zeros), dual-modal discriminator's cross-modal attention received garbage features → stuck at 14-15 dB. Solution: Visual-only discriminator eliminates broken text modality. Strategy: (1) DIBCO dataset only (461 samples), (2) Standard/enhanced_v1 discriminator (NO cross-modal attention), (3) rec_feat_loss_weight=0.0 (disable recognizer), (4) Restoration-optimized loss weights (Pixel 200, Perceptual 50), (5) Longer training (50 epochs), (6) FROM SCRATCH (no pretrained). Success criteria: PSNR > 20 dB (breaking 14-15 dB ceiling proves hypothesis correct).",
+  
+  "generator_version": "enhanced",
+  "discriminator_version": "base",
+
+  "tfrecord_path": "dual_modal_gan/data/dibco_tiled_full.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  
+  "pretrained_checkpoint": "dual_modal_gan/checkpoints/thin_stroke_preservation_v1_academic/best_model",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/dibco_visual_only_restoration_v1",
+  "sample_dir": "dual_modal_gan/outputs/samples_dibco_visual_only_v1",
+
+  "resume": false,
+  "no_restore": true,
+
+  "epochs": 50,
+  "batch_size": 4,
+  "steps_per_epoch": 0,
+  "save_interval": 2,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 3,
+  "gpu_id": "0",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": false,
+    "patience": 10,
+    "min_delta": 0.05,
+    "restore_best_weights": true,
+    "base_val_min_psnr": 25.0
+  },
+
+  "early_stopping_metric": "psnr_only",
+  "psnr_improvement_threshold": 0.3,
+  "cer_weight": 0.0,
+
+  "lr_g": 0.00001,
+  "lr_d": 0.00002,
+  "use_lr_schedule": true,
+  "warmup_epochs": 5,
+  "annealing_epochs": 40,
+
+  "pixel_loss_weight": 200.0,
+  "adv_loss_weight": 1.0,
+  "rec_feat_loss_weight": 0.0,
+  "ctc_loss_weight": 0.0,
+  "perceptual_loss_weight": 50.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 300.0,
+
+  "discriminator_mode": "ground_truth",
+
+  "adaptive_loss_balancing": false,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.3,
+    "use_residual_blocks": true,
+    "use_spatial_attention": false,
+    "use_cross_modal_attention": false,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "freeze_strategy": {
+    "enabled": false,
+    "generator_encoder_layers": [],
+    "generator_decoder_early_layers": [],
+    "discriminator_freeze": false,
+    "freeze_batchnorm": false
+  },
+
+  "dual_validation": {
+    "enabled": false,
+    "base_tfrecord": null,
+    "anri_tfrecord": null,
+    "base_val_split": 0.0,
+    "anri_val_split": 0.0,
+    "monitor_base_psnr": false,
+    "monitor_anri_psnr": false,
+    "base_psnr_red_line": 0.0,
+    "base_psnr_warning_threshold": 0.0,
+    "anri_psnr_red_line": 0.0,
+    "anri_psnr_warning_threshold": 0.0
+  },
+
+  "experiment_metadata": {
+    "stage": "dibco_visual_only_baseline",
+    "approach": "Visual-only restoration (no text modality)",
+    "purpose": "Validate that dual-modal discriminator was bottleneck for DIBCO",
+    "hypothesis": "DIBCO stuck at 14-15 dB because enhanced_v2_fixed requires text labels, DIBCO has dummy labels (all zeros)",
+    "fix": "Use standard discriminator (visual-only), disable rec_feat_loss",
+    "comparison_baseline": "dibco_direct_restoration_v1 (dual-modal, 12-14 dB FAILED)",
+    "dataset_composition": {
+      "total_samples": 461,
+      "dibco_samples": 461,
+      "base_samples": 0,
+      "anri_samples": 0,
+      "dibco_with_palm": true,
+      "palm_samples": 205,
+      "palm_percentage": 44.5,
+      "text_labels": "DUMMY (all zeros) - visual-only restoration"
+    },
+    "critical_fixes": {
+      "discriminator": "standard (visual-only) instead of enhanced_v2_fixed (dual-modal)",
+      "rec_feat_loss": "0.0 (disabled, was 10.0-15.0 causing NOISE)",
+      "cross_modal_attention": "disabled (was enabled, received garbage features)",
+      "rationale": "DIBCO has no text labels, dual-modal components add NOISE not signal"
+    },
+    "strategy": {
+      "training_from_scratch": "NO - fine-tuning from thin_stroke_preservation_v1_academic",
+      "learning_rate": "1e-5 generator, 2e-5 discriminator",
+      "lr_schedule": "Warmup 5 → Annealing 40 (total 50 epochs)",
+      "freeze_layers": "NONE",
+      "loss_weights": {
+        "pixel": "200.0 (HIGH - restoration needs pixel alignment)",
+        "perceptual": "50.0 (VERY HIGH - preserve document structure)",
+        "adversarial": "1.0 (standard)",
+        "rec_feat": "0.0 (DISABLED - was causing NOISE for visual-only data)",
+        "ctc": "0.0 (disabled - no text labels)",
+        "rationale": "Visual-only restoration, no text modality interference"
+      },
+      "discriminator_mode": "ground_truth (discriminate clean ground truth)",
+      "validation": "Single validation (DIBCO only)",
+      "early_stopping": "patience=10, min_delta=0.05",
+      "checkpoint_management": "max_checkpoints=3, save_interval=2"
+    },
+    "success_criteria": {
+      "hypothesis_validation": ">20 dB (breaking 14-15 dB ceiling proves fix correct)",
+      "target_psnr": "≥28 dB (competitive with Base performance)",
+      "optimal_psnr": "28-30 dB",
+      "failure_threshold": "<20 dB (indicates dataset quality issue, not discriminator)",
+      "interpretation": {
+        "if_20_25_db": "Hypothesis VALIDATED, dual-modal was bottleneck, continue optimization",
+        "if_25_28_db": "Hypothesis VALIDATED, approaching target, tune hyperparameters",
+        "if_28_plus_db": "SUCCESS! Visual-only discriminator solves DIBCO problem",
+        "if_below_20_db": "Hypothesis WRONG, investigate dataset quality or architecture"
+      }
+    },
+    "expected_outcome": {
+      "dibco_psnr": "25-30 dB (optimistic, if hypothesis correct)",
+      "best_epoch": "15-30 (restoration needs more epochs)",
+      "training_time": "~100-120 minutes (50 epochs × 2-2.5 min, faster without text processing)",
+      "disk_usage": "~2-3 GB",
+      "efficiency_gain": "~30% faster than dual-modal (no recognizer overhead)",
+      "memory_reduction": "~20% less (no text encoder loading)"
+    },
+    "comparison_experiments": {
+      "dibco_direct_restoration_v1": {
+        "discriminator": "enhanced_v2_fixed (dual-modal)",
+        "rec_feat_loss": "15.0 (HARMFUL for visual-only)",
+        "dibco_psnr": "12.36 → 14.08 dB (STUCK)",
+        "patience": "6/10 at epoch 8",
+        "result": "FAILED - stuck at 14 dB ceiling"
+      },
+      "rehearsal_v1": {
+        "discriminator": "enhanced_v2_fixed (dual-modal)",
+        "rec_feat_loss": "10.0 (HARMFUL for DIBCO samples)",
+        "dibco_psnr": "14.63 → 15.15 dB (STUCK)",
+        "base_anri_psnr": "30-32 dB (IMPROVED - have text labels)",
+        "result": "FAILED - DIBCO stuck while Base/ANRI improved"
+      }
+    },
+    "root_cause_explained": {
+      "problem": "DIBCO has dummy text labels (all zeros), but dual-modal discriminator requires real text",
+      "impact": {
+        "cross_modal_attention": "Receives identical garbage features for all samples, cannot discriminate",
+        "gradient_flow": "50% useful (image path) + 50% noise (text path) = corrupted gradients",
+        "learning_efficiency": "Cut in half, explains slow/stuck training",
+        "feature_space": "Text features collapse to single point, cross-modal attention useless"
+      },
+      "evidence": {
+        "dataset_audit": "DIBCO labels all [0,0,0,0,0,0,0,0,0,0] (confirmed)",
+        "training_pattern": "Base/ANRI improve (+0.37 to +1.43 dB), DIBCO stuck (+0.52 dB) in SAME training",
+        "both_experiments_stuck": "V1 rehearsal (14.63-15.15 dB) and DIBCO-only (12.36-14.08 dB) both fail",
+        "identical_ceiling": "Both experiments plateau at ~14-15 dB regardless of strategy"
+      },
+      "solution": "Use visual-only discriminator, eliminate broken text modality"
+    },
+    "hypothesis_test": {
+      "null_hypothesis": "Dual-modal discriminator NOT the bottleneck, DIBCO inherently hard",
+      "alternative_hypothesis": "Dual-modal discriminator IS the bottleneck, visual-only will achieve >20 dB",
+      "test_statistic": "DIBCO PSNR with visual-only discriminator",
+      "rejection_criteria": "PSNR > 20 dB (breaks previous ceiling)",
+      "confidence_level": "HIGH - dataset audit confirms no text labels",
+      "expected_result": "REJECT null hypothesis, ACCEPT alternative (visual-only solves problem)"
+    },
+    "next_steps_if_successful": [
+      "Tune hyperparameters to reach 28-30 dB target",
+      "Design visual-only progressive finetuning (Base/ANRI → DIBCO with discriminator switch)",
+      "Implement conditional discriminator (dual-modal for Base/ANRI, visual-only for DIBCO)",
+      "Document lesson: Always match discriminator architecture to data modality"
+    ],
+    "next_steps_if_failed": [
+      "Investigate DIBCO dataset quality (corrupted samples, incorrect labels)",
+      "Try different generator architecture (U-Net, ResNet)",
+      "Check if DIBCO ground truth images are actually clean (may be mislabeled)",
+      "Evaluate if 28-30 dB target is achievable for DIBCO benchmark"
+    ],
+    "lessons_learned": {
+      "user_insight_critical": "User's observation 'visual only, no text labels' was KEY to discovery",
+      "dataset_audit_mandatory": "Should ALWAYS audit dataset structure before training",
+      "architecture_must_match_data": "Dual-modal for image+text, visual-only for image-only",
+      "loss_weight_assumptions_dangerous": "rec_feat_loss=10.0 assumed helpful, was HARMFUL for visual-only",
+      "training_patterns_reveal_issues": "DIBCO stuck while Base/ANRI improved in same training = clear signal"
+    }
+  }
+}

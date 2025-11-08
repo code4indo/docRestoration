@@ -1,0 +1,98 @@
+{
+  "experiment_name": "thin_stroke_preservation_v1_finetuning",
+  "description": "VISUAL-ONLY FINE-TUNING (no text labels) from thin_stroke_preservation_v1_academic checkpoint using real ANRI document. Strategy: (1) Load pretrained weights, (2) Lower LR (1e-5), (3) Minimal epochs (15), (4) DISABLE CTC/HTR components (discriminator_mode=clean, ctc_loss_weight=0.0), (5) Focus on PSNR/SSIM visual quality only.",
+  
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/finetuning/finetuning_train.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  
+  "pretrained_checkpoint": "dual_modal_gan/checkpoints/thin_stroke_preservation_v1_academic/best_model/ckpt-99",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/thin_stroke_preservation_v1_finetuning",
+  "sample_dir": "dual_modal_gan/outputs/samples_thin_stroke_preservation_v1_finetuning",
+
+  "resume": true,
+  "no_restore": true,
+
+  "epochs": 15,
+  "batch_size": 2,
+  "steps_per_epoch": 0,
+  "save_interval": 3,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 3,
+  "gpu_id": "0",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": false,
+    "patience": 8,
+    "min_delta": 0.01,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "psnr_only",
+  "psnr_improvement_threshold": 1.0,
+  "cer_weight": 0.0,
+
+  "lr_g": 0.00001,
+  "lr_d": 0.00001,
+  "use_lr_schedule": false,
+  "warmup_epochs": 0,
+  "annealing_epochs": 0,
+
+  "pixel_loss_weight": 200.0,
+  "adv_loss_weight": 1.5,
+  "rec_feat_loss_weight": 5.0,
+  "ctc_loss_weight": 0.0,
+  "perceptual_loss_weight": 10.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 300.0,
+
+  "discriminator_mode": "ground_truth",
+
+  "adaptive_loss_balancing": false,
+  "target_ctc_ratio": 0.40,
+  "target_visual_ratio": 0.60,
+  "adaptation_rate": 0.08,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.1,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "experiment_metadata": {
+    "hypothesis": "Fine-tuning pretrained model on real ANRI document strips will improve visual quality on domain-specific degradation patterns while preserving thin stroke preservation capability.",
+    "base_model": "thin_stroke_preservation_v1_academic (best checkpoint)",
+    "base_model_performance": "TBD - check training logs",
+    "finetuning_strategy": {
+      "lr_reduction": "10x reduction (2e-4 → 1e-5) for gentle adaptation",
+      "no_curriculum": "Skip warmup/annealing (pretrained model already converged)",
+      "early_stopping_patience": "Reduced to 8 epochs (prevent overfitting on small dataset)",
+      "focus_metric": "PSNR only (visual quality, not HTR accuracy)",
+      "minimal_epochs": "15 epochs max to prevent catastrophic forgetting",
+      "data_strategy": "Sequential split on strips (top→train, middle→val, bottom→test) to prevent data leakage"
+    },
+    "risks": {
+      "overfitting": "HIGH - only 1 document, many correlated strips. Mitigated by: (1) sequential split, (2) augmentation, (3) early stopping patience=8",
+      "catastrophic_forgetting": "MEDIUM - fine-tuning might forget original synthetic data patterns. Mitigated by: (1) low LR, (2) minimal epochs",
+      "data_leakage": "NONE - sequential split ensures no correlation between train/val/test"
+    },
+    "expected_outcome": "Model adapts to real ANRI document degradation patterns while maintaining thin stroke preservation from base model"
+  }
+}

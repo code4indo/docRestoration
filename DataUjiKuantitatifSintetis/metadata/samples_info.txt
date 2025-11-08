@@ -1,0 +1,39 @@
+Sample 01:
+  CER (Proposed): 8.8%
+  PSNR (Proposed): 32.69 dB
+  SSIM (Proposed): 0.993
+  Ground truth text: heijd welk wij herhald heben in 't
+  Predicted text: heijd selk wij herhaald hebben in 't
+  Image shape: (128, 1024) - horizontal orientation, no mirror
+
+Sample 02:
+  CER (Proposed): 17.6%
+  PSNR (Proposed): 27.31 dB
+  SSIM (Proposed): 0.987
+  Ground truth text: jongst verleden jar zal mogen vol,
+  Predicted text: Iongst verleeden saar zal moogen vo,l,
+  Image shape: (128, 1024) - horizontal orientation, no mirror
+
+Sample 03:
+  CER (Proposed): 20.0%
+  PSNR (Proposed): 24.25 dB
+  SSIM (Proposed): 0.982
+  Ground truth text: De Raeij is lang 260: voeten wartoe vereischt
+  Predicted text: e Maeij is tang 260: 13et en wmartoe verisht
+  Image shape: (128, 1024) - horizontal orientation, no mirror
+
+Sample 04:
+  CER (Proposed): 23.7%
+  PSNR (Proposed): 28.86 dB
+  SSIM (Proposed): 0.987
+  Ground truth text: Het en bij 't ander gedan zo heben wij
+  Predicted text: tet een bij t ande gedaan zoo hebben wen
+  Image shape: (128, 1024) - horizontal orientation, no mirror
+
+Sample 05:
+  CER (Proposed): 24.1%
+  PSNR (Proposed): 33.84 dB
+  SSIM (Proposed): 0.995
+  Ground truth text: is grot gewest en 't welk wij
+  Predicted text: is gaoot geweest en z welk w
+  Image shape: (128, 1024) - horizontal orientation, no mirror

@@ -1,0 +1,238 @@
+{
+  "experiment_name": "dibco_tuned_stabilized_v1",
+  "description": "HYBRID TUNING APPROACH: Load weights from best model (epoch 96, 21.67 dB) with RESET optimizer state. Apply gradient stabilization tuning (50% reduced perceptual/RecFeat weights, 50% reduced LR, gradient clipping 5.0) to eliminate Generator Loss spikes (G=3716, G=3163) observed in parent training. Goal: Maintain 21.6+ dB PSNR with stable gradients (G < 500 consistently, no spikes > 1000).",
+  
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/dibco_tiled_no_palm.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  
+  "pretrained_checkpoint": "dual_modal_gan/checkpoints/dibco_transfer_from_production_v3_fixed/best_model/ckpt-268",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/dibco_tuned_stabilized",
+  "sample_dir": "dual_modal_gan/outputs/samples_dibco_tuned_stabilized_v1",
+
+  "resume": false,
+  "no_restore": false,
+
+  "epochs": 30,
+  "batch_size": 2,
+  "steps_per_epoch": 0,
+  "save_interval": 1,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 5,
+  "gpu_id": "0",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": true,
+    "patience": 10,
+    "min_delta": 0.01,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "psnr_only",
+  "psnr_improvement_threshold": 0.05,
+  "cer_weight": 0.0,
+
+  "lr_g": 0.000005,
+  "lr_d": 0.00001,
+  "use_lr_schedule": true,
+  "warmup_epochs": 3,
+  "annealing_epochs": 10,
+
+  "pixel_loss_weight": 100.0,
+  "adv_loss_weight": 1.0,
+  "rec_feat_loss_weight": 5.0,
+  "ctc_loss_weight": 0.0,
+  "perceptual_loss_weight": 5.0,
+  "gradient_clip_norm": 5.0,
+  "ctc_loss_clip_max": 300.0,
+
+  "discriminator_mode": "predicted",
+
+  "adaptive_loss_balancing": false,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.3,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "freeze_strategy": {
+    "enabled": false,
+    "generator_encoder_layers": [],
+    "generator_decoder_early_layers": [],
+    "discriminator_freeze": false,
+    "freeze_batchnorm": false
+  },
+
+  "dual_validation": {
+    "enabled": false
+  },
+
+  "experiment_metadata": {
+    "purpose": "GRADIENT_STABILIZATION_TUNING",
+    "methodology": "Hybrid approach: Load pre-trained weights + Reset optimizer + Reduced loss weights + Gradient clipping",
+    "architecture": "Enhanced Generator + Enhanced V2 Fixed Discriminator",
+    "novelty": "Stabilized training through targeted hyperparameter tuning without losing learned features",
+    "training_strategy": "Fine-tuning from best checkpoint with gradient-stabilized configuration",
+    
+    "parent_experiment": {
+      "name": "dibco_transfer_resume_v1",
+      "best_epoch": 96,
+      "best_psnr": 21.67,
+      "best_checkpoint": "ckpt-277",
+      "total_epochs_trained": "66-99 (34 epochs)",
+      "identified_issue": "Perceptual loss gradient spikes causing Generator Loss explosions",
+      "spike_examples": [
+        "Epoch 82: G=3716.7, Percep=368.49 (PSNR maintained 21.63)",
+        "Epoch 93: G=3163.6, Percep=313.46 (PSNR maintained 21.67)"
+      ],
+      "spike_frequency": "~7 severe spikes (G>2000) + 5 moderate spikes (G>1000) in 34 epochs",
+      "spike_impact": "Training inefficiency, risk of divergence, but PSNR remained stable"
+    },
+
+    "tuning_changes": {
+      "optimizer_state": "RESET (fresh Adam optimizer, no momentum baggage)",
+      "perceptual_weight": "10.0 → 5.0 (50% reduction to reduce gradient magnitude)",
+      "rec_feat_weight": "10.0 → 5.0 (50% reduction, RecFeat also contributed to spikes)",
+      "generator_lr": "0.00001 → 0.000005 (50% reduction for gentler updates)",
+      "discriminator_lr": "0.00002 → 0.00001 (50% reduction for balanced training)",
+      "gradient_clip_norm": "1.0 → 5.0 (5x increase for stronger gradient clipping)",
+      "epochs": "100 → 30 (focused fine-tuning phase)",
+      "warmup_epochs": "5 → 3 (faster warmup for pre-trained weights)"
+    },
+
+    "hypothesis": {
+      "root_cause": "Perceptual loss (VGG features) produces occasional large gradients in late training, amplified by high loss weights (10.0) and accumulated optimizer momentum",
+      "expected_fix": "50% reduced weights + fresh optimizer + 5x gradient clipping = stable gradients",
+      "success_metrics": [
+        "Generator Loss < 500 consistently (vs spikes to 3716)",
+        "No spikes > 1000 in any epoch",
+        "PSNR ≥ 21.60 dB maintained (within 0.07 dB of parent best)",
+        "Standard deviation of G_loss < 100 per epoch"
+      ]
+    },
+
+    "training_data": {
+      "source": "DIBCO 2009-2018 (exclude 2012, exclude PALM)",
+      "total_samples": 256,
+      "source_images": 102,
+      "composition": "100% DIBCO (pure, no synthetic)"
+    },
+
+    "test_dataset": {
+      "name": "DIBCO 2012",
+      "images": 14,
+      "path": "dibco_datasets/2012"
+    },
+
+    "target_performance": {
+      "psnr_minimum": "21.60 dB (within 0.07 of parent best)",
+      "psnr_target": "21.67 dB (match or exceed parent)",
+      "psnr_ambitious": "21.75 dB (improve with stable training)",
+      "stability_requirement": "Generator Loss mean < 400, max < 800, std < 80"
+    },
+
+    "success_criteria": {
+      "acceptable": "PSNR ≥ 21.60 dB + Generator Loss max < 1000 (no severe spikes)",
+      "target": "PSNR ≥ 21.65 dB + Generator Loss max < 800 (no moderate spikes)",
+      "superior": "PSNR ≥ 21.70 dB + Generator Loss mean < 400, std < 100 (fully stable)"
+    },
+
+    "expected_results": {
+      "validation_psnr": "21.60-21.70 dB",
+      "generator_loss_range": "200-600 (vs 173-3716 in parent)",
+      "training_time": "~2 hours (30 epochs)",
+      "disk_usage": "~2-3 GB (5 checkpoints + best_model)",
+      "gpu_memory": "~8-10 GB (batch_size=2)"
+    },
+
+    "risk_mitigation": {
+      "psnr_degradation": "If epoch 5 < 21.50 dB, tuning too conservative → increase weights to 7.5",
+      "persistent_spikes": "If spike > 1500 still occurs → increase gradient_clip to 10.0",
+      "early_plateau": "If no improvement by epoch 10 → early stopping will trigger",
+      "worse_than_parent": "Always have parent ckpt-277 (21.67 dB) as fallback"
+    },
+
+    "monitoring_plan": {
+      "check_interval": "Every 5 epochs",
+      "critical_metrics": [
+        "Generator Loss: mean, max, std per epoch",
+        "Perceptual Loss: mean, max per epoch", 
+        "PSNR: validation performance",
+        "Gradient norm: monitor clipping frequency"
+      ],
+      "stop_conditions": [
+        "Early stopping patience triggered (10 epochs no improvement)",
+        "PSNR < 21.50 dB for 3 consecutive epochs (tuning failed)",
+        "Target 21.70 dB reached with stable gradients (mission accomplished)"
+      ],
+      "intervention_triggers": [
+        "Epoch 5: If G_loss max > 1000 → investigate, may need stronger clipping",
+        "Epoch 5: If PSNR < 21.50 → weights too conservative, adjust",
+        "Epoch 10: If no improvement over parent → consider stopping",
+        "Epoch 15: Evaluate if continuing beneficial or plateau reached"
+      ]
+    },
+
+    "comparison_baseline": {
+      "experiment": "dibco_transfer_resume_v1",
+      "best_model": "epoch 96, PSNR 21.67 dB, ckpt-277",
+      "training_stability": "Unstable (7 severe spikes G>2000, 5 moderate G>1000)",
+      "generator_loss_stats": {
+        "mean_approximate": "~600-800 (excluding spikes)",
+        "max": 3716.7,
+        "spike_epochs": [71, 75, 82, 86, 89, 92, 93]
+      }
+    },
+
+    "theoretical_foundation": {
+      "gradient_clipping": "Prevents gradient explosion by capping gradient norm at 5.0",
+      "loss_weight_reduction": "Reduces magnitude of perceptual/RecFeat gradients by 50%",
+      "lr_reduction": "Smaller steps in late training prevent overshooting minima",
+      "optimizer_reset": "Removes accumulated momentum that may amplify instability",
+      "combined_effect": "Multi-pronged stabilization: clip large gradients, reduce gradient source, gentle updates, fresh dynamics"
+    },
+
+    "alternative_approaches_considered": {
+      "from_scratch_training": {
+        "pros": "Clean gradient dynamics, reproducible",
+        "cons": "6-7 hours, may not reach 21.67 dB, wastes 90 epochs progress",
+        "decision": "Rejected - inefficient for gradient stabilization goal"
+      },
+      "pure_resume": {
+        "pros": "Simple, continues from epoch 96",
+        "cons": "Optimizer momentum amplifies spikes, no fix applied",
+        "decision": "Rejected - doesn't address root cause"
+      },
+      "gradient_clipping_only": {
+        "pros": "Minimal change, targeted fix",
+        "cons": "May not fully solve if loss weights still too high",
+        "decision": "Rejected - insufficient, combined approach more robust"
+      }
+    },
+
+    "publication_relevance": {
+      "research_question": "Can GAN training stability be improved through targeted hyperparameter tuning without retraining from scratch?",
+      "contribution": "Demonstrates efficient fine-tuning methodology for stabilizing late-stage GAN training",
+      "novelty_angle": "Hybrid approach preserves learned features while resetting optimizer dynamics",
+      "expected_claim": "Achieved equivalent performance (21.6+ dB) with 5x improved training stability (no spikes > 1000 vs 7 spikes > 2000)"
+    }
+  }
+}

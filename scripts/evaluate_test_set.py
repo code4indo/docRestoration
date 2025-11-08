@@ -53,7 +53,7 @@ from train_enhanced import (
 )
 
 # Import model architectures
-from network.unet_enhanced import unet_enhanced
+from dual_modal_gan.src.models.generator_enhanced import unet_enhanced
 
 
 def create_test_dataset(tfrecord_path, batch_size, train_split=0.7, val_split=0.15):
@@ -203,16 +203,18 @@ def evaluate_test_set(generator, recognizer, test_dataset, charset, test_size):
             all_clean_cer.append(clean_cer)
             all_clean_wer.append(clean_wer)
             
-            # Collect first 10 samples for qualitative analysis
-            if sample_count < 10:
-                sample_texts.append({
-                    'ground_truth': gt_text,
-                    'clean_prediction': clean_text,
-                    'generated_prediction': generated_text,
-                    'cer': float(cer),
-                    'wer': float(wer),
-                    'clean_cer': float(clean_cer)
-                })
+            # MODIFIED: Collect ALL samples for comprehensive failure analysis
+            sample_texts.append({
+                'sample_id': sample_count,
+                'ground_truth': gt_text,
+                'clean_prediction': clean_text,
+                'generated_prediction': generated_text,
+                'cer': float(cer),
+                'wer': float(wer),
+                'clean_cer': float(clean_cer),
+                'psnr': float(all_psnr[sample_count]),
+                'ssim': float(all_ssim[sample_count])
+            })
             
             sample_count += 1
         
@@ -282,10 +284,10 @@ def evaluate_test_set(generator, recognizer, test_dataset, charset, test_size):
     print("✅ Test set evaluation complete - these are OFFICIAL RESULTS")
     print("="*80 + "\n")
     
-    # Prepare results dictionary
+    # Prepare results dictionary with ENHANCED per-sample data for failure analysis
     results = {
         'test_set_size': len(all_psnr),
-        'evaluation_date': '2025-10-21',
+        'evaluation_date': '2025-11-05',
         'protocol': 'Academic - single evaluation on held-out test set',
         'visual_metrics': {
             'psnr': {
@@ -293,14 +295,16 @@ def evaluate_test_set(generator, recognizer, test_dataset, charset, test_size):
                 'std': float(psnr_std),
                 'ci_95_lower': float(psnr_mean - psnr_ci),
                 'ci_95_upper': float(psnr_mean + psnr_ci),
-                'n': len(all_psnr)
+                'n': len(all_psnr),
+                'all_values': [float(v) for v in all_psnr]  # ADDED: Per-sample data
             },
             'ssim': {
                 'mean': float(ssim_mean),
                 'std': float(ssim_std),
                 'ci_95_lower': float(ssim_mean - ssim_ci),
                 'ci_95_upper': float(ssim_mean + ssim_ci),
-                'n': len(all_ssim)
+                'n': len(all_ssim),
+                'all_values': [float(v) for v in all_ssim]  # ADDED: Per-sample data
             }
         },
         'htr_metrics': {
@@ -309,28 +313,56 @@ def evaluate_test_set(generator, recognizer, test_dataset, charset, test_size):
                 'std': float(cer_std),
                 'ci_95_lower': float(cer_mean - cer_ci),
                 'ci_95_upper': float(cer_mean + cer_ci),
-                'n': len(all_cer)
+                'n': len(all_cer),
+                'all_values': [float(v) for v in all_cer]  # ADDED: Per-sample data for distribution analysis
             },
             'wer': {
                 'mean': float(wer_mean),
                 'std': float(wer_std),
                 'ci_95_lower': float(wer_mean - wer_ci),
                 'ci_95_upper': float(wer_mean + wer_ci),
-                'n': len(all_wer)
+                'n': len(all_wer),
+                'all_values': [float(v) for v in all_wer]  # ADDED: Per-sample data
             },
             'baseline_clean': {
-                'cer': {'mean': float(clean_cer_mean), 'std': float(clean_cer_std)},
-                'wer': {'mean': float(clean_wer_mean), 'std': float(clean_wer_std)}
+                'cer': {
+                    'mean': float(clean_cer_mean), 
+                    'std': float(clean_cer_std),
+                    'all_values': [float(v) for v in all_clean_cer]  # ADDED
+                },
+                'wer': {
+                    'mean': float(clean_wer_mean), 
+                    'std': float(clean_wer_std),
+                    'all_values': [float(v) for v in all_clean_wer]  # ADDED
+                }
             },
             'delta_cer': float(cer_mean - clean_cer_mean)
         },
         'noise_metrics': {
-            'noise_variance': {'mean': float(noise_var_mean), 'std': float(noise_var_std)},
-            'isolated_white_ratio': {'mean': float(isolated_white_mean), 'std': float(isolated_white_std)},
-            'local_variance': {'mean': float(local_var_mean), 'std': float(local_var_std)}
+            'noise_variance': {
+                'mean': float(noise_var_mean), 
+                'std': float(noise_var_std),
+                'all_values': [float(v) for v in all_noise_var]  # ADDED
+            },
+            'isolated_white_ratio': {
+                'mean': float(isolated_white_mean), 
+                'std': float(isolated_white_std),
+                'all_values': [float(v) for v in all_isolated_white]  # ADDED
+            },
+            'local_variance': {
+                'mean': float(local_var_mean), 
+                'std': float(local_var_std),
+                'all_values': [float(v) for v in all_local_var]  # ADDED
+            }
         },
-        'sample_texts': sample_texts
+        'sample_texts': sample_texts,
+        'note': 'Enhanced output with per-sample metrics for comprehensive failure case analysis'
     }
+    
+    print("💾 Saving detailed results with per-sample metrics...")
+    print(f"   Total samples: {len(all_cer)}")
+    print(f"   CER values saved: {len(all_cer)}")
+    print(f"   Sample texts saved: {len(sample_texts)}")
     
     return results
 
@@ -354,6 +386,9 @@ def main():
     parser.add_argument('--generator_version', type=str, default='enhanced',
                        choices=['base', 'enhanced', 'enhanced_v2'],
                        help='Generator architecture version')
+    parser.add_argument('--recognizer_weights', type=str,
+                       default='/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5',
+                       help='Path to recognizer weights file')
     
     args = parser.parse_args()
     
@@ -381,13 +416,15 @@ def main():
         raise NotImplementedError(f"Generator version '{args.generator_version}' not implemented yet")
     
     # Load recognizer
-    from network.htr_recognizer import build_htr_recognizer
-    recognizer = build_htr_recognizer(
-        input_shape=(1024, 128, 1),
-        vocab_size=vocab_size,
-        output_features=False  # Single output mode for evaluation
+    from dual_modal_gan.src.models.recognizer_fixed import load_frozen_recognizer_fixed
+    recognizer = load_frozen_recognizer_fixed(
+        weights_path=args.recognizer_weights,
+        charset_size=vocab_size - 1,  # vocab_size includes blank token
+        return_feature_map=False
     )
-    print("   Recognizer: HTR with CTC decoder")
+    print("   Recognizer: HTR with CTC decoder (frozen)")
+
+
     
     # Load checkpoint
     print(f"\n💾 Loading checkpoint from: {args.checkpoint}")

@@ -292,6 +292,8 @@ def evaluate_test_set(args):
     all_ssim = []
     all_cer = []
     all_wer = []
+    all_degraded_cer = []  # CER on degraded input (TRUE BASELINE)
+    all_degraded_wer = []
     all_clean_cer = []
     all_clean_wer = []
     all_noise_var = []
@@ -344,18 +346,23 @@ def evaluate_test_set(args):
             all_local_var.append(noise_metrics['local_variance'])
         
         # Textual metrics: CER/WER
+        # CRITICAL FIX: Evaluate CER on degraded input (true baseline)
+        recognizer_output_degraded = recognizer(degraded_images, training=False)  # degraded is already [0,1]
         recognizer_output_clean = recognizer(clean_images_normalized, training=False)
         recognizer_output_generated = recognizer(generated_images_normalized, training=False)
         
         # Extract logits
-        if isinstance(recognizer_output_clean, (list, tuple)):
+        if isinstance(recognizer_output_degraded, (list, tuple)):
+            degraded_logits = recognizer_output_degraded[0]
             clean_logits = recognizer_output_clean[0]
             generated_logits = recognizer_output_generated[0]
         else:
+            degraded_logits = recognizer_output_degraded
             clean_logits = recognizer_output_clean
             generated_logits = recognizer_output_generated
         
         # Decode predictions
+        degraded_predictions = decode_ctc_predictions(degraded_logits.numpy(), charset)
         clean_predictions = decode_ctc_predictions(clean_logits.numpy(), charset)
         generated_predictions = decode_ctc_predictions(generated_logits.numpy(), charset)
         
@@ -363,16 +370,26 @@ def evaluate_test_set(args):
         labels_np = labels.numpy()
         for i in range(current_batch_size):
             gt_text = decode_label(labels_np[i], charset)
+            degraded_text = degraded_predictions[i]
             clean_text = clean_predictions[i]
             generated_text = generated_predictions[i]
             
+            # CER/WER for generated (restored) images
             cer = calculate_cer(gt_text, generated_text)
             wer = calculate_wer(gt_text, generated_text)
+            
+            # CER/WER for degraded input (TRUE BASELINE - no restoration)
+            degraded_cer = calculate_cer(gt_text, degraded_text)
+            degraded_wer = calculate_wer(gt_text, degraded_text)
+            
+            # CER/WER for clean GT (upper bound)
             clean_cer = calculate_cer(gt_text, clean_text)
             clean_wer = calculate_wer(gt_text, clean_text)
             
             all_cer.append(cer)
             all_wer.append(wer)
+            all_degraded_cer.append(degraded_cer)
+            all_degraded_wer.append(degraded_wer)
             all_clean_cer.append(clean_cer)
             all_clean_wer.append(clean_wer)
             
@@ -382,14 +399,17 @@ def evaluate_test_set(args):
                     'batch': batch_idx,
                     'sample': i,
                     'ground_truth': gt_text,
+                    'degraded_prediction': degraded_text,
                     'clean_prediction': clean_text,
                     'generated_prediction': generated_text,
                     'psnr': float(psnr[i].numpy()),
                     'ssim': float(ssim[i].numpy()),
-                    'cer': cer,
-                    'wer': wer,
-                    'clean_cer': clean_cer,
-                    'clean_wer': clean_wer
+                    'cer_generated': cer,
+                    'wer_generated': wer,
+                    'cer_degraded': degraded_cer,
+                    'wer_degraded': degraded_wer,
+                    'cer_clean': clean_cer,
+                    'wer_clean': clean_wer
                 })
             
             # Store visual samples (images) for first N samples
@@ -449,10 +469,12 @@ def evaluate_test_set(args):
         'metrics': {
             'psnr': calc_stats(all_psnr, 'PSNR'),
             'ssim': calc_stats(all_ssim, 'SSIM'),
-            'cer': calc_stats(all_cer, 'CER'),
-            'wer': calc_stats(all_wer, 'WER'),
-            'clean_cer': calc_stats(all_clean_cer, 'Clean CER'),
-            'clean_wer': calc_stats(all_clean_wer, 'Clean WER'),
+            'cer_generated': calc_stats(all_cer, 'CER Generated'),
+            'wer_generated': calc_stats(all_wer, 'WER Generated'),
+            'cer_degraded': calc_stats(all_degraded_cer, 'CER Degraded'),
+            'wer_degraded': calc_stats(all_degraded_wer, 'WER Degraded'),
+            'cer_clean': calc_stats(all_clean_cer, 'CER Clean'),
+            'wer_clean': calc_stats(all_clean_wer, 'WER Clean'),
             'noise_variance': calc_stats(all_noise_var, 'Noise Variance'),
             'isolated_white_ratio': calc_stats(all_isolated_white, 'Isolated White'),
             'local_variance': calc_stats(all_local_var, 'Local Variance')
@@ -477,13 +499,21 @@ def evaluate_test_set(args):
     print(f"         Range: [{results['metrics']['ssim']['min']:.4f}, {results['metrics']['ssim']['max']:.4f}]")
     
     print(f"\n📝 TEXT RECOGNITION METRICS:")
-    print(f"   CER (Generated): {results['metrics']['cer']['mean']:.4f} ± {results['metrics']['cer']['std']:.4f}")
-    print(f"   CER (Clean Baseline): {results['metrics']['clean_cer']['mean']:.4f} ± {results['metrics']['clean_cer']['std']:.4f}")
-    print(f"   ΔCER: {results['metrics']['cer']['mean'] - results['metrics']['clean_cer']['mean']:+.4f}")
+    print(f"   CER (Degraded Input): {results['metrics']['cer_degraded']['mean']:.4f} ± {results['metrics']['cer_degraded']['std']:.4f}")
+    print(f"   CER (Generated/Restored): {results['metrics']['cer_generated']['mean']:.4f} ± {results['metrics']['cer_generated']['std']:.4f}")
+    print(f"   CER (Clean GT): {results['metrics']['cer_clean']['mean']:.4f} ± {results['metrics']['cer_clean']['std']:.4f}")
     
-    print(f"\n   WER (Generated): {results['metrics']['wer']['mean']:.4f} ± {results['metrics']['wer']['std']:.4f}")
-    print(f"   WER (Clean Baseline): {results['metrics']['clean_wer']['mean']:.4f} ± {results['metrics']['clean_wer']['std']:.4f}")
-    print(f"   ΔWER: {results['metrics']['wer']['mean'] - results['metrics']['clean_wer']['mean']:+.4f}")
+    # Calculate CER improvement
+    cer_improvement = results['metrics']['cer_degraded']['mean'] - results['metrics']['cer_generated']['mean']
+    cer_improvement_pct = (cer_improvement / results['metrics']['cer_degraded']['mean']) * 100
+    
+    print(f"\n   ✅ CER IMPROVEMENT:")
+    print(f"      Degraded → Generated: {cer_improvement:.4f} ({cer_improvement_pct:.1f}% reduction)")
+    print(f"      Absolute CER: {results['metrics']['cer_degraded']['mean']:.1%} → {results['metrics']['cer_generated']['mean']:.1%}")
+    
+    print(f"\n   WER (Degraded Input): {results['metrics']['wer_degraded']['mean']:.4f} ± {results['metrics']['wer_degraded']['std']:.4f}")
+    print(f"   WER (Generated/Restored): {results['metrics']['wer_generated']['mean']:.4f} ± {results['metrics']['wer_generated']['std']:.4f}")
+    print(f"   WER (Clean GT): {results['metrics']['wer_clean']['mean']:.4f} ± {results['metrics']['wer_clean']['std']:.4f}")
     
     print(f"\n🔍 NOISE ARTIFACT METRICS:")
     print(f"   Noise Variance: {results['metrics']['noise_variance']['mean']:.2f} ± {results['metrics']['noise_variance']['std']:.2f}")
@@ -510,11 +540,12 @@ def evaluate_test_set(args):
         f.write("="*80 + "\n\n")
         for idx, sample in enumerate(sample_predictions, 1):
             f.write(f"Sample {idx} (Batch {sample['batch']}, Index {sample['sample']}):\n")
-            f.write(f"  Ground Truth:        '{sample['ground_truth']}'\n")
-            f.write(f"  Clean Prediction:    '{sample['clean_prediction']}' (CER: {sample['clean_cer']:.3f})\n")
-            f.write(f"  Generated Prediction: '{sample['generated_prediction']}' (CER: {sample['cer']:.3f})\n")
+            f.write(f"  Ground Truth:         '{sample['ground_truth']}'\n")
+            f.write(f"  Degraded Prediction:  '{sample['degraded_prediction']}' (CER: {sample['cer_degraded']:.3f})\n")
+            f.write(f"  Generated Prediction: '{sample['generated_prediction']}' (CER: {sample['cer_generated']:.3f})\n")
+            f.write(f"  Clean Prediction:     '{sample['clean_prediction']}' (CER: {sample['cer_clean']:.3f})\n")
             f.write(f"  PSNR: {sample['psnr']:.2f} dB, SSIM: {sample['ssim']:.4f}\n")
-            f.write(f"  ΔCER: {sample['cer'] - sample['clean_cer']:+.3f}\n")
+            f.write(f"  CER Improvement: {sample['cer_degraded'] - sample['cer_generated']:+.3f} ({((sample['cer_degraded'] - sample['cer_generated']) / sample['cer_degraded'] * 100):.1f}%)\n")
             f.write("\n")
     
     print(f"💾 Sample predictions saved to: {samples_file}")

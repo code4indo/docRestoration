@@ -1,0 +1,148 @@
+═══════════════════════════════════════════════════════════════════════════
+          ABLATION STUDY - QUICK REFERENCE (FIXED VERSION)
+═══════════════════════════════════════════════════════════════════════════
+
+📋 BUGS YANG SUDAH DIPERBAIKI:
+
+1. ✅ GPU Assignment Bug → Fixed dengan tf.config.set_visible_devices()
+2. ✅ AttributeError Bug → Fixed dengan None check + fallback
+3. ✅ OOM Risk → Fixed dengan sequential execution
+
+═══════════════════════════════════════════════════════════════════════════
+🚀 CARA MENJALANKAN
+═══════════════════════════════════════════════════════════════════════════
+
+# 1. Launch training (sequential mode)
+./run_ablation_sequential.sh
+
+# 2. Monitor progress (terminal terpisah)
+./check_ablation_sequential.sh
+
+# 3. Auto-refresh monitoring (update setiap 30 detik)
+watch -n 30 './check_ablation_sequential.sh'
+
+# 4. Live log Single-Modal
+tail -f logbook/ablation_single_modal_image_only_*.log
+
+# 5. Live log Dual-Modal No-CTC
+tail -f logbook/ablation_single_modal_no_ctc_*.log
+
+# 6. GPU monitoring
+watch -n 10 'nvidia-smi'
+
+═══════════════════════════════════════════════════════════════════════════
+⏱️  TIMELINE
+═══════════════════════════════════════════════════════════════════════════
+
+Phase 1: Single-Modal (Image-Only)
+  • GPU: 0
+  • Duration: 0-40 min
+  • Epochs: 10
+  • Expected PSNR: ~18.5 dB
+
+Phase 2: Dual-Modal (No-CTC)
+  • GPU: 1
+  • Duration: 40-80 min (starts after Phase 1)
+  • Epochs: 10
+  • Expected PSNR: ~19.2 dB
+
+Total: ~80 minutes
+
+═══════════════════════════════════════════════════════════════════════════
+📊 EXPECTED RESULTS
+═══════════════════════════════════════════════════════════════════════════
+
+Single-Modal (Image-Only):     ~18.5 dB  ← Baseline
+Dual-Modal (No-CTC):           ~19.2 dB  ← Text features (+0.7 dB)
+Dual-Modal (GT + CTC):         20.23 dB  ← Full system ✅
+Dual-Modal (Pred + CTC):       20.07 dB  ← Robust ✅
+
+IMPROVEMENT GAP: +1.7 dB (Dual-Modal vs Single-Modal)
+
+═══════════════════════════════════════════════════════════════════════════
+🎯 NOVELTY CLAIM
+═══════════════════════════════════════════════════════════════════════════
+
+Hypothesis:
+"Arsitektur dual-modal dengan fitur image-text seimbang (512:512) 
+meningkatkan kualitas restorasi dokumen sebesar signifikan 
+dibandingkan baseline single-modal image-only."
+
+Target Evidence:
+• Δ PSNR ≥ 1.5 dB
+• p-value < 0.05
+• Cohen's d > 0.8 (large effect size)
+
+═══════════════════════════════════════════════════════════════════════════
+🔍 MONITORING CHECKLIST
+═══════════════════════════════════════════════════════════════════════════
+
+During Training:
+□ Verify GPU 0 used by Single-Modal (not both on GPU 0)
+□ No AttributeError at Epoch 2
+□ No OOM errors
+□ PSNR increasing trend
+□ Training completes to Epoch 10
+
+After Single-Modal:
+□ Extract final PSNR: grep "Epoch 10" logbook/ablation_single_modal_image_only_*.log
+□ Check if ~18.5 dB (expected range: 18.0-19.0 dB)
+
+After Dual-Modal No-CTC:
+□ Extract final PSNR: grep "Epoch 10" logbook/ablation_single_modal_no_ctc_*.log
+□ Check if ~19.2 dB (expected range: 19.0-19.5 dB)
+
+Final Comparison:
+□ Calculate improvement: 20.23 - 18.5 = ??
+□ Verify gap ≥ 1.5 dB
+□ Update paper Section 4.3 (Ablation Studies)
+
+═══════════════════════════════════════════════════════════════════════════
+⚠️  TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════════════
+
+If training stuck/crashed:
+1. Check log files: ls -lth logbook/ablation_*.log | head -5
+2. Check last 50 lines: tail -50 logbook/ablation_*.log
+3. Look for errors: grep -i "error\|exception\|traceback" logbook/ablation_*.log
+
+If GPU not visible:
+nvidia-smi  # Should show 2 GPUs
+
+If process not running:
+ps aux | grep train_enhanced | grep -v grep
+
+If need to stop:
+kill $(cat /tmp/ablation_image_only.pid)  # Stop Single-Modal
+kill $(cat /tmp/ablation_no_ctc.pid)      # Stop Dual-Modal
+
+═══════════════════════════════════════════════════════════════════════════
+📝 FILES CREATED/MODIFIED
+═══════════════════════════════════════════════════════════════════════════
+
+Modified:
+✅ dual_modal_gan/scripts/train_enhanced.py
+   • Line ~726: GPU assignment fix
+   • Line ~1868: AttributeError fix
+
+New Scripts:
+✅ run_ablation_sequential.sh - Sequential launcher
+✅ check_ablation_sequential.sh - Progress monitor
+
+New Configs:
+✅ configs/ablation_single_modal_image_only.json
+✅ configs/ablation_single_modal_no_ctc.json
+
+Documentation:
+✅ catatan/BUGFIX_ABLATION_TRAINING_20251106.md
+
+═══════════════════════════════════════════════════════════════════════════
+🎉 READY TO GO!
+═══════════════════════════════════════════════════════════════════════════
+
+Launch command:
+   ./run_ablation_sequential.sh
+
+Type 'y' when prompted to start training.
+
+Good luck! 🚀

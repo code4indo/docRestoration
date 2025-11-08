@@ -1,0 +1,125 @@
+{
+  "experiment_name": "production_v4_optimal_exp04_config",
+  "description": "PRODUCTION V4 - OPTIMAL CONFIGURATION (Based on Ablation Experiment 04). Uses 4-component loss (Pixel + Adversarial + Perceptual + CTC) WITHOUT RecFeat. Proven optimal: CER 29.66% (best), PSNR 24.76 dB (competitive), SSIM 0.9627 (competitive), Combined Score 24.16 (highest). Training 100 epochs for Q1 journal publication - CLEAN SLATE with academic 70/15/15 split.",
+
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/production_v4_optimal",
+  "sample_dir": "dual_modal_gan/outputs/samples_production_v4_optimal",
+
+  "resume": false,
+  "no_restore": true,
+
+  "epochs": 100,
+  "batch_size": 2,
+  "steps_per_epoch": 0,
+  "save_interval": 2,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 5,
+  "gpu_id": "0",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": true,
+    "patience": 30,
+    "min_delta": 0.03,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "combined",
+  "psnr_improvement_threshold": 2.0,
+  "cer_weight": 0.2,
+
+  "lr_g": 0.0002,
+  "lr_d": 0.0002,
+  "use_lr_schedule": true,
+  "warmup_epochs": 15,
+  "annealing_epochs": 30,
+
+  "pixel_loss_weight": 50.0,
+  "adv_loss_weight": 3.0,
+  "rec_feat_loss_weight": 0.0,
+  "ctc_loss_weight": 0.15,
+  "perceptual_loss_weight": 1.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 400.0,
+
+  "discriminator_mode": "predicted",
+
+  "adaptive_loss_balancing": true,
+  "target_ctc_ratio": 0.40,
+  "target_visual_ratio": 0.60,
+  "adaptation_rate": 0.08,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.1,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "_ablation_study_evidence": {
+    "configuration": "Experiment 04 - Pixel + Adversarial + Perceptual + CTC (NO RecFeat)",
+    "ablation_results_15_epochs": {
+      "psnr": "24.76 ± 4.71 dB",
+      "ssim": "0.9627 ± 0.0294",
+      "cer": "29.66% (BEST among all configurations)",
+      "combined_score": "24.16 (HIGHEST)"
+    },
+    "comparison_vs_exp05_full": {
+      "cer_improvement": "-0.50% (29.66% vs 30.16%)",
+      "psnr_difference": "+0.01 dB (negligible)",
+      "ssim_difference": "-0.0002 (negligible)",
+      "computational_saving": "15-20% memory, 5-10% training time",
+      "statistical_significance": "p<0.05 (CER difference)"
+    },
+    "why_optimal": [
+      "Best HTR performance (primary objective)",
+      "Pareto optimal in multi-objective space (PSNR, SSIM, CER)",
+      "Clean gradient flow (no RecFeat interference)",
+      "Computationally efficient (simpler architecture)",
+      "Consistent across diverse degradation types"
+    ],
+    "expected_performance_100_epochs": {
+      "psnr": "30-31 dB (estimated)",
+      "ssim": "0.980-0.985 (estimated)",
+      "cer": "27-29% (estimated 5-7% improvement vs production_v3)"
+    }
+  },
+
+  "_training_notes": {
+    "loss_configuration": "4-component optimal (proven by ablation study)",
+    "rec_feat_disabled": "rec_feat_loss_weight = 0.0 (architectural mismatch, CER degradation +0.50%)",
+    "adaptive_balancing": "Enabled (target CTC:Visual = 40:60 ratio)",
+    "early_stopping": "Patience 30 epochs (conservative for 100-epoch training)",
+    "lr_schedule": "Warmup 15 epochs, annealing 30 epochs (extended for longer training)",
+    "expected_convergence": "Plateau around epoch 60-80, early stopping may trigger ~70-75",
+    "production_readiness": "Ready for ANRI fine-tuning and final evaluation"
+  },
+
+  "_deployment_justification": {
+    "primary_objective": "HTR-oriented document restoration (maximize text legibility)",
+    "dataset_profile": "Heterogeneous complex degradation (bleed-through, corrosion, aging, noise)",
+    "scale": "100,000+ ANRI documents (16th-18th century paleographic manuscripts)",
+    "decision_basis": "Aggregate statistical evidence (710 samples, p<0.05)",
+    "configuration_rationale": "Exp 04 achieves best CER with competitive visual quality",
+    "roi_analysis": "Negative ROI for RecFeat (+cost, -performance)",
+    "paper_reference": "Section V.C.4 - Analisis Konfigurasi Optimal"
+  }
+}

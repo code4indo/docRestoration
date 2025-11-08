@@ -1,0 +1,208 @@
+{
+  "experiment_name": "dibco_transfer_resume_v1",
+  "description": "RESUME TRAINING FROM EPOCH 30 (ckpt-166). From-scratch plateaued at 21.71 dB, transfer learning epoch 1-30 reached 21.40 dB. Analysis shows training stopped PREMATURELY at max_epochs limit (best_epoch=30, patience=0/10, trend +0.048 dB/epoch). Resuming with epochs=100 to let early stopping (patience=10) determine natural convergence point. Projection: epoch 42→22.0 dB (DE-GAN), epoch 48→22.29 dB (DocEnTR), epoch 50-60→22.5+ dB (TARGET). Training will auto-stop when plateau detected.",
+  
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/dibco_tiled_no_palm.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  
+  "pretrained_checkpoint": null,
+  "checkpoint_dir": "dual_modal_gan/checkpoints/dibco_transfer_from_production_v3_fixed",
+  "sample_dir": "dual_modal_gan/outputs/samples_dibco_transfer_resume_v1",
+
+  "resume": true,
+  "no_restore": false,
+
+  "epochs": 200,
+  "batch_size": 2,
+  "steps_per_epoch": 0,
+  "save_interval": 1,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 5,
+  "gpu_id": "0",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": true,
+    "patience": 10,
+    "min_delta": 0.01,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "psnr_only",
+  "psnr_improvement_threshold": 0.05,
+  "cer_weight": 0.0,
+
+  "lr_g": 0.00001,
+  "lr_d": 0.00002,
+  "use_lr_schedule": true,
+  "warmup_epochs": 5,
+  "annealing_epochs": 15,
+
+  "pixel_loss_weight": 100.0,
+  "adv_loss_weight": 1.0,
+  "rec_feat_loss_weight": 10.0,
+  "ctc_loss_weight": 0.0,
+  "perceptual_loss_weight": 10.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 300.0,
+
+  "discriminator_mode": "predicted",
+
+  "adaptive_loss_balancing": false,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.3,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "freeze_strategy": {
+    "enabled": false,
+    "generator_encoder_layers": [],
+    "generator_decoder_early_layers": [],
+    "discriminator_freeze": false,
+    "freeze_batchnorm": false
+  },
+
+  "dual_validation": {
+    "enabled": false
+  },
+
+  "experiment_metadata": {
+    "purpose": "RESUME_PREMATURE_STOP",
+    "methodology": "Continue training from epoch 30 (ckpt-166) for +20 additional epochs",
+    "architecture": "Enhanced Generator + Enhanced V2 Fixed Discriminator",
+    "novelty": "Completing interrupted transfer learning (max_epochs=30 stopped training prematurely)",
+    "training_strategy": "RESUME from best checkpoint with same hyperparameters",
+    
+    "resume_context": {
+      "source_experiment": "dibco_transfer_from_production_v3_fixed",
+      "source_checkpoint": "ckpt-166 (epoch 30, PSNR 21.40 dB)",
+      "resume_from_epoch": 31,
+      "target_epoch": "auto-determined by early stopping (max 100)",
+      "max_additional_epochs": 70,
+      "rationale": "Training stopped due to max_epochs=30 limit, NOT early stopping convergence. best_epoch=30 (last epoch), patience=0/10 (early stopping not triggered), trend +0.048 dB/epoch (still improving). Setting epochs=100 to let early stopping (patience=10) determine natural convergence point instead of arbitrary limit."
+    },
+
+    "previous_results": {
+      "from_scratch": {
+        "config": "dibco_pure_sota_comparison_v1",
+        "best_psnr": 21.71,
+        "best_epoch": 16,
+        "status": "Plateaued, gap 0.58 dB to DocEnTR"
+      },
+      "transfer_v3_fixed": {
+        "config": "dibco_transfer_from_production_v3_fixed",
+        "epochs_completed": 30,
+        "best_psnr": 21.40,
+        "best_epoch": 30,
+        "patience": "0/10 (NOT TRIGGERED)",
+        "final_trend": "+0.048 dB/epoch (positive momentum)",
+        "last_5_epochs_gain": "+0.24 dB (21.16→21.40)",
+        "status": "Stopped prematurely at max_epochs, still improving"
+      }
+    },
+
+    "training_data": {
+      "source": "DIBCO 2009-2018 (exclude 2012, exclude PALM)",
+      "total_samples": 256,
+      "source_images": 102,
+      "composition": "100% DIBCO (pure, no synthetic)"
+    },
+
+    "test_dataset": {
+      "name": "DIBCO 2012",
+      "images": 14,
+      "path": "dibco_datasets/2012"
+    },
+
+    "projection": {
+      "method": "Linear extrapolation from epoch 26-30 trend",
+      "rate": "+0.048 dB/epoch (conservative)",
+      "milestones": {
+        "epoch_35": "21.6 dB (+5 epochs, +0.24 dB)",
+        "epoch_40": "21.9 dB (+10 epochs, +0.48 dB)",
+        "epoch_42": "22.0 dB (+12 epochs, BEAT DE-GAN 22.00)",
+        "epoch_45": "22.1 dB (+15 epochs)",
+        "epoch_48": "22.3 dB (+18 epochs, APPROACH DocEnTR 22.29)",
+        "epoch_50": "22.4 dB (+20 epochs, TARGET 22.5 dB)"
+      },
+      "confidence": {
+        "reach_22_0": "70% (DE-GAN level)",
+        "reach_22_3": "60% (DocEnTR level)",
+        "reach_22_5": "50% (target minimum)"
+      }
+    },
+
+    "sota_comparison": {
+      "DocEnTR": {
+        "psnr": 22.29,
+        "gap_current": "+0.89 dB (they lead)",
+        "gap_projected_epoch_48": "-0.01 dB (WE MATCH/WIN)"
+      },
+      "DE-GAN": {
+        "psnr": 22.00,
+        "gap_current": "+0.60 dB (they lead)",
+        "gap_projected_epoch_42": "0.00 dB (WE MATCH)"
+      }
+    },
+
+    "target_performance": {
+      "minimum": "PSNR ≥ 22.0 dB (match DE-GAN)",
+      "target": "PSNR ≥ 22.5 dB (beat all SOTA)",
+      "ambitious": "PSNR ≥ 23.0 dB (new SOTA)"
+    },
+
+    "success_criteria": {
+      "acceptable": "PSNR ≥ 22.0 dB (prove competitive with SOTA)",
+      "target": "PSNR ≥ 22.5 dB (beat SOTA, publishable Q2)",
+      "superior": "PSNR ≥ 23.0 dB (strong novelty, publishable Q1)"
+    },
+
+    "expected_results": {
+      "validation_psnr": "22.0-22.5 dB",
+      "dibco_2012_test_psnr": "22.0-22.5 dB",
+      "training_time": "~1.5-2 hours (20 epochs)",
+      "disk_usage": "~3-4 GB (5 checkpoints + best_model)",
+      "gpu_memory": "~8-10 GB (batch_size=2)"
+    },
+
+    "risk_mitigation": {
+      "early_plateau": "Early stopping patience=10 will catch if momentum stops",
+      "overfitting": "Monitoring validation PSNR, stop if degradation",
+      "nan_divergence": "Gradient clipping 1.0 (already stable for 30 epochs)",
+      "worse_than_baseline": "If epoch 35 < 21.40 dB, stop and try ensemble inference"
+    },
+
+    "monitoring_plan": {
+      "check_interval": "Every 5 epochs",
+      "stop_conditions": [
+        "PSNR decreases for 3 consecutive epochs",
+        "Early stopping patience triggered (10 epochs no improvement)",
+        "Target 22.5 dB reached (mission accomplished)"
+      ],
+      "intervention_triggers": [
+        "Epoch 35: If PSNR < 21.6 dB (below projection) → investigate",
+        "Epoch 40: If PSNR < 21.9 dB → consider stopping",
+        "Epoch 45: If PSNR < 22.1 dB → likely won't reach target"
+      ]
+    }
+  }
+}

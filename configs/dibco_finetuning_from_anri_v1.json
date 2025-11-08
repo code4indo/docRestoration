@@ -1,0 +1,162 @@
+{
+  "experiment_name": "dibco_finetuning_from_anri_v1",
+  "description": "PROGRESSIVE FINETUNING: ANRI → DIBCO. Stage 2 of multi-domain adaptation using ANRI checkpoint as starting point. Strategy: (1) Pretrained from ANRI best model (ckpt-115, Base 30.69 dB, ANRI 33.02 dB), (2) NO layer freezing, (3) Aggressive LR 5e-6/1e-5 (proven successful), (4) Mixed dataset 70% base + 30% DIBCO FULL (461 samples with palm), (5) TRIPLE validation (Base + ANRI + DIBCO), (6) Checkpoint management (max 3 + best), (7) Early stopping patience 2. Goal: Transfer learning from ANRI to DIBCO, maintain Base & ANRI performance while adapting to DIBCO.",
+  
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/mixed_70base_30dibco_full.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  
+  "pretrained_checkpoint": "dual_modal_gan/checkpoints/anri_finetuning_stage1_full_model_v2/best_model/ckpt-115",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/dibco_finetuning_from_anri_v1",
+  "sample_dir": "dual_modal_gan/outputs/samples_dibco_finetuning_from_anri_v1",
+
+  "resume": true,
+  "no_restore": false,
+
+  "epochs": 8,
+  "batch_size": 4,
+  "steps_per_epoch": 0,
+  "save_interval": 1,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 3,
+  "gpu_id": "0",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": false,
+    "patience": 2,
+    "min_delta": 0.01,
+    "restore_best_weights": true,
+    "base_val_min_psnr": 29.0
+  },
+
+  "early_stopping_metric": "combined",
+  "psnr_improvement_threshold": 0.5,
+  "cer_weight": 0.0,
+
+  "lr_g": 0.000005,
+  "lr_d": 0.00001,
+  "use_lr_schedule": false,
+  "warmup_epochs": 0,
+  "annealing_epochs": 0,
+
+  "pixel_loss_weight": 100.0,
+  "adv_loss_weight": 1.0,
+  "rec_feat_loss_weight": 10.0,
+  "ctc_loss_weight": 0.0,
+  "perceptual_loss_weight": 15.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 300.0,
+
+  "discriminator_mode": "predicted",
+
+  "adaptive_loss_balancing": false,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.3,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "freeze_strategy": {
+    "enabled": false,
+    "generator_encoder_layers": [],
+    "generator_decoder_early_layers": [],
+    "discriminator_freeze": false,
+    "freeze_batchnorm": false
+  },
+
+  "dual_validation": {
+    "enabled": true,
+    "base_tfrecord": "dual_modal_gan/data/dataset_gan.tfrecord",
+    "anri_tfrecord": "dual_modal_gan/data/anri_real_data.tfrecord",
+    "base_val_split": 0.15,
+    "anri_val_split": 0.15,
+    "monitor_base_psnr": true,
+    "monitor_anri_psnr": true,
+    "base_psnr_red_line": 27.0,
+    "base_psnr_warning_threshold": 28.5,
+    "anri_psnr_red_line": 30.0,
+    "anri_psnr_warning_threshold": 31.5
+  },
+
+  "experiment_metadata": {
+    "stage": "progressive_stage2_dibco",
+    "base_model": "thin_stroke_preservation_v1_academic",
+    "base_model_psnr": 30.56,
+    "base_model_epoch": 49,
+    "stage1_model": "anri_finetuning_stage1_full_model_v2",
+    "stage1_checkpoint": "ckpt-115",
+    "stage1_epoch": 8,
+    "stage1_base_psnr": 30.69,
+    "stage1_anri_psnr": 33.02,
+    "dataset_composition": {
+      "total_samples": 1536,
+      "base_samples": 1075,
+      "dibco_samples": 461,
+      "anri_samples": 0,
+      "dibco_with_palm": true,
+      "palm_samples": 205,
+      "palm_percentage": 44.5,
+      "note": "ANRI NOT in dataset, preserved via pretrained weights"
+    },
+    "progressive_finetuning_strategy": {
+      "approach": "Sequential domain adaptation",
+      "stage1": "BASE → ANRI (COMPLETED)",
+      "stage1_result": {
+        "best_epoch": 8,
+        "base_psnr": 30.69,
+        "anri_psnr": 33.02,
+        "checkpoint": "ckpt-115"
+      },
+      "stage2": "ANRI → DIBCO (CURRENT)",
+      "stage2_dataset": "70% Synthetic + 30% DIBCO (ANRI not included, preserved in weights)",
+      "transfer_learning": "ANRI knowledge encoded in pretrained weights"
+    },
+    "strategy": {
+      "learning_rate": "5e-6 generator, 1e-5 discriminator (same as ANRI success)",
+      "freeze_layers": "NONE - full model trainable",
+      "loss_weights": "Pixel 100, Adv 1.0, RecFeat 10 (balanced for adaptation)",
+      "discriminator_mode": "predicted (consistent with base & ANRI)",
+      "triple_validation": "Monitor Base + ANRI + DIBCO simultaneously",
+      "safety": {
+        "base_red_line": "27.0 dB",
+        "anri_red_line": "30.0 dB (preserve ANRI knowledge)",
+        "warnings": "Base 28.5 dB, ANRI 31.5 dB"
+      },
+      "checkpoint_management": "max_checkpoints=3 (save disk space), best_model separate",
+      "early_stopping": "patience=2 (stop at peak, learned from ANRI epoch 8)"
+    },
+    "expected_outcome": {
+      "dibco_psnr": "29-32 dB (transfer learning boost +1-2 dB vs baseline)",
+      "base_psnr": "30.5-30.7 dB (maintained from ANRI checkpoint)",
+      "anri_psnr": "32.0-33.0 dB (preserved despite not in dataset)",
+      "best_epoch": "6-8 (based on ANRI pattern)",
+      "training_time": "~60 minutes (8 epochs × 7.7 min)",
+      "disk_usage": "~2-3 GB (3 checkpoints + best_model)"
+    },
+    "improvements_from_stage1": [
+      "Transfer learning from ANRI (better starting point +0.13 dB)",
+      "Progressive adaptation (smaller domain jump: Real→Benchmark vs Synthetic→Benchmark)",
+      "Triple validation monitoring (Base + ANRI + DIBCO)",
+      "ANRI preservation via pretrained weights (not dataset)",
+      "Expected +1-2 dB improvement from transfer learning"
+    ]
+  }
+}

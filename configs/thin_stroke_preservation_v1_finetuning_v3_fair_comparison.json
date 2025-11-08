@@ -1,0 +1,108 @@
+{
+  "experiment_name": "thin_stroke_preservation_v1_finetuning_v3_fair_comparison",
+  "description": "FAIR COMPARISON V3 - CORRECTED EXPERIMENTAL DESIGN. Strategy: (1) Start from ACADEMIC checkpoint (ckpt-99) NOT v1's ckpt-106, (2) Use SAME adjusted weights as V2 (100/20/10), (3) Same hyperparams as V2 for apple-to-apple comparison, (4) This tests whether adjusted weights are inherently better/worse than V1's weights (200/10/5)",
+  
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/finetuning/finetuning_train.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  
+  "pretrained_checkpoint": "dual_modal_gan/checkpoints/thin_stroke_preservation_v1_academic/best_model/ckpt-99",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/thin_stroke_preservation_v1_finetuning_v3_fair_comparison",
+  "sample_dir": "dual_modal_gan/outputs/samples_thin_stroke_preservation_v1_finetuning_v3_fair_comparison",
+
+  "resume": false,
+  "no_restore": false,
+
+  "epochs": 20,
+  "batch_size": 2,
+  "steps_per_epoch": 0,
+  "save_interval": 3,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 3,
+  "gpu_id": "0",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": false,
+    "patience": 10,
+    "min_delta": 0.01,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "psnr_only",
+  "psnr_improvement_threshold": 1.0,
+  "cer_weight": 0.0,
+
+  "lr_g": 0.000005,
+  "lr_d": 0.000005,
+  "use_lr_schedule": false,
+  "warmup_epochs": 0,
+  "annealing_epochs": 0,
+
+  "pixel_loss_weight": 100.0,
+  "adv_loss_weight": 1.5,
+  "rec_feat_loss_weight": 10.0,
+  "ctc_loss_weight": 0.0,
+  "perceptual_loss_weight": 20.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 300.0,
+
+  "discriminator_mode": "ground_truth",
+
+  "adaptive_loss_balancing": false,
+  "target_ctc_ratio": 0.40,
+  "target_visual_ratio": 0.60,
+  "adaptation_rate": 0.08,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.1,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "experiment_metadata": {
+    "hypothesis": "V3 FAIR COMPARISON: Starting from SAME base checkpoint (academic ckpt-99) as V1, test if adjusted loss weights (100/20/10) yield better/worse results than V1's weights (200/10/5). This is the CORRECT experimental design.",
+    "base_model": "thin_stroke_preservation_v1_academic (ckpt-99, PSNR ~20-25 dB)",
+    "comparison_baseline": "V1 from ckpt-99 → 24.79 dB (epoch 3, weights 200/10/5)",
+    "experimental_design_correction": {
+      "v1_path": "ckpt-99 → train(200/10/5) → 24.79 dB",
+      "v2_path_wrong": "ckpt-106 → train(100/20/10) → 24.27 dB ❌ UNFAIR",
+      "v3_path_correct": "ckpt-99 → train(100/20/10) → ??? dB ✅ FAIR"
+    },
+    "loss_weight_strategy": {
+      "pixel_loss_weight": "100.0 (vs V1's 200.0, -50% to reduce L1 dominance)",
+      "perceptual_loss_weight": "20.0 (vs V1's 10.0, +100% for VGG perceptual quality)",
+      "rec_feat_loss_weight": "10.0 (vs V1's 5.0, +100% for HTR feature matching)",
+      "adv_loss_weight": "1.5 (same as V1)",
+      "ctc_loss_weight": "0.0 (same as V1, visual-only mode)"
+    },
+    "training_hyperparams": {
+      "lr": "5e-6 (same as V2, 2x lower than V1's 1e-5)",
+      "epochs": "20 (same as V2, vs V1's 15)",
+      "patience": "10 (same as V2, vs V1's 8)",
+      "starting_checkpoint": "academic ckpt-99 (SAME as V1 ✅)"
+    },
+    "expected_outcomes": {
+      "if_v3_better_than_v1": "Adjusted weights (100/20/10) ARE superior strategy",
+      "if_v3_worse_than_v1": "Original weights (200/10/5) ARE superior strategy",
+      "if_v3_equal_v1": "Both weight strategies equivalent, data limitation is bottleneck"
+    },
+    "scientific_validity": "✅ This is proper A/B testing with controlled variables"
+  }
+}

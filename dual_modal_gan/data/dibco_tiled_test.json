@@ -1,0 +1,63 @@
+{
+  "created_at": "2025-10-26T10:55:20",
+  "source": "DIBCO binarization datasets",
+  "purpose": "Fine-tuning GAN with tiling augmentation (CTC-free)",
+  "target_dimensions": {
+    "height": 128,
+    "width": 1024,
+    "channels": 1
+  },
+  "tiling_strategy": {
+    "enabled": true,
+    "tile_height": 256,
+    "tile_width": 2048,
+    "overlap": 0.25
+  },
+  "preprocessing": "Tiling for large images, padding for small images",
+  "label_type": "dummy (visual-only training)",
+  "statistics": {
+    "source_images": 20,
+    "total_samples": 20,
+    "successful": 20,
+    "failed": 0,
+    "augmentation_ratio": 1.0,
+    "years": {
+      "2009": {
+        "source_images": 10,
+        "tiles": 10
+      },
+      "2010": {
+        "source_images": 10,
+        "tiles": 10
+      },
+      "2011": {
+        "source_images": 0,
+        "tiles": 0
+      },
+      "2013": {
+        "source_images": 0,
+        "tiles": 0
+      },
+      "2014": {
+        "source_images": 0,
+        "tiles": 0
+      },
+      "2016": {
+        "source_images": 0,
+        "tiles": 0
+      },
+      "2017": {
+        "source_images": 0,
+        "tiles": 0
+      },
+      "2018": {
+        "source_images": 0,
+        "tiles": 0
+      },
+      "PALM": {
+        "source_images": 0,
+        "tiles": 0
+      }
+    }
+  }
+}

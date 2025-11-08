@@ -1,0 +1,72 @@
+{
+  "experiment_name": "tier2_dibco_finetuning_improved",
+  "description": "TIER 2 IMPLEMENTATION: Fine-tuning DIBCO visual-only model (run a6a86fd6) with IMPROVED CONFIG - LR scheduling + larger batch + stability improvements. Resume from epoch 49 checkpoint (22.85 dB PSNR). Target: 24-26 dB PSNR (+2-3 dB from baseline).",
+  
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/dibco_tiled_no_palm.tfrecord",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/tier2_dibco_finetuning_improved",
+  "sample_dir": "dual_modal_gan/outputs/samples_tier2_dibco_finetuning_improved",
+
+  "resume": true,
+
+  "epochs": 80,
+  "batch_size": 4,
+  "steps_per_epoch": 0,
+  "save_interval": 3,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 5,
+  "gpu_id": "0,1",
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "patience": 8,
+    "min_delta": 0.05,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "psnr_only",
+
+  "lr_g": 0.0001,
+  "lr_d": 0.0001,
+  "use_lr_schedule": true,
+  "lr_decay_epochs": 25,
+  "lr_alpha": 0.01,
+  "warmup_epochs": 3,
+
+  "pixel_loss_weight": 100.0,
+  "adv_loss_weight": 1.5,
+  "perceptual_loss_weight": 5.0,
+  "ctc_loss_weight": 0.0,
+  "rec_feat_loss_weight": 0.0,
+  "gradient_clip_norm": 1.0,
+
+  "discriminator_mode": "predicted",
+
+  "experiment_metadata": {
+    "baseline_run": "a6a86fd6a82445cf825e1b7c47ec8ff5",
+    "baseline_psnr": 22.85,
+    "baseline_issues": [
+      "No LR scheduling → late-stage instability (std 0.50 dB)",
+      "Batch size 4 → high gradient noise",
+      "Constant LR 0.0002 → oscillation in late epochs",
+      "Overfitting after epoch 18"
+    ],
+    "tier2_improvements": [
+      "LR scheduling: cosine decay from 0.0001 → 0.000001",
+      "Batch size 4 (same, safe for memory)",
+      "Lower initial LR: 0.0001 (vs 0.0002) → more stable",
+      "Patience 8 (vs 12) → earlier stopping",
+      "30 epochs (vs 50) → prevent overfitting",
+      "Resume from epoch 49 → continue from best weights"
+    ],
+    "expected_gain": "+2-3 dB PSNR (target 24-26 dB)",
+    "rationale": "Analysis showed training converged at epoch 18 but degraded due to high LR and no scheduling. Lower LR with scheduling should stabilize and improve."
+  }
+}

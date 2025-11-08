@@ -1,0 +1,179 @@
+{
+  "experiment_name": "dibco_direct_restoration_v1",
+  "description": "DIBCO-ONLY BASELINE VALIDATION. Direct restoration training from scratch (NO pretrained, NO Base/ANRI). Purpose: Validate if DIBCO target 28-30 dB is achievable at all. Strategy: (1) Train ONLY on DIBCO dataset (461 samples with palm), (2) NO transfer learning (clean slate), (3) Restoration-optimized loss weights (Pixel 200, Perceptual 50), (4) Discriminator mode 'clean' (discriminate clean images), (5) Longer training (50 epochs, patience 10), (6) Single validation (DIBCO only, no Base/ANRI complexity). If successful (≥28 dB): Progressive finetuning wrong, use separate models. If failed (<20 dB): Dataset quality or architecture issue.",
+  
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/dibco_tiled_full.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  
+  "pretrained_checkpoint": null,
+  "checkpoint_dir": "dual_modal_gan/checkpoints/dibco_direct_restoration_v1",
+  "sample_dir": "dual_modal_gan/outputs/samples_dibco_direct_restoration_v1",
+
+  "resume": false,
+  "no_restore": true,
+
+  "epochs": 50,
+  "batch_size": 4,
+  "steps_per_epoch": 0,
+  "save_interval": 2,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 3,
+  "gpu_id": "0",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": false,
+    "patience": 10,
+    "min_delta": 0.05,
+    "restore_best_weights": true,
+    "base_val_min_psnr": 25.0
+  },
+
+  "early_stopping_metric": "psnr_only",
+  "psnr_improvement_threshold": 0.3,
+  "cer_weight": 0.0,
+
+  "lr_g": 0.00001,
+  "lr_d": 0.00002,
+  "use_lr_schedule": true,
+  "warmup_epochs": 5,
+  "annealing_epochs": 40,
+
+  "pixel_loss_weight": 200.0,
+  "adv_loss_weight": 1.0,
+  "rec_feat_loss_weight": 15.0,
+  "ctc_loss_weight": 0.0,
+  "perceptual_loss_weight": 50.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 300.0,
+
+  "discriminator_mode": "ground_truth",
+
+  "adaptive_loss_balancing": false,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.3,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "freeze_strategy": {
+    "enabled": false,
+    "generator_encoder_layers": [],
+    "generator_decoder_early_layers": [],
+    "discriminator_freeze": false,
+    "freeze_batchnorm": false
+  },
+
+  "dual_validation": {
+    "enabled": false,
+    "base_tfrecord": null,
+    "anri_tfrecord": null,
+    "base_val_split": 0.0,
+    "anri_val_split": 0.0,
+    "monitor_base_psnr": false,
+    "monitor_anri_psnr": false,
+    "base_psnr_red_line": 0.0,
+    "base_psnr_warning_threshold": 0.0,
+    "anri_psnr_red_line": 0.0,
+    "anri_psnr_warning_threshold": 0.0
+  },
+
+  "experiment_metadata": {
+    "stage": "dibco_baseline_validation",
+    "approach": "Direct restoration from scratch",
+    "purpose": "Validate if DIBCO 28-30 dB target is achievable",
+    "comparison_baseline": "rehearsal_v1",
+    "comparison_psnr": "14.63-15.15 dB",
+    "dataset_composition": {
+      "total_samples": 461,
+      "dibco_samples": 461,
+      "base_samples": 0,
+      "anri_samples": 0,
+      "dibco_with_palm": true,
+      "palm_samples": 205,
+      "palm_percentage": 44.5,
+      "note": "DIBCO ONLY - no synthetic or ANRI data"
+    },
+    "strategy": {
+      "training_from_scratch": "YES - no pretrained checkpoint, clean slate",
+      "learning_rate": "1e-5 generator, 2e-5 discriminator (higher for faster learning)",
+      "lr_schedule": "Warmup 5 epochs → Annealing 40 epochs (total 50)",
+      "freeze_layers": "NONE - full model trainable",
+      "loss_weights": {
+        "pixel": "200.0 (HIGH - restoration needs strong pixel alignment)",
+        "perceptual": "50.0 (VERY HIGH - preserve document structure)",
+        "adversarial": "1.0 (standard)",
+        "rec_feat": "15.0 (moderate - secondary priority)",
+        "ctc": "0.0 (disabled - not using HTR loss)",
+        "rationale": "Restoration task needs strong pixel + perceptual guidance, unlike generation"
+      },
+      "discriminator_mode": "ground_truth (discriminate clean ground truth images for restoration)",
+      "validation": "Single validation (DIBCO only, no Base/ANRI complexity)",
+      "early_stopping": "patience=10 (allow longer exploration), min_delta=0.05",
+      "checkpoint_management": "max_checkpoints=3, save_interval=2 (every 2 epochs)"
+    },
+    "success_criteria": {
+      "target_psnr": "≥28.0 dB (minimum acceptable)",
+      "optimal_psnr": "28-30 dB (matches Base performance)",
+      "failure_threshold": "<20 dB (indicates fundamental problem)",
+      "interpretation": {
+        "if_success": "Progressive finetuning was wrong approach, use separate DIBCO-only model",
+        "if_marginal": "20-25 dB = Dataset quality issue or need architecture tuning",
+        "if_failure": "<20 dB = Fundamental architecture or dataset problem"
+      }
+    },
+    "expected_outcome": {
+      "dibco_psnr": "26-30 dB (optimistic estimate based on architecture capability)",
+      "best_epoch": "15-25 (restoration typically needs more epochs than generation)",
+      "training_time": "~120-150 minutes (50 epochs × 2.5-3 min per epoch)",
+      "disk_usage": "~2-3 GB (3 checkpoints + best_model)",
+      "note": "If DIBCO-only achieves 28+ dB, proves progressive finetuning unnecessary for DIBCO"
+    },
+    "comparison_experiments": {
+      "rehearsal_v1": {
+        "approach": "Progressive finetuning with data rehearsal",
+        "dibco_psnr": "14.63-15.15 dB",
+        "dataset": "50% Base + 30% DIBCO + 20% ANRI (1073 samples)",
+        "result": "FAILED - catastrophic forgetting prevented but DIBCO stuck at 15 dB"
+      },
+      "v4_no_rehearsal": {
+        "approach": "Progressive finetuning without rehearsal",
+        "dibco_psnr": "14.84 dB (epoch 1 only)",
+        "dataset": "70% Base + 30% DIBCO (1536 samples)",
+        "result": "EMERGENCY STOP - catastrophic ANRI forgetting (29.65 dB)"
+      }
+    },
+    "hypothesis": "DIBCO restoration task fundamentally different from Base/ANRI generation. Transfer learning from generation → restoration may hurt performance. Direct restoration training should achieve better results.",
+    "next_steps": {
+      "if_dibco_only_succeeds": [
+        "Abandon progressive finetuning approach entirely",
+        "Use separate models: Base/ANRI generator + DIBCO restoration model",
+        "Document lesson: Generation ≠ Restoration tasks"
+      ],
+      "if_dibco_only_fails": [
+        "Investigate DIBCO dataset quality (corrupted samples, incorrect labels)",
+        "Try different architecture (U-Net, ResNet-based restoration)",
+        "Consider GAN instability or loss function issues",
+        "Evaluate if DIBCO benchmark images actually restorable to 28-30 dB"
+      ]
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "created_at": "2025-10-26T16:11:20.394251",
+  "source": "DIBCO binarization datasets",
+  "purpose": "Fine-tuning GAN for visual quality (CTC-free)",
+  "target_dimensions": {
+    "height": 128,
+    "width": 1024,
+    "channels": 1
+  },
+  "preprocessing": "Resize with padding (aspect ratio preserved)",
+  "label_type": "dummy (visual-only training)",
+  "statistics": {
+    "total_samples": 152,
+    "successful": 152,
+    "failed": 0,
+    "years": {
+      "2009": 10,
+      "2010": 10,
+      "2011": 16,
+      "2013": 16,
+      "2014": 10,
+      "2016": 10,
+      "2017": 20,
+      "2018": 10,
+      "PALM": 50
+    }
+  }
+}

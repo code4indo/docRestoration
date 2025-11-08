@@ -1,0 +1,164 @@
+{
+  "experiment_name": "dibco_pure_sota_comparison_v1",
+  "description": "PURE DIBCO TRAINING FOR FAIR SOTA COMPARISON. Leave-one-out methodology (exclude DIBCO 2012 for testing). Training on DIBCO 2009-2018 (no PALM, no synthetic) to prove Enhanced V2 architecture superiority vs DocEnTR (22.29 dB), DE-GAN (22.00 dB), Souibgui baseline. Target: >22.5 dB PSNR on DIBCO 2012. Pretrained from Production V3 (ckpt-88) for transfer learning boost.",
+  
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/dibco_tiled_no_palm.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  
+  "pretrained_checkpoint": null,
+  "checkpoint_dir": "dual_modal_gan/checkpoints/dibco_pure_sota_comparison_v1",
+  "sample_dir": "dual_modal_gan/outputs/samples_dibco_pure_sota_comparison_v1",
+
+  "resume": false,
+  "no_restore": true,
+
+  "epochs": 60,
+  "batch_size": 2,
+  "steps_per_epoch": 0,
+  "save_interval": 1,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 3,
+  "gpu_id": "0",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": true,
+    "patience": 15,
+    "min_delta": 0.01,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "psnr_only",
+  "psnr_improvement_threshold": 0.05,
+  "cer_weight": 0.0,
+
+  "lr_g": 0.0001,
+  "lr_d": 0.0002,
+  "use_lr_schedule": true,
+  "warmup_epochs": 15,
+  "annealing_epochs": 25,
+
+  "pixel_loss_weight": 100.0,
+  "adv_loss_weight": 1.0,
+  "rec_feat_loss_weight": 10.0,
+  "ctc_loss_weight": 0.0,
+  "perceptual_loss_weight": 10.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 300.0,
+
+  "discriminator_mode": "predicted",
+
+  "adaptive_loss_balancing": false,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.3,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "freeze_strategy": {
+    "enabled": false,
+    "generator_encoder_layers": [],
+    "generator_decoder_early_layers": [],
+    "discriminator_freeze": false,
+    "freeze_batchnorm": false
+  },
+
+  "dual_validation": {
+    "enabled": false
+  },
+
+  "experiment_metadata": {
+    "purpose": "SOTA_COMPARISON",
+    "methodology": "Pure DIBCO leave-one-out FROM SCRATCH (following Souibgui, DocEnTR, DE-GAN)",
+    "architecture": "Enhanced Generator + Enhanced V2 Fixed Discriminator",
+    "novelty": "Dual-modal discriminator with HTR-oriented loss + cross-modal attention",
+    "training_strategy": "FROM SCRATCH on pure DIBCO (NO synthetic pretrained)",
+    "training_data": {
+      "source": "DIBCO 2009-2018 (exclude 2012, exclude PALM)",
+      "total_samples": 256,
+      "source_images": 102,
+      "years_included": ["2009", "2010", "2011", "2013", "2014", "2016", "2017", "2018"],
+      "years_excluded": ["2012"],
+      "composition": "100% DIBCO (pure, no synthetic)"
+    },
+    "test_dataset": {
+      "name": "DIBCO 2012",
+      "images": 14,
+      "path": "dibco_datasets/2012"
+    },
+    "baseline_model": {
+      "comparison": "Fair comparison - both trained on DIBCO only",
+      "note": "NO synthetic pretraining (unlike our previous models)"
+    },
+    "sota_comparison": {
+      "DocEnTR": {
+        "psnr": 22.29,
+        "f_measure": 0.9531,
+        "method": "Fine-tuned on other DIBCO datasets"
+      },
+      "DE-GAN": {
+        "psnr": 22.00,
+        "f_measure": 0.9518,
+        "method": "Fine-tuned on other DIBCO datasets"
+      },
+      "Souibgui_baseline": {
+        "psnr": "~22-23",
+        "method": "Leave-one-out DIBCO fine-tuning",
+        "note": "Winner of H-DIBCO 2016 & 2018"
+      }
+    },
+    "target_performance": {
+      "psnr": ">22.5 dB (beat SOTA)",
+      "ssim": ">0.95",
+      "f_measure": ">0.98 (already superior in zero-shot)",
+      "improvement_over_zero_shot": "+6 dB expected (16.46 → 22.5)"
+    },
+    "strategy": {
+      "training_mode": "FROM SCRATCH (no pretrained weights)",
+      "domain": "Pure DIBCO only (no synthetic dilution)",
+      "learning_rate": "0.0001 generator, 0.0002 discriminator (standard from-scratch LR)",
+      "lr_schedule": "Warmup 10 epochs + Annealing 30 epochs (gradual convergence)",
+      "visual_only_mode": "CTC=0, RecFeat=10 (focus on visual quality)",
+      "perceptual_loss": "10.0 (preserve edge/texture, reduced from 15 for stability)",
+      "early_stopping": "Patience 10 (prevent overfitting on small dataset)",
+      "expected_convergence": "30-50 epochs from scratch"
+    },
+    "expected_results": {
+      "validation_psnr": "20-23 dB",
+      "dibco_2012_test_psnr": "20-23 dB",
+      "training_time": "~4-6 hours (60 epochs max, likely early stop at 30-40)",
+      "disk_usage": "~2-3 GB (3 checkpoints + best_model)",
+      "gpu_memory": "~8-10 GB (batch_size=2)"
+    },
+    "success_criteria": {
+      "minimum": "PSNR ≥ 20 dB (clear improvement over zero-shot 16.46)",
+      "target": "PSNR ≥ 22.0 dB (match DE-GAN)",
+      "superior": "PSNR > 22.5 dB (beat all SOTA including DocEnTR 22.29)"
+    },
+    "architecture_advantages": {
+      "dual_modal_discriminator": "Evaluates both visual quality AND HTR readability",
+      "cross_modal_attention": "Learns correlation between visual features and text content",
+      "enhanced_v2_fixed": "Improved spatial attention + residual connections",
+      "htr_oriented_loss": "RecFeat loss guides restoration toward readable output",
+      "perceptual_loss": "VGG-based perceptual loss preserves high-freq details"
+    }
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "experiment_name": "dibco_tiled_augmented",
+  "description": "FINE-TUNING on DIBCO with TILING AUGMENTATION (461 samples from 152 source images, 3.0x augmentation). Combines dataset expansion with increased LR for better domain adaptation. Loads thin_stroke_preservation_v1_academic checkpoint, visual-only training (no CTC). Strategy: Maximize data diversity through tiling + higher LR for faster adaptation.",
+  
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/dibco_tiled_full.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/dibco_tiled_augmented",
+  "sample_dir": "dual_modal_gan/outputs/samples_dibco_tiled",
+
+  "resume": true,
+  "no_restore": false,
+  "pretrained_checkpoint": "dual_modal_gan/checkpoints/thin_stroke_preservation_v1_academic/best_model/ckpt-99",
+
+  "epochs": 50,
+  "batch_size": 4,
+  "steps_per_epoch": 0,
+  "save_interval": 3,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 3,
+  "gpu_id": "0",
+
+  "train_split": 0.8,
+  "val_split": 0.1,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": false,
+    "patience": 12,
+    "min_delta": 0.05,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "psnr_only",
+  "psnr_improvement_threshold": 0.3,
+  "cer_weight": 0.0,
+
+  "lr_g": 0.00005,
+  "lr_d": 0.00005,
+  "use_lr_schedule": false,
+  "warmup_epochs": 0,
+  "annealing_epochs": 0,
+
+  "pixel_loss_weight": 200.0,
+  "adv_loss_weight": 1.5,
+  "rec_feat_loss_weight": 0.0,
+  "ctc_loss_weight": 0.0,
+  "perceptual_loss_weight": 10.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 300.0,
+
+  "discriminator_mode": "predicted",
+
+  "adaptive_loss_balancing": false,
+  "target_ctc_ratio": 0.0,
+  "target_visual_ratio": 1.0,
+  "adaptation_rate": 0.0,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.15,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "experiment_metadata": {
+    "hypothesis": "Tiling augmentation (3.0x dataset expansion) + increased LR (2x from baseline fine-tuning) will achieve superior domain adaptation to REAL historical documents compared to baseline fine-tuning.",
+    "baseline_comparison": {
+      "dibco_finetuning_visual_only": {
+        "dataset_size": 152,
+        "lr": 0.00005,
+        "epochs": 20,
+        "result": "PSNR 21.24 dB - FAILED (outputs 85-99% white pixels)"
+      }
+    },
+    "this_experiment": {
+      "dataset_size": 461,
+      "augmentation": "3.0x (tiling with 320x1280 tiles, 25% overlap)",
+      "lr": "0.0001 (2x increase from failed baseline)",
+      "epochs": 50,
+      "target_psnr": "25-28 dB (realistic given domain gap)"
+    },
+    "tiling_strategy": {
+      "tile_dimensions": "320 x 1280 (aspect 4:1)",
+      "model_input": "128 x 1024 (aspect 8:1)",
+      "overlap": "25%",
+      "advantages": [
+        "Preserves fine details from large images (no extreme scaling)",
+        "3x dataset expansion (152 → 461 samples)",
+        "Enables sliding window inference for full-page reconstruction",
+        "Diverse tile positions = more training data"
+      ],
+      "year_breakdown": {
+        "PALM": "50 → 205 tiles (4.1x)",
+        "2013": "16 → 69 tiles (4.3x)",
+        "2017": "20 → 65 tiles (3.2x)",
+        "2018": "10 → 32 tiles (3.2x)",
+        "others": "1.1-2.7x"
+      }
+    },
+    "training_strategy": {
+      "lr_increase": "From 0.00005 → 0.0001 (2x). Rationale: More data (461 samples) supports higher LR without overfitting. Faster domain adaptation.",
+      "lr_schedule": "ENABLED with warmup (3 epochs) + annealing (10 epochs). Gradual increase prevents shock, cosine decay prevents overshooting.",
+      "batch_size_4": "Same as baseline. With dual GPU training, batch 4 is max safe size to avoid OOM (16GB GPU limit).",
+      "epochs_50": "Extended from 20 to 50. More data needs more iterations to fully learn. Early stopping (patience=12) prevents waste.",
+      "patience_12": "Increased from 8 to 12. Real data has higher variance, needs more tolerance.",
+      "dropout_0.15": "Increased from 0.1 to 0.15. Stronger regularization for larger dataset.",
+      "visual_only": "CTC=0, rec_feat=0. DIBCO has NO text labels, pure binarization."
+    },
+    "expected_outcome": {
+      "epoch_10_target": "PSNR >23 dB (if not reached, training likely failing again)",
+      "epoch_25_target": "PSNR 25-26 dB (improvement plateau expected)",
+      "final_target": "PSNR 26-28 dB (realistic given synthetic→real domain gap)",
+      "visual_quality": "White pixel ratio should drop from 85-99% to <70%. Text strokes preserved.",
+      "success_criteria": "PSNR >25 dB + visual inspection shows readable text"
+    },
+    "risk_mitigation": {
+      "overfitting": "More data (461 samples) + dropout 0.15 + early stopping",
+      "catastrophic_forgetting": "Still relatively low LR (0.0001) + warmup prevents shock",
+      "domain_shift": "Tiling provides diverse views of real degradation patterns",
+      "tile_boundary_artifacts": "25% overlap + will blend during inference"
+    },
+    "comparison_to_failed_baseline": {
+      "dataset": "152 → 461 (3.0x MORE)",
+      "lr": "0.00005 → 0.0001 (2x HIGHER)",
+      "epochs": "20 → 50 (2.5x LONGER)",
+      "batch_size": "4 → 4 (SAME - OOM constrained)",
+      "lr_schedule": "disabled → enabled (SMARTER)",
+      "expected_improvement": "+4-6 dB PSNR (from 21 → 25-27 dB)"
+    }
+  }
+}

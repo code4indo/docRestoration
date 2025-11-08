@@ -56,6 +56,6 @@ Research_papers/
 RusakRingan/
 laypa_models/
 models/sam/
-real_data_preparation/dataset_dibco/
-
+real_data_preparation/
 visualization/
+dual_modal_gan/data/

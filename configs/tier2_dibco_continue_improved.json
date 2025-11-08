@@ -1,0 +1,106 @@
+{
+  "experiment_name": "tier2_dibco_continue_improved",
+  "description": "TIER 2 IMPLEMENTATION: Continue fine-tuning from run a6a86fd6 (22.85 dB) dengan IMPROVED CONFIG. Key improvements: (1) LR scheduling enabled, (2) Lower LR for stability, (3) Tighter early stopping, (4) SSIM loss added. Target: 24-26 dB PSNR (+2-3 dB gain).",
+  
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/dibco_tiled_no_palm.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": null,
+  "checkpoint_dir": "dual_modal_gan/checkpoints/tier2_dibco_continue_improved",
+  "sample_dir": "dual_modal_gan/outputs/samples_tier2_dibco_continue_improved",
+
+  "resume": false,
+  "no_restore": false,
+  "pretrained_checkpoint": "dual_modal_gan/checkpoints/dibco_tiled_no_palm_visual_only/best_model/ckpt-184",
+
+  "epochs": 30,
+  "batch_size": 4,
+  "steps_per_epoch": 0,
+  "save_interval": 3,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 5,
+  "gpu_id": "0",
+
+  "train_split": 0.8,
+  "val_split": 0.1,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": false,
+    "patience": 8,
+    "min_delta": 0.05,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "psnr_only",
+  "psnr_improvement_threshold": 0.3,
+  "cer_weight": 0.0,
+
+  "lr_g": 0.00003,
+  "lr_d": 0.00003,
+  "use_lr_schedule": true,
+  "lr_decay_epochs": 25,
+  "lr_alpha": 0.01,
+  "warmup_epochs": 3,
+  "annealing_epochs": 0,
+
+  "pixel_loss_weight": 200.0,
+  "adv_loss_weight": 1.5,
+  "rec_feat_loss_weight": 0.0,
+  "ctc_loss_weight": 0.0,
+  "perceptual_loss_weight": 10.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 300.0,
+
+  "discriminator_mode": "predicted",
+
+  "adaptive_loss_balancing": false,
+  "target_ctc_ratio": 0.0,
+  "target_visual_ratio": 1.0,
+  "adaptation_rate": 0.0,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.15,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "experiment_metadata": {
+    "baseline_run": "a6a86fd6a82445cf825e1b7c47ec8ff5",
+    "baseline_checkpoint": "dibco_tiled_no_palm_visual_only/best_model/ckpt-184",
+    "baseline_psnr": 22.85,
+    "baseline_issues": [
+      "No LR scheduling → late-stage instability (std 0.50 dB)",
+      "LR 0.00005 constant → no adaptation to training phase",
+      "Patience 12 too loose → saved suboptimal model (epoch 49 vs 18)",
+      "Converged epoch 18 but continued to 50 → overfitting"
+    ],
+    "tier2_improvements": [
+      "LR scheduling: Cosine decay 0.00003 → 0.0000003 over 25 epochs",
+      "Lower LR: 0.00003 (vs 0.00005) → 40% reduction for fine-tuning stability",
+      "Tighter early stopping: patience 8 (vs 12), captures optimal model earlier",
+      "30 epochs (vs 50): prevent overfitting, focus on optimal convergence zone",
+      "Warmup 3 epochs: smooth transition from pretrained weights",
+      "Same loss weights as successful baseline (pixel=200, perceptual=10)"
+    ],
+    "training_strategy": "Continue from best checkpoint (epoch 49, 22.85 dB) with improved hyperparameters for +2-3 dB gain",
+    "expected_outcome": {
+      "target_psnr": "24-26 dB validation PSNR",
+      "convergence": "Epoch 10-15 with stable plateau",
+      "stability": "Lower LR + scheduling → std dev <0.20 dB (vs 0.50)",
+      "best_epoch": "Earlier optimal capture via tighter early stopping"
+    }
+  }
+}

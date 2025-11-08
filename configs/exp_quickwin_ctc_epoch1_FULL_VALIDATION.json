@@ -1,0 +1,109 @@
+{
+  "experiment_name": "exp_quickwin_ctc_epoch1_FULL_VALIDATION",
+  "description": "VERIFICATION TEST: Same as QuickWin Optimized BUT with FULL 710 validation to verify if PSNR 23.09 is REAL or sampling bias",
+  
+  "_comment_purpose": "=== CRITICAL VERIFICATION ===",
+  "_purpose": "Test if PSNR improvement (+15%) is legitimate or caused by sampling bias",
+  "_question": "QuickWin showed PSNR 23.09 dB (sampled 400), baseline 20.01 dB (full 710). Is PSNR improvement REAL?",
+  "_hypothesis": "If PSNR drops to ~20 dB with full validation → sampling bias. If stays ~23 dB → legitimate improvement",
+  
+  "_comment_changes": "=== CHANGES FROM OPTIMIZED VERSION ===",
+  "_change_1": "num_val_batches: 100 → REMOVED (use full validation set)",
+  "_change_2": "eval_interval: 2 → 1 (validate every epoch for comparison)",
+  "_change_3": "Keep batch_size: 4 (for speed, consistent with QuickWin)",
+  "_change_4": "Keep all other hyperparameters IDENTICAL",
+  
+  "_comment_data": "=== DATA CONFIGURATION ===",
+  "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/exp_quickwin_ctc_epoch1_FULL_VALIDATION",
+  "sample_dir": "dual_modal_gan/outputs/samples_exp_quickwin_ctc_epoch1_FULL_VALIDATION",
+  
+  "resume": false,
+  "no_restore": true,
+  
+  "_comment_model": "=== MODEL ARCHITECTURE (SAME AS QUICKWIN) ===",
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+  "discriminator_mode": "ground_truth",
+  "recognizer_trainable": false,
+  
+  "_comment_discriminator": "=== DISCRIMINATOR BALANCED CONFIG ===",
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 512,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.1
+  },
+  
+  "_comment_lstm": "=== TEXT LSTM BALANCED ===",
+  "text_lstm_units": 512,
+  
+  "_comment_training": "=== TRAINING CONFIGURATION ===",
+  "epochs": 10,
+  "batch_size": 4,
+  "_comment_batch_size": "Keep batch_size=4 for speed (consistent with QuickWin)",
+  "steps_per_epoch": 100,
+  "_comment_steps": "Same 100 steps per epoch (400 samples)",
+  
+  "_comment_validation": "=== FULL VALIDATION (CRITICAL CHANGE!) ===",
+  "eval_interval": 1,
+  "_comment_eval_interval": "CHANGED: Validate EVERY epoch (was 2) for detailed comparison",
+  "_comment_num_val_batches": "REMOVED: Use FULL 710 validation samples (not sampled 100)",
+  
+  "_comment_optimizer": "=== OPTIMIZER (SAME) ===",
+  "lr_generator": 0.0002,
+  "lr_discriminator": 0.0002,
+  "beta_1": 0.5,
+  "beta_2": 0.999,
+  
+  "_comment_loss": "=== LOSS WEIGHTS (SAME AS QUICKWIN) ===",
+  "pixel_loss_weight": 20.0,
+  "adversarial_loss_weight": 3.0,
+  "perceptual_loss_weight": 0.0,
+  "ctc_loss_weight": 5.0,
+  "rec_feat_loss_weight": 0.0,
+  "contrastive_loss_weight": 0.0,
+  
+  "_comment_curriculum": "=== CURRICULUM LEARNING (SAME) ===",
+  "curriculum_learning": true,
+  "warmup_epochs": 0,
+  "_comment_warmup": "CTC active from Epoch 1 (same as QuickWin)",
+  "annealing_epochs": 3,
+  
+  "_comment_callbacks": "=== CALLBACKS ===",
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": true
+  },
+  "patience": 5,
+  "min_delta": 0.01,
+  "monitor_metric": "combined",
+  
+  "_comment_system": "=== SYSTEM ===",
+  "mixed_precision": "float32",
+  "gpu": 0,
+  
+  "_comment_timeline": "=== EXPECTED PERFORMANCE ===",
+  "_training_per_epoch": "100 steps ÷ 8 it/s = ~12s",
+  "_validation_per_epoch": "710 samples ÷ 4 batch_size = 178 batches @ 3 batch/s = ~60s",
+  "_total_per_epoch": "~72s (vs 45s sampled)",
+  "_total_10_epochs": "~12 minutes (vs 5 minutes sampled)",
+  "_slowdown": "2.4× slower than sampled validation (acceptable for verification)",
+  
+  "_comment_expected": "=== EXPECTED RESULTS (VERIFICATION) ===",
+  "_scenario_1": "If PSNR ~23 dB & CER ~0.31 → QuickWin improvement LEGITIMATE",
+  "_scenario_2": "If PSNR ~20 dB & CER ~0.31 → QuickWin improvement was SAMPLING BIAS",
+  "_scenario_3": "If PSNR ~20 dB & CER ~0.32 → Both PSNR and CER were biased (worst case)",
+  
+  "_comment_comparison": "=== COMPARISON TARGETS ===",
+  "_baseline_single_modal": "PSNR 20.01 dB, CER 0.3233 (full 710 val, bs=1)",
+  "_baseline_dual_gt_v2": "PSNR 20.23 dB, CER 0.3140 (full 710 val, bs=1)",
+  "_quickwin_sampled": "PSNR 23.09 dB, CER 0.3141 (sampled 400, bs=4) ← TO VERIFY",
+  
+  "_comment_success": "=== SUCCESS CRITERIA ===",
+  "_criterion_1": "PSNR consistency: |PSNR_full - PSNR_sampled| < 1.0 dB → sampling bias negligible",
+  "_criterion_2": "CER consistency: |CER_full - CER_sampled| < 0.02 → sampling bias negligible",
+  "_criterion_3": "If both consistent → QuickWin results are TRUSTWORTHY"
+}

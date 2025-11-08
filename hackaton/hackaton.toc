@@ -1,0 +1,11 @@
+\babel@toc {bahasa}{}\relax 
+\contentsline {section}{\numberline {1}Judul Proyek}{2}{section.1}%
+\contentsline {section}{\numberline {2}Latar Belakang Masalah}{2}{section.2}%
+\contentsline {section}{\numberline {3}Solusi yang Diusulkan: TalentMerit AI}{2}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Arsitektur dan Alur Kerja Sistem}{2}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Penerapan Teknologi}{4}{subsection.3.2}%
+\contentsline {section}{\numberline {4}Target Pengguna}{4}{section.4}%
+\contentsline {section}{\numberline {5}Keunggulan Kompetitif}{5}{section.5}%
+\contentsline {section}{\numberline {6}Dampak dan Potensi Skala}{5}{section.6}%
+\contentsline {section}{\numberline {7}Rencana EkseKusi \& Timeline (Lingkup Hackathon)}{5}{section.7}%
+\contentsline {section}{\numberline {8}Rencana Anggaran Biaya (RAB)}{5}{section.8}%

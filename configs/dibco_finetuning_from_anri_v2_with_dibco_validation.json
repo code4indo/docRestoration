@@ -1,0 +1,228 @@
+{
+  "experiment_name": "dibco_finetuning_from_anri_v2_with_dibco_validation",
+  "description": "PROGRESSIVE FINETUNING V2: ANRI → DIBCO with FIXED VALIDATION. Critical fixes from v1: (1) Use EXISTING mixed_stage1 file for ANRI validation (not non-existent anri_real_data.tfrecord), (2) ADD dibco_tiled_full.tfrecord for DIBCO validation (MISSING in v1!), (3) Properly measure all 3 domains. Same training dataset as v1 (no ANRI = catastrophic forgetting expected), but NOW we can measure if DIBCO actually improved. Goal: Answer critical question - did we gain DIBCO performance despite losing ANRI?",
+  
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/mixed_70base_30dibco_full.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  
+  "pretrained_checkpoint": "dual_modal_gan/checkpoints/anri_finetuning_stage1_full_model_v2/best_model/ckpt-115",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/dibco_finetuning_from_anri_v2_with_dibco_validation",
+  "sample_dir": "dual_modal_gan/outputs/samples_dibco_finetuning_v2",
+
+  "resume": false,
+  "no_restore": false,
+
+  "epochs": 8,
+  "batch_size": 4,
+  "steps_per_epoch": 0,
+  "save_interval": 1,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 3,
+  "gpu_id": "0",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": false,
+    "patience": 2,
+    "min_delta": 0.01,
+    "restore_best_weights": true,
+    "base_val_min_psnr": 29.0
+  },
+
+  "early_stopping_metric": "combined",
+  "psnr_improvement_threshold": 0.5,
+  "cer_weight": 0.0,
+
+  "lr_g": 0.000005,
+  "lr_d": 0.00001,
+  "use_lr_schedule": false,
+  "warmup_epochs": 0,
+  "annealing_epochs": 0,
+
+  "pixel_loss_weight": 100.0,
+  "adv_loss_weight": 1.0,
+  "rec_feat_loss_weight": 10.0,
+  "ctc_loss_weight": 0.0,
+  "perceptual_loss_weight": 15.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 300.0,
+
+  "discriminator_mode": "predicted",
+
+  "adaptive_loss_balancing": false,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.3,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "freeze_strategy": {
+    "enabled": false,
+    "generator_encoder_layers": [],
+    "generator_decoder_early_layers": [],
+    "discriminator_freeze": false,
+    "freeze_batchnorm": false
+  },
+
+  "dual_validation": {
+    "enabled": true,
+    "base_tfrecord": "dual_modal_gan/data/dataset_gan.tfrecord",
+    "anri_tfrecord": "dual_modal_gan/data/mixed_stage1_70base_30anri.tfrecord",
+    "dibco_tfrecord": "dual_modal_gan/data/dibco_tiled_full.tfrecord",
+    "base_val_split": 0.15,
+    "anri_val_split": 0.15,
+    "dibco_val_split": 0.15,
+    "monitor_base_psnr": true,
+    "monitor_anri_psnr": true,
+    "monitor_dibco_psnr": true,
+    "base_psnr_red_line": 27.0,
+    "base_psnr_warning_threshold": 28.5,
+    "anri_psnr_red_line": 30.0,
+    "anri_psnr_warning_threshold": 31.5,
+    "dibco_psnr_red_line": 25.0,
+    "dibco_psnr_warning_threshold": 27.0
+  },
+
+  "experiment_metadata": {
+    "version": "v2",
+    "critical_fixes_from_v1": [
+      "FIX 1: anri_tfrecord changed from 'anri_real_data.tfrecord' (NOT EXIST) to 'mixed_stage1_70base_30anri.tfrecord' (EXISTS)",
+      "FIX 2: Added dibco_tfrecord = 'dibco_tiled_full.tfrecord' (MISSING in v1!)",
+      "FIX 3: Added monitor_dibco_psnr = true (v1 claimed triple validation but only had dual)",
+      "FIX 4: Added dibco_val_split, dibco_psnr_red_line, dibco_psnr_warning_threshold"
+    ],
+    "v1_failures": {
+      "anri_catastrophic_forgetting": "-5.50 dB (33.02 → 27.52 dB)",
+      "dibco_not_measured": "Config claimed triple validation but DIBCO validation missing",
+      "cannot_answer_research_question": "Unknown if DIBCO improved - main objective not verified"
+    },
+    "v2_improvements": {
+      "measurement_fix": "NOW measures all 3 domains (Base, ANRI, DIBCO)",
+      "data_rehearsal": "NO - same as v1 (0% ANRI in training dataset)",
+      "expected_anri_forgetting": "YES - same -5.5 dB drop expected",
+      "critical_question_answerable": "YES - will measure DIBCO PSNR!"
+    },
+    "stage": "progressive_stage2_dibco_v2_measurement_fix",
+    "base_model": "thin_stroke_preservation_v1_academic",
+    "base_model_psnr": 30.56,
+    "base_model_epoch": 49,
+    "stage1_model": "anri_finetuning_stage1_full_model_v2",
+    "stage1_checkpoint": "ckpt-115",
+    "stage1_epoch": 8,
+    "stage1_base_psnr": 30.69,
+    "stage1_anri_psnr": 33.02,
+    "training_dataset_composition": {
+      "tfrecord": "mixed_70base_30dibco_full.tfrecord",
+      "total_samples": 1536,
+      "base_samples": 1075,
+      "base_percentage": 70.0,
+      "dibco_samples": 461,
+      "dibco_percentage": 30.0,
+      "anri_samples": 0,
+      "anri_percentage": 0.0,
+      "note": "SAME AS V1 - ANRI NOT in training (catastrophic forgetting will occur)"
+    },
+    "validation_datasets_composition": {
+      "base_validation": {
+        "tfrecord": "dataset_gan.tfrecord",
+        "purpose": "Monitor base synthetic performance",
+        "expected": "~30.7-30.9 dB (maintained)"
+      },
+      "anri_validation": {
+        "tfrecord": "mixed_stage1_70base_30anri.tfrecord",
+        "note": "Using MIXED dataset as proxy for ANRI (contains 30% ANRI)",
+        "purpose": "Monitor ANRI performance degradation",
+        "expected": "~27.5 dB (catastrophic forgetting, same as v1)"
+      },
+      "dibco_validation": {
+        "tfrecord": "dibco_tiled_full.tfrecord",
+        "purpose": "CRITICAL: Measure if DIBCO actually improved!",
+        "expected": "UNKNOWN - this is what we need to find out!",
+        "success_criteria": "≥30 dB = success, 28-30 dB = marginal, <28 dB = failure"
+      }
+    },
+    "progressive_finetuning_strategy": {
+      "approach": "Sequential domain adaptation WITH proper measurement",
+      "stage1": "BASE → ANRI (COMPLETED)",
+      "stage1_result": {
+        "best_epoch": 8,
+        "base_psnr": 30.69,
+        "anri_psnr": 33.02,
+        "checkpoint": "ckpt-115"
+      },
+      "stage2_v1": "ANRI → DIBCO (FAILED MEASUREMENT)",
+      "stage2_v1_result": {
+        "base_psnr": 30.87,
+        "anri_psnr": 27.52,
+        "dibco_psnr": "NOT MEASURED (validation missing)",
+        "issue": "Cannot verify if progressive finetuning achieved its goal"
+      },
+      "stage2_v2": "ANRI → DIBCO (CURRENT - FIXED MEASUREMENT)",
+      "stage2_v2_goal": "Measure DIBCO PSNR to determine if trade-off worthwhile"
+    },
+    "research_question": "Does progressive finetuning (ANRI → DIBCO) improve DIBCO performance enough to justify ANRI catastrophic forgetting (-5.5 dB)?",
+    "strategy": {
+      "learning_rate": "5e-6 generator, 1e-5 discriminator (same as v1)",
+      "freeze_layers": "NONE - full model trainable",
+      "loss_weights": "Pixel 100, Adv 1.0, RecFeat 10 (same as v1)",
+      "discriminator_mode": "predicted (consistent)",
+      "validation": "TRIPLE validation (Base + ANRI + DIBCO) - NOW ACTUALLY IMPLEMENTED!",
+      "safety": {
+        "base_red_line": "27.0 dB",
+        "anri_red_line": "30.0 dB (will trigger, expected)",
+        "dibco_red_line": "25.0 dB (sanity check)",
+        "note": "ANRI red line will likely trigger (no data rehearsal)"
+      },
+      "checkpoint_management": "max_checkpoints=3 (save disk), best_model separate",
+      "early_stopping": "patience=2 (stop at peak)"
+    },
+    "expected_outcome_v2": {
+      "base_psnr": "~30.8 dB (maintained, same as v1)",
+      "anri_psnr": "~27.5 dB (catastrophic forgetting, same as v1)",
+      "dibco_psnr": "WILL BE MEASURED (critical missing data from v1)",
+      "training_time": "~60 minutes (8 epochs × 7.7 min)",
+      "disk_usage": "~2-3 GB (3 checkpoints + best_model)"
+    },
+    "decision_criteria": {
+      "if_dibco_excellent": {
+        "condition": "DIBCO PSNR ≥30 dB",
+        "assessment": "Progressive finetuning SUCCESS despite ANRI loss",
+        "next_action": "Accept trade-off OR try v3 with data rehearsal for best of both"
+      },
+      "if_dibco_marginal": {
+        "condition": "DIBCO PSNR 28-30 dB",
+        "assessment": "Questionable trade-off (lost ANRI -5.5 dB, gained DIBCO +2 dB)",
+        "next_action": "Try v3 with data rehearsal (50% Base + 30% DIBCO + 20% ANRI)"
+      },
+      "if_dibco_poor": {
+        "condition": "DIBCO PSNR <28 dB",
+        "assessment": "Complete failure (lost ANRI, didn't gain DIBCO)",
+        "next_action": "Abandon progressive finetuning, use separate DIBCO model"
+      }
+    },
+    "v3_plan_if_needed": {
+      "approach": "Data rehearsal to prevent catastrophic forgetting",
+      "training_dataset": "NEW mixed dataset: 50% Base + 30% DIBCO + 20% ANRI",
+      "expected": "Base ~30.5 dB, ANRI ~32 dB (preserved), DIBCO 29-31 dB",
+      "note": "Only proceed if v2 shows DIBCO PSNR ≥28 dB"
+    }
+  }
+}

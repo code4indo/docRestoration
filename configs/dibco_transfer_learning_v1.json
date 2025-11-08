@@ -1,0 +1,34 @@
+{
+  "experiment_name": "dibco_transfer_learning_v1",
+  "description": "DIBCO with TRANSFER LEARNING from ANRI checkpoint. Strategy: (1) Start from ANRI checkpoint (proven successful), (2) Mixed dataset 70% Base + 30% DIBCO (stability), (3) Visual-only discriminator (matches dummy labels), (4) Conservative LR (5e-6/1e-5) like ANRI, (5) Extended training (20 epochs). Expected: Break 14-15 dB ceiling through knowledge transfer.",
+  "generator_version": "enhanced",
+  "discriminator_version": "base",
+  "tfrecord_path": "dual_modal_gan/data/mixed_70base_30dibco.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  "pretrained_checkpoint": "dual_modal_gan/checkpoints/anri_finetuning_stage1_full_model_v2/best_model/ckpt-8",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/dibco_transfer_learning_v1",
+  "sample_dir": "dual_modal_gan/outputs/samples_dibco_transfer_learning_v1",
+  "epochs": 20,
+  "batch_size": 4,
+  "lr_g": 5e-06,
+  "lr_d": 1e-05,
+  "pixel_loss_weight": 150.0,
+  "adv_loss_weight": 1.0,
+  "rec_feat_loss_weight": 0.0,
+  "ctc_loss_weight": 0.0,
+  "perceptual_loss_weight": 30.0,
+  "discriminator_mode": "ground_truth",
+  "early_stopping": {
+    "enabled": true,
+    "patience": 5,
+    "min_delta": 0.05,
+    "restore_best_weights": true
+  },
+  "dual_validation": {
+    "enabled": true,
+    "base_tfrecord": "dual_modal_gan/data/dataset_gan.tfrecord",
+    "monitor_base_psnr": true,
+    "base_psnr_red_line": 28.0
+  }
+}

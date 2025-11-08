@@ -1,0 +1,81 @@
+{
+  "experiment_name": "anri_finetuning_pseudo_labels_v1",
+  "description": "Fine-tuning ckpt-99 on ANRI domain using pseudo-labeled data. Model will learn to clean less aggressively for natural paleographic degradation.",
+  
+  "model": {
+    "generator_type": "enhanced",
+    "discriminator_type": "enhanced_v2_fixed",
+    "input_size": [1024, 128, 1]
+  },
+  
+  "training": {
+    "epochs": 20,
+    "batch_size": 8,
+    "learning_rate": 1e-6,
+    "beta_1": 0.5,
+    "beta_2": 0.999,
+    "gradient_clip": 5.0
+  },
+  
+  "data": {
+    "train_tfrecord": "data/anri_pseudo_labeled_train.tfrecord",
+    "val_tfrecord": null,
+    "train_size": 7010,
+    "val_size": 0,
+    "shuffle_buffer": 1000,
+    "prefetch": 2
+  },
+  
+  "loss_weights": {
+    "adversarial": 1.0,
+    "l1": 100.0,
+    "perceptual": 10.0,
+    "ctc": 0.0,
+    "rec_feat": 0.0
+  },
+  
+  "checkpoint": {
+    "resume_from": "dual_modal_gan/checkpoints/thin_stroke_preservation_v1_academic/best_model/ckpt-99",
+    "save_dir": "dual_modal_gan/checkpoints/anri_finetuning_pseudo_labels_v1",
+    "save_freq": 1,
+    "keep_checkpoints": 3
+  },
+  
+  "validation": {
+    "enabled": false,
+    "frequency": 5,
+    "num_samples": 0
+  },
+  
+  "early_stopping": {
+    "enabled": true,
+    "patience": 5,
+    "monitor": "gen_total_loss",
+    "mode": "min"
+  },
+  
+  "logging": {
+    "tensorboard": true,
+    "mlflow": true,
+    "log_freq": 50,
+    "sample_images_freq": 200
+  },
+  
+  "gpu": {
+    "gpu_id": 0,
+    "mixed_precision": false,
+    "allow_growth": true
+  },
+  
+  "notes": {
+    "dataset_origin": "ANRI paleographic documents (16-18th century)",
+    "pseudo_labeling_method": "Grid-based extraction (1024x128) + inference with ckpt-99",
+    "quality_filtering": "Preservation 3-30%, mean 230-250, SSIM >=0.65",
+    "filtered_pairs": 7010,
+    "original_pairs": 9292,
+    "keep_rate": "75.4%",
+    "expected_outcome": "Model learns to clean less aggressively for ANRI domain",
+    "training_strategy": "Visual-only (no HTR), low LR (1e-6) for gentle adaptation",
+    "academic_contribution": "Self-supervised domain adaptation via quality-filtered pseudo-labeling"
+  }
+}

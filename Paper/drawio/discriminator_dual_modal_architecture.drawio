@@ -1,0 +1,257 @@
+<mxfile host="app.diagrams.net" modified="2025-11-04T00:00:00.000Z" agent="5.0" version="22.1.11">
+  <diagram name="Discriminator Dual-Modal Architecture" id="discriminator-architecture">
+    <mxGraphModel dx="1434" dy="788" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Title -->
+        <mxCell id="title" value="Diskriminator Dual-Modal dengan Cross-Modal Attention" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="284.5" y="20" width="600" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- INPUT LAYER -->
+        <mxCell id="input" value="Input Image&#xa;128×1024×1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="484.5" y="80" width="200" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- IMAGE BRANCH BACKGROUND -->
+        <mxCell id="bg-image-branch" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1f5ff;strokeColor=#6c8ebf;strokeWidth=2;opacity=30;dashed=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="160" width="280" height="540" as="geometry" />
+        </mxCell>
+        <mxCell id="label-image-branch" value="IMAGE BRANCH (CNN)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontColor=#0066CC" vertex="1" parent="1">
+          <mxGeometry x="120" y="170" width="200" height="25" as="geometry" />
+        </mxCell>
+        
+        <!-- TEXT BRANCH BACKGROUND -->
+        <mxCell id="bg-text-branch" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff4e6;strokeColor=#d79b00;strokeWidth=2;opacity=30;dashed=1" vertex="1" parent="1">
+          <mxGeometry x="809" y="160" width="280" height="540" as="geometry" />
+        </mxCell>
+        <mxCell id="label-text-branch" value="TEXT BRANCH (BiLSTM)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontColor=#CC6600" vertex="1" parent="1">
+          <mxGeometry x="849" y="170" width="200" height="25" as="geometry" />
+        </mxCell>
+        
+        <!-- CNN LAYERS (Image Branch) -->
+        <mxCell id="cnn-init" value="Conv2D-Init + BN&#xa;128×1024×64&#xa;LeakyReLU (α=0.2)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#5a88d6;strokeColor=#4a7ac7;fontSize=11;fontColor=#FFFFFF;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="110" y="210" width="220" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="cnn1" value="DownBlock-1 (ResNet)&#xa;64×512×64" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6c95eb;strokeColor=#4a7ac7;fontSize=11;fontColor=#FFFFFF;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="110" y="275" width="220" height="45" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="cnn2" value="DownBlock-2 (ResNet)&#xa;32×256×128" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6c95eb;strokeColor=#4a7ac7;fontSize=11;fontColor=#FFFFFF;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="110" y="335" width="220" height="45" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="cnn3" value="DownBlock-3 (ResNet)&#xa;16×128×256" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6c95eb;strokeColor=#4a7ac7;fontSize=11;fontColor=#FFFFFF;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="110" y="395" width="220" height="45" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="cnn4" value="DownBlock-4 (ResNet)&#xa;8×64×512" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6c95eb;strokeColor=#4a7ac7;fontSize=11;fontColor=#FFFFFF;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="110" y="455" width="220" height="45" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="spatial-attn" value="Spatial Attention&#xa;Kernel 3×3 (FIXED)&#xa;8×64×512" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5342b;strokeColor=#b52520;fontSize=11;fontColor=#FFFFFF;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="110" y="515" width="220" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="resblock-final" value="ResBlock-512&#xa;8×64×512" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6c95eb;strokeColor=#4a7ac7;fontSize=11;fontColor=#FFFFFF;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="110" y="580" width="220" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="cnn-pool" value="Global Average Pool&#xa;512 features" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#5a88d6;strokeColor=#4a7ac7;fontSize=11;fontColor=#FFFFFF;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="110" y="635" width="220" height="40" as="geometry" />
+        </mxCell>
+        
+        <!-- BiLSTM LAYERS (Text Branch) -->
+        <mxCell id="lstm1-fw" value="LSTM Forward&#xa;Hidden=256" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f0a830;strokeColor=#d89020;fontSize=11;fontColor=#FFFFFF;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="839" y="210" width="220" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="lstm1-bw" value="LSTM Backward&#xa;Hidden=256" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f0a830;strokeColor=#d89020;fontSize=11;fontColor=#FFFFFF;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="839" y="275" width="220" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="lstm-concat1" value="Concatenate&#xa;512 features" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e89c2f;strokeColor=#d89020;fontSize=11;fontColor=#FFFFFF;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="839" y="340" width="220" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="lstm2-fw" value="LSTM Forward&#xa;Hidden=256" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f0a830;strokeColor=#d89020;fontSize=11;fontColor=#FFFFFF;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="839" y="395" width="220" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="lstm2-bw" value="LSTM Backward&#xa;Hidden=256" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f0a830;strokeColor=#d89020;fontSize=11;fontColor=#FFFFFF;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="839" y="460" width="220" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="lstm-concat2" value="Concatenate&#xa;512 features" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e89c2f;strokeColor=#d89020;fontSize=11;fontColor=#FFFFFF;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="839" y="525" width="220" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="self-attn" value="Self-Attention&#xa;Query-Key-Value" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5342b;strokeColor=#b52520;fontSize=11;fontColor=#FFFFFF;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="839" y="580" width="220" height="45" as="geometry" />
+        </mxCell>
+        
+        <!-- FUSION BACKGROUND -->
+        <mxCell id="bg-fusion" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#4caf50;strokeWidth=2;opacity=30;dashed=1" vertex="1" parent="1">
+          <mxGeometry x="384.5" y="720" width="400" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="label-fusion" value="CROSS-MODAL FUSION (BILATERAL)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontColor=#2e7d32" vertex="1" parent="1">
+          <mxGeometry x="434.5" y="730" width="300" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="cross-attn" value="Cross-Modal Attention&#xa;Img→Text: Q_img×K_text→V_text (128D)&#xa;Text→Img: Q_text×K_img→V_img (128D)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5342b;strokeColor=#b52520;fontSize=10;fontColor=#FFFFFF;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="414.5" y="765" width="340" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="fusion-concat" value="Concatenate Attended Features&#xa;[F_img_att (128), F_text_att (128)] = 256" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#66bb6a;strokeColor=#4caf50;fontSize=11;fontColor=#FFFFFF;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="414.5" y="825" width="340" height="40" as="geometry" />
+        </mxCell>
+        
+        <!-- CLASSIFICATION HEAD -->
+        <mxCell id="fc1" value="Dense-512&#xa;LeakyReLU + Dropout(0.1)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#8e44ad;strokeColor=#7a3a93;fontSize=11;fontColor=#FFFFFF;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="484.5" y="885" width="200" height="45" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="fc2" value="Dense-256&#xa;LeakyReLU + Dropout(0.1)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#8e44ad;strokeColor=#7a3a93;fontSize=11;fontColor=#FFFFFF;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="484.5" y="945" width="200" height="45" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="output" value="Output (Sigmoid)&#xa;Real/Fake [0,1]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#27ae60;strokeColor=#229954;fontSize=12;fontColor=#FFFFFF;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="484.5" y="1005" width="200" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- ARROWS -->
+        <!-- Input to branches -->
+        <mxCell id="arrow-input-cnn" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#0066CC;" edge="1" parent="1" source="input" target="cnn-init">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-input-lstm" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#CC6600;" edge="1" parent="1" source="input" target="lstm1-fw">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- CNN branch flow -->
+        <mxCell id="arrow-input-cnninit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4a7ac7;endArrow=block;endFill=1;" edge="1" parent="1" source="input" target="cnn-init">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-cnninit-cnn1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4a7ac7;endArrow=block;endFill=1;" edge="1" parent="1" source="cnn-init" target="cnn1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-cnn1-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4a7ac7;endArrow=block;endFill=1;" edge="1" parent="1" source="cnn1" target="cnn2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-cnn2-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4a7ac7;endArrow=block;endFill=1;" edge="1" parent="1" source="cnn2" target="cnn3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-cnn3-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4a7ac7;endArrow=block;endFill=1;" edge="1" parent="1" source="cnn3" target="cnn4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-cnn4-attn" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4a7ac7;endArrow=block;endFill=1;" edge="1" parent="1" source="cnn4" target="spatial-attn">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-attn-resblock" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4a7ac7;endArrow=block;endFill=1;" edge="1" parent="1" source="spatial-attn" target="resblock-final">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-resblock-pool" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4a7ac7;endArrow=block;endFill=1;" edge="1" parent="1" source="resblock-final" target="cnn-pool">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- BiLSTM branch flow -->
+        <mxCell id="arrow-lstm1fw-concat1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d89020;endArrow=block;endFill=1;" edge="1" parent="1" source="lstm1-fw" target="lstm-concat1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-lstm1bw-concat1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d89020;endArrow=block;endFill=1;" edge="1" parent="1" source="lstm1-bw" target="lstm-concat1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-concat1-lstm2fw" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d89020;endArrow=block;endFill=1;" edge="1" parent="1" source="lstm-concat1" target="lstm2-fw">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-concat1-lstm2bw" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d89020;endArrow=block;endFill=1;" edge="1" parent="1" source="lstm-concat1" target="lstm2-bw">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-lstm2fw-concat2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d89020;endArrow=block;endFill=1;" edge="1" parent="1" source="lstm2-fw" target="lstm-concat2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-lstm2bw-concat2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d89020;endArrow=block;endFill=1;" edge="1" parent="1" source="lstm2-bw" target="lstm-concat2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-concat2-selfattn" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d89020;endArrow=block;endFill=1;" edge="1" parent="1" source="lstm-concat2" target="self-attn">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Branches to fusion -->
+        <mxCell id="arrow-cnn-fusion" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#4a7ac7;endArrow=block;endFill=1;" edge="1" parent="1" source="cnn-pool" target="cross-attn">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-lstm-fusion" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#d89020;endArrow=block;endFill=1;" edge="1" parent="1" source="self-attn" target="cross-attn">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Fusion flow -->
+        <mxCell id="arrow-crossattn-concat" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4caf50;endArrow=block;endFill=1;" edge="1" parent="1" source="cross-attn" target="fusion-concat">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Classification flow -->
+        <mxCell id="arrow-concat-fc1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7a3a93;endArrow=block;endFill=1;" edge="1" parent="1" source="fusion-concat" target="fc1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-fc1-fc2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7a3a93;endArrow=block;endFill=1;" edge="1" parent="1" source="fc1" target="fc2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-fc2-output" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7a3a93;endArrow=block;endFill=1;" edge="1" parent="1" source="fc2" target="output">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- LEGEND -->
+        <mxCell id="legend-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=1" vertex="1" parent="1">
+          <mxGeometry x="20" y="840" width="330" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-title" value="LEGEND" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="30" y="850" width="100" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend-cnn-box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6c95eb;strokeColor=#4a7ac7" vertex="1" parent="1">
+          <mxGeometry x="30" y="880" width="30" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-cnn-text" value="CNN Layers (Image Branch)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10" vertex="1" parent="1">
+          <mxGeometry x="65" y="880" width="160" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend-lstm-box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f0a830;strokeColor=#d89020" vertex="1" parent="1">
+          <mxGeometry x="30" y="905" width="30" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-lstm-text" value="BiLSTM Layers (Text Branch)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10" vertex="1" parent="1">
+          <mxGeometry x="65" y="905" width="160" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend-attn-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5342b;strokeColor=#b52520" vertex="1" parent="1">
+          <mxGeometry x="30" y="930" width="30" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-attn-text" value="Attention Mechanisms" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10" vertex="1" parent="1">
+          <mxGeometry x="65" y="930" width="150" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend-fusion-box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#66bb6a;strokeColor=#4caf50" vertex="1" parent="1">
+          <mxGeometry x="30" y="955" width="30" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-fusion-text" value="Cross-Modal Fusion" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10" vertex="1" parent="1">
+          <mxGeometry x="65" y="955" width="130" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend-fc-box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#8e44ad;strokeColor=#7a3a93" vertex="1" parent="1">
+          <mxGeometry x="230" y="880" width="30" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-fc-text" value="Dense Layers" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10" vertex="1" parent="1">
+          <mxGeometry x="265" y="880" width="80" height="20" as="geometry" />
+        </mxCell>
+        
+        <!-- Parameter Info -->
+        <mxCell id="info-params" value="Total: ~18M params&#xa;(52% reduction from 137M)&#xa;&#xa;Input: 128×1024×1&#xa;LSTM: 256 units/direction&#xa;Cross-Modal: dim=128&#xa;Dropout: 0.1 (FIXED)" style="text;html=1;strokeColor=#666666;fillColor=#f5f5f5;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=9;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="230" y="910" width="110" height="95" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

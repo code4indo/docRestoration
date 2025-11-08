@@ -1,0 +1,82 @@
+{
+  "experiment_name": "ablation_single_modal_fair_comparison",
+  "description": "ABLATION STUDY - Single-Modal Baseline. Fair comparison dengan dual-modal: same dataset/split/epochs/batch, DIFFERENT architecture (no HTR discriminator input, no CTC loss). Config adapted untuk single-modal (no warmup/annealing, simplified loss).",
+
+  "generator_version": "enhanced",
+  "discriminator_version": "single_modal",
+
+  "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  
+  "_comment_recognizer": "Single-modal TIDAK menggunakan recognizer di discriminator, tapi tetap load untuk konsistensi evaluasi",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  
+  "checkpoint_dir": "dual_modal_gan/checkpoints/ablation_single_modal",
+  "sample_dir": "dual_modal_gan/outputs/samples_ablation_single_modal",
+
+  "resume": true,
+  "no_restore": false,
+
+  "_comment_training": "SAME as dual-modal untuk fair comparison",
+  "epochs": 100,
+  "batch_size": 2,
+  "steps_per_epoch": 0,
+  "save_interval": 2,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 5,
+  "gpu_id": "0",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": false,
+    "patience": 25,
+    "min_delta": 0.05,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "psnr_only",
+  "psnr_improvement_threshold": 2.0,
+
+  "_comment_warmup": "DIFFERENT: Single-modal tidak butuh curriculum learning (no HTR to integrate)",
+  "warmup_epochs": 0,
+  "annealing_epochs": 0,
+
+  "_comment_lr": "SAME base LR magnitude, simplified schedule (no warmup needed)",
+  "lr_g": 0.0002,
+  "lr_d": 0.0001,
+  "use_lr_schedule": true,
+
+  "_comment_loss_weights": "DIFFERENT: Rebalanced tanpa CTC/rec_feat. Total magnitude comparable dengan dual-modal.",
+  "pixel_loss_weight": 60.0,
+  "adv_loss_weight": 4.0,
+  "rec_feat_loss_weight": 0.0,
+  "ctc_loss_weight": 0.0,
+  "perceptual_loss_weight": 2.0,
+  
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 400.0,
+
+  "discriminator_mode": "predicted",
+
+  "_comment_adaptive": "DIFFERENT: Adaptive balancing disabled (tidak ada multi-modal untuk dibalance)",
+  "adaptive_loss_balancing": false,
+
+  "discriminator_config": {
+    "_comment": "Config untuk single-modal discriminator (no cross-modal attention)",
+    "spatial_attention_kernel": 3,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.1,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": false,
+    "attention_type": "scaled_dot_product"
+  }
+}

@@ -1,0 +1,274 @@
+<mxfile host="app.diagrams.net" modified="2025-11-04T00:00:00.000Z" agent="5.0" version="22.1.11">
+  <diagram name="Generator U-Net Enhanced V2 - High Level" id="generator-highlevel">
+    <mxGraphModel dx="1200" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Title -->
+        <mxCell id="title" value="Generator U-Net Enhanced V2 Architecture" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="200" y="10" width="700" height="30" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="subtitle" value="5-Level Encoder-Decoder with SOTA Enhancements | 21.8M Parameters" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=2;fontColor=#555555" vertex="1" parent="1">
+          <mxGeometry x="250" y="40" width="600" height="20" as="geometry" />
+        </mxCell>
+        
+        <!-- INPUT -->
+        <mxCell id="input" value="Input Image&#xa;1024 × 128 × 1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;strokeWidth=2" vertex="1" parent="1">
+          <mxGeometry x="480" y="80" width="140" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- ENCODER PATH -->
+        <mxCell id="encoder-container" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1f5ff;strokeColor=#4a90e2;strokeWidth=2;opacity=30;dashed=1;dashPattern=8 8" vertex="1" parent="1">
+          <mxGeometry x="40" y="170" width="360" height="450" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="encoder-label" value="ENCODER (5 Levels)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontColor=#0066CC" vertex="1" parent="1">
+          <mxGeometry x="120" y="175" width="200" height="25" as="geometry" />
+        </mxCell>
+        
+        <!-- Encoder Blocks (Simplified) -->
+        <mxCell id="enc-level1" value="Level 1&#xa;Enhanced Block&#xa;(64 filters)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6c95eb;strokeColor=#4a7ac7;fontSize=10;fontColor=#FFFFFF;fontStyle=1;strokeWidth=2" vertex="1" parent="1">
+          <mxGeometry x="120" y="215" width="200" height="55" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="enc-level2" value="Level 2&#xa;Enhanced Block&#xa;(128 filters)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#5a85db;strokeColor=#4a7ac7;fontSize=10;fontColor=#FFFFFF;fontStyle=1;strokeWidth=2" vertex="1" parent="1">
+          <mxGeometry x="120" y="290" width="200" height="55" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="enc-level3" value="Level 3&#xa;Enhanced Block&#xa;(256 filters)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#4875cb;strokeColor=#4a7ac7;fontSize=10;fontColor=#FFFFFF;fontStyle=1;strokeWidth=2" vertex="1" parent="1">
+          <mxGeometry x="120" y="365" width="200" height="55" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="enc-level4" value="Level 4&#xa;Enhanced Block&#xa;(512 filters)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#3665bb;strokeColor=#4a7ac7;fontSize=10;fontColor=#FFFFFF;fontStyle=1;strokeWidth=2" vertex="1" parent="1">
+          <mxGeometry x="120" y="440" width="200" height="55" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="enc-level5" value="Level 5&#xa;Enhanced Block&#xa;(512 filters)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#2455ab;strokeColor=#4a7ac7;fontSize=10;fontColor=#FFFFFF;fontStyle=1;strokeWidth=2" vertex="1" parent="1">
+          <mxGeometry x="120" y="515" width="200" height="55" as="geometry" />
+        </mxCell>
+        
+        <!-- Downsampling Arrows -->
+        <mxCell id="down1" value="↓ 2×2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#f39c12;endArrow=block;endFill=1;fontSize=10;fontStyle=1" edge="1" parent="1" source="enc-level1" target="enc-level2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="40" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="down2" value="↓ 2×2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#f39c12;endArrow=block;endFill=1;fontSize=10;fontStyle=1" edge="1" parent="1" source="enc-level2" target="enc-level3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="40" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="down3" value="↓ 2×2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#f39c12;endArrow=block;endFill=1;fontSize=10;fontStyle=1" edge="1" parent="1" source="enc-level3" target="enc-level4">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="40" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="down4" value="↓ 2×2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#f39c12;endArrow=block;endFill=1;fontSize=10;fontStyle=1" edge="1" parent="1" source="enc-level4" target="enc-level5">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="40" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- BOTTLENECK -->
+        <mxCell id="bottleneck-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff4e6;strokeColor=#e67e22;strokeWidth=3;opacity=40;dashed=1;dashPattern=8 8" vertex="1" parent="1">
+          <mxGeometry x="420" y="420" width="260" height="200" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="bottleneck-label" value="BOTTLENECK" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontColor=#CC6600" vertex="1" parent="1">
+          <mxGeometry x="450" y="425" width="200" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="bottleneck-dim" value="32 × 4 × 512" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=2;fontColor=#999999" vertex="1" parent="1">
+          <mxGeometry x="480" y="450" width="120" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="bottleneck-msfp" value="Multi-Scale Feature&#xa;Pyramid (MSFP)&#xa;Scales: 1, 2, 4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8e44ad;strokeColor=#7a3a93;fontSize=10;fontColor=#FFFFFF;fontStyle=1;strokeWidth=2" vertex="1" parent="1">
+          <mxGeometry x="445" y="480" width="170" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="bottleneck-rdb" value="Residual Dense Block" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#3498db;strokeColor=#2980b9;fontSize=10;fontColor=#FFFFFF;fontStyle=1;strokeWidth=2" vertex="1" parent="1">
+          <mxGeometry x="445" y="540" width="170" height="30" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="bottleneck-cbam" value="CBAM Attention" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e74c3c;strokeColor=#c0392b;fontSize=10;fontColor=#FFFFFF;fontStyle=1;strokeWidth=2" vertex="1" parent="1">
+          <mxGeometry x="445" y="580" width="170" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- DECODER PATH -->
+        <mxCell id="decoder-container" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#4caf50;strokeWidth=2;opacity=30;dashed=1;dashPattern=8 8" vertex="1" parent="1">
+          <mxGeometry x="700" y="170" width="360" height="450" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="decoder-label" value="DECODER (5 Levels)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontColor=#2e7d32" vertex="1" parent="1">
+          <mxGeometry x="780" y="175" width="200" height="25" as="geometry" />
+        </mxCell>
+        
+        <!-- Decoder Blocks (Simplified) -->
+        <mxCell id="dec-level5" value="Level 5&#xa;Enhanced Block + Attention Gate&#xa;(512 filters)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#66bb6a;strokeColor=#4caf50;fontSize=10;fontColor=#FFFFFF;fontStyle=1;strokeWidth=2" vertex="1" parent="1">
+          <mxGeometry x="780" y="515" width="200" height="55" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="dec-level4" value="Level 4&#xa;Enhanced Block + Attention Gate&#xa;(512 filters)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#76cb7a;strokeColor=#4caf50;fontSize=10;fontColor=#FFFFFF;fontStyle=1;strokeWidth=2" vertex="1" parent="1">
+          <mxGeometry x="780" y="440" width="200" height="55" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="dec-level3" value="Level 3&#xa;Enhanced Block + Attention Gate&#xa;(256 filters)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#86db8a;strokeColor=#4caf50;fontSize=10;fontColor=#FFFFFF;fontStyle=1;strokeWidth=2" vertex="1" parent="1">
+          <mxGeometry x="780" y="365" width="200" height="55" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="dec-level2" value="Level 2&#xa;Enhanced Block + Attention Gate&#xa;(128 filters)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#96eb9a;strokeColor=#4caf50;fontSize=10;fontColor=#FFFFFF;fontStyle=1;strokeWidth=2" vertex="1" parent="1">
+          <mxGeometry x="780" y="290" width="200" height="55" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="dec-level1" value="Level 1&#xa;Enhanced Block + Attention Gate&#xa;(64 filters)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#a6fbaa;strokeColor=#4caf50;fontSize=10;fontColor=#000000;fontStyle=1;strokeWidth=2" vertex="1" parent="1">
+          <mxGeometry x="780" y="215" width="200" height="55" as="geometry" />
+        </mxCell>
+        
+        <!-- Upsampling Arrows -->
+        <mxCell id="up5" value="↑ 2×2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#27ae60;endArrow=block;endFill=1;fontSize=10;fontStyle=1" edge="1" parent="1" source="dec-level5" target="dec-level4">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="40" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="up4" value="↑ 2×2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#27ae60;endArrow=block;endFill=1;fontSize=10;fontStyle=1" edge="1" parent="1" source="dec-level4" target="dec-level3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="40" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="up3" value="↑ 2×2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#27ae60;endArrow=block;endFill=1;fontSize=10;fontStyle=1" edge="1" parent="1" source="dec-level3" target="dec-level2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="40" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="up2" value="↑ 2×2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#27ae60;endArrow=block;endFill=1;fontSize=10;fontStyle=1" edge="1" parent="1" source="dec-level2" target="dec-level1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="40" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- SKIP CONNECTIONS (Curved Dashed Arrows) -->
+        <mxCell id="skip1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#95a5a6;dashed=1;dashPattern=8 8;endArrow=block;endFill=1;curved=1" edge="1" parent="1" source="enc-level1" target="dec-level1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="380" y="242" />
+              <mxPoint x="380" y="130" />
+              <mxPoint x="720" y="130" />
+              <mxPoint x="720" y="242" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="skip2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#95a5a6;dashed=1;dashPattern=8 8;endArrow=block;endFill=1;curved=1" edge="1" parent="1" source="enc-level2" target="dec-level2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="400" y="317" />
+              <mxPoint x="400" y="160" />
+              <mxPoint x="700" y="160" />
+              <mxPoint x="700" y="317" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="skip3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#95a5a6;dashed=1;dashPattern=8 8;endArrow=block;endFill=1;curved=1" edge="1" parent="1" source="enc-level3" target="dec-level3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="skip4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#95a5a6;dashed=1;dashPattern=8 8;endArrow=block;endFill=1;curved=1" edge="1" parent="1" source="enc-level4" target="dec-level4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="skip5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#95a5a6;dashed=1;dashPattern=8 8;endArrow=block;endFill=1;curved=1" edge="1" parent="1" source="enc-level5" target="dec-level5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="skip-label" value="Skip Connections&#xa;with Attention Gates" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontStyle=2;fontColor=#7f8c8d" vertex="1" parent="1">
+          <mxGeometry x="450" y="340" width="130" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- OUTPUT -->
+        <mxCell id="output" value="Restored Image&#xa;1024 × 128 × 1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5f4e6;strokeColor=#27ae60;fontSize=12;fontStyle=1;strokeWidth=2" vertex="1" parent="1">
+          <mxGeometry x="810" y="80" width="140" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- MAIN FLOW ARROWS -->
+        <mxCell id="flow-input-enc" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#3498db;endArrow=block;endFill=1" edge="1" parent="1" source="input" target="enc-level1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="550" y="150" />
+              <mxPoint x="220" y="150" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="flow-enc-bottleneck" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#f39c12;endArrow=block;endFill=1" edge="1" parent="1" source="enc-level5" target="bottleneck-msfp">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="380" y="542" />
+              <mxPoint x="380" y="505" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="flow-bottleneck-dec" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#27ae60;endArrow=block;endFill=1" edge="1" parent="1" source="bottleneck-cbam" target="dec-level5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="680" y="595" />
+              <mxPoint x="680" y="542" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="flow-dec-output" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#27ae60;endArrow=block;endFill=1" edge="1" parent="1" source="dec-level1" target="output">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="880" y="150" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- LEGEND BOX -->
+        <mxCell id="legend-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8f9fa;strokeColor=#666666;strokeWidth=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="300" height="70" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend-title" value="KEY COMPONENTS" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="50" y="85" width="280" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend-enhanced" value="• Enhanced Block = RDB (3 layers, growth=32) + CBAM (channel+spatial)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9" vertex="1" parent="1">
+          <mxGeometry x="50" y="105" width="280" height="15" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend-attn" value="• Attention Gate = Decoder features gate encoder skip connections" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9" vertex="1" parent="1">
+          <mxGeometry x="50" y="120" width="280" height="15" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend-msfp" value="• MSFP = Multi-scale context with dilated convolutions (rates: 1,2,4)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9" vertex="1" parent="1">
+          <mxGeometry x="50" y="135" width="280" height="15" as="geometry" />
+        </mxCell>
+        
+        <!-- ARCHITECTURE INFO -->
+        <mxCell id="info-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#4caf50;strokeWidth=1" vertex="1" parent="1">
+          <mxGeometry x="700" y="80" width="90" height="70" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="info-title" value="STATS" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=1;fontColor=#2e7d32" vertex="1" parent="1">
+          <mxGeometry x="705" y="85" width="80" height="15" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="info-content" value="21.8M params&#xa;5 enc + 5 dec&#xa;87 MB mem" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontFamily=Courier New;fontColor=#555555" vertex="1" parent="1">
+          <mxGeometry x="705" y="100" width="80" height="45" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

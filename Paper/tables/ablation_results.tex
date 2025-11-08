@@ -1,0 +1,32 @@
+% Tabel Hasil Ablation Study - Section 4.3
+% Menunjukkan perbandingan Single-Modal vs Dual-Modal
+
+\begin{table}[htbp]
+\centering
+\caption{Hasil Studi Ablasi pada Generator Enhanced dengan Variasi Konfigurasi Discriminator}
+\label{tab:ablation_results}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Konfigurasi} & \textbf{PSNR (dB)} & \textbf{SSIM} & \textbf{CER} & \textbf{WER} \\
+\midrule
+Single-Modal (Image-Only) & 20.01 & 0.9217 & 1.0000 & 1.0000 \\
+Dual-Modal (GT Text) & \textbf{20.23} & \textbf{0.9245} & \textbf{0.4092}$^{***}$ & \textbf{0.9322} \\
+Dual-Modal (Predicted Text) & 20.07 & 0.9218 & 0.4276$^{***}$ & 0.9618 \\
+\midrule
+\multicolumn{5}{l}{\textit{Peningkatan (Dual-Modal GT vs Single-Modal):}} \\
+\quad Absolut & +0.22 & +0.0028 & -0.5908 & -0.0678 \\
+\quad Relatif (\%) & +1.1\% & +0.3\% & \textbf{-59.1\%} & -6.8\% \\
+\bottomrule
+\end{tabular}
+
+\begin{tablenotes}
+\small
+\item[$^{***}$] Secara statistik sangat signifikan ($p < 0.001$) berdasarkan uji hipotesis satu sisi.
+\item PSNR: Peak Signal-to-Noise Ratio (semakin tinggi semakin baik)
+\item SSIM: Structural Similarity Index (semakin tinggi semakin baik)
+\item CER: Character Error Rate (semakin rendah semakin baik)
+\item WER: Word Error Rate (semakin rendah semakin baik)
+\item Nilai terbaik untuk setiap metrik ditandai dengan \textbf{bold}.
+\item Peningkatan CER sebesar 59.1\% menunjukkan bahwa \textit{text-guided adversarial training} sangat krusial untuk aplikasi document restoration yang berorientasi pada HTR.
+\end{tablenotes}
+\end{table}

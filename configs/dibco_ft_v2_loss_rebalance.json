@@ -1,0 +1,206 @@
+{
+  "experiment_name": "dibco_ft_v2_loss_rebalance",
+  "description": "DIBCO FT V2: LOSS REBALANCING EXPERIMENT (PRIORITY 1 FIX). Strategy: (1) Resume from ANRI V1 BEST checkpoint (ckpt-120, PSNR 23.75 dB - BEFORE DIBCO fine-tuning), (2) CRITICAL FIX: Rebalance loss weights based on failure analysis (Perceptual 97%→60%, Pixel 1.8%→20%, Adv 1.1%→15%), (3) Increase gradient clip norm 1.0→5.0 for stability, (4) Reduce generator LR 1e-5→5e-6 for smoother convergence, (5) Target: Prevent thick edges & rough strokes from happening",
+  
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/dibco_finetuning/finetuning_train.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  
+  "pretrained_checkpoint": "dual_modal_gan/checkpoints/thin_stroke_preservation_v1_finetuning/best_model/ckpt-120",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/dibco_ft_v2_loss_rebalance",
+  "sample_dir": "dual_modal_gan/outputs/samples_dibco_ft_v2_loss_rebalance",
+
+  "resume": true,
+  "no_restore": true,
+
+  "epochs": 30,
+  "batch_size": 4,
+  "steps_per_epoch": 0,
+  "save_interval": 3,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 3,
+  "gpu_id": "0",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": false,
+    "patience": 15,
+    "min_delta": 0.01,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "psnr_only",
+  "psnr_improvement_threshold": 1.0,
+  "cer_weight": 0.0,
+
+  "lr_g": 0.000005,
+  "lr_d": 0.00001,
+  "use_lr_schedule": false,
+  "warmup_epochs": 0,
+  "annealing_epochs": 0,
+
+  "pixel_loss_weight": 50.0,
+  "adv_loss_weight": 5.0,
+  "rec_feat_loss_weight": 5.0,
+  "ctc_loss_weight": 0.0,
+  "perceptual_loss_weight": 1.0,
+  "gradient_clip_norm": 5.0,
+  "ctc_loss_clip_max": 300.0,
+
+  "discriminator_mode": "ground_truth",
+
+  "adaptive_loss_balancing": false,
+  "target_ctc_ratio": 0.40,
+  "target_visual_ratio": 0.60,
+  "adaptation_rate": 0.08,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.1,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "experiment_metadata": {
+    "parent_experiment": "thin_stroke_preservation_v1_finetuning (ANRI V1)",
+    "resume_from_checkpoint": "thin_stroke_preservation_v1_finetuning/best_model/ckpt-120 (Epoch 11, PSNR 23.75 dB, SSIM 0.9670)",
+    "fix_priority": "PRIORITY 1: Loss Rebalancing (CRITICAL - Preemptive fix based on dibco_finetuning_from_anri_v1 failure analysis)",
+    
+    "problem_analysis": {
+      "issue_1_loss_imbalance": "Perceptual loss dominated at 97% contribution (508.1 weighted value) despite only 10.0 weight",
+      "issue_2_thick_edges": "Average stroke width 187px (expected 3-5px for paleography)",
+      "issue_3_rough_strokes": "Local variance 909 (vs ANRI V1: 158), Gradient CoV 5.08 (target <2.5)",
+      "issue_4_gradient_instability": "Generator gradient mean 556 (exploding), discriminator mean 14.5 (too weak)",
+      "issue_5_performance_drop": "PSNR dropped -3.23 dB from ANRI V1 (20.52 vs 23.75 dB)"
+    },
+
+    "loss_weight_changes": {
+      "pixel_loss_weight": {
+        "old": "200.0 (contribution 1.8%)",
+        "new": "50.0 (target contribution 15-20%)",
+        "change": "-75%",
+        "rationale": "Reduce weight because MSE value is very small (0.048), so even 200x weight only contributes 9.6"
+      },
+      "perceptual_loss_weight": {
+        "old": "10.0 (contribution 97%!)",
+        "new": "1.0 (target contribution 50-60%)",
+        "change": "-90%",
+        "rationale": "CRITICAL: Perceptual loss value is ~50, so 10x weight = 500 (dominates everything). Reduce drastically to 1.0 for ~50 contribution"
+      },
+      "adv_loss_weight": {
+        "old": "1.5 (contribution 1.1%)",
+        "new": "5.0 (target contribution 10-15%)",
+        "change": "+233%",
+        "rationale": "Adversarial loss value ~3.9, needs higher weight for stronger discriminator feedback"
+      },
+      "rec_feat_loss_weight": {
+        "old": "5.0",
+        "new": "5.0",
+        "change": "UNCHANGED",
+        "rationale": "Rec feat loss contribution is minimal (0.05), maintain for HTR feature preservation"
+      }
+    },
+
+    "gradient_stability_fixes": {
+      "gradient_clip_norm": {
+        "old": "1.0 (too aggressive, caused information loss)",
+        "new": "5.0 (more headroom for complex GAN gradients)",
+        "change": "+400%"
+      },
+      "lr_generator": {
+        "old": "1e-5 (caused gradient mean 556 - unstable)",
+        "new": "5e-6 (slower, more stable convergence)",
+        "change": "-50%"
+      },
+      "lr_discriminator": {
+        "old": "1e-5",
+        "new": "1e-5",
+        "change": "UNCHANGED (keep discriminator strong)"
+      }
+    },
+
+    "expected_contribution_after_fix": {
+      "pixel_loss": "50.0 * 0.048 = 2.4 (15-20% target ✓)",
+      "perceptual_loss": "1.0 * 50.0 = 50.0 (50-60% target ✓)",
+      "adv_loss": "5.0 * 3.9 = 19.5 (10-15% target ✓)",
+      "rec_feat_loss": "5.0 * 0.01 = 0.05 (negligible, OK)",
+      "total_estimated": "~72 (more balanced vs previous 523)"
+    },
+
+    "expected_improvements": {
+      "psnr": "Target >24 dB (MAINTAIN from ANRI V1 23.75 dB, vs failed experiment 20.52 dB)",
+      "ssim": "Target >0.96 (MAINTAIN from ANRI V1 0.9670, vs failed experiment 0.9102)",
+      "noise_variance": "Target <500 (MAINTAIN from ANRI V1 391, vs failed experiment 8662)",
+      "local_variance": "Target <200 (MAINTAIN from ANRI V1 158, vs failed experiment 909)",
+      "isolated_white_ratio": "Target <9% (MAINTAIN from ANRI V1 8.25%, vs failed experiment 13.89%)",
+      "avg_stroke_width": "Target 3-5px (PRESERVE thin strokes, vs failed experiment 187px)",
+      "gradient_cov": "Target <2.5 (smooth strokes, vs failed experiment 5.08)",
+      "generator_gradient": "Target <100 (stable training, vs failed experiment 556)"
+    },
+
+    "success_criteria": {
+      "primary_psnr": "PSNR ≥ 23.5 dB (maintain ANRI V1 performance on DIBCO dataset)",
+      "primary_smoothness": "Local Variance < 250 (maintain smooth strokes from ANRI V1)",
+      "secondary_noise": "Noise Variance < 1000 (prevent explosion seen in failed experiment)",
+      "secondary_edges": "Isolated White < 10% (prevent thick edges)",
+      "stretch_goal": "PSNR ≥ 25 dB + Local Variance < 200 + SSIM > 0.97 (exceed ANRI V1 on DIBCO)"
+    },
+
+    "training_strategy": {
+      "resume_point": "ANRI V1 best model (ckpt-120, PSNR 23.75 dB) - BEFORE DIBCO fine-tuning",
+      "rationale": "Start from proven ANRI V1 checkpoint with CORRECTED loss weights to prevent degradation seen in dibco_finetuning_from_anri_v1 (which dropped to 20.52 dB)",
+      "epochs": "30 (allow full convergence with new loss balance)",
+      "patience": "15 (increased from 10, allow more exploration with new weights)",
+      "validation_frequency": "Every epoch (close monitoring for improvement)",
+      "checkpoint_frequency": "Every 3 epochs + best model separately"
+    },
+
+    "monitoring_priorities": {
+      "critical": [
+        "Loss contribution breakdown (ensure balance: ~60% perc, ~20% pixel, ~15% adv)",
+        "PSNR trend (must MAINTAIN >23 dB from ANRI V1 baseline, NOT DROP like failed experiment)",
+        "Local variance (must MAINTAIN <200 from ANRI V1, NOT INCREASE to 909 like failed experiment)",
+        "Generator gradient norm (must stay <100, NOT EXPLODE to 556 like failed experiment)"
+      ],
+      "important": [
+        "Noise variance (track reduction to <2000)",
+        "Isolated white ratio (track reduction to <10%)",
+        "SSIM improvement (target >0.96)"
+      ],
+      "nice_to_have": [
+        "CER tracking (visual-only mode, not critical)",
+        "Discriminator gradient balance"
+      ]
+    },
+
+    "abort_criteria": {
+      "psnr_regression": "If PSNR drops below 20.0 dB after 5 epochs, abort and investigate",
+      "loss_explosion": "If total loss > 1000 (vs expected ~72), abort and check implementation",
+      "gradient_explosion": "If generator gradient > 1000, abort and check LR/clip settings"
+    },
+
+    "next_steps_if_success": {
+      "phase_2a": "Add Total Variation loss (weight: 2.0) for explicit smoothness",
+      "phase_2b": "Add Edge-aware loss (weight: 10.0) for thin stroke preservation",
+      "phase_3": "Enhance discriminator (spectral norm, dropout 0.3, update ratio 2:1)",
+      "phase_4": "Mixed dataset training (30% ANRI + 70% DIBCO)"
+    },
+
+    "rollback_plan": "If this experiment fails (PSNR <21 dB), revert to ANRI V1 checkpoint (thin_stroke_preservation_v1_finetuning/best_model/ckpt-120) and try progressive fine-tuning strategy instead"
+  }
+}

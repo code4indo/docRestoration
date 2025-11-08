@@ -1,0 +1,186 @@
+{
+  "experiment_name": "dibco_finetuning_with_anri_rehearsal_v1",
+  "description": "PROGRESSIVE FINETUNING WITH DATA REHEARSAL: ANRI → DIBCO. Uses rehearsal dataset (50% Base + 30% DIBCO + 20% ANRI) to prevent catastrophic forgetting while adapting to DIBCO. Strategy: (1) Pretrained from ANRI best model (ckpt-115, Base 30.69 dB, ANRI 33.02 dB), (2) NO layer freezing, (3) Proven LR 5e-6/1e-5, (4) Rehearsal dataset with ALL 3 domains (Base 537 + DIBCO 322 + ANRI 214 = 1073 samples), (5) TRIPLE validation (Base + ANRI + DIBCO), (6) Red line safety: Base ≥27 dB, ANRI ≥30 dB, DIBCO ≥27 dB, (7) Early stopping patience 2. Goal: Achieve DIBCO performance (28-30 dB) while maintaining Base (~30.5 dB) and ANRI (~32 dB) via data rehearsal.",
+  
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/mixed_50base_30dibco_20anri_rehearsal.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  
+  "pretrained_checkpoint": "dual_modal_gan/checkpoints/anri_finetuning_stage1_full_model_v2/best_model/ckpt-115",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/dibco_finetuning_with_anri_rehearsal_v1",
+  "sample_dir": "dual_modal_gan/outputs/samples_dibco_rehearsal_v1",
+
+  "resume": false,
+  "no_restore": false,
+
+  "epochs": 10,
+  "batch_size": 4,
+  "steps_per_epoch": 0,
+  "save_interval": 1,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 3,
+  "gpu_id": "0",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": false,
+    "patience": 3,
+    "min_delta": 0.01,
+    "restore_best_weights": true,
+    "base_val_min_psnr": 29.0
+  },
+
+  "early_stopping_metric": "combined",
+  "psnr_improvement_threshold": 0.5,
+  "cer_weight": 0.0,
+
+  "lr_g": 0.000005,
+  "lr_d": 0.00001,
+  "use_lr_schedule": false,
+  "warmup_epochs": 0,
+  "annealing_epochs": 0,
+
+  "pixel_loss_weight": 100.0,
+  "adv_loss_weight": 1.0,
+  "rec_feat_loss_weight": 10.0,
+  "ctc_loss_weight": 0.0,
+  "perceptual_loss_weight": 15.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 300.0,
+
+  "discriminator_mode": "predicted",
+
+  "adaptive_loss_balancing": false,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.3,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "freeze_strategy": {
+    "enabled": false,
+    "generator_encoder_layers": [],
+    "generator_decoder_early_layers": [],
+    "discriminator_freeze": false,
+    "freeze_batchnorm": false
+  },
+
+  "dual_validation": {
+    "enabled": true,
+    "base_tfrecord": "dual_modal_gan/data/dataset_gan.tfrecord",
+    "anri_tfrecord": "dual_modal_gan/data/mixed_stage1_70base_30anri.tfrecord",
+    "dibco_tfrecord": "dual_modal_gan/data/dibco_tiled_full.tfrecord",
+    "base_val_split": 0.15,
+    "anri_val_split": 0.15,
+    "dibco_val_split": 0.15,
+    "monitor_base_psnr": true,
+    "monitor_anri_psnr": true,
+    "monitor_dibco_psnr": true,
+    "base_psnr_red_line": 27.0,
+    "base_psnr_warning_threshold": 28.5,
+    "anri_psnr_red_line": 30.0,
+    "anri_psnr_warning_threshold": 31.5,
+    "dibco_psnr_red_line": 27.0,
+    "dibco_psnr_warning_threshold": 28.5
+  },
+
+  "experiment_metadata": {
+    "stage": "progressive_stage2_dibco_with_rehearsal",
+    "base_model": "thin_stroke_preservation_v1_academic",
+    "base_model_psnr": 30.56,
+    "base_model_epoch": 49,
+    "stage1_model": "anri_finetuning_stage1_full_model_v2",
+    "stage1_checkpoint": "ckpt-115",
+    "stage1_epoch": 8,
+    "stage1_base_psnr": 30.69,
+    "stage1_anri_psnr": 33.02,
+    "dataset_composition": {
+      "total_samples": 1073,
+      "base_samples": 537,
+      "dibco_samples": 322,
+      "anri_samples": 214,
+      "base_ratio": 0.50,
+      "dibco_ratio": 0.30,
+      "anri_ratio": 0.20,
+      "rehearsal_enabled": true,
+      "note": "Data rehearsal prevents catastrophic forgetting by including ANRI samples during DIBCO finetuning"
+    },
+    "progressive_finetuning_strategy": {
+      "approach": "Sequential domain adaptation WITH DATA REHEARSAL",
+      "stage1": "BASE → ANRI (COMPLETED)",
+      "stage1_result": {
+        "best_epoch": 8,
+        "base_psnr": 30.69,
+        "anri_psnr": 33.02,
+        "checkpoint": "ckpt-115"
+      },
+      "stage2": "ANRI → DIBCO (CURRENT WITH REHEARSAL)",
+      "stage2_dataset": "50% Base + 30% DIBCO + 20% ANRI (prevents catastrophic forgetting)",
+      "transfer_learning": "ANRI knowledge preserved via rehearsal samples",
+      "improvement_over_v4": "v4 failed with 0% ANRI (catastrophic forgetting -3.37 dB), v1 uses 20% ANRI rehearsal"
+    },
+    "strategy": {
+      "learning_rate": "5e-6 generator, 1e-5 discriminator (proven successful)",
+      "freeze_layers": "NONE - full model trainable",
+      "loss_weights": "Pixel 100, Adv 1.0, RecFeat 10, Perceptual 15 (balanced)",
+      "discriminator_mode": "predicted (consistent with base & ANRI)",
+      "triple_validation": "Monitor Base + ANRI + DIBCO simultaneously",
+      "data_rehearsal": {
+        "enabled": true,
+        "base_samples": "537 (50% - maintain synthetic performance)",
+        "dibco_samples": "322 (30% - new target domain)",
+        "anri_samples": "214 (20% - PREVENT CATASTROPHIC FORGETTING)",
+        "total": "1073 samples (similar to v4 dataset size)"
+      },
+      "safety": {
+        "base_red_line": "27.0 dB (catastrophic threshold)",
+        "anri_red_line": "30.0 dB (CRITICAL - prevent forgetting)",
+        "dibco_red_line": "27.0 dB (minimum acceptable)",
+        "warnings": "Base 28.5 dB, ANRI 31.5 dB, DIBCO 28.5 dB"
+      },
+      "checkpoint_management": "max_checkpoints=3 (save disk space), best_model separate",
+      "early_stopping": "patience=3 (allow more exploration than v4 patience=2)"
+    },
+    "expected_outcome": {
+      "dibco_psnr": "28-30 dB (achievable with rehearsal, better than v4's 14.84 dB)",
+      "base_psnr": "30.3-30.7 dB (maintained via 50% base samples)",
+      "anri_psnr": "31.5-32.5 dB (preserved via 20% rehearsal, better than v4's catastrophic 29.65 dB)",
+      "best_epoch": "6-10 (more epochs needed due to multi-domain optimization)",
+      "training_time": "~90-120 minutes (10 epochs × 9-12 min, slower due to 3-domain balancing)",
+      "disk_usage": "~2-3 GB (3 checkpoints + best_model)",
+      "emergency_stop_risk": "LOW - rehearsal dataset includes all 3 domains"
+    },
+    "improvements_from_v4": [
+      "Data rehearsal with 20% ANRI samples (v4 had 0% → catastrophic forgetting)",
+      "Expected ANRI PSNR ~32 dB (v4 catastrophic 29.65 dB, -3.37 dB drop)",
+      "Expected DIBCO PSNR ~28-30 dB (v4 failed at 14.84 dB)",
+      "Triple validation maintained (same as v4)",
+      "Red line safety for all 3 domains (prevent catastrophic forgetting)",
+      "No emergency stop expected (all domains represented in training)"
+    ],
+    "lessons_from_v4": [
+      "Progressive finetuning WITHOUT rehearsal = guaranteed catastrophic forgetting",
+      "1 epoch without ANRI data = -3.37 dB ANRI drop (v4 result)",
+      "Pretrained weights alone DON'T preserve performance without gradient signals",
+      "Data rehearsal is MANDATORY for continual learning",
+      "This config implements correct multi-domain learning approach"
+    ]
+  }
+}
