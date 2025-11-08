@@ -1,7 +1,7 @@
 # Fdb version 3
-["pdflatex"] 1759969581 "/home/lambda_one/tesis/GAN-HTR-ORI/dual_modal_gan/docs/chapter2_tinjauan_pustaka.tex" "chapter2_tinjauan_pustaka.pdf" "chapter2_tinjauan_pustaka" 1759969582
+["pdflatex"] 1762583728 "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter2_tinjauan_pustaka.tex" "chapter2_tinjauan_pustaka.pdf" "chapter2_tinjauan_pustaka" 1762583729
   "/etc/texmf/web2c/texmf.cnf" 1735821572 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/lambda_one/tesis/GAN-HTR-ORI/dual_modal_gan/docs/chapter2_tinjauan_pustaka.tex" 1759969580 93757 39b363b82082311e3f5e775d227c6f0a ""
+  "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter2_tinjauan_pustaka.tex" 1762583157 93757 39b363b82082311e3f5e775d227c6f0a ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/symbol/psyr.tfm" 1136768653 1408 5937f58aa508ea2cea4901c07d10f5fe ""
@@ -197,9 +197,9 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1759233803 4379155 98693266ff65f58d9f98aff394de12d2 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1759233835 2798526 797e2e5e8fb6f85d658ad96238072e6c ""
-  "chapter2_tinjauan_pustaka.aux" 1759969582 14621 e999f75a073c2294a17f0412f952098e "pdflatex"
-  "chapter2_tinjauan_pustaka.out" 1759969582 10212 0d6eb83352f16b01f31a0076405fac25 "pdflatex"
-  "chapter2_tinjauan_pustaka.tex" 1759969580 93757 39b363b82082311e3f5e775d227c6f0a ""
+  "chapter2_tinjauan_pustaka.aux" 1762583729 14621 e999f75a073c2294a17f0412f952098e "pdflatex"
+  "chapter2_tinjauan_pustaka.out" 1762583729 10212 0d6eb83352f16b01f31a0076405fac25 "pdflatex"
+  "chapter2_tinjauan_pustaka.tex" 1762583157 93757 39b363b82082311e3f5e775d227c6f0a ""
   (generated)
   "chapter2_tinjauan_pustaka.aux"
   "chapter2_tinjauan_pustaka.log"

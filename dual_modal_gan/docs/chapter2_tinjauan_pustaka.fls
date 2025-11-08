@@ -1,9 +1,9 @@
-PWD /home/lambda_one/tesis/GAN-HTR-ORI/dual_modal_gan/docs
+PWD /home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs
 INPUT /etc/texmf/web2c/texmf.cnf
 INPUT /usr/share/texmf/web2c/texmf.cnf
 INPUT /usr/share/texlive/texmf-dist/web2c/texmf.cnf
 INPUT /var/lib/texmf/web2c/pdftex/pdflatex.fmt
-INPUT /home/lambda_one/tesis/GAN-HTR-ORI/dual_modal_gan/docs/chapter2_tinjauan_pustaka.tex
+INPUT /home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter2_tinjauan_pustaka.tex
 OUTPUT chapter2_tinjauan_pustaka.log
 INPUT /usr/share/texlive/texmf-dist/tex/latex/base/article.cls
 INPUT /usr/share/texlive/texmf-dist/tex/latex/base/article.cls
