@@ -1,0 +1,255 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./jatniko_id.tex
+LaTeX2e <2021-11-15> patch level 1
+L3 programming layer <2022-01-21>
+(/usr/share/texlive/texmf-dist/tex/latex/ieeetran/IEEEtran.cls
+Document Class: IEEEtran 2015/08/26 V1.8b by Michael Shell
+-- See the "IEEEtran_HOWTO" manual for usage information.
+-- http://www.michaelshell.org/tex/ieeetran/
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd)
+-- Using 8.5in x 11in (letter) paper.
+-- Using PDF output.
+-- This is a 10 point document.
+) (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def)))
+(/usr/share/texlive/texmf-dist/tex/latex/cite/cite.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/algorithms/algorithm.sty
+(/usr/share/texlive/texmf-dist/tex/latex/float/float.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/base/ifthen.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/algorithms/algorithmic.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/tools/array.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/multirow/multirow.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/booktabs/booktabs.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/subfig/subfig.sty
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty)
+
+Package caption Warning: Unknown document class (or package),
+(caption)                standard defaults will be used.
+See the caption package documentation for explanation.
+
+)) (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
+(./jatniko_id.aux)
+-- Lines per column: 58 (exact).
+(/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+Underfull \hbox (badness 2735) in paragraph at lines 1121--1123
+[]\OT1/ptm/b/it/9 Index Terms\OT1/ptm/b/n/9 ---\OT1/ptm/b/it/9 Generative Ad-ve
+r-sar-ial Net-works\OT1/ptm/b/n/9 , Restorasi
+
+Overfull \hbox (7.74498pt too wide) in paragraph at lines 1157--1158
+ [][] 
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+Underfull \hbox (badness 2828) in paragraph at lines 1179--1180
+[]\OT1/ptm/m/n/10 Meskipun men-ca-pai pen-ingkatan kual-i-tas vi-sual yang
+
+Underfull \hbox (badness 10000) in paragraph at lines 1182--1183
+\OT1/ptm/m/n/10 yang ada men-gop-ti-malkan metrik ke-samaan
+
+Underfull \hbox (badness 8113) in paragraph at lines 1182--1183
+\OT1/ptm/m/n/10 vi-sual (\OT1/ptm/m/it/10 PSNR\OT1/ptm/m/n/10 , \OT1/ptm/m/it/1
+0 SSIM\OT1/ptm/m/n/10 , F-measure) an-tara gam-bar
+
+Underfull \hbox (badness 2922) in paragraph at lines 1182--1183
+\OT1/ptm/m/n/10 yang direstorasi dan gam-bar ground truth, hanya
+
+Underfull \hbox (badness 2126) in paragraph at lines 1198--1199
+\OT1/ptm/m/n/10 perke-nalkan diskrim-i-na-tor den-gan jalur pem-ros-esan
+
+Underfull \hbox (badness 1810) in paragraph at lines 1200--1201
+\OT1/ptm/m/n/10 (ar-sitek-tur \OT1/ptm/m/it/10 CNN-Transformer Hy-brid \OT1/ptm
+/m/n/10 cus-tom) un-tuk
+
+Underfull \hbox (badness 2452) in paragraph at lines 1218--1219
+\OT1/ptm/m/n/10 jikan ar-sitek-tur yang kami usulkan ter-ma-suk gen-er-a-tor,
+[2] (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd)
+Underfull \hbox (badness 10000) in paragraph at lines 1317--1318
+ \OT1/ptm/m/it/10 1) De-sain Jaringan: [][] \OT1/ptm/m/n/10 U-Net En-hanced kam
+i
+
+Underfull \hbox (badness 10000) in paragraph at lines 1317--1318
+\OT1/ptm/m/n/10 (\OT1/pcr/m/n/10 generator_enhanced\OT1/ptm/m/n/10 , 21.8M pa-r
+am-e-ters) ter-diri
+[3]
+Overfull \hbox (7.74498pt too wide) in paragraph at lines 1367--1368
+ [][] 
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
+Underfull \hbox (badness 1874) in paragraph at lines 1421--1422
+[]\OT1/ptm/m/it/10 Global pool-ing: \OT1/ptm/m/n/10 Glob-al-Av-er-age-Pool-ing2
+D (im-age) +
+
+Underfull \hbox (badness 2035) in paragraph at lines 1428--1430
+ \OT1/ptm/m/it/10 2) Mo-ti-vasi dan De-sign Ra-tio-nale: [][] \OT1/ptm/b/n/10 D
+ual-Modal Ap-
+
+Underfull \hbox (badness 2680) in paragraph at lines 1434--1435
+[]\OT1/ptm/m/n/10 Smaller at-ten-tion ker-nel (3$\OMS/cmsy/m/n/10 ^^B$\OT1/ptm/
+m/n/10 3): Men-gu-rangi over-
+[4]
+Underfull \hbox (badness 1377) in paragraph at lines 1455--1456
+\OT1/ptm/m/n/10 diskrim-i-na-tor mem-berikan umpan ba-lik yang lebih kaya
+
+Underfull \hbox (badness 2197) in paragraph at lines 1463--1465
+ \OT1/ptm/m/it/10 1) Ar-sitek-tur Pen-ge-nal: [][] \OT1/ptm/m/n/10 Kami meng-gu
+-nakan ar-sitek-tur
+
+Underfull \hbox (badness 2753) in paragraph at lines 1474--1475
+[]\OT1/ptm/m/it/10 Sequence Pro-jec-tion: \OT1/ptm/m/n/10 Flat-ten height di-me
+n-sion dan
+
+Underfull \hbox (badness 1629) in paragraph at lines 1474--1475
+\OT1/ptm/m/n/10 di-lan-jutkan den-gan Lay-er-Nor-mal-iza-tion dan Dropout
+
+Underfull \hbox (badness 7012) in paragraph at lines 1497--1499
+[]\OT1/ptm/b/n/10 Ours (Frozen Pre-trained): \OT1/ptm/m/n/10 Rec-og-nizer pra-t
+erlatih
+
+Underfull \hbox (badness 10000) in paragraph at lines 1524--1525
+\OT1/ptm/m/n/10 Meng-gu-nakan pen-ge-nal pra-terlatih yang dibekukan
+
+Underfull \hbox (badness 10000) in paragraph at lines 1529--1530
+[]\OT1/ptm/b/n/10 Pelestarian ke-mam-puan HTR: \OT1/ptm/m/n/10 Pen-ge-nal yang
+
+Underfull \hbox (badness 2050) in paragraph at lines 1529--1530
+\OT1/ptm/m/n/10 dibekukan mem-per-ta-hankan ke-mam-puan pen-ge-nalan
+[5]
+Underfull \hbox (badness 2376) in paragraph at lines 1596--1598
+[]\OT1/ptm/b/n/10 Loss Weight Op-ti-miza-tion (Implementation-Tested):
+
+LaTeX Warning: Citation `goodfellow2016improved' on page 6 undefined on input l
+ine 1656.
+
+[6]
+Underfull \hbox (badness 3657) in paragraph at lines 1681--1683
+[]\OT1/ptm/b/n/10 Epoch pelati-han: \OT1/ptm/m/n/10 50 den-gan early stop-ping 
+(pa-
+
+Overfull \hbox (7.74498pt too wide) in paragraph at lines 1736--1737
+ [][] 
+[7]
+Underfull \hbox (badness 1810) in paragraph at lines 1786--1787
+[]\OT1/ptm/b/n/10 DocEnTr (2022): \OT1/ptm/m/n/10 Transformer-based doc-u-ment 
+en-
+
+Underfull \hbox (badness 1917) in paragraph at lines 1833--1834
+[]\OT1/ptm/b/n/10 Kerangka Kerja: \OT1/ptm/m/n/10 Ten-sor-Flow 2.15.0, CUDA 12.
+2,
+
+Underfull \hbox (badness 3895) in paragraph at lines 1838--1839
+[]\OT1/ptm/b/n/10 Biaya kom-putasi es-ti-masi: \TS1/ptm/m/n/10 $\OT1/ptm/m/n/10
+ 37 USD (GCP n1-
+
+Overfull \hbox (69.24535pt too wide) in paragraph at lines 1847--1848
+[]\OT1/ptm/m/it/10 Weights path: \OT1/ptm/m/n/10 htr[]improved[]v2[]20251001[]2
+21138/best[]model.weights.h5 
+
+Underfull \hbox (badness 1430) in paragraph at lines 1863--1864
+[]\OT1/ptm/m/it/10 Normalization: \OT1/ptm/m/n/10 Im-a-geNet statis-tics ($\OML
+/cmm/m/it/10 ^^V$\OT1/ptm/m/n/10 =[0.485, 0.456,
+[8]
+Underfull \hbox (badness 2261) in paragraph at lines 1884--1885
+[]\OT1/ptm/b/n/10 Memory foot-print: \OT1/ptm/m/n/10 8.2GB GPU mem-ory (train-i
+ng
+
+Underfull \hbox (badness 3428) in paragraph at lines 1895--1896
+[]\OT1/ptm/b/n/10 Perangkat Keras: \OT1/ptm/m/n/10 2$\OMS/cmsy/m/n/10 ^^B$ \OT1
+/ptm/m/n/10 NVIDIA RTX 3090 GPU
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd)
+Underfull \hbox (badness 1383) in paragraph at lines 1986--1987
+\OT1/ptm/m/n/10 den-gan pen-ingkatan sub-stan-sial dalam metrik HTR
+[9]
+Underfull \hbox (badness 2142) in paragraph at lines 2073--2074
+\OT1/ptm/m/n/10 mem-band-ingkan strategi berbeda un-tuk meng-in-te-grasikan
+
+Overfull \hbox (24.2543pt too wide) in paragraph at lines 2081--2098
+ [][] 
+
+Underfull \hbox (badness 2189) in paragraph at lines 2104--2105
+[]\OT1/ptm/b/n/10 S2 (Frozen Rec-og-nizer): \OT1/ptm/m/n/10 Meng-gu-nakan pre-t
+rained
+
+Underfull \hbox (badness 1394) in paragraph at lines 2108--2109
+\OT1/ptm/m/n/10 ance. SSIM tinggi tetapi CER bu-ruk, me-nun-jukkan
+
+Underfull \hbox (badness 1454) in paragraph at lines 2124--2127
+[]\OT1/ptm/b/n/10 Kategorisasi Er-ror Pat-terns: \OT1/ptm/m/n/10 Anal-i-sis pad
+a 18 poor
+[10]
+Overfull \hbox (7.74498pt too wide) in paragraph at lines 2203--2204
+ [][] 
+
+Overfull \hbox (7.96638pt too wide) in paragraph at lines 2218--2230
+ [][] 
+[11]
+Underfull \hbox (badness 10000) in paragraph at lines 2268--2269
+[]\OT1/ptm/b/n/10 Degradasi sin-tetis yang dit-ingkatkan:
+
+Underfull \hbox (badness 2359) in paragraph at lines 2286--2287
+[]\OT1/ptm/m/n/10 Memerlukan seg-men-tasi tingkat baris se-ba-gai pra-
+
+Underfull \hbox (badness 2799) in paragraph at lines 2297--2298
+[]\OT1/ptm/b/n/10 Restorasi in-ter-ak-tif: \OT1/ptm/m/n/10 Memu-ngkinkan umpan 
+ba-lik
+[12]
+Underfull \hbox (badness 3148) in paragraph at lines 2346--2347
+[]\OT1/ptm/m/n/10 Studi ablasi mengkon-fir-masi bahwa se-tiap kom-po-nen
+
+Underfull \hbox (badness 10000) in paragraph at lines 2370--2371
+[]\OT1/ptm/m/n/10 Blok en-coder: [Conv-BN-ReLU-Conv-BN-ReLU-
+
+Underfull \hbox (badness 10000) in paragraph at lines 2383--2384
+[]\OT1/ptm/m/n/10 Lapisan 2: Conv(128, 4$\OMS/cmsy/m/n/10 ^^B$\OT1/ptm/m/n/10 4
+, stride=2) - BN -
+
+Underfull \hbox (badness 10000) in paragraph at lines 2384--2385
+[]\OT1/ptm/m/n/10 Lapisan 3: Conv(256, 4$\OMS/cmsy/m/n/10 ^^B$\OT1/ptm/m/n/10 4
+, stride=2) - BN -
+
+Underfull \hbox (badness 10000) in paragraph at lines 2385--2386
+[]\OT1/ptm/m/n/10 Lapisan 4: Conv(512, 4$\OMS/cmsy/m/n/10 ^^B$\OT1/ptm/m/n/10 4
+, stride=2) - BN -
+
+Underfull \hbox (badness 10000) in paragraph at lines 2409--2409
+[]\OT1/ptm/m/n/10 TABLE IX: |Kon-fig-urasi Hy-per-pa-ram-e-ter Lengkap
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[13] [14] (./jatniko_id.aux)
+
+LaTeX Warning: There were undefined references.
+
+ )
+(see the transcript file for additional information){/usr/share/texmf/fonts/enc
+/dvips/cm-super/cm-super-ts1.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips
+/base/8r.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex
+10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
+></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/
+share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/t
+exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-di
+st/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
+ublic/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
+amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cm
+sy8.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1000.pfb></usr/share/
+texlive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf
+-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/typ
+e1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/u
+tmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on jatniko_id.pdf (14 pages, 265493 bytes).
+Transcript written on jatniko_id.log.

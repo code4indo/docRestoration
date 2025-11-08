@@ -1,0 +1,10 @@
+\begin{figure}[!t]
+\centering
+\includegraphics[width=6in]{fig_synthetic_examples/synthetic_degradation_examples}
+\caption{Contoh degradasi sintetis yang diterapkan pada baris teks tulisan tangan dari dokumen ANRI. 
+Setiap baris menampilkan: (a) Ground truth bersih, (b) Hasil degradasi ringan dengan noise latar belakang dan bleed-through, 
+(c) Degradasi berat dengan kombinasi noda organik, foxing spots, kerusakan fisik, dan blur. 
+Pipeline degradasi menggunakan patch ber-varian tinggi dari 29 dokumen rusak ANRI dan menerapkan 6 tahap degradasi stokastik 
+untuk mensimulasikan kondisi dokumen historis yang autentik.}
+\label{fig:synthetic_examples}
+\end{figure}

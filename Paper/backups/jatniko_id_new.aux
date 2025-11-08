@@ -1,0 +1,104 @@
+\relax 
+\citation{otsu1979threshold}
+\citation{sauvola2000adaptive}
+\@writefile{toc}{\contentsline {section}{\numberline {I}Pendahuluan}{1}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Contoh jenis degradasi yang umum ditemukan pada dokumen tulisan tangan historis dari koleksi ANRI (abad ke-16 hingga ke-18).\relax }}{1}{}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:degradation_examples}{{1}{1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {I-A}}Keterbatasan Pendekatan yang Ada}{1}{}\protected@file@percent }
+\citation{tensmeyer2017document,calvo2018selectional}
+\citation{souibgui2020degan,zhao2019document}
+\citation{vo2018binarization}
+\citation{souibgui2021enhance}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {I-B}}Kontribusi Pekerjaan Ini}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {I-C}}Organisasi Makalah}{2}{}\protected@file@percent }
+\citation{otsu1979threshold}
+\citation{sauvola2000adaptive}
+\citation{niblack1986introduction}
+\citation{wolf2004extraction}
+\citation{ronneberger2015unet}
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Perbandingan Pendekatan Perbaikan Dokumen\relax }}{3}{}\protected@file@percent }
+\newlabel{table_comparison}{{I}{3}}
+\@writefile{toc}{\contentsline {section}{\numberline {II}Pekerjaan Terkait}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Perbaikan dan Binerisasi Citra Dokumen}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {II-A}1}Metode Klasik dan Tradisional}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Generative Adversarial Networks untuk Restorasi Citra}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {II-B}1}Conditional GANs untuk Translasi Citra-ke-Citra}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {II-B}2}GANs untuk Perbaikan Dokumen}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Sistem Handwritten Text Recognition}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-D}}Analisis Kesenjangan dan Posisi}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {III}Metode yang Diusulkan}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Gambaran Kerangka Kerja}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Arsitektur Generator: U-Net yang Ditingkatkan}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-B}1}Desain Jaringan}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-B}2}Rasional Desain}{3}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Gambaran kerangka kerja restorasi dokumen berorientasi HTR yang diusulkan dengan diskriminator dual-modal dan integrasi pengenal yang dibekukan.\relax }}{4}{}\protected@file@percent }
+\newlabel{fig:architecture_overview}{{2}{4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Arsitektur generator U-Net yang ditingkatkan dengan koneksi skip untuk pelestarian detail halus.\relax }}{4}{}\protected@file@percent }
+\newlabel{fig:unet_architecture}{{3}{4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Diskriminator dual-modal dengan jalur CNN dan LSTM paralel untuk penilaian komprehensif.\relax }}{4}{}\protected@file@percent }
+\newlabel{fig:discriminator_arch}{{4}{4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Diskriminator Dual-Modal}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-C}1}Desain Arsitektur}{4}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Bobot Loss yang Dioptimalkan (Konfigurasi Teratas)\relax }}{4}{}\protected@file@percent }
+\newlabel{table_optimal_weights}{{II}{4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Contoh degradasi sintetis yang diterapkan pada baris teks tulisan tangan yang bersih.\relax }}{4}{}\protected@file@percent }
+\newlabel{fig:synthetic_examples}{{5}{4}}
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Kepentingan Parameter Bobot Loss (fANOVA)\relax }}{4}{}\protected@file@percent }
+\newlabel{table_param_importance}{{III}{4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-D}}Integrasi Pengenal HTR yang Dibekukan}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-E}}Fungsi Loss Multi-Komponen}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Pengaturan Eksperimental}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Dataset}{4}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces Hasil Kuantitatif pada Set Uji Terdegradasi Sintetis\relax }}{5}{}\protected@file@percent }
+\newlabel{table_synthetic_results}{{IV}{5}}
+\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Hasil pada Dokumen Historis Nyata (Dataset ANRI)\relax }}{5}{}\protected@file@percent }
+\newlabel{table_anri_results}{{V}{5}}
+\@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces Studi Ablasi Arsitektur Diskriminator\relax }}{5}{}\protected@file@percent }
+\newlabel{table_ablation_discriminator}{{VI}{5}}
+\@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces Studi Ablasi Komponen Loss\relax }}{5}{}\protected@file@percent }
+\newlabel{table_ablation_loss}{{VII}{5}}
+\@writefile{lot}{\contentsline {table}{\numberline {VIII}{\ignorespaces Perbandingan Pelatihan Pengenal Beku vs. Bersama\relax }}{5}{}\protected@file@percent }
+\newlabel{table_ablation_recognizer}{{VIII}{5}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Hasil dan Pembahasan}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Hasil Kuantitatif pada Set Uji Sintetis}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Hasil pada Dokumen Historis Nyata (ANRI)}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Studi Ablasi}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-D}}Analisis Kualitatif}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-E}}Analisis Kasus Kegagalan}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-F}}Efisiensi Komputasi}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Diskusi}{5}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {IX}{\ignorespaces Perbandingan Efisiensi Komputasi\relax }}{5}{}\protected@file@percent }
+\newlabel{table_efficiency}{{IX}{5}}
+\@writefile{toc}{\contentsline {section}{\numberline {VII}Kesimpulan}{5}{}\protected@file@percent }
+\bibcite{otsu1979threshold}{1}
+\bibcite{sauvola2000adaptive}{2}
+\bibcite{niblack1986introduction}{3}
+\bibcite{wolf2004extraction}{4}
+\bibcite{tensmeyer2017document}{5}
+\bibcite{calvo2018selectional}{6}
+\bibcite{zhao2019document}{7}
+\bibcite{vo2018binarization}{8}
+\bibcite{souibgui2020degan}{9}
+\bibcite{souibgui2021enhance}{10}
+\bibcite{ronneberger2015unet}{11}
+\bibcite{johnson2016perceptual}{12}
+\bibcite{wang2004ssim}{13}
+\bibcite{li2021trocr}{14}
+\bibcite{marti2002iam}{15}
+\bibcite{bergstra2011algorithms}{16}
+\bibcite{akiba2019optuna}{17}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Perbandingan kualitatif hasil restorasi pada sampel terdegradasi yang menantang. Metode kami lebih baik dalam melestarikan goresan tipis dan konektivitas karakter sambil menghilangkan noise latar belakang.\relax }}{6}{}\protected@file@percent }
+\newlabel{fig:qualitative_results}{{6}{6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Kasus kegagalan representatif dan keterbatasan metode yang diusulkan.\relax }}{6}{}\protected@file@percent }
+\newlabel{fig:failure_cases}{{7}{6}}
+\@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  A: Detail Arsitektur Jaringan}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  B: Hyperparameter Pelatihan}{6}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {X}{\ignorespaces Konfigurasi Hyperparameter Lengkap\relax }}{6}{}\protected@file@percent }
+\newlabel{table_hyperparams}{{X}{6}}
+\@writefile{toc}{\contentsline {section}{References}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Biographies}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{[Nama Anda]}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{[Nama Pembimbing]}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{[Nama Co-Pembimbing]}{7}{}\protected@file@percent }
+\gdef \@abspage@last{7}

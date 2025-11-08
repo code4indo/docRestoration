@@ -1,0 +1,249 @@
+\relax 
+\citation{otsu1979threshold}
+\citation{sauvola2000adaptive}
+\@writefile{toc}{\contentsline {section}{\numberline {I}Pendahuluan}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {I-A}}Keterbatasan Pendekatan yang Ada}{1}{}\protected@file@percent }
+\citation{souibgui2021enhance}
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:degradation_examples_noise}{{1a}{2}}
+\newlabel{sub@fig:degradation_examples_noise}{{(a)}{a}}
+\newlabel{fig:degradation_examples_inkCorrotion}{{1b}{2}}
+\newlabel{sub@fig:degradation_examples_inkCorrotion}{{(b)}{b}}
+\newlabel{fig:degradation_examples_aging}{{1c}{2}}
+\newlabel{sub@fig:degradation_examples_aging}{{(c)}{c}}
+\newlabel{fig:degradation_examples_damage}{{1d}{2}}
+\newlabel{sub@fig:degradation_examples_damage}{{(d)}{d}}
+\newlabel{fig:degradation_examples_inkDeg}{{1e}{2}}
+\newlabel{sub@fig:degradation_examples_inkDeg}{{(e)}{e}}
+\newlabel{fig:degradation_examples_combined}{{1f}{2}}
+\newlabel{sub@fig:degradation_examples_combined}{{(f)}{f}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Contoh degradasi pada dokumen ANRI abad 16-18: (a) tinta tembus, (b) korosi tinta besi galat, (c) penuaan kertas, (d) kerusakan fisik, (e) tinta memudar, (f) degradasi gabungan. Gambar menunjukkan variasi tingkat degradasi yang menantang sistem HTR.\relax }}{2}{}\protected@file@percent }
+\newlabel{fig:degradation_examples}{{1}{2}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Tinta Tembus}}}{2}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Korosi Tinta Besi Galat}}}{2}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(c)}{\ignorespaces {Penuaan Kertas (Menguning, Noda)}}}{2}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(d)}{\ignorespaces {Kerusakan Fisik (Robek, Keriput)}}}{2}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(e)}{\ignorespaces {Degradasi atau Tinta Memudar}}}{2}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(f)}{\ignorespaces {Degradasi Gabungan}}}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {I-B}}Kontribusi Penelitian}{2}{}\protected@file@percent }
+\citation{otsu1979threshold}
+\citation{sauvola2000adaptive}
+\citation{niblack1986introduction}
+\citation{wolf2004extraction}
+\citation{ronneberger2015unet}
+\citation{isola2017image}
+\citation{zhu2017unpaired}
+\citation{souibgui2020degan}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {I-C}}Hipotesis dan Validasi Penelitian}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {I-D}}Organisasi Makalah}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {II}Pekerjaan Terkait}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Restorasi dan Perbaikan Citra Dokumen}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {II-A}1}Metode Klasik: Binerisasi dan \textit  {Thresholding}}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {II-A}2}Metode \textit  {Deep Learning} untuk Restorasi Dokumen}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}\textit  {Generative Adversarial Networks} untuk Restorasi Citra}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {II-B}1}\textit  {Conditional GANs} untuk Translasi Citra-ke-Citra}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {II-B}2}GAN untuk Restorasi dan Perbaikan Dokumen}{3}{}\protected@file@percent }
+\citation{souibgui2022docent}
+\citation{souibgui2021enhance}
+\citation{shi2016crnn}
+\citation{bluche2017scan}
+\citation{michael2019evaluating,diaz2021rethinking}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Sistem Pengenalan Teks Tulisan Tangan}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-D}}Analisis Kesenjangan dan Posisi}{4}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Perbandingan Pendekatan Perbaikan Dokumen\relax }}{4}{}\protected@file@percent }
+\newlabel{table_comparison}{{I}{4}}
+\@writefile{toc}{\contentsline {section}{\numberline {III}Metode yang Diusulkan}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Gambaran Kerangka Kerja}{4}{}\protected@file@percent }
+\citation{ronneberger2015unet}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Gambaran kerangka kerja restorasi dokumen berorientasi HTR yang diusulkan dengan diskriminator \textit  {dual-modal} dan integrasi pengenal yang dibekukan. Arsitektur terdiri dari \textit  {Generator} U-Net \textit  {Enhanced}, Diskriminator \textit  {Dual-Modal} (CNN+LSTM), dan Pengenal HTR Beku. Pelatihan menggunakan strategi \textit  {curriculum learning} dengan fungsi kehilangan multikomponen.\relax }}{5}{}\protected@file@percent }
+\newlabel{fig:architecture_overview}{{2}{5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Arsitektur \textit  {Generator}: U-Net \textit  {Enhanced} dengan Blok Residual}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-B}1}Desain Jaringan}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-B}2}Rasional Desain}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Diskriminator \textit  {Dual-Modal Enhanced} V2}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-C}1}Desain Arsitektur}{6}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Arsitektur Generator \textit  {U-Net Enhanced} dengan 4 blok residual pada \textit  {encoder}, \textit  {bottleneck} 512 kanal, 4 blok residual pada \textit  {decoder} dengan gerbang atensi, dan koneksi langsung untuk pelestarian detail. Total parameter: 21.8M.\relax }}{6}{}\protected@file@percent }
+\newlabel{fig:unet_architecture}{{3}{6}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-C}2}Motivasi dan Rasional Desain}{6}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Arsitektur Diskriminator \textit  {Dual-Modal Enhanced} V2. Diskriminator memproses masukan citra melalui cabang CNN dengan atensi spasial (kiri) dan sekuens teks melalui cabang BiLSTM dengan atensi-mandiri (kanan). Kedua cabang menghasilkan vektor fitur yang kemudian diproyeksikan ke dimensi bersama untuk fusi atensi \textit  {cross-modal}. Kepala klasifikasi menghasilkan skor validitas untuk membedakan pasangan asli/palsu.\relax }}{7}{}\protected@file@percent }
+\newlabel{fig:discriminator_architecture}{{4}{7}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-D}}Integrasi Pengenal HTR yang Dibekukan}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-D}1}Arsitektur dan Konfigurasi Pelatihan}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-D}2}Keuntungan Pengenal Beku}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-D}3}Ekstraksi Fitur dan Perhitungan Kehilangan}{7}{}\protected@file@percent }
+\citation{johnson2016perceptual}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-E}}Fungsi Kehilangan Multikomponen}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-E}1}Kehilangan Adversarial}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-E}2}Kehilangan Rekonstruksi Tingkat Piksel}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-E}3}Kehilangan Perseptual}{8}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Konfigurasi Bobot Kehilangan untuk Pelatihan Produksi\relax }}{8}{}\protected@file@percent }
+\newlabel{table_optimal_weights}{{II}{8}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-E}4}Kehilangan Fitur Pengenalan}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-F}}Strategi Pelatihan}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-F}1}\textit  {Curriculum Learning}}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-F}2}Optimisasi Bergantian}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-F}3}Konfigurasi Pelatihan}{8}{}\protected@file@percent }
+\citation{souibgui2021enhance,zhao2019document}
+\citation{souibgui2020degan}
+\citation{perlin1985image}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-F}4}Analisis Konvergensi Pelatihan}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-F}5}Teknik Regularisasi}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Pengaturan Eksperimental}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Dataset}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-A}1}Dataset Terdegradasi Sintetis}{9}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Analisis konvergensi pelatihan selama 50 epoch menunjukkan (a) penurunan kehilangan \textit  {generator} yang konsisten mengindikasikan pelatihan adversarial yang stabil, (b) PSNR dengan interval kepercayaan 95\% mencapai 30.91 dB pada epoch 44, melampaui target 30 dB, dan (c) SSIM mencapai 0.987, melampaui target 0.95. Model terbaik dipilih pada epoch 44 (ditandai dengan garis putus-putus vertikal dan bintang merah) berdasarkan kriteria gabungan PSNR-SSIM dengan validasi penghentian dini. Kurva konvergensi yang halus menunjukkan efektivitas strategi \textit  {curriculum learning} dan ketiadaan \textit  {mode collapse} atau osilasi yang umum terjadi pada pelatihan GAN.\relax }}{10}{}\protected@file@percent }
+\newlabel{fig:convergence_analysis}{{5}{10}}
+\newlabel{fig:synthetic_gt}{{6a}{10}}
+\newlabel{sub@fig:synthetic_gt}{{(a)}{a}}
+\newlabel{fig:synthetic_deg}{{6b}{10}}
+\newlabel{sub@fig:synthetic_deg}{{(b)}{b}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Contoh pasangan citra \textit  {ground truth} (bersih) dan terdegradasi dari dataset sintetis. (a) Citra GT yang diekstrak dari dokumen ANRI relatif bersih, menunjukkan teks tulisan tangan paleografi dengan karakteristik goresan yang jelas. (b) Citra terdegradasi hasil jalur degradasi multitahap, menunjukkan kombinasi derau latar belakang tekstur, \textit  {bleed-through}, noda organik, dan \textit  {blur} yang mensimulasikan degradasi dokumen historis nyata.\relax }}{10}{}\protected@file@percent }
+\newlabel{fig:synthetic_examples}{{6}{10}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Citra \textit {Ground Truth} (GT) - Bersih}}}{10}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Citra Terdegradasi - Hasil Jalur Degradasi Sintetis}}}{10}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-A}2}Dataset Dokumen Historis Nyata (ANRI)}{10}{}\protected@file@percent }
+\citation{otsu1979threshold}
+\citation{sauvola2000adaptive}
+\citation{ronneberger2015unet}
+\citation{souibgui2020degan}
+\citation{souibgui2021enhance}
+\citation{wang2004ssim}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Metode \textit  {Baseline}}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Metrik Evaluasi}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-C}1}Metrik Kualitas Visual}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-C}2}Metrik Deteksi Artefak (Tambahan)}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-C}3}Metrik Kinerja HTR}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {V}Hasil dan Pembahasan}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Hasil Kuantitatif pada Set Uji Sintetis}{11}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Hasil Kuantitatif pada Set Uji Terdegradasi Sintetis (n=712)\relax }}{12}{}\protected@file@percent }
+\newlabel{table_synthetic_results}{{III}{12}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-A}1}Validation Metrics Trajectory Analysis}{12}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Evaluasi Kualitatif pada Dokumen Historis Nyata (ANRI)}{12}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-B}1}Dataset dan Metodologi Evaluasi}{12}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-B}2}Hasil Kualitatif dan Observasi Sistematis}{12}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Validation metrics trajectory with 95\% confidence intervals across 50 epochs (n=710 samples per epoch). (a) PSNR surpasses target of 30 dB at epoch 38 and peaks at 30.91±0.42 dB at epoch 44. (b) SSIM exceeds target of 0.95 at epoch 22 and reaches 0.9869±0.0011 at best epoch. (c,d) CER and WER (inverted Y-axis: lower is better) approach clean GT baseline (dashed green line), demonstrating effective restoration for HTR downstream task. Best model at epoch 44 (red star markers) selected via data-driven criteria, not arbitrary stopping. Narrow confidence intervals validate consistent performance across validation set.\relax }}{13}{}\protected@file@percent }
+\newlabel{fig:validation_metrics}{{7}{13}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Contoh restorasi kualitatif pada dokumen ANRI autentik abad ke-17-18 (n=15). Setiap pasangan menunjukkan masukan terdegradasi (kiri) dan keluaran terrestorasi (kanan). \textbf  {Baris 1 (a-c):} Kasus sukses dengan kontras tinggi ($\geq $60) menunjukkan pembersihan latar signifikan dan preservasi teks. \textbf  {Baris 2 (d-f):} Kasus menantang dengan kontras rendah-sedang menggunakan strategi peningkatan konservatif untuk menghindari pembangkitan artifak. Panel (a) K66b\_065\_119 (kontras=63.5), (b) K66b\_070\_179 (65.8), (c) K66b\_005\_0526\_ori (73.6), (d) K66b\_059\_067 (15.0, memudar ekstrem), (e) K66a\_2525\_0024 (29.7), (f) K66b\_064\_278 (52.0). Titik simpan: production\_v3, epoch 88.\relax }}{14}{}\protected@file@percent }
+\newlabel{fig:anri_qualitative}{{8}{14}}
+\@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces Performa Restorasi pada Dokumen ANRI Berdasarkan Tingkat Kontras Masukan (n=15)\relax }}{14}{}\protected@file@percent }
+\newlabel{table:anri_contrast_analysis}{{IV}{14}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-B}3}Analisis Performa Berdasarkan Kontras Masukan}{14}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Hasil Validasi Ahli Paleografi pada Dokumen ANRI (n=15)\relax }}{15}{}\protected@file@percent }
+\newlabel{table:anri_expert_validation}{{V}{15}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-B}4}Validasi Ahli (Asesmen Paleografi)}{15}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Degradation Severity Correlation Analysis}{15}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-C}1}Correlation Findings}{16}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-C}2}Implications for Historical Document Digitization}{16}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces Perbandingan Karakteristik Synthetic Training Data vs ANRI Real Documents\relax }}{16}{}\protected@file@percent }
+\newlabel{table:synthetic_vs_real_comparison}{{VI}{16}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-C}3}Analisis Domain Shift: Synthetic vs Real}{16}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-C}4}Limitasi dan Future Work untuk ANRI Evaluation}{16}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Comprehensive degradation severity correlation analysis pada validation set (n=710 samples). (a) Strong negative correlation (Pearson's r=-0.963, p<0.001) between SNR and CER improvement indicates significantly higher restoration effectiveness on severely degraded documents (low SNR → high CER improvement). (b) PSNR vs CER after restoration showing model successfully brings all degradation levels near clean baseline (26.6\%, green dashed line), demonstrating uniform HTR accuracy post-restoration. (c) SSIM vs CER relationship with weak correlation (R²=0.031) suggests structural similarity alone insufficient predictor for HTR accuracy. (d) Before-after CER comparison where points below diagonal line (y=x, gray dotted) confirm consistent improvement; linear fit (red dashed) shows restoration reduces CER across all initial degradation levels. Combined evidence validates model robustness across degradation spectrum.\relax }}{17}{}\protected@file@percent }
+\newlabel{fig:degradation_correlation}{{9}{17}}
+\@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces Studi Ablasi Arsitektur Diskriminator\relax }}{18}{}\protected@file@percent }
+\newlabel{table_ablation_discriminator}{{VII}{18}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-D}}Studi Ablasi}{18}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-D}1}Ablasi Arsitektur Diskriminator}{18}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-D}2}Studi Ablasi Incremental: Kontribusi Komponen Loss}{18}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {VIII}{\ignorespaces Studi Ablasi Incremental: Kontribusi Komponen Loss terhadap Performa Restorasi\relax }}{19}{}\protected@file@percent }
+\newlabel{table_ablation_loss}{{VIII}{19}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Perbandingan Komprehensif Studi Ablasi Incremental. Panel (a-b) menunjukkan metrik absolut PSNR dan SSIM untuk setiap konfigurasi loss, (c-d) menampilkan peningkatan incremental relatif terhadap baseline pixel-only. Error bars menunjukkan standard deviation pada validation set (710 sampel). Adversarial loss memberikan gain PSNR tertinggi (+1.1\%), sementara perceptual loss mengoptimalkan structural similarity.\relax }}{19}{}\protected@file@percent }
+\newlabel{fig:ablation_comparison}{{10}{19}}
+\newlabel{sec:recfeat_analysis}{{\mbox  {V-D}3}{20}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-D}3}Analisis Mendalam: Ketidakefektifan Recognition Feature Loss}{20}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {IX}{\ignorespaces Perbandingan Magnitude Loss Components (Epoch 15, Batch 200)\relax }}{20}{}\protected@file@percent }
+\newlabel{table_loss_magnitude}{{IX}{20}}
+\newlabel{sec:exp04_optimal}{{\mbox  {V-D}4}{21}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-D}4}Analisis Konfigurasi Optimal: Mengapa Eksperimen 04 Merupakan Pilihan Terbaik}{21}{}\protected@file@percent }
+\citation{kirkpatrick2017overcoming}
+\citation{souibgui2022,kang2021pay}
+\citation{kirkpatrick2017overcoming}
+\citation{souibgui2022}
+\citation{kang2021pay}
+\citation{souibgui2022,kang2021pay}
+\citation{souibgui2022}
+\citation{souibgui2022}
+\@writefile{lot}{\contentsline {table}{\numberline {X}{\ignorespaces Computational Comparison: Exp 04 vs Exp 05\relax }}{22}{}\protected@file@percent }
+\newlabel{table_exp04_computational}{{X}{22}}
+\@writefile{lot}{\contentsline {table}{\numberline {XI}{\ignorespaces Analisis Komparatif Strategi Integrasi HTR Recognizer\relax }}{22}{}\protected@file@percent }
+\newlabel{table_ablation_recognizer_strategy}{{XI}{22}}
+\newlabel{sec:ablation}{{\mbox  {V-D}5}{22}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-D}5}Justifikasi Strategi Integrasi HTR Recognizer}{22}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-E}}Analisis Kuantitatif Kasus Kegagalan}{22}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-F}}Validasi Hipotesis Penelitian}{23}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-G}}Analisis Kualitatif}{23}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-H}}Analisis Kasus Kegagalan}{23}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {XII}{\ignorespaces Hasil Pengujian Hipotesis pada Test Set (n=712, $\alpha =0.05$ untuk H1, $\alpha =0.0167$ untuk H2)\footnotemark \relax }}{24}{}\protected@file@percent }
+\newlabel{table_hypothesis_test}{{XII}{24}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Perbandingan kualitatif hasil restorasi pada sampel terdegradasi yang menantang. Metode kami lebih baik dalam melestarikan goresan tipis dan konektivitas karakter sambil menghilangkan noise latar belakang.\relax }}{24}{}\protected@file@percent }
+\newlabel{fig:qualitative_results}{{11}{24}}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Kasus kegagalan representatif dan keterbatasan metode yang diusulkan.\relax }}{24}{}\protected@file@percent }
+\newlabel{fig:failure_cases}{{12}{24}}
+\@writefile{lot}{\contentsline {table}{\numberline {XIII}{\ignorespaces Perbandingan Efisiensi Komputasi\relax }}{24}{}\protected@file@percent }
+\newlabel{table_efficiency}{{XIII}{24}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-I}}Efisiensi Komputasi}{24}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Diskusi}{24}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-A}}Dampak Diskriminator Dual-Modal dan Training Protocol Insights}{24}{}\protected@file@percent }
+\citation{souibgui2021enhance}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-B}}Pelatihan Pengenal Beku vs. Bersama}{25}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-C}}Wawasan Optimisasi Bobot Kerugian}{25}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-D}}Diskusi: Generalisasi ke Dokumen Historis Nyata}{25}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-E}}Pertimbangan Penerapan Praktis}{25}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-F}}Keterbatasan dan Pekerjaan Masa Depan}{25}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-G}}Pertimbangan Etis dan Pelestarian Integritas Historis}{26}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {VI-G}1}Etika Modifikasi Dokumen Historis}{26}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {VI-G}2}Deteksi dan Mitigasi Hallucination}{26}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {VI-G}3}Bias dalam Data Pelatihan}{26}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {VI-G}4}Rekomendasi untuk Praktisi}{26}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VII}Kesimpulan}{26}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-A}}Validasi Hipotesis}{27}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  A: Detail Arsitektur Jaringan}{27}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {A-A}}Arsitektur Generator}{27}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {A-B}}Arsitektur Diskriminator Dual-Modal}{27}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  B: Hyperparameter Pelatihan}{27}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  C: Hasil Eksperimental Tambahan}{27}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {C-A}}Analisis Per-Tingkat-Degradasi}{27}{}\protected@file@percent }
+\bibstyle{IEEEtran}
+\bibcite{otsu1979threshold}{1}
+\bibcite{sauvola2000adaptive}{2}
+\bibcite{niblack1986introduction}{3}
+\bibcite{wolf2004extraction}{4}
+\bibcite{tensmeyer2017document}{5}
+\bibcite{calvo2018selectional}{6}
+\bibcite{zhao2019document}{7}
+\bibcite{vo2018binarization}{8}
+\bibcite{souibgui2020degan}{9}
+\bibcite{souibgui2021enhance}{10}
+\bibcite{ronneberger2015unet}{11}
+\bibcite{johnson2016perceptual}{12}
+\bibcite{wang2004ssim}{13}
+\bibcite{li2021trocr}{14}
+\bibcite{marti2002iam}{15}
+\bibcite{bergstra2011algorithms}{16}
+\bibcite{akiba2019optuna}{17}
+\bibcite{perlin1985image}{18}
+\bibcite{isola2017image}{19}
+\bibcite{zhu2017unpaired}{20}
+\bibcite{souibgui2022docent}{21}
+\bibcite{shi2016crnn}{22}
+\bibcite{bluche2017scan}{23}
+\bibcite{michael2019evaluating}{24}
+\bibcite{diaz2021rethinking}{25}
+\bibcite{goodfellow2016improved}{26}
+\@writefile{lot}{\contentsline {table}{\numberline {XIV}{\ignorespaces Konfigurasi Hyperparameter Lengkap (Implementation-Tested)\relax }}{28}{}\protected@file@percent }
+\newlabel{table_hyperparams}{{XIV}{28}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {C-B}}Uji Signifikansi Statistik}{28}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{28}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  D: Reproducibility Details}{28}{}\protected@file@percent }
+\newlabel{sec:appendix_reproducibility}{{D}{28}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {D-A}}Hardware and Software Specifications}{28}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {D-B}}Training Configuration}{29}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {D-C}}Pre-trained Model Specifications}{29}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {D-D}}Data Augmentation Pipeline}{29}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {D-E}}Loss Weight Configuration}{29}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {D-F}}Training Protocol Summary}{30}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Biographies}{30}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{[Nama Anda]}{30}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{[Nama Pembimbing]}{30}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{[Nama Co-Pembimbing]}{30}{}\protected@file@percent }
+\gdef \@abspage@last{30}

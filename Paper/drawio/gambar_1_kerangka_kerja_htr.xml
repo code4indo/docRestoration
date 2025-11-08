@@ -1,0 +1,353 @@
+<mxfile host="app.diagrams.net" modified="2025-11-03T00:00:00.000Z" agent="DrawIO" version="22.0.0">
+  <diagram id="HTR-Framework" name="Kerangka Kerja Restorasi HTR">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Title -->
+        <mxCell id="title" value="Gambar 1: Gambaran Kerangka Kerja Restorasi Dokumen Berorientasi HTR" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="400" y="20" width="800" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- INPUT SECTION -->
+        <mxCell id="input_label" value="INPUT" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#CC0000" vertex="1" parent="1">
+          <mxGeometry x="80" y="70" width="120" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- Ground Truth Input -->
+        <mxCell id="input_gt" value="Ground Truth&#xa;I_gt&#xa;(1024×128×1)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#333333;fontSize=11;fontStyle=0" vertex="1" parent="1">
+          <mxGeometry x="40" y="110" width="120" height="70" as="geometry" />
+        </mxCell>
+        
+        <!-- Degraded Input -->
+        <mxCell id="input_deg" value="Gambar Terdegradasi&#xa;I_deg&#xa;(1024×128×1)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#333333;fontSize=11;fontStyle=0" vertex="1" parent="1">
+          <mxGeometry x="40" y="220" width="120" height="70" as="geometry" />
+        </mxCell>
+        
+        <!-- GENERATOR -->
+        <mxCell id="generator" value="&lt;b&gt;Generator&lt;/b&gt;&#xa;U-Net Enhanced&#xa;Residual Blocks + Attention&#xa;21.8M parameters&#xa;Output: I_gen" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=11;align=center" vertex="1" parent="1">
+          <mxGeometry x="240" y="150" width="160" height="100" as="geometry" />
+        </mxCell>
+        
+        <!-- Arrow from degraded to generator -->
+        <mxCell id="arrow1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=classic;endFill=1" edge="1" parent="1" source="input_deg" target="generator">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Arrow from GT to generator -->
+        <mxCell id="arrow2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=classic;endFill=1;strokeColor=#999999;dashed=1" edge="1" parent="1" source="input_gt" target="generator">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- OUTPUT SECTION -->
+        <mxCell id="output_label" value="OUTPUT" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#009900" vertex="1" parent="1">
+          <mxGeometry x="460" y="70" width="120" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- Generated Output -->
+        <mxCell id="output_gen" value="Gambar Dihasilkan&#xa;I_gen&#xa;(1024×128×1)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#333333;fontSize=11;fontStyle=0" vertex="1" parent="1">
+          <mxGeometry x="460" y="165" width="120" height="70" as="geometry" />
+        </mxCell>
+        
+        <!-- Arrow from generator to output -->
+        <mxCell id="arrow3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=classic;endFill=1" edge="1" parent="1" source="generator" target="output_gen">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- DUAL-MODAL DISCRIMINATOR -->
+        <mxCell id="discriminator_main" value="&lt;b&gt;Diskriminator Dual-Modal&lt;/b&gt;&#xa;Enhanced V2 Fixed&#xa;~19.7M parameters" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=11;align=center" vertex="1" parent="1">
+          <mxGeometry x="640" y="150" width="180" height="90" as="geometry" />
+        </mxCell>
+        
+        <!-- Arrow from GT to discriminator -->
+        <mxCell id="arrow4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=classic;endFill=1;strokeColor=#0000CC" edge="1" parent="1" source="input_gt" target="discriminator_main">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="200" y="145" />
+              <mxPoint x="200" y="100" />
+              <mxPoint x="730" y="100" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Arrow from generated to discriminator -->
+        <mxCell id="arrow5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=classic;endFill=1;strokeColor=#0000CC" edge="1" parent="1" source="output_gen" target="discriminator_main">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- CNN Branch -->
+        <mxCell id="cnn_branch" value="&lt;b&gt;CNN Branch&lt;/b&gt;&#xa;Spatial Features&#xa;ResNet-style&#xa;Global Pooling" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;align=center" vertex="1" parent="1">
+          <mxGeometry x="600" y="290" width="130" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- LSTM Branch -->
+        <mxCell id="lstm_branch" value="&lt;b&gt;LSTM Branch&lt;/b&gt;&#xa;Sequential Coherence&#xa;BiLSTM + Attention&#xa;Text Flow Analysis" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;align=center" vertex="1" parent="1">
+          <mxGeometry x="760" y="290" width="130" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- Arrow from discriminator to CNN -->
+        <mxCell id="arrow6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=classic;endFill=1" edge="1" parent="1" source="discriminator_main" target="cnn_branch">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Arrow from discriminator to LSTM -->
+        <mxCell id="arrow7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=classic;endFill=1" edge="1" parent="1" source="discriminator_main" target="lstm_branch">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Cross-Modal Fusion -->
+        <mxCell id="fusion" value="&lt;b&gt;Cross-Modal Fusion&lt;/b&gt;&#xa;Image Features (512D)&#xa;+ Text Features (512D)&#xa;→ 128D Common Space&#xa;Sigmoid Output" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;align=center" vertex="1" parent="1">
+          <mxGeometry x="640" y="410" width="180" height="90" as="geometry" />
+        </mxCell>
+        
+        <!-- Arrow from CNN to fusion -->
+        <mxCell id="arrow8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=classic;endFill=1" edge="1" parent="1" source="cnn_branch" target="fusion">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Arrow from LSTM to fusion -->
+        <mxCell id="arrow9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=classic;endFill=1" edge="1" parent="1" source="lstm_branch" target="fusion">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- FROZEN HTR RECOGNIZER -->
+        <mxCell id="recognizer" value="&lt;b&gt;Pengenal HTR Beku&lt;/b&gt;&#xa;CNN-Transformer Hybrid&#xa;6 layers, 8 attention heads&#xa;CER: 33.72%&#xa;&lt;i&gt;Weights Diperbaiki&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=11;align=center" vertex="1" parent="1">
+          <mxGeometry x="240" y="360" width="180" height="100" as="geometry" />
+        </mxCell>
+        
+        <!-- Arrow from GT to recognizer -->
+        <mxCell id="arrow10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=classic;endFill=1;strokeColor=#999999;dashed=1" edge="1" parent="1" source="input_gt" target="recognizer">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="100" y="320" />
+              <mxPoint x="330" y="320" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Arrow from generated to recognizer -->
+        <mxCell id="arrow11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=classic;endFill=1;strokeColor=#999999;dashed=1" edge="1" parent="1" source="output_gen" target="recognizer">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="520" y="320" />
+              <mxPoint x="330" y="320" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Feature Extraction from GT -->
+        <mxCell id="feat_gt" value="Feature Extraction&#xa;F_rec(I_gt)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;align=center" vertex="1" parent="1">
+          <mxGeometry x="160" y="500" width="120" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Feature Extraction from Generated -->
+        <mxCell id="feat_gen" value="Feature Extraction&#xa;F_rec(I_gen)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;align=center" vertex="1" parent="1">
+          <mxGeometry x="360" y="500" width="120" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Arrow from recognizer to features -->
+        <mxCell id="arrow12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;endArrow=classic;endFill=1" edge="1" parent="1" source="recognizer" target="feat_gt">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow13" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;endArrow=classic;endFill=1" edge="1" parent="1" source="recognizer" target="feat_gen">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- LOSS COMPUTATION SECTION -->
+        <mxCell id="loss_label" value="LOSS COMPUTATION" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#FF6600" vertex="1" parent="1">
+          <mxGeometry x="240" y="600" width="240" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- Pixel Loss -->
+        <mxCell id="pixel_loss" value="&lt;b&gt;Pixel Loss&lt;/b&gt;&#xa;L_pixel = ||I_gen - I_gt||_1&#xa;λ_pixel = 100.0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=10;align=center" vertex="1" parent="1">
+          <mxGeometry x="40" y="650" width="140" height="70" as="geometry" />
+        </mxCell>
+        
+        <!-- Adversarial Loss -->
+        <mxCell id="adv_loss" value="&lt;b&gt;Adversarial Loss&lt;/b&gt;&#xa;L_adv = -log D(I_deg, I_gen)&#xa;λ_adv = 2.0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=10;align=center" vertex="1" parent="1">
+          <mxGeometry x="660" y="650" width="160" height="70" as="geometry" />
+        </mxCell>
+        
+        <!-- Recognition Feature Loss -->
+        <mxCell id="rec_loss" value="&lt;b&gt;Recognition Feature Loss&lt;/b&gt;&#xa;L_rec-feat = ||F_rec(I_gen) - F_rec(I_gt)||_1&#xa;λ_rec = 5.0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=10;align=center" vertex="1" parent="1">
+          <mxGeometry x="230" y="650" width="220" height="70" as="geometry" />
+        </mxCell>
+        
+        <!-- Arrow from features to rec loss -->
+        <mxCell id="arrow14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;endArrow=classic;endFill=1;strokeColor=#FF6600;dashed=1" edge="1" parent="1" source="feat_gt" target="rec_loss">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow15" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;endArrow=classic;endFill=1;strokeColor=#FF6600;dashed=1" edge="1" parent="1" source="feat_gen" target="rec_loss">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Arrow from fusion to adv loss -->
+        <mxCell id="arrow16" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;endArrow=classic;endFill=1;strokeColor=#FF6600;dashed=1" edge="1" parent="1" source="fusion" target="adv_loss">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="730" y="550" />
+              <mxPoint x="740" y="550" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Total Loss -->
+        <mxCell id="total_loss" value="&lt;b&gt;Total Loss&lt;/b&gt;&#xa;L_total = λ_adv·L_adv + λ_pixel·L_pixel + λ_rec·L_rec-feat" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=11;align=center;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="200" y="760" width="320" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Arrows to total loss -->
+        <mxCell id="arrow17" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=classic;endFill=1;strokeColor=#FF6600" edge="1" parent="1" source="pixel_loss" target="total_loss">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow18" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=classic;endFill=1;strokeColor=#FF6600" edge="1" parent="1" source="rec_loss" target="total_loss">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow19" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=classic;endFill=1;strokeColor=#FF6600" edge="1" parent="1" source="adv_loss" target="total_loss">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="740" y="790" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- TRAINING UPDATES -->
+        <mxCell id="update_gen_label" value="Generator Update" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=2;fontColor=#CC0000" vertex="1" parent="1">
+          <mxGeometry x="40" y="850" width="120" height="20" as="geometry" />
+        </mxCell>
+        
+        <!-- Arrow from total loss to generator (red) -->
+        <mxCell id="arrow20" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;endArrow=classic;endFill=1;strokeColor=#CC0000" edge="1" parent="1" source="total_loss" target="generator">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="40" y="790" />
+              <mxPoint x="40" y="200" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="update_disc_label" value="Discriminator Update" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=2;fontColor=#0000CC" vertex="1" parent="1">
+          <mxGeometry x="860" y="540" width="140" height="20" as="geometry" />
+        </mxCell>
+        
+        <!-- Arrow from adv loss to discriminator (blue) -->
+        <mxCell id="arrow21" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;endArrow=classic;endFill=1;strokeColor=#0000CC" edge="1" parent="1" source="adv_loss" target="discriminator_main">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="900" y="685" />
+              <mxPoint x="900" y="195" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- LEGEND BOX -->
+        <mxCell id="legend_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#666666;dashed=1" vertex="1" parent="1">
+          <mxGeometry x="950" y="140" width="280" height="200" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend_title" value="&lt;b&gt;Legenda Pelatihan&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="960" y="150" width="260" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend1" value="" style="endArrow=classic;html=1;strokeWidth=3;strokeColor=#CC0000" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="970" y="190" as="sourcePoint" />
+            <mxPoint x="1020" y="190" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="legend1_text" value="Garis Merah = Update Generator" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10" vertex="1" parent="1">
+          <mxGeometry x="1030" y="178" width="190" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend2" value="" style="endArrow=classic;html=1;strokeWidth=3;strokeColor=#0000CC" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="970" y="220" as="sourcePoint" />
+            <mxPoint x="1020" y="220" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="legend2_text" value="Garis Biru = Update Discriminator" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10" vertex="1" parent="1">
+          <mxGeometry x="1030" y="208" width="190" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend3" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#999999;dashed=1" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="970" y="250" as="sourcePoint" />
+            <mxPoint x="1020" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="legend3_text" value="Garis Abu-abu = Feature Extraction" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10" vertex="1" parent="1">
+          <mxGeometry x="1030" y="238" width="190" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend4" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#FF6600;dashed=1" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="970" y="280" as="sourcePoint" />
+            <mxPoint x="1020" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="legend4_text" value="Garis Orange = Loss Computation" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10" vertex="1" parent="1">
+          <mxGeometry x="1030" y="268" width="190" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend5" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#333333" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="970" y="310" as="sourcePoint" />
+            <mxPoint x="1020" y="310" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="legend5_text" value="Garis Hitam = Data Flow" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10" vertex="1" parent="1">
+          <mxGeometry x="1030" y="298" width="190" height="25" as="geometry" />
+        </mxCell>
+        
+        <!-- CURRICULUM LEARNING BOX -->
+        <mxCell id="curriculum_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF4E6;strokeColor=#D79B00;dashed=1" vertex="1" parent="1">
+          <mxGeometry x="950" y="380" width="280" height="180" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="curriculum_title" value="&lt;b&gt;Curriculum Learning Strategy&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="960" y="390" width="260" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="curriculum1" value="• Warmup (10 epoch):" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="970" y="425" width="240" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="curriculum1_detail" value="   Visual-only, CTC=0" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10" vertex="1" parent="1">
+          <mxGeometry x="970" y="445" width="240" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="curriculum2" value="• Annealing (10 epoch):" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="970" y="470" width="240" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="curriculum2_detail" value="   Linear ramp-up CTC" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10" vertex="1" parent="1">
+          <mxGeometry x="970" y="490" width="240" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="curriculum3" value="• Full Training:" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="970" y="515" width="240" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="curriculum3_detail" value="   All losses active" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10" vertex="1" parent="1">
+          <mxGeometry x="970" y="535" width="240" height="20" as="geometry" />
+        </mxCell>
+        
+        <!-- FOOTER NOTE -->
+        <mxCell id="footer" value="Catatan: Arsitektur menggunakan diskriminator dual-modal (CNN+LSTM) yang mengevaluasi kualitas visual dan koherensi teks secara bersamaan,&#xa;dengan pengenal HTR beku untuk optimasi eksplisit keterbacaan teks. Pelatihan menggunakan strategi curriculum learning untuk stabilitas." style="text;html=1;strokeColor=#666666;fillColor=#F5F5F5;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=9;fontStyle=2" vertex="1" parent="1">
+          <mxGeometry x="40" y="910" width="1190" height="50" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

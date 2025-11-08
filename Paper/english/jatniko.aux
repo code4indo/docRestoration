@@ -1,0 +1,160 @@
+\relax 
+\citation{otsu1979threshold}
+\citation{sauvola2000adaptive}
+\@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Examples of degradation types commonly found in historical handwritten documents from ANRI collection (16th-18th century).\relax }}{1}{}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:degradation_examples}{{1}{1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {I-A}}Limitations of Existing Approaches}{1}{}\protected@file@percent }
+\citation{tensmeyer2017document,calvo2018selectional}
+\citation{souibgui2020degan,zhao2019document}
+\citation{vo2018binarization}
+\citation{souibgui2021enhance}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {I-B}}Contributions of This Work}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {I-C}}Paper Organization}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {II}Related Work}{2}{}\protected@file@percent }
+\citation{otsu1979threshold}
+\citation{sauvola2000adaptive}
+\citation{niblack1986introduction}
+\citation{wolf2004extraction}
+\citation{ronneberger2015unet}
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Comparison of Document Enhancement Approaches\relax }}{3}{}\protected@file@percent }
+\newlabel{table_comparison}{{I}{3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Document Image Enhancement and Binarization}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {II-A}1}Classical and Traditional Methods}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Generative Adversarial Networks for Image Restoration}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {II-B}1}Conditional GANs for Image-to-Image Translation}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {II-B}2}GANs for Document Enhancement}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Handwritten Text Recognition Systems}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-D}}Gap Analysis and Positioning}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {III}Proposed Method}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Framework Overview}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Generator Architecture: Enhanced U-Net}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-B}1}Network Design}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-B}2}Design Rationale}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Dual-Modal Discriminator}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-C}1}Architecture Design}{3}{}\protected@file@percent }
+\citation{li2021trocr}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Overview of the proposed HTR-oriented document restoration framework with dual-modal discriminator and frozen recognizer integration.\relax }}{4}{}\protected@file@percent }
+\newlabel{fig:architecture_overview}{{2}{4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Enhanced U-Net generator architecture with skip connections for fine detail preservation.\relax }}{4}{}\protected@file@percent }
+\newlabel{fig:unet_architecture}{{3}{4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Dual-modal discriminator with parallel CNN and LSTM pathways for comprehensive assessment.\relax }}{4}{}\protected@file@percent }
+\newlabel{fig:discriminator_arch}{{4}{4}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-C}2}Motivation}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-D}}Frozen HTR Recognizer Integration}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-D}1}Recognizer Architecture}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-D}2}Feature Extraction and Loss Computation}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-D}3}Advantages of Frozen Recognizer Approach}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-E}}Multi-Component Loss Function}{4}{}\protected@file@percent }
+\citation{johnson2016perceptual}
+\citation{bergstra2011algorithms}
+\citation{souibgui2021enhance,zhao2019document}
+\citation{marti2002iam}
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Optimized Loss Weights (Top Configuration)\relax }}{5}{}\protected@file@percent }
+\newlabel{table_optimal_weights}{{II}{5}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-E}1}Adversarial Loss}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-E}2}Pixel-Level Reconstruction Loss}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-E}3}Perceptual Loss}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-E}4}Recognition Feature Loss}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-E}5}Loss Weight Optimization}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-F}}Training Strategy}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-F}1}Alternating Optimization}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-F}2}Training Hyperparameters}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-F}3}Regularization Techniques}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Experimental Setup}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Datasets}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-A}1}Synthetic Degraded Dataset}{5}{}\protected@file@percent }
+\citation{souibgui2020degan}
+\citation{souibgui2021enhance}
+\citation{wang2004ssim}
+\citation{li2021trocr}
+\citation{akiba2019optuna}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Examples of synthetic degradation applied to clean handwritten text lines.\relax }}{6}{}\protected@file@percent }
+\newlabel{fig:synthetic_examples}{{5}{6}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-A}2}Real Historical Document Dataset (ANRI)}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Baseline Methods}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Evaluation Metrics}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-C}1}Visual Quality Metrics}{6}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Loss Weight Parameter Importance (fANOVA)\relax }}{6}{}\protected@file@percent }
+\newlabel{table_param_importance}{{III}{6}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-C}2}HTR Performance Metrics}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-D}}Implementation Details}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-E}}Hyperparameter Optimization}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {V}Results and Discussion}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Quantitative Results on Synthetic Test Set}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Results on Real Historical Documents (ANRI)}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Ablation Studies}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-C}1}Discriminator Architecture Ablation}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-D}}Hypothesis Validation: Dual-Modal vs. Single-Modal Discriminator (H2A)}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-D}1}Experimental Design}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-D}2}Statistical Analysis Results}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-D}3}Effect Size Interpretation}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-D}4}Practical Significance}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-D}5}Hypothesis Conclusion}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-D}6}Loss Component Ablation}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-D}7}Frozen vs. Joint Recognizer Training}{7}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces Quantitative Results on Synthetic Degraded Test Set\relax }}{8}{}\protected@file@percent }
+\newlabel{table_synthetic_results}{{IV}{8}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Statistical analysis of H2A hypothesis test. (a) CER distributions show dual-modal achieves lower error rates. (b) Paired differences are predominantly negative (dual < single). (c) Scatter plot shows most points below diagonal. (d) Box plots with statistical significance markers (***p<0.001).\relax }}{8}{}\protected@file@percent }
+\newlabel{fig:h2a_analysis}{{6}{8}}
+\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Results on Real Historical Documents (ANRI Dataset)\relax }}{8}{}\protected@file@percent }
+\newlabel{table_anri_results}{{V}{8}}
+\@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces Discriminator Architecture Ablation Study (Preliminary)\relax }}{8}{}\protected@file@percent }
+\newlabel{table_ablation_discriminator}{{VI}{8}}
+\@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces H2A Hypothesis Test Results: Dual-Modal vs. Single-Modal Discriminator\relax }}{8}{}\protected@file@percent }
+\newlabel{table_h2a_results}{{VII}{8}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-E}}Qualitative Analysis}{8}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {VIII}{\ignorespaces Loss Component Ablation Study\relax }}{8}{}\protected@file@percent }
+\newlabel{table_ablation_loss}{{VIII}{8}}
+\@writefile{lot}{\contentsline {table}{\numberline {IX}{\ignorespaces Frozen vs. Joint Recognizer Training Comparison\relax }}{8}{}\protected@file@percent }
+\newlabel{table_ablation_recognizer}{{IX}{8}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-F}}Failure Case Analysis}{8}{}\protected@file@percent }
+\citation{souibgui2021enhance}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Qualitative comparison of restoration results on challenging degraded samples. Our method better preserves thin strokes and character connectivity while removing background noise.\relax }}{9}{}\protected@file@percent }
+\newlabel{fig:qualitative_results}{{7}{9}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Representative failure cases and limitations of the proposed method.\relax }}{9}{}\protected@file@percent }
+\newlabel{fig:failure_cases}{{8}{9}}
+\@writefile{lot}{\contentsline {table}{\numberline {X}{\ignorespaces Computational Efficiency Comparison\relax }}{9}{}\protected@file@percent }
+\newlabel{table_efficiency}{{X}{9}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-G}}Computational Efficiency}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Discussion}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-A}}Impact of Dual-Modal Discriminator}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-B}}Frozen vs. Joint Recognizer Training}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-C}}Loss Weight Optimization Insights}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-D}}Generalization to Real Historical Documents}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-E}}Practical Deployment Considerations}{10}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-F}}Limitations and Future Work}{10}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VII}Conclusion}{10}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  A: Network Architecture Details}{10}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {A-A}}Generator Architecture}{10}{}\protected@file@percent }
+\bibcite{otsu1979threshold}{1}
+\bibcite{sauvola2000adaptive}{2}
+\bibcite{niblack1986introduction}{3}
+\bibcite{wolf2004extraction}{4}
+\bibcite{tensmeyer2017document}{5}
+\bibcite{calvo2018selectional}{6}
+\bibcite{zhao2019document}{7}
+\bibcite{vo2018binarization}{8}
+\bibcite{souibgui2020degan}{9}
+\bibcite{souibgui2021enhance}{10}
+\bibcite{ronneberger2015unet}{11}
+\bibcite{johnson2016perceptual}{12}
+\bibcite{wang2004ssim}{13}
+\bibcite{li2021trocr}{14}
+\bibcite{marti2002iam}{15}
+\bibcite{bergstra2011algorithms}{16}
+\bibcite{akiba2019optuna}{17}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {A-B}}Dual-Modal Discriminator Architecture}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  B: Training Hyperparameters}{11}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {XI}{\ignorespaces Complete Hyperparameter Configuration\relax }}{11}{}\protected@file@percent }
+\newlabel{table_hyperparams}{{XI}{11}}
+\@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  C: Additional Experimental Results}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {C-A}}Per-Degradation-Level Analysis}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {C-B}}Statistical Significance Tests}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Biographies}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{[Your Name]}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{[Supervisor Name]}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{[Co-Supervisor Name]}{12}{}\protected@file@percent }
+\gdef \@abspage@last{12}
