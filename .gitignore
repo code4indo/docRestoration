@@ -59,3 +59,5 @@ models/sam/
 real_data_preparation/
 visualization/
 dual_modal_gan/data/
+*.tfrecord
+data/*.tfrecord
