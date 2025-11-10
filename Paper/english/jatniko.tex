@@ -382,7 +382,7 @@
 
 % Abstract
 \begin{abstract}
-Historical handwritten documents suffer from various degradation artifacts including background noise, ink bleeding, paper aging, and physical damage, which severely impact Handwritten Text Recognition (HTR) systems. While existing document enhancement methods focus primarily on visual quality improvement, they often fail to preserve text readability for HTR engines. This paper proposes a novel HTR-oriented document restoration framework based on Generative Adversarial Networks (GANs) with a dual-modal discriminator and optimized multi-component loss function. Unlike conventional approaches that use only image-level supervision, our method integrates a frozen pre-trained HTR recognizer within the GAN architecture to explicitly optimize for text readability during the restoration process. The dual-modal discriminator employs both CNN and LSTM pathways to assess visual quality and sequential text coherence simultaneously. We rigorously validate this architectural innovation through controlled hypothesis testing on 710 validation samples, demonstrating statistically significant improvements (p<0.001, Cohen's d=0.47) in HTR performance compared to single-modal discriminators. We introduce an HTR-oriented loss function combining adversarial loss, pixel-level reconstruction loss (L1), perceptual loss, and recognition feature loss derived from the frozen recognizer, with weights systematically optimized via Bayesian methods. Extensive experiments on synthetic degraded datasets and real historical documents from the Indonesian National Archives (16th-18th century paleographic manuscripts) demonstrate that our approach achieves PSNR of 28.42 dB, SSIM of 0.912, and reduces Character Error Rate (CER) to 14.6\%, a 24.3\% relative improvement compared to state-of-the-art methods. The results show that explicit HTR optimization during training leads to superior text preservation while maintaining visual quality, making restored documents more suitable for automated transcription workflows.
+Historical handwritten documents suffer from various degradation artifacts including background noise, ink bleeding, paper aging, and physical damage, which severely impact Handwritten Text Recognition (HTR) systems. While yang ada document enhancement methods focus primarily on visual quality improvement, they often fail to preserve text readability for HTR engines. This paper proposes a novel HTR-oriented document restoration framework based on Generative Adversarial Networks (GANs) with a dual-modal discriminator and optimized multi-component loss function. Unlike conventional approaches that use only image-level supervision, our method integrates a frozen pre-trained HTR recognizer within the GAN architecture to explicitly optimize for text readability during the restoration process. The dual-modal discriminator employs both CNN and LSTM pathways to assess visual quality and sequential text coherence simultaneously. We rigorously validate this architectural innovation through controlled hypothesis testing on 710 validation samples, demonstrating statistically significant improvements (p<0.001, Cohen's d=0.47) in HTR performance compared to single-modal discriminators. We introduce an HTR-oriented loss function combining adversarial loss, pixel-level reconstruction loss (L1), perceptual loss, and recognition feature loss derived from the frozen recognizer, with weights systematically optimized via Bayesian methods. Extensive experiments on synthetic degraded datasets and real historical documents from the Indonesian National Archives (16th-18th century paleographic manuscripts) demonstrate that our approach achieves PSNR of 28.42 dB, SSIM of 0.912, and reduces Character Error Rate (CER) to 14.6\%, a 24.3\% relative improvement compared to state-of-the-art methods. The results show that explicit HTR optimization during training leads to superior text preservation while maintaining visual quality, making restored documents more suitable for automated transcription workflows.
 \end{abstract}
 
 % Keywords
@@ -427,7 +427,7 @@ However, these documents suffer from severe degradation due to various factors: 
 
 These degradation artifacts severely impair the performance of Handwritten Text Recognition (HTR) systems, which are essential for large-scale digitization, transcription, search, indexing, and information extraction from historical archives. While significant progress has been made in HTR technology using deep learning approaches, particularly with Convolutional Recurrent Neural Networks (CRNN) and Transformer-based architectures, these systems remain highly sensitive to image quality and degradation levels.
 
-\subsection{Limitations of Existing Approaches}
+\subsection{Limitations of yang ada Approaches}
 
 Traditional document binarization and enhancement methods can be broadly categorized into three generations:
 
@@ -445,7 +445,7 @@ Traditional document binarization and enhancement methods can be broadly categor
 Despite achieving impressive visual quality improvements, these methods share critical limitations:
 
 \begin{enumerate}
-    \item \textbf{Lack of HTR-oriented optimization:} Existing methods optimize for visual similarity metrics (PSNR, SSIM, F-measure) between restored and ground truth images, using pixel-level supervision only. They do not explicitly consider text readability by HTR systems.
+    \item \textbf{Lack of HTR-oriented optimization:} yang ada methods optimize for visual similarity metrics (PSNR, SSIM, F-measure) between restored and ground truth images, using pixel-level supervision only. They do not explicitly consider text readability by HTR systems.
     
     \item \textbf{Text degradation during restoration:} Models can inadvertently remove or damage thin text strokes, break character connections, or introduce artifacts while aggressively cleaning backgrounds, as they lack text-aware feedback during training.
     
@@ -518,7 +518,7 @@ Local adaptive thresholding methods address this limitation by computing pixel-s
 
 \subsection{Gap Analysis and Positioning}
 
-% [PLACEHOLDER: Table comparing existing methods and highlighting our contributions]
+% [PLACEHOLDER: Table comparing yang ada methods and highlighting our contributions]
 
 \begin{table}[!t]
 \renewcommand{\arraystretch}{1.3}
@@ -1358,7 +1358,7 @@ For deploying our system in archival digitization workflows, several considerati
 % ============================================================
 \section{Conclusion}
 
-This paper presented a novel HTR-oriented document restoration framework addressing a critical gap in existing document enhancement methods: the lack of explicit optimization for text recognition performance. Our approach integrates three key innovations within a GAN architecture:
+This paper presented a novel HTR-oriented document restoration framework addressing a critical gap in yang ada document enhancement methods: the lack of explicit optimization for text recognition performance. Our approach integrates three key innovations within a GAN architecture:
 
 \begin{enumerate}
     \item A dual-modal discriminator with parallel CNN and LSTM pathways that simultaneously assesses visual quality and sequential text coherence

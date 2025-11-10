@@ -1,0 +1,178 @@
+% ============================================================
+% SECTION 3.X: ANALISIS DAN SPESIFIKASI KEBUTUHAN SISTEM
+% (TO BE INSERTED IN CHAPTER 3 - METODOLOGI)
+% ============================================================
+% 
+% CATATAN UNTUK INTEGRASI:
+% Section ini adalah bagian dari DSRM Stage 1-2 (Problem Identification & Define Objectives)
+% Harus diintegrasikan ke dalam Bab III sebelum masuk ke DSRM Stage 3 (Design & Development)
+%
+% Suggested placement: Section 3.2 atau 3.3 (setelah DSRM framework overview, sebelum design)
+% ============================================================
+
+\subsection{Analisis dan Spesifikasi Kebutuhan Sistem}
+\label{subsec:requirements-analysis}
+
+Berdasarkan identifikasi masalah yang telah diuraikan pada Bab I dan tinjauan pustaka pada Bab II, tahap awal dalam kerangka DSRM adalah menganalisis dan mendefinisikan kebutuhan sistem restorasi dokumen yang akan dibangun (DSRM Stage 1: Problem Identification dan Stage 2: Define Objectives). Analisis kebutuhan ini menjadi fondasi untuk perancangan arsitektur (Bab IV) dan tolok ukur evaluasi akhir (Bab V).
+
+Kebutuhan sistem diklasifikasikan menjadi dua kategori utama: (1) \textbf{Kebutuhan Fungsional} yang mendefinisikan fungsi spesifik yang harus dimiliki sistem, dan (2) \textbf{Kebutuhan Non-Fungsional} yang mendefinisikan kriteria kualitas dan batasan performa sistem. Spesifikasi kebutuhan ini disusun untuk memastikan bahwa solusi yang dikembangkan tidak hanya secara teknis mampu mengatasi masalah restorasi dokumen, tetapi juga praktis untuk digunakan dalam lingkungan produksi dan dapat diintegrasikan dengan sistem lain.
+
+\subsubsection{Kebutuhan Fungsional}
+\label{subsubsec:functional-requirements}
+
+Kebutuhan fungsional mendefinisikan fungsi spesifik yang harus dimiliki oleh sistem GAN-HTR untuk restorasi dokumen terdegradasi secara efektif. Delapan kebutuhan fungsional yang diidentifikasi mencakup tiga kategori utama:
+
+\begin{enumerate}
+    \item \textbf{Kemampuan inti pembelajaran mesin} untuk restorasi visual dan pengenalan teks (FR-1, FR-2, FR-3),
+    \item \textbf{Kemampuan pemrosesan} untuk menangani batch inference dan dataset sintetis (FR-4, FR-5),
+    \item \textbf{Kemampuan integrasi sistem} untuk input/output terstandar dan antarmuka fleksibel (FR-6, FR-7, FR-8).
+\end{enumerate}
+
+Setiap kebutuhan dirancang untuk memastikan sistem tidak hanya secara teknis mampu melakukan restorasi, tetapi juga praktis untuk digunakan dalam lingkungan produksi dan dapat diintegrasikan dengan sistem lain. Spesifikasi lengkap kebutuhan fungsional disajikan pada Tabel~\ref{tab:functional_requirements}.
+
+\begin{table}[htbp!]
+\centering
+\small
+\caption{Spesifikasi Kebutuhan Fungsional Sistem GAN-HTR}
+\label{tab:functional_requirements}
+\begin{tabular}{p{0.07\textwidth}p{0.20\textwidth}p{0.68\textwidth}}
+\toprule
+\textbf{Kode} & \textbf{Nama Kebutuhan} & \textbf{Deskripsi dan Detail Spesifikasi} \\
+\midrule
+FR-1 & Kemampuan Restorasi Gambar & Sistem harus mampu menerima input gambar dokumen terdegradasi dan menghasilkan output gambar versi restorasi yang lebih bersih secara visual dengan preservasi struktur karakter. \\
+\midrule
+FR-2 & Penanganan Berbagai Degradasi & Sistem harus dapat menangani 4 jenis degradasi utama yang umum pada dokumen historis: tembusan tinta (\textit{bleed-through}), pemudaran (\textit{fading}), noda (\textit{stains}), dan efek buram (\textit{blur}). \\
+\midrule
+FR-3 & Integrasi dengan Proses HTR & Gambar hasil restorasi harus dapat diproses oleh model HTR (Handwritten Text Recognition) untuk menghasilkan transkripsi teks dengan akurasi yang lebih tinggi dibandingkan gambar terdegradasi asli. \\
+\midrule
+FR-4 & Inferensi Batch Processing & Sistem harus mampu memproses dokumen terdegradasi secara batch dengan output terstruktur: (1) Gambar restorasi penuh, (2) File teks transkripsi (.txt), (3) File metadata evaluasi (.json) yang mencakup metrik PSNR, SSIM, CER, dan WER. \\
+\midrule
+FR-5 & Dukungan Dataset Sintetis & Sistem harus menyertakan pipeline otomatis untuk pembuatan dataset sintetis terdegradasi dari gambar bersih, memungkinkan augmentasi data untuk training dengan kontrol parameter degradasi. \\
+\midrule
+FR-6 & Output Terdefinisi & Format output harus konsisten dan terstruktur: (1) \textbf{Visual}: PNG/TIFF dengan resolusi 300 DPI, (2) \textbf{Text}: UTF-8 encoding dengan confidence score 0.0--1.0 per karakter, (3) \textbf{Quality Metrics}: PSNR/SSIM untuk evaluasi visual, (4) \textbf{Error Handling}: Pesan error terstruktur untuk debugging. \\
+\midrule
+FR-7 & Input Data Fleksibel & Sistem harus menangani berbagai format input: (1) \textbf{Format}: JPG, PNG, TIFF, PDF (single-page), (2) \textbf{Validasi}: Resolusi minimum 128×1024 piksel, (3) \textbf{Recovery}: Skip corrupted files dengan logging, (4) \textbf{Preprocessing}: Konversi otomatis ke grayscale dan noise reduction awal. \textit{Catatan: Semua input divalidasi sebelum diproses.} \\
+\midrule
+FR-8 & Integrasi Sistem & Sistem harus menyediakan multiple interface untuk fleksibilitas deployment: (1) \textbf{CLI}: Command-line interface dengan parameter konfigurasi, (2) \textbf{Python API}: Programmatic access untuk integrasi, (3) \textbf{Configuration}: YAML/JSON untuk batch experiments, (4) \textbf{Logging}: Structured logging untuk monitoring dan debugging. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Rationale Kebutuhan Fungsional:}
+
+Kedelapan kebutuhan fungsional di atas disusun berdasarkan analisis terhadap tiga aspek utama:
+
+\begin{itemize}
+    \item \textbf{FR-1 hingga FR-3} merespons masalah inti penelitian: bagaimana membangun sistem yang tidak hanya merestorasi visual, tetapi juga meningkatkan keterbacaan teks secara eksplisit (sesuai rumusan masalah Bab I).
+    
+    \item \textbf{FR-4 dan FR-5} memastikan bahwa sistem dapat digunakan untuk eksperimen skala besar dan evaluasi komprehensif, mengingat keterbatasan dataset dokumen terdegradasi asli (sesuai limitasi yang diidentifikasi pada Bab I).
+    
+    \item \textbf{FR-6 hingga FR-8} memfasilitasi reproduktifitas eksperimen dan integrasi dengan workflow lain, yang esensial untuk penelitian berbasis DSRM dan deployment praktis.
+\end{itemize}
+
+\subsubsection{Kebutuhan Non-Fungsional}
+\label{subsubsec:non-functional-requirements}
+
+Kebutuhan non-fungsional mendefinisikan kriteria kualitas dan batasan performa sistem GAN-HTR. Empat kebutuhan non-fungsional yang ditetapkan mengukur aspek kualitatif dan kuantitatif performa sistem:
+
+\begin{enumerate}
+    \item \textbf{NFR-1: Kualitas Visual} mengukur kesamaan gambar hasil restorasi dengan ground truth menggunakan metrik PSNR dan SSIM,
+    \item \textbf{NFR-2: Keterbacaan Teks} sebagai metrik utama keberhasilan sistem melalui penurunan Character Error Rate (CER),
+    \item \textbf{NFR-3: Efisiensi Waktu} untuk memastikan kepraktisan penggunaan dalam skenario produksi,
+    \item \textbf{NFR-4: Reproduktifitas} untuk menjamin konsistensi dan keandalan hasil eksperimen.
+\end{enumerate}
+
+Target performa ditetapkan berdasarkan studi literatur (Bab II) dan kebutuhan praktis implementasi. Spesifikasi lengkap kebutuhan non-fungsional disajikan pada Tabel~\ref{tab:non_functional_requirements}.
+
+\begin{table}[htbp!]
+\centering
+\small
+\caption{Spesifikasi Kebutuhan Non-Fungsional Sistem GAN-HTR}
+\label{tab:non_functional_requirements}
+\begin{tabular}{p{0.07\textwidth}p{0.25\textwidth}p{0.65\textwidth}}
+\toprule
+\textbf{Kode} & \textbf{Nama Requirement} & \textbf{Deskripsi dan Target Performa} \\
+\midrule
+NFR-1 & Kualitas Visual Restorasi & Kualitas visual gambar hasil restorasi versus ground truth harus mencapai: (1) \textbf{PSNR rata-rata $>$ 30 dB}, (2) \textbf{SSIM rata-rata $\geq$ 0.90} pada dataset validasi. \\[0.3em]
+   & & \textit{Rationale: Target PSNR disesuaikan berdasarkan kompleksitas degradasi dokumen paleografi historis dan keterbatasan dataset semi-sintetis. Target SSIM 0.90 menunjukkan kesamaan struktural yang tinggi dengan ground truth.} \\
+\midrule
+NFR-2 & Peningkatan Keterbacaan Teks & Sistem harus meningkatkan akurasi transkripsi HTR secara signifikan: \textbf{CER menunjukkan penurunan minimal 25\%} dibandingkan CER pada gambar terdegradasi asli. \\[0.3em]
+   & & \textit{Formula: CER\_reduction = $\frac{\text{CER}_{\text{degraded}} - \text{CER}_{\text{restored}}}{\text{CER}_{\text{degraded}}} \times 100\%$}. \\[0.3em]
+   & & \textit{Rationale: Penurunan 25\% menunjukkan peningkatan keterbacaan yang substansial dan praktis signifikan untuk aplikasi transkripsi dokumen historis.} \\
+\midrule
+NFR-3 & Performa Waktu Inferensi & Waktu inferensi untuk satu gambar dokumen tunggal pada NVIDIA RTX A4000 tidak boleh melebihi \textbf{15 detik} untuk memastikan kepraktisan penggunaan dalam workflow arsiparis. \\[0.3em]
+   & & \textit{Rationale: Threshold 15 detik memungkinkan pemrosesan sekitar 240 halaman per jam, yang praktis untuk digitalisasi arsip skala besar.} \\
+\midrule
+NFR-4 & Reproduktifitas & Proses training dan evaluasi harus dapat direproduksi dengan lingkungan perangkat lunak dan dependensi yang didefinisikan secara jelas melalui file \texttt{pyproject.toml} dan Docker configuration. \\[0.3em]
+   & & \textit{Rationale: Reproduktifitas adalah prinsip fundamental penelitian ilmiah dan memfasilitasi validasi independen oleh peneliti lain.} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Justifikasi Target Performa:}
+
+Target performa pada kebutuhan non-fungsional ditetapkan berdasarkan pertimbangan berikut:
+
+\begin{itemize}
+    \item \textbf{NFR-1 (PSNR $>$ 30 dB, SSIM $\geq$ 0.90)}: Berdasarkan tinjauan pustaka (Bab II), metode state-of-the-art seperti DE-GAN mencapai PSNR 30--32 dB pada dataset dokumen. Target ini realistis untuk dataset semi-sintetis dengan degradasi terkontrol.
+    
+    \item \textbf{NFR-2 (CER reduction $\geq$ 25\%)}: Penurunan CER 25\% menunjukkan peningkatan keterbacaan yang substansial. Sebagai ilustrasi, jika CER degraded baseline adalah 40\%, maka target CER setelah restorasi adalah 30\%, yang merupakan peningkatan signifikan untuk aplikasi praktis.
+    
+    \item \textbf{NFR-3 (Inference time $<$ 15 detik)}: Target ini mempertimbangkan trade-off antara kualitas restorasi dan throughput pemrosesan. Waktu 15 detik per gambar memungkinkan pemrosesan sekitar 240 halaman per jam, yang praktis untuk workflow digitalisasi arsip.
+    
+    \item \textbf{NFR-4 (Reproduktifitas)}: Sesuai dengan prinsip DSRM dan standar penelitian ilmiah, semua eksperimen harus dapat direproduksi oleh peneliti independen. Penggunaan Poetry untuk dependency management dan Docker untuk environment isolation memastikan konsistensi reproduktifitas.
+\end{itemize}
+
+\paragraph{Traceability Matrix:}
+
+Untuk memastikan kelengkapan dan konsistensi, Tabel~\ref{tab:traceability-matrix} menyajikan \textit{traceability matrix} yang memetakan kebutuhan sistem ke rumusan masalah (Bab I), tujuan penelitian (Bab I), dan tahapan evaluasi (Bab V).
+
+\begin{table}[htbp!]
+\centering
+\small
+\caption{Traceability Matrix: Kebutuhan Sistem vs Rumusan Masalah dan Evaluasi}
+\label{tab:traceability-matrix}
+\begin{tabular}{p{0.10\textwidth}p{0.30\textwidth}p{0.25\textwidth}p{0.25\textwidth}}
+\toprule
+\textbf{Kode} & \textbf{Kebutuhan} & \textbf{Terkait dengan} & \textbf{Evaluasi di Bab V} \\
+\midrule
+FR-1 & Restorasi Gambar & Rumusan Masalah 1 & Section 5.2 (Visual Quality) \\
+\midrule
+FR-2 & Penanganan Degradasi & Rumusan Masalah 1 & Section 5.2 (Ablasi Degradasi) \\
+\midrule
+FR-3 & Integrasi HTR & Rumusan Masalah 2 & Section 5.3 (HTR Performance) \\
+\midrule
+FR-4 & Batch Processing & Tujuan Penelitian 3 & Section 5.4 (Skalabilitas) \\
+\midrule
+FR-5 & Dataset Sintetis & Metodologi (Fase 1) & Section 5.1 (Dataset Quality) \\
+\midrule
+FR-6--FR-8 & Output \& Integrasi & Tujuan Penelitian 4 & Section 5.5 (Usability) \\
+\midrule
+NFR-1 & Kualitas Visual & Tujuan Penelitian 1 & Section 5.2 (PSNR/SSIM) \\
+\midrule
+NFR-2 & Keterbacaan Teks & Tujuan Penelitian 2 & Section 5.3 (CER/WER) \\
+\midrule
+NFR-3 & Performa Waktu & Tujuan Penelitian 3 & Section 5.4 (Inference Time) \\
+\midrule
+NFR-4 & Reproduktifitas & Metodologi DSRM & Appendix (Reproducibility) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Kesimpulan Analisis Kebutuhan:}
+
+Berdasarkan analisis di atas, sistem GAN-HTR yang akan dikembangkan harus memenuhi total \textbf{12 kebutuhan} (8 fungsional dan 4 non-fungsional) yang mencakup aspek visual, tekstual, performa, dan integrasi sistem. Spesifikasi kebutuhan ini menjadi acuan untuk:
+
+\begin{itemize}
+    \item \textbf{Perancangan Arsitektur} (Bab IV): Setiap komponen arsitektur (Generator, Recognizer, Discriminator, Loss Function) dirancang untuk memenuhi kebutuhan spesifik yang telah ditetapkan.
+    
+    \item \textbf{Implementasi Sistem} (Bab IV): Detail implementasi seperti pipeline data, training loop, dan inference workflow didesain untuk memenuhi kebutuhan fungsional FR-4 hingga FR-8.
+    
+    \item \textbf{Evaluasi dan Validasi} (Bab V): Metrik evaluasi dan protokol eksperimen dirancang untuk mengukur pencapaian kebutuhan non-fungsional NFR-1 hingga NFR-4.
+\end{itemize}
+
+Dengan demikian, analisis kebutuhan ini memberikan fondasi yang kuat untuk tahapan selanjutnya dalam kerangka DSRM, yaitu perancangan dan pengembangan solusi (DSRM Stage 3: Design \& Development) yang akan diuraikan pada Bab IV.
+
+% ============================================================
+% END OF SECTION 3.X
+% ============================================================

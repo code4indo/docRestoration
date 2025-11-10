@@ -1,0 +1,109 @@
+\documentclass[12pt,a4paper]{book}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[bahasa]{babel}
+\usepackage{mathptmx} % Times New Roman font
+\usepackage{microtype}
+\usepackage[none]{hyphenat}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{setspace}
+\usepackage[left=4cm,right=3cm,top=3cm,bottom=3cm]{geometry}
+\usepackage{tikz}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{tocloft}
+\usepackage{caption}
+\usepackage{textcomp}
+\usepackage{subfig}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+
+\hypersetup{
+    pdfencoding=auto,
+    pdftitle={Restorasi Dokumen Terdegradasi Menggunakan GAN dengan Diskriminator Dual-Modal},
+    pdfauthor={},
+    pdfsubject={Tesis},
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=blue,
+    pdfstartview=FitH,
+    bookmarksopen=true,
+    bookmarksnumbered=true
+}
+
+% Pengaturan hyphenation untuk Bahasa Indonesia
+\lefthyphenmin=2
+\righthyphenmin=2
+\pretolerance=1000
+\tolerance=2000
+\emergencystretch=3em
+\hbadness=10000
+\vbadness=10000
+\hyphenpenalty=500
+\exhyphenpenalty=500
+\sloppy
+\microtypesetup{activate=true,protrusion=true,expansion=true,tracking=true,kerning=true}
+\microtypecontext{spacing=nonfrench}
+
+% Pengaturan paragraf
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\onehalfspacing
+
+% Pengaturan judul chapter untuk book class
+\titleformat{\chapter}{\normalsize\bfseries}{\thechapter.}{1em}{}
+\titlespacing*{\chapter}{0pt}{0pt}{1em}
+
+\renewcommand{\algorithmicrequire}{\textit{Input:}}
+\renewcommand{\algorithmicensure}{\textit{Output:}}
+
+\begin{document}
+
+% ============================================================================
+% BAB 1: PENDAHULUAN
+% ============================================================================
+\chapter{Pendahuluan}
+\input{chapter1_pendahuluan_content.tex}
+
+% ============================================================================
+% BAB 2: TINJAUAN PUSTAKA
+% ============================================================================
+\chapter{Tinjauan Pustaka}
+\input{chapter2_tinjauan_pustaka_content.tex}
+
+% ============================================================================
+% BAB 3: METODOLOGI
+% ============================================================================
+\chapter{Metodologi}
+\input{chapter3_metodologi_content.tex}
+
+% ============================================================================
+% BAB 4: DESAIN DAN ANALISIS
+% ============================================================================
+\chapter{Desain dan Analisis Sistem}
+\input{chapter4_analysis_design_content.tex}
+
+% ============================================================================
+% DAFTAR PUSTAKA
+% ============================================================================
+\chapter*{Daftar Pustaka}
+\addcontentsline{toc}{chapter}{Daftar Pustaka}
+
+\begin{thebibliography}{99}
+\setlength{\itemsep}{0.2cm}
+
+\input{bibliography_content.bib}
+
+\end{thebibliography}
+
+\end{document}

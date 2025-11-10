@@ -5,7 +5,7 @@
 
 Studi ablasi dilakukan untuk memvalidasi kontribusi arsitektur dual-modal discriminator terhadap performa restorasi dokumen yang berorientasi pada HTR. Tiga konfigurasi dibandingkan: (1) Single-Modal (image-only discriminator), (2) Dual-Modal dengan ground truth text, dan (3) Dual-Modal dengan predicted text dari recognizer. Semua konfigurasi menggunakan generator yang sama (Enhanced) dan dilatih selama 10 epoch dengan dataset sintetis yang sama.
 
-\subsubsection{Temuan Kritis: PSNR Tinggi Tidak Menjamin Readability}
+\subsubsection{Temuan Signifikan: PSNR Tinggi Tidak Menjamin Readability}
 
 Hasil ablasi mengungkap temuan penting yang mengubah pemahaman mengenai metrik evaluasi untuk document restoration task (Tabel~\ref{tab:ablation_results}). Konfigurasi single-modal mencapai PSNR sebesar 20.01 dB dan SSIM 0.9217, yang mengindikasikan kualitas visual yang baik secara pixel-level. Namun, ketika dievaluasi menggunakan HTR recognizer, konfigurasi ini \textbf{gagal total} dengan Character Error Rate (CER) mencapai 1.0000 (100\% kesalahan). Artinya, tidak ada satu karakter pun yang dapat dikenali dengan benar oleh model HTR.
 

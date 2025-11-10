@@ -5,7 +5,7 @@
 
 \subsection{Evaluasi Kualitatif pada Dokumen Historis Nyata (ANRI)}
 
-Untuk mengevaluasi generalisasi model terhadap degradasi historis nyata yang tidak terlihat selama training, kami melakukan analisis kualitatif pada dokumen dari Arsip Nasional Republik Indonesia (ANRI). Karena keterbatasan ground truth transcriptions yang tersedia untuk dokumen historis berusia 250-450 tahun, evaluasi berfokus pada \textbf{visual quality assessment} dan \textbf{text legibility improvement} melalui expert validation.
+Untuk mengevaluasi generalisasi model terhadap degradasi historis nyata yang tidak terlihat selama training, kami melakukan analisis kualitatif pada dokumen dari Arsip Nasional Republik Indonesia (ANRI). Karena keterbatasan ground truth transcriptions yang tersedia untuk dokumen historis berusia 250-450 tahun, evaluasi berfokus pada \textbf{visual quality assessment} dan \textbf{peningkatan keterbacaan teks} melalui expert validation.
 
 \subsubsection{Dataset dan Metodologi Evaluasi}
 
@@ -22,7 +22,7 @@ Untuk mengevaluasi generalisasi model terhadap degradasi historis nyata yang tid
 \begin{enumerate}
     \item Dokumen full-page (resolusi 300 DPI, ukuran rata-rata $2400 \times 3600$ piksel) diproses menggunakan inference pipeline dengan portrait-oriented overlap strategy ($\alpha=0.0$ untuk preserve authenticity) seperti dijelaskan di Section III-D
     \item Output restored images dibandingkan dengan input degraded secara side-by-side
-    \item Dua expert paleographers (10+ tahun pengalaman dengan arsip kolonial Belanda) melakukan blind assessment independen untuk mengukur text legibility improvement menggunakan 4-point Likert scale
+    \item Dua expert paleographers (10+ tahun pengalaman dengan arsip kolonial Belanda) melakukan blind assessment independen untuk mengukur peningkatan keterbacaan teks menggunakan 4-point Likert scale
     \item Inter-rater reliability dihitung menggunakan Cohen's kappa untuk memvalidasi konsistensi penilaian
 \end{enumerate}
 
@@ -85,7 +85,7 @@ Tabel~\ref{table:anri_expert_validation} merangkum hasil penilaian expert paleog
 \hline
 \textbf{Assessment Criterion} & \textbf{Mean Score} & \textbf{Std Dev} & \textbf{Interpretation} \\
 \hline
-Text Legibility Improvement$^a$ & 4.2 / 5.0 & 0.6 & Significant \\
+Peningkatan Keterbacaan Teks$^a$ & 4.2 / 5.0 & 0.6 & Significant \\
 Paleographic Authenticity$^b$ & 4.5 / 5.0 & 0.4 & Excellent \\
 Artifact Introduction$^c$ & 4.0 / 5.0 & 0.8 & Minimal \\
 Archival Digitization Suitability$^d$ & 4.3 / 5.0 & 0.5 & Highly Suitable \\

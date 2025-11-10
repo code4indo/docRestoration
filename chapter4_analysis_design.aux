@@ -1,0 +1,154 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\newlabel{sec:analisis}{{}{1}{}{Doc-Start}{}}
+\@writefile{toc}{\contentsline {section}{BAB IV PERANCANGAN DAN IMPLEMENTASI SISTEM}{1}{Doc-Start}\protected@file@percent }
+\newlabel{subsec:analisis-desain}{{}{1}{}{Doc-Start}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV.1}Rancangan Arsitektur}{1}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV.1.1}Pemilihan Arsitektur Baseline dan Hipotesis Inovasi}{1}{subsubsection.4.1.1}\protected@file@percent }
+\newlabel{subsubsec:justifikasi-arsitektur}{{IV.1.1}{1}{Pemilihan Arsitektur Baseline dan Hipotesis Inovasi}{subsubsection.4.1.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Komparasi arsitektur framework yang diusulkan dengan metode \textit  {state-of-the-art} (berdasarkan kajian Bab II)\relax }}{2}{table.caption.1}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{tab:arsitektur-komparasi}{{1}{2}{Komparasi arsitektur framework yang diusulkan dengan metode \textit {state-of-the-art} (berdasarkan kajian Bab II)\relax }{table.caption.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV.1.2}Komponen Utama dan Interaksi Arsitektur}{2}{subsubsection.4.1.2}\protected@file@percent }
+\newlabel{subsubsec:komponen-arsitektur}{{IV.1.2}{2}{Komponen Utama dan Interaksi Arsitektur}{subsubsection.4.1.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Kerangka kerja restorasi dokumen berorientasi HTR dengan discriminator dual-modal dan frozen HTR recognizer. Tiga komponen utama: (1) Generator U-Net Enhanced untuk restorasi citra, (2) Discriminator Dual-Modal (CNN+BiLSTM) untuk validasi visual-tekstual bilateral, (3) Frozen HTR Recognizer untuk gradient HTR-aware. Training menggunakan curriculum learning dengan multi-component loss (pixel, perceptual, adversarial, recognition feature, HTR). Total parameter yang dilatih: 108.3M (Generator 89.4M + Discriminator 18.9M), Recognizer frozen: 27.86M.\relax }}{3}{figure.caption.2}\protected@file@percent }
+\newlabel{fig:arch_overview}{{1}{3}{Kerangka kerja restorasi dokumen berorientasi HTR dengan discriminator dual-modal dan frozen HTR recognizer. Tiga komponen utama: (1) Generator U-Net Enhanced untuk restorasi citra, (2) Discriminator Dual-Modal (CNN+BiLSTM) untuk validasi visual-tekstual bilateral, (3) Frozen HTR Recognizer untuk gradient HTR-aware. Training menggunakan curriculum learning dengan multi-component loss (pixel, perceptual, adversarial, recognition feature, HTR). Total parameter yang dilatih: 108.3M (Generator 89.4M + Discriminator 18.9M), Recognizer frozen: 27.86M.\relax }{figure.caption.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{Pola Interaksi Komponen}{3}{figure.caption.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV.1.3}Arsitektur Generator: U-Net Enhanced dengan Blok Residual}{3}{subsubsection.4.1.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Arsitektur Generator U-Net Enhanced: encoder 5-level (RDB+CBAM), bottleneck MSFP (512 kanal), decoder dengan attention gates. Skip connections mempertahankan detail spasial.\relax }}{5}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:unet_arch}{{2}{5}{Arsitektur Generator U-Net Enhanced: encoder 5-level (RDB+CBAM), bottleneck MSFP (512 kanal), decoder dengan attention gates. Skip connections mempertahankan detail spasial.\relax }{figure.caption.3}{}}
+\citation{souibgui2021enhance}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Spesifikasi teknis Generator U-Net Enhanced\relax }}{6}{table.caption.4}\protected@file@percent }
+\newlabel{tab:generator-stats}{{2}{6}{Spesifikasi teknis Generator U-Net Enhanced\relax }{table.caption.4}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV.1.4}Integrasi \textit  {Recognizer} HTR Beku: Strategi Pembekuan Bobot}{6}{subsubsection.4.1.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Keuntungan Strategi Pembekuan Bobot}{6}{Item.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Arsitektur dan Konfigurasi Pelatihan}{7}{Item.18}\protected@file@percent }
+\citation{sanchez2016icfhr}
+\citation{sanchez2017icdar}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Diagram arsitektur Recognizer berbasis CNN+Transformer: 8-layer CNN backbone untuk ekstraksi fitur visual, 6-layer Transformer encoder untuk context modeling, dan CTC output layer untuk sequence decoding. Total 27.86M parameter dibekukan selama pelatihan GAN.\relax }}{8}{figure.caption.5}\protected@file@percent }
+\newlabel{fig:recognizer_arch}{{3}{8}{Diagram arsitektur Recognizer berbasis CNN+Transformer: 8-layer CNN backbone untuk ekstraksi fitur visual, 6-layer Transformer encoder untuk context modeling, dan CTC output layer untuk sequence decoding. Total 27.86M parameter dibekukan selama pelatihan GAN.\relax }{figure.caption.5}{}}
+\@writefile{toc}{\contentsline {paragraph}{Kinerja \textit  {Recognizer} dan Konteks \textit  {Benchmark}}{8}{figure.caption.5}\protected@file@percent }
+\citation{souibgui2020degan}
+\citation{souibgui2022erb}
+\@writefile{toc}{\contentsline {paragraph}{Referensi Spesifikasi Detail}{9}{figure.caption.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV.1.5}Eksplorasi Diskriminator Dual-Modal: Validasi Bilateral Visual-Tekstual}{9}{subsubsection.4.1.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Konteks Eksplorasi Dual-Modal Discriminator}{9}{subsubsection.4.1.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Positioning terhadap Literatur}{9}{subsubsection.4.1.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Arsitektur Diskriminator Dual-Modal Enhanced dengan bilateral cross-modal attention: cabang CNN (512-D) dengan spatial attention, cabang BiLSTM (512-D) dengan self-attention. Fusion bilateral (128-D) untuk validasi holistik.\relax }}{10}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:dual-modal}{{4}{10}{Arsitektur Diskriminator Dual-Modal Enhanced dengan bilateral cross-modal attention: cabang CNN (512-D) dengan spatial attention, cabang BiLSTM (512-D) dengan self-attention. Fusion bilateral (128-D) untuk validasi holistik.\relax }{figure.caption.6}{}}
+\@writefile{toc}{\contentsline {paragraph}{Spesifikasi Arsitektur Ringkas}{10}{figure.caption.6}\protected@file@percent }
+\citation{vaswani2017attention}
+\@writefile{toc}{\contentsline {paragraph}{Mekanisme \textit  {Bilateral Cross-Modal Attention}}{11}{figure.caption.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Referensi Spesifikasi Detail}{11}{equation.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV.1.6}Optimasi Fungsi Loss Multi-Komponen}{11}{subsubsection.4.1.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Temuan Kunci dari Studi Ablasi Sistematis}{11}{subsubsection.4.1.6}\protected@file@percent }
+\citation{bergstra2011algorithms}
+\citation{hutter2014efficient}
+\@writefile{toc}{\contentsline {paragraph}{Metodologi Kalibrasi Bobot Loss}{12}{subsubsection.4.1.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Fungsi Loss Diskriminator}{12}{subsubsection.4.1.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Komponen Fungsi Loss Generator}{12}{equation.4.3}\protected@file@percent }
+\citation{isola2017image}
+\citation{souibgui2020degan}
+\citation{johnson2016perceptual}
+\@writefile{toc}{\contentsline {paragraph}{Strategi Curriculum Learning 3-Phase}{13}{Item.22}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Fungsi Loss Gabungan dan Konfigurasi Bobot}{14}{Item.22}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Konfigurasi Produksi Final}{14}{equation.4.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV.2}Lingkungan Eksperimen dan Spesifikasi Komputasi}{14}{subsection.4.2}\protected@file@percent }
+\newlabel{subsec:spesifikasi-lingkungan}{{IV.2}{14}{Lingkungan Eksperimen dan Spesifikasi Komputasi}{subsection.4.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV.2.1}Spesifikasi Perangkat Keras dan Justifikasi}{15}{subsubsection.4.2.1}\protected@file@percent }
+\newlabel{subsubsec:hardware-spec}{{IV.2.1}{15}{Spesifikasi Perangkat Keras dan Justifikasi}{subsubsection.4.2.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Spesifikasi lingkungan eksperimen\relax }}{15}{table.caption.7}\protected@file@percent }
+\newlabel{tab:hardware-specs-actual}{{3}{15}{Spesifikasi lingkungan eksperimen\relax }{table.caption.7}{}}
+\@writefile{toc}{\contentsline {paragraph}{Pemilihan Perangkat Keras GPU}{15}{table.caption.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Alokasi GPU}{15}{table.caption.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV.2.2}\textit  {Software Stack} dan Konfigurasi Lingkungan}{15}{subsubsection.4.2.2}\protected@file@percent }
+\newlabel{subsubsec:software-spec}{{IV.2.2}{15}{\textit {Software Stack} dan Konfigurasi Lingkungan}{subsubsection.4.2.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{Kebijakan Presisi Numerik}{15}{subsubsection.4.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Strategi \textit  {Learning Rate} Adaptif}{16}{subsubsection.4.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\textit  {Adaptive Loss Balancing}}{16}{subsubsection.4.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Instalasi dan Konfigurasi \textit  {Environment}}{17}{equation.4.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV.2.3}Reproduktifitas}{17}{subsubsection.4.2.3}\protected@file@percent }
+\newlabel{subsubsec:reproducibility}{{IV.2.3}{17}{Reproduktifitas}{subsubsection.4.2.3}{}}
+\@writefile{toc}{\contentsline {paragraph}{Struktur Direktori dan Persistensi Data}{17}{subsubsection.4.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV.2.4}Karakteristik Performa \textit  {Training} dan \textit  {Inference}}{18}{subsubsection.4.2.4}\protected@file@percent }
+\newlabel{subsubsec:karakteristik-performa}{{IV.2.4}{18}{Karakteristik Performa \textit {Training} dan \textit {Inference}}{subsubsection.4.2.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Metrik \textit  {Training}}{18}{subsubsection.4.2.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Karakteristik performa pelatihan (50 \textit  {epoch}, \textit  {batch size} 2)\relax }}{18}{table.caption.8}\protected@file@percent }
+\newlabel{tab:training-performa}{{4}{18}{Karakteristik performa pelatihan (50 \textit {epoch}, \textit {batch size} 2)\relax }{table.caption.8}{}}
+\@writefile{toc}{\contentsline {paragraph}{Metrik \textit  {Inference}}{18}{table.caption.8}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Karakteristik performa inferensi (citra baris $128\times 1024$)\relax }}{18}{table.caption.9}\protected@file@percent }
+\newlabel{tab:inference-performa}{{5}{18}{Karakteristik performa inferensi (citra baris $128\times 1024$)\relax }{table.caption.9}{}}
+\@writefile{toc}{\contentsline {paragraph}{Metodologi Validasi Performa}{19}{table.caption.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\textit  {Reproducibility Checklist}}{19}{Item.30}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Konfigurasi Monitoring dan Checkpoint Management}{20}{Item.38}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV.3}Implementasi Pipeline Data dan Training Framework}{20}{subsection.4.3}\protected@file@percent }
+\newlabel{subsec:implementasi-pipeline}{{IV.3}{20}{Implementasi Pipeline Data dan Training Framework}{subsection.4.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV.3.1}Pipeline Persiapan Dataset HTR}{20}{subsubsection.4.3.1}\protected@file@percent }
+\newlabel{subsubsec:dataset-htr-pipeline}{{IV.3.1}{20}{Pipeline Persiapan Dataset HTR}{subsubsection.4.3.1}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces Pipeline Persiapan Dataset HTR\relax }}{21}{algorithm.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV.3.2}Pipeline Degradasi Sintetis}{21}{subsubsection.4.3.2}\protected@file@percent }
+\newlabel{subsubsec:synthetic-degradation-pipeline}{{IV.3.2}{21}{Pipeline Degradasi Sintetis}{subsubsection.4.3.2}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces Pipeline Synthetic Degradation\relax }}{21}{algorithm.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV.3.3}Format Data dan Preprocessing}{21}{subsubsection.4.3.3}\protected@file@percent }
+\newlabel{subsubsec:format-preprocessing}{{IV.3.3}{21}{Format Data dan Preprocessing}{subsubsection.4.3.3}{}}
+\@writefile{toc}{\contentsline {paragraph}{Format TFRecord:}{21}{subsubsection.4.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV.4}Strategi dan Protokol Training}{22}{subsection.4.4}\protected@file@percent }
+\newlabel{subsec:detail-implementasi-training}{{IV.4}{22}{Strategi dan Protokol Training}{subsection.4.4}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV.4.1}Strategi Curriculum Learning dan Loss Balancing}{22}{subsubsection.4.4.1}\protected@file@percent }
+\newlabel{subsubsec:curriculum-learning-impl}{{IV.4.1}{22}{Strategi Curriculum Learning dan Loss Balancing}{subsubsection.4.4.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Protokol \textit  {Curriculum Learning} 3-Phase\relax }}{22}{table.caption.10}\protected@file@percent }
+\newlabel{tab:curriculum-learning}{{6}{22}{Protokol \textit {Curriculum Learning} 3-Phase\relax }{table.caption.10}{}}
+\@writefile{toc}{\contentsline {paragraph}{Justifikasi Parameter Curriculum Learning:}{22}{table.caption.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV.4.2}Implementasi Multi-Component Loss Function}{22}{subsubsection.4.4.2}\protected@file@percent }
+\newlabel{subsubsec:loss-implementasi}{{IV.4.2}{22}{Implementasi Multi-Component Loss Function}{subsubsection.4.4.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{Total Loss Function:}{22}{subsubsection.4.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{1. Adversarial Loss:}{22}{equation.4.11}\protected@file@percent }
+\citation{johnson2016perceptual}
+\@writefile{toc}{\contentsline {paragraph}{2. Pixel Reconstruction Loss (L1):}{23}{equation.4.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{3. Perceptual Loss:}{23}{equation.4.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{4. CTC Loss (HTR-Oriented):}{23}{equation.4.14}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{5. Recognition Feature Loss:}{24}{equation.4.16}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Konfigurasi Bobot Loss Optimal:}{24}{equation.4.17}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Konfigurasi bobot loss optimal: hasil grid search empiris untuk menyeimbangkan kualitas visual dengan keterbacaan teks\relax }}{24}{table.caption.11}\protected@file@percent }
+\newlabel{tab:loss-weights}{{7}{24}{Konfigurasi bobot loss optimal: hasil grid search empiris untuk menyeimbangkan kualitas visual dengan keterbacaan teks\relax }{table.caption.11}{}}
+\@writefile{toc}{\contentsline {paragraph}{Adaptive Loss Balancing (Implemented di IV.4):}{25}{table.caption.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV.4.3}Implementasi Mode Diskriminator}{25}{subsubsection.4.4.3}\protected@file@percent }
+\newlabel{subsubsec:discriminator-mode-impl}{{IV.4.3}{25}{Implementasi Mode Diskriminator}{subsubsection.4.4.3}{}}
+\@writefile{toc}{\contentsline {paragraph}{Ground Truth Mode:}{25}{subsubsection.4.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Predicted Mode:}{25}{subsubsection.4.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Mode Selection untuk Implementasi Final:}{26}{subsubsection.4.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Eksperimen Perbandingan:}{26}{subsubsection.4.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV.4.4}Implementasi Kebijakan Presisi}{26}{subsubsection.4.4.4}\protected@file@percent }
+\newlabel{subsubsec:precision-policy-implementasi}{{IV.4.4}{26}{Implementasi Kebijakan Presisi}{subsubsection.4.4.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Alasan Kebijakan FP32:}{26}{subsubsection.4.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV.5}Protokol Evaluasi dan Validasi Eksperimen}{27}{subsection.4.5}\protected@file@percent }
+\newlabel{subsec:protokol-evaluasi}{{IV.5}{27}{Protokol Evaluasi dan Validasi Eksperimen}{subsection.4.5}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV.5.1}Baseline Methods untuk Komparasi Kuantitatif}{27}{subsubsection.4.5.1}\protected@file@percent }
+\newlabel{subsubsec:eksperimen-komparatif}{{IV.5.1}{27}{Baseline Methods untuk Komparasi Kuantitatif}{subsubsection.4.5.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Metode baseline untuk eksperimen komparatif\relax }}{28}{table.caption.12}\protected@file@percent }
+\newlabel{tab:baseline-methods}{{8}{28}{Metode baseline untuk eksperimen komparatif\relax }{table.caption.12}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV.5.2}Studi Ablasi Komponen Loss Function}{28}{subsubsection.4.5.2}\protected@file@percent }
+\newlabel{subsubsec:protokol-ablasi}{{IV.5.2}{28}{Studi Ablasi Komponen Loss Function}{subsubsection.4.5.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV.5.3}Ablasi Arsitektur Discriminator}{28}{subsubsection.4.5.3}\protected@file@percent }
+\newlabel{subsubsec:ablasi-diskriminator}{{IV.5.3}{28}{Ablasi Arsitektur Discriminator}{subsubsection.4.5.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV.5.4}Protokol Validasi Set Uji}{29}{subsubsection.4.5.4}\protected@file@percent }
+\newlabel{subsubsec:validasi-testset}{{IV.5.4}{29}{Protokol Validasi Set Uji}{subsubsection.4.5.4}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV.5.5}Protokol Reproduktibilitas}{29}{subsubsection.4.5.5}\protected@file@percent }
+\newlabel{subsubsec:reproducibility-protocol}{{IV.5.5}{29}{Protokol Reproduktibilitas}{subsubsection.4.5.5}{}}
+\gdef \@abspage@last{29}

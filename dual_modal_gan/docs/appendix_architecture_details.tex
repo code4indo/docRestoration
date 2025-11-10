@@ -1,0 +1,419 @@
+% ============================================================
+% APPENDIX A: SPESIFIKASI DETAIL ARSITEKTUR
+% ============================================================
+% File: appendix_architecture_details.tex
+% Deskripsi: Detail spesifikasi teknis arsitektur Generator, Recognizer, dan Discriminator
+% Konten: Tables dengan layer-by-layer specifications, parameter counts, design rationale
+% ============================================================
+% 
+% CATATAN: File ini dirancang untuk di-include ke dalam dokumen thesis utama
+% Jika ingin compile standalone, tambahkan preamble berikut:
+% \documentclass[12pt,a4paper]{article}
+% \usepackage[left=4cm,right=3cm,top=3cm,bottom=3cm]{geometry}
+% ... (copy dari chapter4_analysis_design.tex)
+% \begin{document}
+% ... content ...
+% \end{document}
+%
+% ============================================================
+
+\section{Spesifikasi Detail Arsitektur}
+\label{appendix:architecture-details}
+
+Lampiran ini menyediakan spesifikasi teknis lengkap untuk setiap komponen arsitektur yang digunakan dalam kerangka kerja GAN-HTR. Detail ini mencakup konfigurasi \textit{layer-by-layer}, jumlah parameter, aliran dimensi, dan justifikasi desain untuk setiap komponen.
+
+% ============================================================
+% A.1 DETAIL GENERATOR U-NET ENHANCED
+% ============================================================
+
+\section{Detail Generator U-Net Enhanced}
+\label{appendix:generator-details}
+
+Spesifikasi lengkap Generator U-Net Enhanced dengan Residual Dense Blocks (RDB), Convolutional Block Attention Module (CBAM), Multi-Scale Feature Pyramid (MSFP), dan Attention Gates. Generator memiliki total 21.8M parameter yang semua dilatih selama pelatihan GAN.
+
+\subsection{Tabel Arsitektur Lengkap Generator}
+
+Detail lengkap arsitektur generator telah disajikan pada Tabel~\ref{tab:generator-stats} di Bab~IV. Untuk implementasi teknis dan kode sumber, silakan merujuk ke repository GitHub proyek: \texttt{dual\_modal\_gan/src/models/generator\_enhanced.py}.
+
+\paragraph{Parameter Count Breakdown:}
+\begin{itemize}[nosep]
+    \item Encoder blocks (5 stages): $\sim$5.5M parameters
+    \item Bottleneck (MSFP + RDB + CBAM): $\sim$5.1M parameters
+    \item Decoder blocks (5 stages): $\sim$11.2M parameters
+    \item Attention Gates (5 gates): $\sim$0.6M parameters
+    \item Total: 21.8M--89.4M (depending on RDB configuration)
+\end{itemize}
+
+% ============================================================
+% A.2 DETAIL RECOGNIZER CNN-TRANSFORMER
+% ============================================================
+
+\section{Detail Recognizer CNN-Transformer}
+\label{appendix:recognizer-details}
+
+\textit{Recognizer} mengimplementasikan arsitektur Hybrid CNN-Transformer yang dirancang untuk ekstraksi fitur visual hierarkis dan pemodelan dependensi sekuensial pada dokumen paleografi. Arsitektur ini terdiri dari tiga komponen utama: CNN backbone untuk ekstraksi fitur, Transformer encoder untuk \textit{context modeling}, dan CTC output layer untuk \textit{decoding}. Total 27.86M parameter dibekukan (\texttt{trainable=False}) selama pelatihan GAN.
+
+% ------------------------------------------------------------
+% A.2.1 CNN Backbone: 8-Layer Feature Extraction
+% ------------------------------------------------------------
+
+\subsection{CNN Backbone: 8-Layer Feature Extraction}
+\label{appendix:recognizer-cnn}
+
+CNN backbone mengekstrak representasi visual hierarkis melalui 8 \textit{convolutional layers} yang tersusun dalam 4 \textit{stages} dengan \textit{progressive pooling strategy}:
+
+\begin{table}[H]
+\centering
+\caption{Spesifikasi layer-by-layer CNN Backbone Recognizer (8 convolutional layers)}
+\label{tab:appendix-recognizer-cnn}
+\scriptsize
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+\textbf{Stage} & \textbf{Layer} & \textbf{Kernel} & \textbf{Filters} & \textbf{Activation} & \textbf{Output Shape} \\
+\hline
+\multirow{3}{*}{Stage 1} & Conv2D-1 & 3×3, stride=1 & 64 & GELU & (128, 1024, 64) \\
+\cline{2-6}
+ & Conv2D-2 & 3×3, stride=1 & 64 & GELU & (128, 1024, 64) \\
+\cline{2-6}
+ & MaxPool2D-1 & 2×2 & - & - & (64, 512, 64) \\
+\hline
+\multirow{3}{*}{Stage 2} & Conv2D-3 & 3×3, stride=1 & 128 & GELU & (64, 512, 128) \\
+\cline{2-6}
+ & Conv2D-4 & 3×3, stride=1 & 128 & GELU & (64, 512, 128) \\
+\cline{2-6}
+ & MaxPool2D-2 & 2×2 & - & - & (32, 256, 128) \\
+\hline
+\multirow{3}{*}{Stage 3} & Conv2D-5 & 3×3, stride=1 & 256 & GELU & (32, 256, 256) \\
+\cline{2-6}
+ & Conv2D-6 & 3×3, stride=1 & 256 & GELU & (32, 256, 256) \\
+\cline{2-6}
+ & MaxPool2D-3 & (2,1) & - & - & (16, 256, 256) \\
+\hline
+\multirow{3}{*}{Stage 4} & Conv2D-7 & 3×3, stride=1 & 512 & GELU & (16, 256, 512) \\
+\cline{2-6}
+ & Conv2D-8 & 3×3, stride=1 & 512 & GELU & (16, 256, 512) \\
+\cline{2-6}
+ & MaxPool2D-4 & (2,1) & - & - & (8, 256, 512) \\
+\hline
+\multicolumn{6}{|l|}{\textbf{Sequence Projection}} \\
+\hline
+\multicolumn{2}{|l|}{GlobalAvgPool (height)} & \multicolumn{4}{l|}{Collapse height dimension → (256, 512)} \\
+\hline
+\multicolumn{2}{|l|}{Dense Projection} & \multicolumn{4}{l|}{512 → 512 dengan LayerNorm} \\
+\hline
+\end{tabular}
+\end{table}
+
+\paragraph{Design Rationale CNN Backbone:}
+
+\begin{itemize}[nosep]
+    \item \textbf{8 Layers vs Standard 5-6}: Dokumen paleografi memiliki kompleksitas \textit{stroke} yang tinggi, memerlukan ekstraksi fitur lebih dalam untuk menangkap variasi gaya tulisan abad 16--18. Lapisan tambahan memungkinkan model untuk membedakan antara degradasi autentik (tinta luntur, kertas menguning) dan struktur teks yang harus dipertahankan.
+    
+    \item \textbf{Progressive Pooling (2,2)→(2,2)→(2,1)→(2,1)}: Preservasi dimensi horizontal (width) lebih agresif untuk mempertahankan resolusi sekuensial yang penting dalam HTR. Pada tahap 3 dan 4, pooling hanya dilakukan pada dimensi vertikal (height) untuk menghindari kehilangan informasi posisi karakter horizontal.
+    
+    \item \textbf{GELU Activation}: Terbukti lebih efektif untuk \textit{vision transformer} dibanding ReLU karena \textit{smooth gradient flow}. GELU (\textit{Gaussian Error Linear Unit}) memberikan gradien non-zero untuk nilai negatif kecil, meningkatkan kapasitas pembelajaran pada region ambiguitas.
+    
+    \item \textbf{NO Residual Connections}: Arsitektur ini didesain untuk \textit{sequential feature extraction} tanpa \textit{skip connections} untuk menghindari kompleksitas berlebihan pada model baseline. Koneksi residual akan ditambahkan pada versi iterasi mendatang jika diperlukan.
+    
+    \item \textbf{BatchNormalization}: Diterapkan setelah setiap layer konvolusi untuk stabilitas training dan mempercepat konvergensi. Momentum 0.9 dan epsilon $10^{-5}$ digunakan sebagai hyperparameter standar.
+\end{itemize}
+
+\paragraph{Parameter Count CNN Backbone:}
+
+\begin{itemize}[nosep]
+    \item Stage 1 (64 filters): $\sim$38K parameters
+    \item Stage 2 (128 filters): $\sim$148K parameters
+    \item Stage 3 (256 filters): $\sim$590K parameters
+    \item Stage 4 (512 filters): $\sim$2.4M parameters
+    \item Projection Layer: $\sim$262K parameters
+    \item \textbf{Total CNN}: $\sim$3.4M parameters
+\end{itemize}
+
+% ------------------------------------------------------------
+% A.2.2 Transformer Encoder: 6-Layer Sequence Modeling
+% ------------------------------------------------------------
+
+\subsection{Transformer Encoder: 6-Layer Sequence Modeling}
+\label{appendix:recognizer-transformer}
+
+Transformer encoder menangkap dependensi jarak jauh dan konteks linguistik melalui 6 \textit{stacked layers} dengan \textit{multi-head self-attention}:
+
+\begin{table}[H]
+\centering
+\caption{Spesifikasi Transformer Encoder Recognizer (6 layers)}
+\label{tab:appendix-recognizer-transformer}
+\small
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Component} & \textbf{Specification} & \textbf{Design Choice} \\
+\hline
+Number of Layers & 6 & Standard depth untuk HTR \\
+\hline
+Model Dimension ($d_{model}$) & 512 & Match CNN output dimension \\
+\hline
+Attention Heads & 8 & Head dimension = 64 (512/8) \\
+\hline
+FFN Dimension ($d_{ff}$) & 2048 & 4× expansion ratio (standard) \\
+\hline
+Positional Encoding & \textbf{Learned Embedding} & Trainable, adaptif ke variasi layout \\
+\hline
+Dropout (Attention) & 0.20 & Regularisasi pada attention weights \\
+\hline
+Dropout (FFN) & 0.20 & Regularisasi pada feed-forward \\
+\hline
+Layer Normalization & Pre-LN & Stabilitas training (before attention) \\
+\hline
+Activation (FFN) & GELU & Smooth non-linearity \\
+\hline
+\end{tabular}
+\end{table}
+
+\paragraph{Design Rationale Transformer Encoder:}
+
+\begin{itemize}[nosep]
+    \item \textbf{Learned Positional Embedding vs Sinusoidal}: \textit{Learned embedding} dapat beradaptasi dengan karakteristik spasial unik dokumen paleografi (spacing variabel, distorsi geometris). Sinusoidal encoding bersifat fixed dan tidak dapat mempelajari pola spesifik dataset.
+    
+    \item \textbf{6 Layers}: Balance antara kapasitas model dan \textit{overfitting risk} pada dataset terbatas ($\sim$50K samples). Layer lebih dalam (8-12) cenderung overfit pada dataset paleografi yang kompleksitas intrinsiknya tinggi.
+    
+    \item \textbf{Pre-LN (Layer Normalization before attention)}: Terbukti lebih stabil untuk \textit{deep transformer} dibanding Post-LN. Pre-LN menormalkan input ke setiap sub-layer, mengurangi risiko gradient explosion pada training awal.
+    
+    \item \textbf{8 Attention Heads}: Memungkinkan model untuk menghadiri berbagai aspek representasi secara paralel (struktur karakter, konteks kiri-kanan, spacing, style variations).
+    
+    \item \textbf{FFN 4× Expansion}: Standar arsitektur Transformer yang memungkinkan non-linearity kuat tanpa overfitting berlebihan dengan dropout 0.20.
+    
+    \item \textbf{Dropout 0.20}: Regularisasi moderat yang cocok untuk dataset paleografi dengan variasi tinggi. Dropout lebih tinggi (0.30-0.40) menyebabkan underfitting pada pattern kompleks.
+\end{itemize}
+
+\paragraph{Parameter Count Transformer Encoder:}
+
+Per layer:
+\begin{itemize}[nosep]
+    \item Multi-head Attention: $\sim$1.05M parameters (Q, K, V projections + output)
+    \item Feed-Forward Network: $\sim$2.1M parameters (2 dense layers: 512→2048→512)
+    \item Layer Normalization: $\sim$2K parameters (minimal)
+    \item Total per layer: $\sim$3.15M parameters
+\end{itemize}
+
+Total 6 layers:
+\begin{itemize}[nosep]
+    \item \textbf{Total Transformer}: $\sim$18.9M parameters
+\end{itemize}
+
+% ------------------------------------------------------------
+% A.2.3 CTC Output Layer Configuration
+% ------------------------------------------------------------
+
+\subsection{CTC Output Layer Configuration}
+\label{appendix:recognizer-ctc}
+
+\begin{table}[H]
+\centering
+\caption{CTC Output Layer specification Recognizer}
+\label{tab:appendix-recognizer-ctc}
+\small
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Component} & \textbf{Specification} \\
+\hline
+Output Dense Layer & Dense(charset\_size + 1) dengan softmax activation \\
+\hline
+Charset Size & 95 karakter (A-Z, a-z, 0-9, punctuation, special chars) \\
+\hline
+Blank Token & Index 0 (CTC blank untuk non-emission) \\
+\hline
+Loss Function & CTC Loss dengan label smoothing $\epsilon$=0.1 \\
+\hline
+Decoding Strategy & Greedy decoding (argmax per timestep) untuk inference \\
+\hline
+Label Smoothing & $\epsilon$=0.1 → entropy regularization untuk robustness \\
+\hline
+Beam Search (optional) & Beam width 5-10 untuk improved accuracy (tidak digunakan dalam GAN training) \\
+\hline
+\end{tabular}
+\end{table}
+
+\paragraph{Charset Details:}
+
+Charset 95 karakter terdiri dari:
+\begin{itemize}[nosep]
+    \item Uppercase: A-Z (26 karakter)
+    \item Lowercase: a-z (26 karakter)
+    \item Digits: 0-9 (10 karakter)
+    \item Punctuation: . , ; : ! ? ' " ( ) [ ] \{ \} - / (18 karakter)
+    \item Special: @ \# \$ \% \& * + = $<$ $>$ $\sim$ \textbackslash{} | \_ $\wedge$ (15 karakter)
+    \item Blank token: index 0 (CTC-specific)
+\end{itemize}
+
+\paragraph{Parameter Count CTC Layer:}
+\begin{itemize}[nosep]
+    \item Dense layer: 512 → 96 (charset + blank) = $\sim$49K parameters
+    \item \textbf{Total CTC}: $\sim$49K parameters
+\end{itemize}
+
+% ------------------------------------------------------------
+% A.2.4 Total Recognizer Parameter Summary
+% ------------------------------------------------------------
+
+\subsection{Total Recognizer Parameter Summary}
+
+\begin{table}[H]
+\centering
+\caption{Ringkasan parameter Recognizer CNN-Transformer}
+\label{tab:appendix-recognizer-summary}
+\begin{tabular}{|l|r|}
+\hline
+\textbf{Component} & \textbf{Parameters} \\
+\hline
+CNN Backbone (8 layers) & 3.4M \\
+\hline
+Transformer Encoder (6 layers) & 18.9M \\
+\hline
+CTC Output Layer & 49K \\
+\hline
+Positional Embeddings & 131K \\
+\hline
+Other (LayerNorm, etc.) & 5.4M \\
+\hline
+\textbf{Total} & \textbf{27.86M} \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Memory Footprint:}
+\begin{itemize}[nosep]
+    \item Model weights: $\sim$111 MB (float32)
+    \item Inference batch (batch\_size=32): $\sim$2.3 GB GPU memory
+    \item Training (dengan optimizer states): $\sim$4.8 GB GPU memory
+\end{itemize}
+
+% ============================================================
+% A.3 DETAIL DISCRIMINATOR DUAL-MODAL
+% ============================================================
+
+\section{Detail Discriminator Dual-Modal}
+\label{appendix:discriminator-details}
+
+Spesifikasi lengkap Discriminator Dual-Modal dengan cabang CNN (visual) dan BiLSTM (tekstual), serta mekanisme \textit{bilateral cross-modal attention fusion}. Discriminator memiliki total 17.4M parameter yang semua dilatih selama pelatihan GAN.
+
+\subsection{Tabel Arsitektur Lengkap Discriminator}
+\label{appendix:discriminator-arch-table}
+
+Tabel~\ref{tab:appendix-discriminator-arch} menyajikan spesifikasi lengkap \textit{layer-by-layer} untuk ketiga cabang discriminator.
+
+\begin{table}[H]
+\centering
+\caption{Spesifikasi Arsitektur \textit{Dual-modal Discriminator Enhanced} (17.4M Parameters)}
+\label{tab:appendix-discriminator-arch}
+\small
+\begin{tabular}{|l|l|c|r|}
+\hline
+\textbf{Cabang} & \textbf{Lapisan} & \textbf{Bentuk Keluaran} & \textbf{Parameter} \\
+\hline
+\multicolumn{4}{|l|}{\textbf{Cabang CNN (Fitur Visual Spasial)}} \\
+\hline
+CNN & Input & $128 \times 1024 \times 1$ & - \\
+CNN & Conv2D+BN (64, 3×3) & $128 \times 1024 \times 64$ & 0.6K \\
+CNN & DownBlock-1 (64→64) & $64 \times 512 \times 64$ & 37K \\
+CNN & DownBlock-2 (64→128) & $32 \times 256 \times 128$ & 148K \\
+CNN & DownBlock-3 (128→256) & $16 \times 128 \times 256$ & 590K \\
+CNN & DownBlock-4 (256→512) & $8 \times 64 \times 512$ & 2.4M \\
+CNN & Spatial Attention ($3 \times 3$) & $8 \times 64 \times 512$ & 4.7K \\
+CNN & ResBlock-512 & $8 \times 64 \times 512$ & 2.4M \\
+CNN & Global Avg Pooling & 512 & - \\
+\hline
+\multicolumn{3}{|r|}{\textbf{Subtotal CNN:}} & \textbf{5.2M} \\
+\hline
+\multicolumn{4}{|l|}{\textbf{Cabang BiLSTM (Koherensi Sekuensial)}} \\
+\hline
+LSTM & Input Sekuens & 128 & - \\
+LSTM & Embedding (vocab=100, dim=128) & $128 \times 128$ & 12.8K \\
+LSTM & BiLSTM (256 units/arah) & $128 \times 512$ & 1.3M \\
+LSTM & Self-Attention ($d_k=512$) & $128 \times 512$ & 262K \\
+LSTM & Global Avg Pooling & 512 & - \\
+\hline
+\multicolumn{3}{|r|}{\textbf{Subtotal LSTM:}} & \textbf{1.3M} \\
+\hline
+\multicolumn{4}{|l|}{\textbf{Fusi Cross-Modal Bilateral}} \\
+\hline
+Fusi & Proj CNN $\rightarrow$ 128-D & 128 & 65.7K \\
+Fusi & Proj LSTM $\rightarrow$ 128-D & 128 & 65.7K \\
+Fusi & Bilateral Cross-Attn & 256 & 33K \\
+Fusi & Dense-1 (512) + Dropout(0.1) & 512 & 131K \\
+Fusi & Dense-2 (256) + Dropout(0.1) & 256 & 131K \\
+Fusi & Output (Sigmoid) & 1 & 257 \\
+\hline
+\multicolumn{3}{|r|}{\textbf{Subtotal Fusion:}} & \textbf{0.9M} \\
+\hline
+\multicolumn{3}{|r|}{\textbf{Total Discriminator:}} & \textbf{17.4M} \\
+\hline
+\end{tabular}
+\end{table}
+
+\paragraph{Detail DownBlock CNN:}
+Setiap DownBlock terdiri dari:
+\begin{itemize}[nosep]
+    \item Conv2D ($3 \times 3$, stride=1, padding='same') → BatchNorm → LeakyReLU($\alpha=0.2$)
+    \item Conv2D ($3 \times 3$, stride=1, padding='same') → BatchNorm
+    \item Residual connection (skip connection)
+    \item MaxPooling2D ($2 \times 2$) untuk downsampling
+\end{itemize}
+
+\paragraph{Detail Self-Attention LSTM:}
+Self-attention pada cabang LSTM:
+\begin{equation}
+\text{Attn}(X) = \text{softmax}\left(\frac{Q K^T}{\sqrt{d_k}}\right) V, \quad Q=K=V=X \in \mathbb{R}^{128 \times 512}
+\end{equation}
+dengan $d_k=512$ untuk stabilitas gradien.
+
+\paragraph{Detail Bilateral Cross-Modal Attention:}
+Proyeksi fitur ke ruang bersama 128-D:
+\begin{align}
+F_{\text{img}}^{proj} &= W_{\text{img}} F_{\text{img}} + b_{\text{img}}, \quad W_{\text{img}} \in \mathbb{R}^{512 \times 128} \\
+F_{\text{text}}^{proj} &= W_{\text{text}} F_{\text{text}} + b_{\text{text}}, \quad W_{\text{text}} \in \mathbb{R}^{512 \times 128}
+\end{align}
+
+Attention bilateral:
+\begin{align}
+F_{\text{img}}^{\text{att}} &= \text{softmax}\left(\frac{F_{\text{img}}^{proj} (F_{\text{text}}^{proj})^T}{\sqrt{128}}\right) F_{\text{text}}^{proj} \\
+F_{\text{text}}^{\text{att}} &= \text{softmax}\left(\frac{F_{\text{text}}^{proj} (F_{\text{img}}^{proj})^T}{\sqrt{128}}\right) F_{\text{img}}^{proj}
+\end{align}
+
+Fusion: $F_{\text{fused}} = [F_{\text{img}}^{\text{att}}; F_{\text{text}}^{\text{att}}] \in \mathbb{R}^{256}$
+
+\subsection{Konfigurasi Training Discriminator}
+
+\paragraph{Optimizer dan Learning Rate:}
+\begin{itemize}[nosep]
+    \item Optimizer: Adam dengan $\beta_1=0.5$, $\beta_2=0.999$
+    \item Learning rate: $1 \times 10^{-4}$ (sama dengan generator untuk stabilitas)
+    \item Learning rate scheduler: ReduceLROnPlateau (patience=5, factor=0.5)
+    \item Gradient clipping: clipnorm=1.0
+\end{itemize}
+
+\paragraph{Loss Function dan Training Strategy:}
+\begin{itemize}[nosep]
+    \item Loss: Binary Cross-Entropy (BCE) dengan label smoothing 0.1 untuk real labels
+    \item Training mode: Alternating dengan generator (ratio 1:1)
+    \item Batch size: 16 (sama dengan generator)
+    \item Label smoothing: Real=0.9 (bukan 1.0), Fake=0.0 untuk stabilitas adversarial training
+\end{itemize}
+
+\paragraph{Memory Footprint:}
+\begin{itemize}[nosep]
+    \item Parameters: 17.4M × 4 bytes (float32) = 69.6 MB
+    \item Activations (batch=16): Approx. 1.2 GB (dengan intermediate activations)
+    \item Gradient memory: Approx. 140 MB (double buffering)
+    \item \textbf{Total training memory}: Approx. 1.4 GB per GPU
+\end{itemize}
+
+\paragraph{Implementation Reference:}
+Implementasi lengkap tersedia di:
+\begin{itemize}[nosep]
+    \item File: \texttt{dual\_modal\_gan/src/models/discriminator\_enhanced\_v2\_fixed.py}
+    \item Function: \texttt{build\_dual\_modal\_discriminator\_enhanced\_v2\_fixed()}
+    \item Ablation variants: \texttt{discriminator\_single\_modal.py} (CNN-only), \texttt{discriminator\_lstm\_only.py} (LSTM-only)
+\end{itemize}
+
+% ============================================================
+% END OF APPENDIX A
+% ============================================================

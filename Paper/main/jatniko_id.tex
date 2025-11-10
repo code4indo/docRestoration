@@ -1107,7 +1107,7 @@
     bookmarksnumbered=true,
     pdftitle={Restorasi Dokumen Terdegradasi Menggunakan GAN dengan Diskriminator Dual-Modal dan Optimasi Loss Function Berorientasi HTR},
     pdfauthor={[Nama Anda]},
-    pdfsubject={Document Image Enhancement, Handwritten Text Recognition, Deep Learning},
+    pdfsubject={Document Image Enhancement, Handwritten Text Recognition, \textit{Deep Learning}},
     pdfkeywords={Generative Adversarial Networks, Document Restoration, HTR, Dual-Modal Discriminator, Loss Function Optimization},
     pdfproducer={LaTeX with IEEEtran},
     pdfcreator={pdfLaTeX},
@@ -1139,12 +1139,12 @@
 
 % Abstract
 \begin{abstract}
-Dokumen tulisan tangan historis mengalami berbagai artefak degradasi yang mempengaruhi sistem \textit{Handwritten Text Recognition} (HTR). Metode restorasi dokumen konvensional berfokus pada kualitas visual namun seringkali gagal mempertahankan keterbacaan teks untuk HTR. Makalah ini mengusulkan kerangka kerja restorasi dokumen berorientasi HTR berbasis \textit{Generative Adversarial Networks} (GAN) dengan dua kontribusi utama: (1) integrasi \textit{recognizer} HTR beku yang memberikan gradien sadar-teks stabil tanpa ketidakstabilan pelatihan bersama, dan (2) optimasi fungsi kehilangan multikomponen melalui studi ablasi sistematis. Berbeda dengan pendekatan konvensional yang hanya menggunakan supervisi tingkat citra, metode yang diusulkan secara eksplisit mengoptimalkan keterbacaan teks melalui gradien dari \textit{recognizer} praterlatih yang dibekukan. Evaluasi kuantitatif dilakukan pada \textit{dataset} semi-sintetis realistis yang dikonstruksi dari dokumen paleografi autentik Arsip Nasional Republik Indonesia (ANRI) abad ke-16 hingga ke-18 dengan augmentasi degradasi terkontrol untuk memungkinkan evaluasi dengan \textit{ground truth} berpasangan. Pada 712 citra uji, kerangka kerja yang diusulkan mencapai \textit{Character Error Rate} (CER) 34.9\%, menurunkan CER dari 83.4\% (kondisi terdegradasi) dengan pengurangan relatif 58.2\%, sambil mempertahankan kualitas visual tinggi (PSNR 30.74~dB, SSIM 0.987). Hasil ini mendekati kinerja teoretis maksimal pada citra bersih (CER 34.1\%). Validasi kualitatif pada 15 naskah ANRI nyata yang mengalami degradasi historis autentik menunjukkan generalisasi efektif pada pola kerusakan yang tidak dapat direplikasi secara sintetis. Studi ablasi mengungkapkan bahwa konfigurasi 4-komponen kehilangan (piksel, \textit{adversarial}, perseptual, CTC) mencapai keseimbangan optimal, sementara eksplorasi diskriminator \textit{dual-modal} menunjukkan kontribusi marginal ($\Delta$PSNR +0.28~dB, $p>0.05$), mengonfirmasi bahwa strategi pembekuan \textit{recognizer} dan optimasi kehilangan lebih dominan daripada kompleksitas arsitektur diskriminator.
+Dokumen tulisan tangan historis mengalami berbagai artefak degradasi yang mempengaruhi sistem \textit{Handwritten Text Recognition} (HTR). Metode restorasi dokumen konvensional berfokus pada kualitas visual namun seringkali gagal mempertahankan keterbacaan teks untuk HTR. Makalah ini mengusulkan kerangka kerja restorasi dokumen berorientasi HTR berbasis \textit{Generative Adversarial Networks} (GAN) dengan dua kontribusi utama: (1) integrasi \textit{recognizer} HTR beku yang memberikan gradien sadar-teks stabil tanpa ketidakstabilan pelatihan bersama, dan (2) optimasi fungsi loss multikomponen melalui studi ablasi sistematis. Berbeda dengan pendekatan konvensional yang hanya menggunakan supervisi tingkat citra, metode yang diusulkan secara eksplisit mengoptimalkan keterbacaan teks melalui gradien dari \textit{recognizer} praterlatih yang dibekukan. Evaluasi kuantitatif dilakukan pada \textit{dataset} semi-sintetis realistis yang dikonstruksi dari dokumen paleografi autentik Arsip Nasional Republik Indonesia (ANRI) abad ke-16 hingga ke-18 dengan augmentasi degradasi terkontrol untuk memungkinkan evaluasi dengan \textit{ground truth} berpasangan. Pada 712 citra uji, kerangka kerja yang diusulkan mencapai \textit{Character Error Rate} (CER) 34.9\%, menurunkan CER dari 83.4\% (kondisi terdegradasi) dengan pengurangan relatif 58.2\%, sambil mempertahankan kualitas visual tinggi (PSNR 30.74~dB, SSIM 0.987). Hasil ini mendekati kinerja teoretis maksimal pada citra bersih (CER 34.1\%). Validasi kualitatif pada 15 naskah ANRI nyata yang mengalami degradasi historis autentik menunjukkan generalisasi efektif pada pola kerusakan yang tidak dapat direplikasi secara sintetis. Studi ablasi mengungkapkan bahwa konfigurasi 4-komponen kehilangan (piksel, \textit{adversarial}, perseptual, CTC) mencapai keseimbangan optimal, sementara eksplorasi diskriminator \textit{dual-modal} menunjukkan kontribusi marginal ($\Delta$PSNR +0.28~dB, $p>0.05$), mengonfirmasi bahwa strategi pembekuan \textit{recognizer} dan optimasi kehilangan lebih dominan daripada kompleksitas arsitektur diskriminator.
 \end{abstract}
 
 % Keywords
 \begin{IEEEkeywords}
-Generative Adversarial Networks, Restorasi Dokumen, \textit{Handwritten Text Recognition}, Optimisasi Fungsi Kehilangan, Pemrosesan Dokumen Historis, \textit{Deep Learning}.
+Generative Adversarial Networks, Restorasi Dokumen, \textit{Handwritten Text Recognition}, Optimisasi Fungsi Loss, Pemrosesan Dokumen Historis, \textit{Deep Learning}.
 \end{IEEEkeywords}
 
 
@@ -1202,13 +1202,13 @@ Artefak degradasi ini mengganggu kinerja sistem HTR, yang penting untuk digitali
 
 Dokumen historis yang terdegradasi menghadirkan tantangan unik untuk sistem \textit{Handwritten Text Recognition} (HTR) karena derau, noda, ketidakfokusan, dan degradasi latar belakang dapat menurunkan akurasi pengenalan. Restorasi dokumen otomatis bertujuan untuk meningkatkan kualitas citra sebelum HTR, namun pendekatan yang ada memiliki keterbatasan fundamental:
 
-Pertama, metode restorasi dokumen konvensional (termasuk \textit{thresholding} klasik seperti Otsu~\cite{otsu1979threshold} dan Sauvola~\cite{sauvola2000adaptive}, serta pendekatan deep learning berbasis U-Net dan GAN) mengoptimalkan metrik visual semata (PSNR, SSIM) tanpa mempertimbangkan dampak terhadap keterbacaan HTR. Akibatnya, model dapat menghasilkan citra yang secara visual menarik namun merusak struktur teks (misalnya goresan terputus, penghubung karakter hilang) yang krusial untuk akurasi HTR.
+Pertama, metode restorasi dokumen konvensional (termasuk \textit{thresholding} klasik seperti Otsu~\cite{otsu1979threshold} dan Sauvola~\cite{sauvola2000adaptive}, serta pendekatan \textit{deep learning} berbasis U-Net dan GAN) mengoptimalkan metrik visual semata (PSNR, SSIM) tanpa mempertimbangkan dampak terhadap keterbacaan HTR. Akibatnya, model dapat menghasilkan citra yang secara visual menarik namun merusak struktur teks (misalnya goresan terputus, penghubung karakter hilang) yang krusial untuk akurasi HTR.
 
 Kedua, integrasi HTR dalam restorasi dokumen telah diusulkan oleh Souibgui \textit{et al.}~\cite{souibgui2021enhance} melalui pelatihan bersama antara generator dan pengenal. Meskipun inovatif, pendekatan ini menggunakan diskriminator single-modal yang hanya mengevaluasi kualitas visual, dan pelatihan bersama dapat menyebabkan ketidakstabilan optimisasi karena generator dan pengenal berkompetisi untuk gradien yang konflik.
 
 Ketiga, kesenjangan evaluasi—sebagian besar benchmark (seri DIBCO) hanya menyediakan ground truth visual tanpa transkripsi teks, membuat validasi dampak HTR tidak dapat dilakukan tanpa anotasi tambahan. Dataset untuk dokumen paleografi abad 16-18 dengan degradasi autentik terbatas.
 
-Penelitian ini mengatasi keterbatasan tersebut dengan kontribusi sebagai berikut. \textit{Kontribusi utama}: (1) Strategi \textit{recognizer} HTR beku yang memberikan gradien sadar-teks stabil tanpa ketidakstabilan pelatihan bersama ($p<0.001$); (2) Optimasi fungsi kehilangan multikomponen melalui studi ablasi sistematis yang mengidentifikasi konfigurasi 4-komponen optimal (piksel, \textit{adversarial}, perseptual, CTC). \textit{Kontribusi metodologis}: (3) Evaluasi pada naskah paleografi nyata abad 16-18 dari Arsip Nasional Republik Indonesia; (4) Studi ablasi yang mengukur kontribusi setiap komponen, termasuk temuan bahwa diskriminator \textit{dual-modal} memberikan kontribusi marginal ($\Delta$PSNR +0.28~dB, $p>0.05$), mengonfirmasi protokol pelatihan dan kapasitas generator lebih dominan daripada kompleksitas diskriminator.
+Penelitian ini mengatasi keterbatasan tersebut dengan kontribusi sebagai berikut. \textit{Kontribusi utama}: (1) Strategi \textit{recognizer} HTR beku yang memberikan gradien sadar-teks stabil tanpa ketidakstabilan pelatihan bersama ($p<0.001$); (2) Optimasi fungsi loss multikomponen melalui studi ablasi sistematis yang mengidentifikasi konfigurasi 4-komponen optimal (piksel, \textit{adversarial}, perseptual, CTC). \textit{Kontribusi metodologis}: (3) Evaluasi pada naskah paleografi nyata abad 16-18 dari Arsip Nasional Republik Indonesia; (4) Studi ablasi yang mengukur kontribusi setiap komponen, termasuk temuan bahwa diskriminator \textit{dual-modal} memberikan kontribusi marginal ($\Delta$PSNR +0.28~dB, $p>0.05$), mengonfirmasi protokol pelatihan dan kapasitas generator lebih dominan daripada kompleksitas diskriminator.
 
 \subsection{Kontribusi Penelitian}
 
@@ -1218,13 +1218,13 @@ Penelitian ini mengusulkan kerangka kerja restorasi dokumen berorientasi HTR yan
 \begin{enumerate}
     \item \textbf{Strategi \textit{Recognizer} HTR Beku}: Penggunaan \textit{recognizer} HTR praterlatih yang dibekukan memberikan gradien sawar-teks stabil tanpa ketidakstabilan pelatihan bersama. Studi ablasi menunjukkan dampak signifikan terhadap stabilitas konvergensi ($p<0.001$) dan pelestarian kapabilitas pengenalan (lihat Bagian~V-B).
     
-    \item \textbf{Optimasi Fungsi Kehilangan Multikomponen}: Identifikasi konfigurasi 4-komponen optimal (\textit{adversarial}, rekonstruksi piksel, perseptual, CTC) melalui studi ablasi sistematis. Konfigurasi ini mencapai keseimbangan \textit{Pareto} antara kualitas visual (PSNR 30.74~dB) dan keterbacaan HTR (CER 34.9\%), dengan kinerja lebih baik dibanding konfigurasi 5-komponen (lihat Bagian~V-B).
+    \item \textbf{Optimasi Fungsi Loss Multikomponen}: Identifikasi konfigurasi 4-komponen optimal (\textit{adversarial}, rekonstruksi piksel, perseptual, CTC) melalui studi ablasi sistematis. Konfigurasi ini mencapai keseimbangan \textit{Pareto} antara kualitas visual (PSNR 30.74~dB) dan keterbacaan HTR (CER 34.9\%), dengan kinerja lebih baik dibanding konfigurasi 5-komponen (lihat Bagian~V-B).
 \end{enumerate}
 
 \textbf{Kontribusi Metodologis dan Temuan Eksplorasi:}
 \begin{enumerate}
     \setcounter{enumi}{2}
-    \item \textbf{Studi Ablasi Sistematis}: Evaluasi kontribusi setiap komponen arsitektur dan fungsi kehilangan, memberikan panduan praktis untuk pemilihan komponen. Temuan: konfigurasi sederhana dengan penyelarasan tepat mencapai kinerja lebih baik dibanding konfigurasi kompleks berlebihan.
+    \item \textbf{Studi Ablasi Sistematis}: Evaluasi kontribusi setiap komponen arsitektur dan fungsi loss, memberikan panduan praktis untuk pemilihan komponen. Temuan: konfigurasi sederhana dengan penyelarasan tepat mencapai kinerja lebih baik dibanding konfigurasi kompleks berlebihan.
     
     \item \textbf{Evaluasi pada Dokumen Historis Autentik}: Evaluasi kuantitatif pada \textit{dataset} semi-sintetis realistis yang dikonstruksi dari tulisan tangan paleografi autentik ANRI abad ke-16 hingga ke-18 dengan augmentasi degradasi terkontrol ($n$=712), memungkinkan pengukuran presisi dengan \textit{ground truth} berpasangan. Validasi kualitatif pada naskah ANRI nyata yang mengalami degradasi historis autentik ($n$=15) menunjukkan generalisasi efektif pada pola kerusakan yang tidak dapat direplikasi secara komputasional.
     
@@ -1233,11 +1233,11 @@ Penelitian ini mengusulkan kerangka kerja restorasi dokumen berorientasi HTR yan
 
 \subsection{Hipotesis dan Validasi Penelitian}
 
-Penelitian ini memvalidasi hipotesis bahwa kerangka kerja restorasi dokumen dengan integrasi \textit{recognizer} HTR beku dan optimasi fungsi kehilangan berorientasi HTR menghasilkan penurunan \textit{Character Error Rate} (CER) yang signifikan secara statistik dibandingkan kondisi terdegradasi \textit{baseline} (H1). Studi ablasi sistematis dilakukan untuk mengukur kontribusi setiap komponen, dengan temuan utama: (1) strategi pembekuan \textit{recognizer} terbukti menjadi faktor kunci stabilitas dan konvergensi, (2) konfigurasi 4-komponen kehilangan mencapai keseimbangan optimal, dan (3) diskriminator \textit{dual-modal} menunjukkan kontribusi marginal ($p>0.05$). Temuan ini mengonfirmasi bahwa keberhasilan sistem terutama bergantung pada strategi pembekuan \textit{recognizer} dan optimasi kehilangan, bukan kompleksitas arsitektur diskriminator. Hasil lengkap dan analisis statistik disajikan dalam Bagian~V.
+Penelitian ini memvalidasi hipotesis bahwa kerangka kerja restorasi dokumen dengan integrasi \textit{recognizer} HTR beku dan optimasi fungsi loss berorientasi HTR menghasilkan penurunan \textit{Character Error Rate} (CER) yang signifikan secara statistik dibandingkan kondisi terdegradasi \textit{baseline} (H1). Studi ablasi sistematis dilakukan untuk mengukur kontribusi setiap komponen, dengan temuan utama: (1) strategi pembekuan \textit{recognizer} terbukti menjadi faktor kunci stabilitas dan konvergensi, (2) konfigurasi 4-komponen loss mencapai keseimbangan optimal, dan (3) diskriminator \textit{dual-modal} menunjukkan kontribusi marginal ($p>0.05$). Temuan ini mengonfirmasi bahwa keberhasilan sistem terutama bergantung pada strategi pembekuan \textit{recognizer} dan optimasi loss, bukan kompleksitas arsitektur diskriminator. Hasil lengkap dan analisis statistik disajikan dalam Bagian~V.
 
 \subsection{Organisasi Makalah}
 
-Sistematika penulisan dari makalah ini diatur sebagai berikut: Bagian~II meninjau pekerjaan terkait dalam perbaikan dokumen, GAN untuk restorasi citra, dan sistem HTR. Bagian~III menyajikan arsitektur yang diusulkan termasuk \textit{generator} U-Net Enhanced, diskriminator \textit{dual-modal} (CNN+LSTM), integrasi \textit{recognizer} beku, dan fungsi kehilangan yang dioptimalkan dengan penyeimbangan adaptif. Bagian~IV menjelaskan pengaturan eksperimental, \textit{dataset}, metodologi pelatihan, dan strategi optimisasi hiperparameter. Bagian~V menyajikan hasil komprehensif termasuk perbandingan kuantitatif dengan masukan terdegradasi \textit{baseline} dan referensi \textit{ground truth} bersih, studi ablasi sistematis untuk memvalidasi kontribusi setiap komponen, dan analisis kualitatif pada dokumen historis nyata. Bagian~VI membahas temuan, implikasi teoretis dan praktis, keterbatasan, dan arah masa depan. Akhirnya, Bagian~VII menyimpulkan makalah ini dengan rangkuman kontribusi dan dampak penelitian.
+Sistematika penulisan dari makalah ini diatur sebagai berikut: Bagian~II meninjau pekerjaan terkait dalam perbaikan dokumen, GAN untuk restorasi citra, dan sistem HTR. Bagian~III menyajikan arsitektur yang diusulkan termasuk \textit{generator} U-Net Enhanced, diskriminator \textit{dual-modal} (CNN+LSTM), integrasi \textit{recognizer} beku, dan fungsi loss yang dioptimalkan dengan penyeimbangan adaptif. Bagian~IV menjelaskan pengaturan eksperimental, \textit{dataset}, metodologi pelatihan, dan strategi optimisasi hiperparameter. Bagian~V menyajikan hasil komprehensif termasuk perbandingan kuantitatif dengan masukan terdegradasi \textit{baseline} dan referensi \textit{ground truth} bersih, studi ablasi sistematis untuk memvalidasi kontribusi setiap komponen, dan analisis kualitatif pada dokumen historis nyata. Bagian~VI membahas temuan, implikasi teoretis dan praktis, keterbatasan, dan arah masa depan. Akhirnya, Bagian~VII menyimpulkan makalah ini dengan rangkuman kontribusi dan dampak penelitian.
 
 % ============================================================ 
 % II. PEKERJAAN TERKAIT
@@ -1256,9 +1256,9 @@ Pendekatan awal untuk perbaikan dokumen berfokus pada binerisasi menggunakan thr
 
 Metode thresholding adaptif lokal mengatasi keterbatasan ini dengan menghitung ambang spesifik piksel berdasarkan lingkungan lokal. Sauvola dan Pietikäinen~\cite{sauvola2000adaptive} mengusulkan metode yang banyak digunakan yang menggabungkan rata-rata lokal dan deviasi standar. Niblack~\cite{niblack1986introduction} dan Wolf~\cite{wolf2004extraction} mengembangkan pendekatan lokal serupa dengan strategi adaptasi yang berbeda. Namun, metode berbasis thresholding ini menghasilkan keluaran biner yang kehilangan informasi intensitas piksel dan dapat menghilangkan detail halus seperti goresan tipis.
 
-\subsubsection{Metode Deep Learning untuk Restorasi Dokumen}
+\subsubsection{Metode \textit{Deep Learning} untuk Restorasi Dokumen}
 
-Sejak pertengahan 2010-an, dengan kemajuan deep learning dan ketersediaan dataset berlabel besar seperti DIBCO~\cite{pratikakis2016hdibco}, pendekatan restorasi dokumen beralih dari binerisasi ke peningkatan grayscale yang mempertahankan informasi intensitas. Auto-encoder berbasis U-Net~\cite{ronneberger2015unet} dan Generative Adversarial Networks (GAN) memungkinkan pembelajaran pemetaan end-to-end dari dokumen terdegradasi ke dokumen bersih dengan potensi mempertahankan detail halus yang penting untuk HTR.
+Sejak pertengahan 2010-an, dengan kemajuan \textit{deep learning} dan ketersediaan dataset berlabel besar seperti DIBCO~\cite{pratikakis2016hdibco}, pendekatan restorasi dokumen beralih dari binerisasi ke peningkatan grayscale yang mempertahankan informasi intensitas. Auto-encoder berbasis U-Net~\cite{ronneberger2015unet} dan Generative Adversarial Networks (GAN) memungkinkan pembelajaran pemetaan end-to-end dari dokumen terdegradasi ke dokumen bersih dengan potensi mempertahankan detail halus yang penting untuk HTR.
 
 \subsection{Generative Adversarial Networks untuk Restorasi Citra}
 
@@ -1274,7 +1274,7 @@ CycleGAN~\cite{zhu2017unpaired} memperluas konsep ini ke translasi citra-ke-citr
 
 Dalam konteks restorasi dokumen, beberapa pendekatan GAN telah diusulkan:
 
-DE-GAN~\cite{souibgui2020degan} menggunakan generator U-Net dengan discriminator PatchGAN untuk tugas peningkatan dokumen termasuk penghilangan blur, penghapusan watermark, dan pembersihan latar belakang. Meskipun mencapai kualitas visual tinggi, DE-GAN berfokus pada optimisasi kemiripan tingkat piksel dan tidak secara eksplisit mengintegrasikan metrik keterbacaan HTR dalam fungsi kehilangannya.
+DE-GAN~\cite{souibgui2020degan} menggunakan generator U-Net dengan discriminator PatchGAN untuk tugas peningkatan dokumen termasuk penghilangan blur, penghapusan watermark, dan pembersihan latar belakang. Meskipun mencapai kualitas visual tinggi, DE-GAN berfokus pada optimisasi kemiripan tingkat piksel dan tidak secara eksplisit mengintegrasikan metrik keterbacaan HTR dalam fungsi lossnya.
 
 DocEnTr~\cite{souibgui2022docent} memperkenalkan transformer peningkatan dokumen yang menggabungkan mekanisme atensi mandiri dengan pelatihan adversarial. Pendekatan ini menunjukkan kemampuan menangkap dependensi jarak jauh, namun biaya komputasi tinggi dan belum mengintegrasikan panduan HTR eksplisit.
 
@@ -1284,13 +1284,13 @@ Perbedaan Pendekatan yang Diusulkan: Penelitian ini berbeda fundamental dari HTR
 
 \subsection{Sistem Pengenalan Teks Tulisan Tangan}
 
-Sistem HTR bertujuan untuk mengenali teks tulisan tangan dari citra dokumen. Evolusi HTR telah berkembang dari metode berbasis HMM klasik ke arsitektur deep learning modern.
+Sistem HTR bertujuan untuk mengenali teks tulisan tangan dari citra dokumen. Evolusi HTR telah berkembang dari metode berbasis HMM klasik ke arsitektur \textit{deep learning} modern.
 
 CRNN (Convolutional Recurrent Neural Network)~\cite{shi2016crnn} menggabungkan CNN untuk ekstraksi fitur dengan RNN (umumnya LSTM/GRU) untuk pemodelan urutan, dilatih dengan kehilangan CTC untuk pengenalan bebas penjajaran. Arsitektur ini menjadi fondasi untuk banyak sistem HTR modern karena kemampuannya menangani urutan dengan panjang variabel tanpa segmentasi eksplisit.
 
 Mekanisme Atensi telah meningkatkan kinerja HTR dengan memungkinkan model fokus pada wilayah relevan saat mengenali setiap karakter. Arsitektur encoder-decoder dengan atensi~\cite{bluche2017scan} dapat mempelajari segmentasi karakter dan penjajaran secara implisit.
 
-HTR Berbasis Transformer~\cite{michael2019evaluating,diaz2021rethinking} memanfaatkan atensi mandiri untuk menangkap dependensi jarak jauh tanpa koneksi rekuren. Vision transformers dan arsitektur hibrida CNN-Transformer menunjukkan kinerja mutakhir pada berbagai tolok ukur tulisan tangan, termasuk dokumen historis dan modern.
+HTR Berbasis Transformer~\cite{michael2019evaluating,diaz2021rethinking} memanfaatkan atensi mandiri untuk menangkap dependensi jarak jauh tanpa koneksi rekuren. Vision transformers dan arsitektur hibrida CNN-Transformer menunjukkan kinerja terkini pada berbagai tolok ukur tulisan tangan, termasuk dokumen historis dan modern.
 
 Relevansi untuk Penelitian Ini: Sistem HTR sensitif terhadap kualitas citra\textemdash degradasi seperti noise, blur, atau goresan putus dapat meningkatkan CER. Penelitian ini menggunakan pengenal hibrida CNN-Transformer praterlatih yang dibekukan untuk mengekstrak fitur pengenalan yang memandu generator menghasilkan keluaran yang dapat dibaca oleh HTR. Pendekatan pengenal beku berbeda dari pelatihan bersama karena: (1) gradien stabil\textemdash bobot pengenal tidak berubah; (2) evaluasi konsisten\textemdash kinerja pengenal tidak menurun selama pelatihan GAN; (3) desain modular\textemdash pengenal dapat diperbarui secara independen.
 
@@ -1322,7 +1322,7 @@ Souibgui et al. & Tinggi & Ya & Tidak & Tidak \\
 % ============================================================ 
 \section{Metode yang Diusulkan}
 
-Bagian ini menyajikan kerangka kerja restorasi dokumen berorientasi HTR yang diusulkan. Pertama disajikan gambaran arsitektur, kemudian merinci setiap komponen: generator U-Net, diskriminator dual-modal, integrasi pengenal HTR yang dibekukan, dan fungsi kehilangan multikomponen yang dioptimalkan.
+Bagian ini menyajikan kerangka kerja restorasi dokumen berorientasi HTR yang diusulkan. Pertama disajikan gambaran arsitektur, kemudian merinci setiap komponen: generator U-Net, diskriminator dual-modal, integrasi pengenal HTR yang dibekukan, dan fungsi loss multikomponen yang dioptimalkan.
 
 \subsection{Gambaran Kerangka Kerja}
 
@@ -1348,7 +1348,7 @@ Kerangka kerja ini terdiri dari empat komponen utama:
     
     \item \textit{Recognizer} HTR Beku (R): \textit{Recognizer} berbasis \textit{Transformer} praterlatih dengan bobot tetap yang menyediakan gradien sadar HTR tanpa risiko \textit{catastrophic forgetting}. \textit{Recognizer} mencapai CER 33.72\% pada \textit{dataset} validasi awal ANRI ($n$=948), dan CER 26.57\% (\textit{set} validasi, $n$=710) serta 34.1\% (\textit{set} uji, $n$=712) pada citra bersih \textit{ground truth} penelitian ini\textemdash perbedaan mencerminkan variasi kompleksitas teks antar \textit{split dataset}.
     
-    \item Fungsi Kehilangan Multikomponen: Kombinasi terbobot dari $\mathcal{L}_{\text{pixel}}$ ($\lambda=50$), $\mathcal{L}_{\text{adv}}$ ($\lambda=3$), $\mathcal{L}_{\text{perc}}$ ($\lambda=1$), $\mathcal{L}_{\text{rec\_feat}}$ ($\lambda=8$), dan $\mathcal{L}_{\text{CTC}}$ ($\lambda=0.15$) yang dioptimalkan melalui curriculum learning untuk menyeimbangkan kualitas visual dan keterbacaan teks.
+    \item Fungsi Loss Multikomponen: Kombinasi terbobot dari $\mathcal{L}_{\text{pixel}}$ ($\lambda=50$), $\mathcal{L}_{\text{adv}}$ ($\lambda=3$), $\mathcal{L}_{\text{perc}}$ ($\lambda=1$), $\mathcal{L}_{\text{rec\_feat}}$ ($\lambda=8$), dan $\mathcal{L}_{\text{CTC}}$ ($\lambda=0.15$) yang dioptimalkan melalui curriculum learning untuk menyeimbangkan kualitas visual dan keterbacaan teks.
 \end{enumerate}
 
 Berbeda dari HTR-GAN~\cite{souibgui2021enhance} yang melatih pengenal bersama generator (joint training), metode yang diusulkan menggunakan pengenal beku untuk stabilitas pelatihan. Arsitektur diskriminator dual-modal sebagai eksplorasi untuk validasi bilateral visual-tekstual yang tidak ada pada metode sebelumnya yang hanya mengandalkan diskriminator visual tunggal.
@@ -1655,7 +1655,7 @@ Kehilangan fitur pengenalan antara citra yang dihasilkan dan citra ground truth 
 
 MSE dipilih karena lebih sensitif terhadap deviasi fitur besar, memberikan gradien yang lebih kuat untuk perbaikan keselarasan fitur. Ini mendorong generator untuk menghasilkan citra yang fitur teksnya cocok dengan fitur teks dari ground truth yang bersih, secara implisit meningkatkan keterbacaan HTR.
 
-\subsection{Fungsi Kehilangan Multikomponen}
+\subsection{Fungsi Loss Multikomponen}
 
 Generator dilatih dengan kombinasi lima komponen kehilangan yang dikalibrasi melalui pencarian kisi empiris dan divalidasi pada implementasi aktual:
 
@@ -1918,9 +1918,9 @@ Metode klasik dipilih sebagai baseline kuantitatif karena dapat diimplementasi u
 
 Metode klasik menggunakan implementasi standar OpenCV dengan parameter yang dioptimalkan melalui pencarian kisi pada subset validasi.
 
-\subsubsection{Metode Deep Learning Terkini (Konteks Penelitian)}
+\subsubsection{Metode \textit{Deep Learning} Terkini (Konteks Penelitian)}
 
-Metode berbasis deep learning yang dibahas dalam tinjauan literatur (Bagian II) berfungsi sebagai konteks penelitian untuk memposisikan kontribusi yang diusulkan:
+Metode berbasis \textit{deep learning} yang dibahas dalam tinjauan literatur (Bagian II) berfungsi sebagai konteks penelitian untuk memposisikan kontribusi yang diusulkan:
 
 \begin{itemize}
     \item U-Net~\cite{ronneberger2015unet}: Arsitektur encoder-decoder dengan skip connections untuk restorasi citra
@@ -1929,7 +1929,7 @@ Metode berbasis deep learning yang dibahas dalam tinjauan literatur (Bagian II) 
     \item DocEnTr: Arsitektur berbasis Transformer dengan mekanisme atensi mandiri untuk peningkatan dokumen
 \end{itemize}
 
-Perbandingan kuantitatif langsung dengan metode deep learning terkini tidak dilakukan karena: (1) metode tersebut dilatih pada dataset berbeda dengan karakteristik degradasi yang tidak identik, sehingga perbandingan langsung tidak fair~\cite{tensmeyer2017document}, (2) implementasi official yang dapat direproduksi tidak tersedia untuk sebagian besar metode, dan (3) perbedaan arsitektur, protokol pelatihan, dan fungsi kehilangan membuat isolasi kontribusi spesifik sangat sulit dilakukan. Pendekatan ini mengikuti praktik evaluasi yang umum dalam riset restorasi dokumen di mana perbandingan dilakukan hanya pada kondisi eksperimental yang dapat direplikasi secara identik.
+Perbandingan kuantitatif langsung dengan metode \textit{deep learning} terkini tidak dilakukan karena: (1) metode tersebut dilatih pada dataset berbeda dengan karakteristik degradasi yang tidak identik, sehingga perbandingan langsung tidak fair~\cite{tensmeyer2017document}, (2) implementasi official yang dapat direproduksi tidak tersedia untuk sebagian besar metode, dan (3) perbedaan arsitektur, protokol pelatihan, dan fungsi loss membuat isolasi kontribusi spesifik sangat sulit dilakukan. Pendekatan ini mengikuti praktik evaluasi yang umum dalam riset restorasi dokumen di mana perbandingan dilakukan hanya pada kondisi eksperimental yang dapat direplikasi secara identik.
 
 \subsubsection{Studi Ablasi sebagai Validasi Komponen}
 
@@ -2084,7 +2084,7 @@ Pengamatan kunci berdasarkan hasil kuantitatif:
     
     \item Mendekati batas atas teoretis: CER metode usulan (34.9\%) mendekati batas atas GT bersih (34.1\%), mengindikasikan bahwa restorasi berhasil mengembalikan keterbacaan mendekati kondisi bersih asli dengan selisih hanya 0.8 poin persentase. Kedekatan ini menunjukkan bahwa hambatan utama kinerja HTR bukan lagi degradasi citra, melainkan keterbatasan kapabilitas \textit{recognizer} HTR itu sendiri.
     
-    \item Peningkatan kuantitatif substansial pada metrik visual: Dibanding kondisi terdegradasi, metode usulan meningkatkan PSNR sebesar +22.83 dB (dari 7.91 ke 30.74 dB) dan SSIM sebesar +0.647 poin (dari 0.340 ke 0.987), memvalidasi efektivitas kombinasi \textit{recognizer} HTR beku dengan optimasi fungsi kehilangan multikomponen berorientasi HTR untuk restorasi simultan kualitas visual dan keterbacaan teks.
+    \item Peningkatan kuantitatif substansial pada metrik visual: Dibanding kondisi terdegradasi, metode usulan meningkatkan PSNR sebesar +22.83 dB (dari 7.91 ke 30.74 dB) dan SSIM sebesar +0.647 poin (dari 0.340 ke 0.987), memvalidasi efektivitas kombinasi \textit{recognizer} HTR beku dengan optimasi fungsi loss multikomponen berorientasi HTR untuk restorasi simultan kualitas visual dan keterbacaan teks.
     
     \item Keterbatasan metode klasik pada degradasi kompleks: Metode \textit{thresholding} konvensional gagal pada degradasi kompleks karena asumsi distribusi intensitas bimodal tidak berlaku pada dokumen historis dengan degradasi spasial non-uniform (\textit{foxing}, \textit{bleed-through}, penuaan heterogen). Hal ini tercermin dari CER yang lebih buruk dibanding kondisi tanpa perbaikan (Otsu: 85.7\% vs 83.4\%; Sauvola: 109.5\% vs 83.4\%).
     
@@ -2466,11 +2466,11 @@ Analisis Empiris: Hasil eksperimen menunjukkan perbedaan yang sangat minimal ($\
 
 Analisis Akar Permasalahan: Analisis mendalam mengidentifikasi lima faktor yang menjelaskan temuan ini:
 
-(1) Hambatan \textit{Generator}: Kedua eksperimen menggunakan arsitektur \textit{generator} yang identik (\textit{enhanced U-Net}). Batas kualitas keluaran ditentukan oleh kapasitas \textit{generator}, bukan kompleksitas umpan balik diskriminator. \textit{Generator} dengan kapasitas terbatas tidak dapat menghasilkan keluaran yang jauh lebih baik meskipun diskriminator memberikan sinyal yang lebih canggih.
+(1) Hambatan \textit{Generator}: Kedua eksperimen menggunakan arsitektur \textit{generator} yang identik (\textit{enhanced U-Net}). Batas kualitas keluaran ditentukan oleh kapasitas \textit{generator}, bukan kompleksitas umpan balik diskriminator. \textit{Generator} dengan kapasitas terbatas tidak dapat menghasilkan keluaran yang jauh lebih baik meskipun diskriminator memberikan sinyal yang lebih sophisticated.
 
 (2) Keterbatasan Modus Teks Prediksi: Konfigurasi pelatihan menggunakan modus teks prediksi, yang berarti masukan teks ke diskriminator \textit{dual-modal} berasal dari keluaran \textit{generator} (CER 27.11\%), bukan \textit{ground truth}. Cabang LSTM menerima teks dengan tingkat kesalahan 27\%, sehingga tidak dapat belajar dari pola teks yang akurat. Mekanisme atensi \textit{cross-modal} terbatas oleh kualitas teks prediksi yang mengandung derau.
 
-(3) Dominasi Fungsi Kehilangan: Analisis kontribusi fungsi kehilangan menunjukkan bahwa kehilangan \textit{adversarial} hanya berkontribusi kecil terhadap total sinyal pelatihan. Perbedaan arsitektur diskriminator hanya memengaruhi komponen minoritas dari total gradien.
+(3) Dominasi Fungsi Loss: Analisis kontribusi fungsi loss menunjukkan bahwa kehilangan \textit{adversarial} hanya berkontribusi kecil terhadap total sinyal pelatihan. Perbedaan arsitektur diskriminator hanya memengaruhi komponen minoritas dari total gradien.
 
 (4) Kendala \textit{Recognizer} Beku: \textit{Recognizer} HTR dibekukan dengan CER\textsubscript{val-GT} = 26.57\% pada citra bersih \textit{set} validasi. Citra yang dihasilkan mencapai CER\textsubscript{val-restored} = 27.11\%, hanya 0.54 poin persentase dari batas atas teoretis. Ruang perbaikan sangat terbatas terlepas dari arsitektur diskriminator.
 
@@ -2541,7 +2541,7 @@ Rekomendasi Konfigurasi Kehilangan Berdasarkan Kasus Penggunaan:
     \item TIDAK direkomendasikan: Eks 5 (\textit{full model}) karena degradasi CER (+0.50\%), \textit{overhead} komputasional signifikan (+15-20\% memori), dan kontribusi \textit{negligible} (analisis detail pada subseksi berikutnya).
 \end{enumerate}
 
-Temuan ini memvalidasi arsitektur fungsi kehilangan yang diusulkan dan memberikan panduan berbasis bukti untuk penyetelan \textit{hyperparameter} pada penerapan praktis. Wawasan kunci: Pemilihan fitur tingkat \textit{feature-level} sangat berpengaruh — fitur tugas tambahan harus selaras secara semantik dengan tujuan tugas utama.
+Temuan ini memvalidasi arsitektur fungsi loss yang diusulkan dan memberikan panduan berbasis bukti untuk penyetelan \textit{hyperparameter} pada penerapan praktis. Wawasan kunci: Pemilihan fitur tingkat \textit{feature-level} sangat berpengaruh — fitur tugas tambahan harus selaras secara semantik dengan tujuan tugas utama.
 
 \subsubsection{Analisis Mendalam: Ketidakefektifan Kehilangan Fitur Pengenal}
 \label{sec:recfeat_analysis}
@@ -2831,7 +2831,7 @@ Hipotesis Spesifik: Status validasi berdasarkan data ablasi.
 \begin{itemize}
 \item \textbf{H2\textsubscript{A} (Diskriminator \textit{Dual-Modal}):} TIDAK TERKONFIRMASI SECARA STATISTIK - Berdasarkan studi ablasi diskriminator (Tabel~VI): arsitektur diskriminator \textit{dual-modal} menunjukkan peningkatan marjinal dibanding diskriminator tunggal ($\Delta$PSNR +0.28 dB, $\Delta$CER $-0.01$\%), namun tidak signifikan secara statistik ($p>0.05$). Meskipun menunjukkan tren positif konsisten, efek sangat kecil (Cohen's $d=0.004$ untuk CER).
 
-\item \textbf{H2\textsubscript{B} (Stabilitas Konvergensi \textit{Frozen Recognizer}):} TERKONFIRMASI - Metode \textit{frozen recognizer} menghasilkan konvergensi stabil tanpa divergensi (varians kehilangan epoch 40-50 rendah, $p<0.01$), kurva fungsi kehilangan menunjukkan penurunan konsisten tanpa fluktuasi signifikan. Catatan: Hipotesis ini mengukur stabilitas pelatihan, bukan perbandingan superioritas terhadap \textit{joint training} yang berada di luar ruang lingkup penelitian.
+\item \textbf{H2\textsubscript{B} (Stabilitas Konvergensi \textit{Frozen Recognizer}):} TERKONFIRMASI - Metode \textit{frozen recognizer} menghasilkan konvergensi stabil tanpa divergensi (varians kehilangan epoch 40-50 rendah, $p<0.01$), kurva fungsi loss menunjukkan penurunan konsisten tanpa fluktuasi signifikan. Catatan: Hipotesis ini mengukur stabilitas pelatihan, bukan perbandingan superioritas terhadap \textit{joint training} yang berada di luar ruang lingkup penelitian.
 
 \item \textbf{H2\textsubscript{C} (Pelestarian Kualitas Visual):} TERKONFIRMASI - Pada himpunan uji: PSNR 30.74 dB dan SSIM 0.987 menunjukkan kualitas visual tinggi, CER 34.9\% mendekati rujukan bersih (34.1\%, kesenjangan hanya 0.8 poin), mengonfirmasi tidak ada \textit{trade-off} antara kualitas visual dan keterbacaan HTR. Himpunan validasi menunjukkan PSNR 30.91 dB dan CER 27.1\%, konsisten dengan performa \textit{test set}.
 \end{itemize}
@@ -2855,7 +2855,7 @@ Analisis mendalam mengidentifikasi bahwa kontribusi marginal arsitektur \textit{
 
 \textit{Ketidakseimbangan bobot kehilangan:} Kontribusi kehilangan \textit{adversarial} hanya sekitar 5\% dari total sinyal pelatihan (bobot 3.0 dibanding kehilangan piksel 50.0 dan fitur pengenalan 8.0). Perubahan arsitektur diskriminator hanya memengaruhi komponen minoritas, sementara 95\% gradien berasal dari komponen kehilangan yang identik untuk kedua eksperimen. Untuk memperbesar pengaruh diskriminator, bobot \textit{adversarial} perlu ditingkatkan (misalnya, dari 3.0 menjadi 10.0).
 
-\textit{Hambatan kapasitas generator:} Kedua eksperimen menggunakan \textit{generator} yang identik. Batas kualitas keluaran ditentukan oleh arsitektur \textit{generator}, bukan kecanggihan umpan balik diskriminator. \textit{Generator} dengan kapasitas terbatas tidak dapat sepenuhnya memanfaatkan diskriminator yang lebih kompleks.
+\textit{Hambatan kapasitas generator:} Kedua eksperimen menggunakan \textit{generator} yang identik. Batas kualitas keluaran ditentukan oleh arsitektur \textit{generator}, bukan sophistication umpan balik diskriminator. \textit{Generator} dengan kapasitas terbatas tidak dapat sepenuhnya memanfaatkan diskriminator yang lebih kompleks.
 
 Arsitektur \textit{dual-modal} tetap berharga secara teoretis karena dapat: (a) memodelkan koherensi teks sekuensial secara eksplisit melalui LSTM, (b) mendeteksi masalah konektivitas karakter yang halus, (c) menyediakan sinyal evaluasi multi-modal. Untuk merealisasikan potensi penuh dalam penelitian masa depan, diperlukan modifikasi protokol: supervisi teks \textit{ground truth}, bobot \textit{adversarial} yang lebih tinggi (misalnya dari 3.0 menjadi 10.0), atau arsitektur \textit{generator} yang sadar-teks.
 
@@ -2965,7 +2965,7 @@ Untuk pengembang sistem yang akan mengimplementasikan metode ini dalam produksi,
 % ============================================================ 
 \section{Kesimpulan}
 
-Penelitian ini mengusulkan kerangka kerja restorasi dokumen berorientasi HTR berbasis GAN yang mengatasi keterbatasan metode konvensional dalam mengoptimalkan keterbacaan teks untuk sistem pengenalan otomatis. Metode yang diusulkan mengintegrasikan dua kontribusi utama: (1) strategi \textit{frozen HTR recognizer} yang memberikan gradien sawar-teks stabil tanpa ketidakstabilan pelatihan bersama, terbukti menjadi faktor kunci keberhasilan sistem melalui studi ablasi ($p<0.001$), dan (2) optimasi fungsi kehilangan multikomponen yang mengidentifikasi konfigurasi 4-komponen (piksel, \textit{adversarial}, perseptual, CTC) sebagai keseimbangan optimal antara kualitas visual dan keterbacaan HTR. Eksplorasi arsitektur diskriminator \textit{dual-modal} menunjukkan kontribusi marginal yang tidak signifikan secara statistik ($\Delta$PSNR +0.28~dB, $p>0.05$), mengonfirmasi bahwa protokol pelatihan dan strategi \textit{recognizer} beku lebih dominan daripada kompleksitas arsitektur diskriminator.
+Penelitian ini mengusulkan kerangka kerja restorasi dokumen berorientasi HTR berbasis GAN yang mengatasi keterbatasan metode konvensional dalam mengoptimalkan keterbacaan teks untuk sistem pengenalan otomatis. Metode yang diusulkan mengintegrasikan dua kontribusi utama: (1) strategi \textit{frozen HTR recognizer} yang memberikan gradien sawar-teks stabil tanpa ketidakstabilan pelatihan bersama, terbukti menjadi faktor kunci keberhasilan sistem melalui studi ablasi ($p<0.001$), dan (2) optimasi fungsi loss multikomponen yang mengidentifikasi konfigurasi 4-komponen (piksel, \textit{adversarial}, perseptual, CTC) sebagai keseimbangan optimal antara kualitas visual dan keterbacaan HTR. Eksplorasi arsitektur diskriminator \textit{dual-modal} menunjukkan kontribusi marginal yang tidak signifikan secara statistik ($\Delta$PSNR +0.28~dB, $p>0.05$), mengonfirmasi bahwa protokol pelatihan dan strategi \textit{recognizer} beku lebih dominan daripada kompleksitas arsitektur diskriminator.
 
 Evaluasi kuantitatif pada 712 citra uji dari \textit{dataset} semi-sintetis realistis berbasis dokumen paleografi ANRI abad ke-16 hingga ke-18 menunjukkan pengurangan CER dari 83.4\% (kondisi terdegradasi) menjadi 34.9\% (pengurangan relatif 58.2\%, $p<0.001$), mendekati kinerja teoretis pada citra bersih (CER 34.1\%), sambil mempertahankan kualitas visual tinggi (PSNR 30.74~dB, SSIM 0.987). Validasi kualitatif pada 15 naskah ANRI autentik mengonfirmasi generalisasi efektif pada degradasi historis nyata yang tidak dapat direplikasi secara sintetis. Studi ablasi sistematis memvalidasi bahwa kombinasi 4-komponen kehilangan mencapai optimalitas dalam ruang multi-objektif, dengan temuan penting bahwa kehilangan fitur \textit{recognizer} bersifat kontraproduktif dan harus dihindari.
 

@@ -1,0 +1,331 @@
+
+% ============================================================
+% BAB IV: PERANCANGAN DAN IMPLEMENTASI SISTEM
+% ============================================================
+
+\vspace{2cm}
+\begin{center}
+{\fontsize{14}{16.8}\selectfont\textbf{BAB IV. Perancangan dan Implementasi Sistem}}\\[1em]
+\end{center}
+\label{sec:analisis}
+\addcontentsline{toc}{section}{BAB IV PERANCANGAN DAN IMPLEMENTASI SISTEM}
+% penomoran sub bab
+\setcounter{section}{4}
+\setcounter{subsection}{0}
+\vspace{2em}
+% \subsection{Latar Belakang}
+\label{subsec:analisis-desain}
+\vspace{0.8em}
+
+% akhir
+
+\renewcommand{\thesection}{\Roman{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+% \setcounter{section}{3}
+% \section{PERANCANGAN DAN IMPLEMENTASI SISTEM}
+% \label{sec:analisis-desain}
+
+Bab ini menguraikan rancangan solusi teknis yang diusulkan untuk restorasi dokumen terdegradasi dengan pendekatan \textit{Generative Adversarial Network} yang dimodifikasi secara khusus untuk meningkatkan keterbacaan teks oleh model pengenalan tulisan tangan. Berdasarkan analisis kebutuhan yang telah ditetapkan pada Bab III (8 kebutuhan fungsional dan 4 kebutuhan non-fungsional), bab ini fokus pada perancangan arsitektur solusi yang mencakup desain Generator (U-Net Enhanced), Recognizer (berbasis Transformer yang dibekukan), \textit{Dual-modal Discriminator} (CNN+BiLSTM), dan fungsi \textit{loss} multi-komponen yang dioptimalkan. Selanjutnya, implementasi rinci solusi diuraikan meliputi lingkungan eksperimen, persiapan dataset (\textit{ground truth} untuk pengenalan tulisan tangan dan sintetis untuk GAN), implementasi arsitektur model dalam TensorFlow/Keras, prosedur \textit{training} dengan strategi \textit{curriculum learning}, dan justifikasi pemilihan \textit{hyperparameter} melalui studi ablasi sistematis.
+
+
+
+\subsection{Rancangan Arsitektur} % This will be numbered as IV.1
+
+Rancangan solusi bertujuan membangun model generatif yang dioptimalkan untuk restorasi visual \textit{dan} keterbacaan tekstual simultan. Tiga inovasi kunci: (1) \textit{Frozen Recognizer} memberikan gradien keterbacaan stabil tanpa catastrophic forgetting. (2) Fungsi \textit{loss} multi-komponen menyeimbangkan kualitas visual (L1 + perceptual + adversarial) dan keterbacaan teks (CTC loss). (3) \textit{Dual-modal Discriminator} (CNN+BiLSTM) mengevaluasi koherensi visual-tekstual. Ketiga inovasi ini divalidasi empiris pada Bab V, dengan pemetaan kebutuhan sistem di Bab III Section 3.2.3.
+
+\subsubsection{Pemilihan Arsitektur Baseline dan Hipotesis Inovasi} % This will be numbered as IV.1.1
+\label{subsubsec:justifikasi-arsitektur}
+
+Pemilihan arsitektur \textit{framework} GAN-HTR yang diusulkan didasarkan pada analisis kesenjangan dari metode \textit{state-of-the-art} yang telah dikaji pada Bab II (Tinjauan Pustaka). Bagian ini menguraikan: (1) justifikasi komponen baseline berdasarkan \textit{gap analysis} literatur, dan (2) hipotesis inovasi yang akan divalidasi melalui studi ablasi empiris pada Bab V. Tabel \ref{tab:arsitektur-komparasi} membandingkan karakteristik arsitektur metode yang ada dengan \textit{framework} yang diusulkan.
+
+\begin{table}[H]
+\centering
+\caption{Komparasi arsitektur framework yang diusulkan dengan metode \textit{state-of-the-art} (berdasarkan kajian Bab II)}
+\label{tab:arsitektur-komparasi}
+\footnotesize
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Metode} & \textit{Generator} & \textit{Discriminator} & Integrasi HTR & Keterbatasan \\
+\hline
+\multicolumn{5}{|l|}{Metode \textit{Existing} (Bab II)} \\
+\hline
+DE-GAN & U-Net & CNN (visual-only) & Post-training eval & Single-modal, no HTR loss \\
+\hline
+DocEnTr & Transformer & - (no adversarial) & Post-training eval & Over-smoothing, no texture \\
+\hline
+Text-DIAE & CNN-based & - (no adversarial) & Post-training eval & No adversarial training \\
+\hline
+ERB-MultiTask & U-Net & CNN (visual-only) & Joint training & Unstable, catastrophic forgetting \\
+\hline
+\multicolumn{5}{|l|}{\textit{Framework} yang Diusulkan} \\
+\hline
+GAN-HTR & U-Net Enhanced & Dual-Modal & \textit{Frozen recognizer} & Kontribusi \textit{dual-modal} \\
+(penelitian ini) &  & (CNN+LSTM) & \textbf{+ CTC loss} & marginal ($p>0.05$) \\
+\hline
+\end{tabularx}
+\end{table}
+
+
+\subsubsection{Komponen Utama dan Interaksi Arsitektur} % This will be numbered as IV.1.2 
+\label{subsubsec:komponen-arsitektur}
+
+Arsitektur yang diusulkan terdiri dari tiga komponen utama yang berinteraksi dalam sebuah kerangka \textit{adversarial training}, seperti yang diilustrasikan pada Gambar \ref{fig:arch_overview}:
+\begin{enumerate}[nosep]
+    \item \textbf{Generator} (G): Model U-Net Enhanced yang menerima gambar terdegradasi dan menghasilkan versi restorasi. Memenuhi FR-1 (Restorasi Gambar) dan FR-2 (Penanganan Degradasi).
+    
+    \item \textbf{\textit{Frozen Recognizer}} (R): Model HTR berbasis CNN+Transformer yang dibekukan untuk memberikan evaluasi keterbacaan objektif melalui sinyal CTC \textit{loss}. Strategi pembekuan mengatasi \textit{joint training instability} dengan memisahkan optimasi visual dari evaluasi tekstual. Memenuhi FR-3 (Integrasi HTR) dan NFR-2 (Keterbacaan Teks).
+    
+    \item \textbf{\textit{Dual-modal Discriminator}} (D): Arsitektur CNN+BiLSTM yang menerima pasangan (gambar, representasi teks) untuk mengevaluasi koherensi visual-tekstual simultan, memberikan sinyal \textit{adversarial} yang lebih informatif dibanding \textit{discriminator} visual-only. Mendukung NFR-1 (Kualitas Visual).
+\end{enumerate}
+
+\begin{figure}[htbp!]
+\centering
+\includegraphics[width=1.2\textwidth, height=0.8\textheight, keepaspectratio]{/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/drawio/main_framework.png}
+\caption{Kerangka kerja restorasi dokumen berorientasi HTR dengan \textit{discriminator dual-modal} dan \textit{frozen} HTR \textit{recognizer}. Arsitektur terdiri dari Generator U-Net Enhanced, \textit{Discriminator Dual-Modal} (CNN+BiLSTM), dan \textit{Frozen Recognizer} untuk gradien HTR-\textit{aware}. \textit{Training} menggunakan \textit{curriculum learning} dengan fungsi \textit{loss} multi-komponen.}
+\label{fig:arch_overview}
+\end{figure}
+
+Ketiga komponen berinteraksi dalam siklus \textit{adversarial training}: Generator menghasilkan gambar restorasi dari \textit{input} terdegradasi, \textit{Frozen Recognizer} mengevaluasi keterbacaan melalui prediksi karakter dan CTC \textit{loss}, sementara \textit{Discriminator} menilai koherensi visual-tekstual dari pasangan gambar dan representasi teks. Generator dioptimalkan dengan fungsi \textit{loss} multi-komponen yang menyeimbangkan kualitas visual (\textit{pixel}, \textit{perceptual}, \textit{adversarial}) dan keterbacaan tekstual (CTC), memastikan hasil restorasi tidak hanya realistis secara visual tetapi juga dapat dibaca oleh model HTR (detail optimasi pada Subbab IV.1.6).
+
+\subsubsection{Arsitektur Generator: U-Net Enhanced dengan Blok Residual} % This will be numbered as IV.1.3
+
+Penelitian ini mengadopsi arsitektur U-Net Enhanced yang mengintegrasikan empat teknik untuk menangani karakteristik dokumen paleografi abad 16--18: \textit{Residual Dense Blocks} (RDB) untuk ekstraksi fitur hierarkis dengan koneksi padat, \textit{Convolutional Block Attention Module} (CBAM) untuk fokus adaptif pada kanal dan wilayah spasial relevan, \textit{Multi-Scale Feature Pyramid} (MSFP) untuk menangkap degradasi multi-skala melalui konvolusi terdilasi, dan \textit{Attention Gates} pada \textit{decoder} untuk preservasi detail teks sambil menekan \textit{noise} latar belakang.
+
+Kombinasi teknik ini mengatasi tantangan dokumen paleografi: RDB dengan koneksi padat mempertahankan detail goresan tipis, MSFP menangani degradasi multi-skala (\textit{bleed-through} dan \textit{noise} penuaan) tanpa \textit{over-smoothing}, CBAM dan \textit{Attention Gates} memfokuskan komputasi ke wilayah teks, serta koneksi residual memfasilitasi aliran gradien pada arsitektur 11-\textit{level} mencegah \textit{vanishing gradient}.
+
+Seperti diilustrasikan pada Gambar \ref{fig:unet_arch}, arsitektur memiliki struktur simetris: \textit{encoder} 5-tahap dengan blok RDB+CBAM mengekstrak fitur multi-skala sambil mengurangi resolusi spasial, \textit{bottleneck} menggunakan MSFP untuk agregasi konteks global, dan \textit{decoder} 5-tahap mencerminkan \textit{encoder} dengan \textit{Attention Gates} yang memfilter fitur dari \textit{skip connections} untuk rekonstruksi detail (spesifikasi lengkap pada Tabel \ref{tab:generator-stats}).
+
+Berbeda dari U-Net standar, arsitektur ini menggunakan \textit{gated skip connections} yang memfilter fitur \textit{encoder} berdasarkan relevansi kontekstual, memungkinkan \textit{decoder} secara adaptif memilih informasi resolusi tinggi untuk restorasi teks.
+
+\begin{figure}[H] % Memaksa gambar muncul di sini setelah penjelasan generator
+\centering
+\includegraphics[width=0.9\textwidth, height=0.45\textheight, keepaspectratio]{/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/drawio/arsitektur_generator.png}
+\caption{Arsitektur Generator U-Net Enhanced: encoder 5-level (RDB+CBAM), bottleneck MSFP (512 kanal), decoder dengan attention gates. Skip connections mempertahankan detail spasial.}
+\label{fig:unet_arch}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Spesifikasi Generator U-Net Enhanced}
+\label{tab:generator-stats}
+\small
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Spesifikasi} & \textbf{Detail} \\
+\hline
+Arsitektur & U-Net Enhanced (RDB + CBAM + MSFP + \textit{Attention Gates}) \\
+\hline
+Kedalaman & 11 \textit{level} (5 \textit{encoder} + \textit{bottleneck} + 5 \textit{decoder}) \\
+\hline
+\textit{Input/Output Shape} & $128 \times 1024 \times 1$ (H$\times$W$\times$C, \textit{grayscale}) \\
+\hline
+Kanal Progresif & \textit{Encoder}: 64$\rightarrow$512, \textit{Bottleneck}: 512, \textit{Decoder}: 512$\rightarrow$64 \\
+\hline
+Total Parameter & 21.8M (konfigurasi optimal)\textsuperscript{*} \\
+\hline
+\textit{Skip Connections} & \textit{Attention-gated} (5 \textit{gates}) \\
+\hline
+\textit{Output Activation} & \textit{Tanh} (\textit{range} [-1, 1]) \\
+\hline
+\end{tabular}
+\end{table}
+
+\noindent\textsuperscript{*}Konfigurasi optimal menggunakan 21.8M parameter dengan \\textit{growth rate}=32 dan 3 lapisan konvolusi per RDB, menunjukkan performa kompetitif dengan efisiensi komputasi lebih baik dibanding konfigurasi eksperimental (89.4M parameter).
+
+\subsubsection{Integrasi \textit{Frozen Recognizer} HTR} % This will be numbered as IV.1.4
+
+Penelitian ini mengintegrasikan \textit{recognizer} teks praterlatih dengan strategi pembekuan bobot (\textit{frozen recognizer}) untuk memberikan gradien sadar-teks yang stabil tanpa risiko \textit{catastrophic forgetting}. Berbeda dengan pendekatan \textit{joint training} pada ERB-MultiTask~\cite{erb2021}, komponen \textit{Recognizer} (R) berfungsi sebagai evaluator objektif yang menghasilkan distribusi probabilitas karakter untuk: (1) \textit{input} teks bagi \textit{Discriminator dual-modal} dalam menilai koherensi visual-tekstual, dan (2) kalkulasi \textit{CTC Loss} dan \textit{Recognition Feature Loss} untuk mengukur keterbacaan hasil restorasi.
+
+Strategi pembekuan memberikan keuntungan: stabilitas pelatihan tanpa konflik gradien antara \textit{generator} dan \textit{recognizer}, efisiensi komputasi dengan membekukan 27.86M parameter, konsistensi metrik CER/WER sebagai evaluasi objektif, pencegahan \textit{catastrophic forgetting} pada kemampuan pengenalan, serta optimasi terfokus pada peningkatan kualitas visual citra untuk keterbacaan (bukan adaptasi \textit{recognizer} pada citra berkualitas rendah).
+
+Arsitektur hibrida CNN-Transformer terdiri dari: CNN \textit{Backbone} 8-lapisan (4 tahap, 64$\rightarrow$512 kanal), \textit{Transformer Encoder} 6-lapisan (8 \textit{attention heads}, dimensi 512), dan \textit{CTC Output Layer} untuk prediksi urutan (95 karakter). Total 27.86M parameter dibekukan selama pelatihan GAN. Justifikasi pemilihan arsitektur dibahas pada Bab II.3.4; \textit{recognizer} dilatih pada dokumen ANRI era kolonial abad 16--18.
+
+
+
+\subsubsection{Diskriminator Dual-Modal} % This will be numbered as IV.1.5
+
+Berbeda dengan DE-GAN~\cite{souibgui2021} dan ERB-MultiTask~\cite{erb2021} yang menggunakan \textit{discriminator} visual-\textit{only}, penelitian ini mengeksplorasi arsitektur \textit{dual-modal} dengan cabang CNN (visual) dan BiLSTM (tekstual) untuk mengevaluasi koherensi visual-tekstual secara simultan. Hipotesis yang mendasari adalah bahwa validasi bilateral terhadap pasangan (gambar, representasi teks) dapat memberikan sinyal \textit{adversarial} yang lebih informatif untuk restorasi dokumen berorientasi HTR, menghasilkan hasil superior pada kualitas visual dan keterbacaan.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/drawio/arsitektur-dualModal.png}
+\caption{Arsitektur Diskriminator Dual-Modal Enhanced dengan bilateral cross-modal attention: cabang CNN (512-D) dengan spatial attention, cabang BiLSTM (512-D) dengan self-attention. Fusion bilateral (128-D) untuk validasi holistik.}
+\label{fig:dual-modal}
+\end{figure}
+
+Arsitektur terdiri dari tiga komponen dengan total 17.4M parameter (reduksi 52\% vs \textit{baseline} 137M): cabang CNN untuk ekstraksi fitur visual spasial (512-D), cabang BiLSTM untuk pemodelan koherensi sekuensial (512-D), dan mekanisme fusi \textit{bilateral cross-modal attention} yang memproyeksikan fitur ke ruang bersama 128-D untuk interaksi dua arah sebelum klasifikasi \textit{real}/\textit{fake}. Spesifikasi lengkap arsitektur tersedia pada Lampiran A.3.
+
+\subsubsection{Optimasi Fungsi Loss Multi-Komponen} % This will be numbered as IV.1.6
+
+Arsitektur GAN yang diusulkan menggunakan fungsi \textit{loss} multi-komponen yang secara eksplisit mengintegrasikan metrik keterbacaan teks sebagai kontribusi utama penelitian. Studi ablasi sistematis (Bab~V) mengidentifikasi konfigurasi optimal \textbf{4-komponen}: \textit{adversarial}, L1, \textit{perceptual}, dan CTC untuk keseimbangan \textit{Pareto} antara kualitas visual dan keterbacaan HTR. Komponen kelima (\textit{Recognition Feature Loss}) ditemukan redundan (korelasi tinggi dengan CTC) dan dinonaktifkan pada konfigurasi final untuk efisiensi komputasi.
+
+\paragraph{Kalibrasi Bobot \textit{Loss}}
+
+Bobot optimal dikalibrasi melalui grid search empiris dengan objektif multi-kriteria $\max(\text{PSNR}) + \min(\text{CER})$ pada \textit{validation set} ($n$=710). Analisis sensitivitas mengidentifikasi $\lambda_{adv}$ sebagai parameter paling kritis untuk keseimbangan kualitas visual dan keterbacaan. Detail \textit{search space hyperparameter}, konvergensi, dan analisis sensitivitas tersedia pada Lampiran~B.1.
+
+\paragraph{Komponen Fungsi \textit{Loss}}
+
+Fungsi \textit{loss Discriminator} ($L_D$) menggunakan \textit{Binary Cross-Entropy} dengan \textit{label smoothing} ($\epsilon=0.1$) untuk stabilitas. Fungsi \textit{loss Generator} ($L_G$) mengintegrasikan empat komponen: (1) \textbf{\textit{Adversarial Loss}} untuk realisme visual, (2) \textbf{\textit{L1 Reconstruction Loss}} untuk kemiripan piksel (dipilih karena hasil lebih tajam dan preservasi tepi superior vs L2), (3) \textbf{\textit{Perceptual Loss}} menggunakan fitur VGG-19 multiskala untuk preservasi karakteristik visual, dan (4) \textbf{CTC \textit{Loss}} sebagai inovasi kunci untuk optimasi keterbacaan teks eksplisit dengan \textit{clipping} numerik.
+
+\paragraph{Konfigurasi Optimal}
+
+Konfigurasi produksi final setelah ablasi dan \textit{curriculum learning}:
+\begin{equation}
+\boxed{L_G = 3.0 \cdot L_{adv} + 50.0 \cdot L_{L1} + 1.0 \cdot L_{perc} + 0.15 \cdot L_{CTC}}
+\end{equation}
+
+Bobot tinggi $\lambda_{L1}=50.0$ memastikan kesetiaan piksel, sedangkan $\lambda_{CTC}$ dikalibrasi bertahap (0.05→0.10→0.15) melalui \textit{curriculum learning} untuk stabilitas. Konfigurasi ini mencapai target PSNR $>$30 dB, SSIM $\geq$0.95, dan CER 34.9$\pm$1.2\%.
+
+\subsection{Lingkungan Eksperimen dan Spesifikasi Komputasi}
+\label{subsec:spesifikasi-lingkungan}
+
+Implementasi menggunakan \textit{workstation high-performance} dengan spesifikasi: 2$\times$ NVIDIA RTX A4000 (16 GB VRAM), AMD Threadripper PRO 3955WX (16 inti), 128 GB RAM, TensorFlow 2.16.1/CUDA 12.8, dalam lingkungan Python 3.10 yang dikelola Poetry untuk reproduktifitas.
+
+\subsubsection{Spesifikasi Perangkat Keras}
+\label{subsubsec:hardware-spec}
+
+\begin{table}[H]
+\centering
+\caption{Spesifikasi lingkungan eksperimen}
+\label{tab:hardware-specs-actual}
+\small
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Komponen} & \textbf{Spesifikasi} \\
+\hline
+\textbf{GPU} & 2$\times$ NVIDIA RTX A4000 (16 GB GDDR6 per GPU) \\
+\hline
+\textbf{CPU} & AMD Ryzen Threadripper PRO 3955WX (16-core/32-thread) \\
+\hline
+\textbf{RAM} & 128 GB DDR4-3200 \\
+\hline
+\textbf{Storage} & 1 TB NVMe SSD (Samsung 980 PRO) \\
+\hline
+\textbf{OS} & Ubuntu 22.04.5 LTS \\
+\hline
+\textbf{Framework} & TensorFlow 2.16.1 + CUDA 12.8 + cuDNN 8.9.7 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{\textit{Software Stack} dan Konfigurasi Lingkungan}
+\label{subsubsec:software-spec}
+
+Konfigurasi menggunakan Python 3.10, TensorFlow 2.16, CUDA 12.8, cuDNN 8.9 dengan dependensi di-\textit{lock} melalui Poetry (\texttt{poetry.lock}). Implementasi menggunakan presisi FP32 untuk stabilitas CTC \textit{loss}, \textit{learning rate schedule} adaptif (\textit{warmup} 10 \textit{epoch}, \textit{exponential decay}, \textit{ReduceLROnPlateau}), dan mekanisme \textit{adaptive loss balancing} untuk keseimbangan metrik visual-tekstual (detail pada Lampiran B.2).
+
+\subsubsection{Reproduktifitas}
+\label{subsubsec:reproducibility}
+
+Sistem dikonfigurasi dengan \textit{seed} deterministik (\textit{seed}=42), mode deterministik TensorFlow/cuDNN, \textit{version locking} dependensi, dan pelacakan eksperimen dengan MLflow. Konfigurasi lengkap tersedia pada Lampiran A.4.
+
+\subsection{Implementasi Pipeline Data dan Training Framework}
+\label{subsec:implementasi-pipeline}
+
+Implementasi mencakup dua \textit{pipeline} data: persiapan dataset HTR untuk \textit{training recognizer} dan degradasi sintetis untuk \textit{training} GAN.
+
+\subsubsection{Pipeline Persiapan Dataset HTR}
+\label{subsubsec:dataset-htr-pipeline}
+
+\textit{Pipeline} memproses halaman dokumen bersih dan file XML transkripsi menjadi TFRecord \textit{dataset}: segmentasi halaman ke baris teks menggunakan \textit{bounding box}, ekstraksi \textit{image patch}, \textit{preprocessing} (normalisasi, \textit{resize} 128×1024), binarisasi adaptif, validasi kesesuaian, dan \textit{split} 80/10/10 (\textit{training}/validasi/uji).
+
+\subsubsection{Pipeline Degradasi Sintetis}
+\label{subsubsec:synthetic-degradation-pipeline}
+
+\textit{Pipeline} menghasilkan \textit{dataset triplet} (\textit{degraded}, \textit{clean}, transkripsi) dengan degradasi independen (dapat overlap): \textit{bleed-through} (30\%), \textit{fading} (40\%), \textit{stains} (25\%), \textit{blur} (20\%), dan \textit{salt \& pepper noise} (10\%). Validasi PSNR $>$ 20 dB memastikan degradasi tidak ekstrem.
+
+\subsection{Strategi dan Protokol Training}
+\label{subsec:detail-implementasi-training}
+
+\subsubsection{Strategi Curriculum Learning dan Loss Balancing}
+\label{subsubsec:curriculum-learning-impl}
+
+\textit{Training} menggunakan tiga fase dengan peningkatan bertahap bobot CTC (0.05→0.10→0.15) untuk stabilitas konvergensi:\footnote{Parameter ditentukan eksperimen \textit{preliminary}; validasi empiris pada Bab V.2.}
+
+\begin{table}[H]
+\centering
+\caption{Protokol \textit{Curriculum Learning}}
+\label{tab:curriculum-learning}
+\small
+\begin{tabular}{|l|c|c|l|}
+\hline
+\textbf{Fase} & \textbf{Epoch} & \textbf{$\lambda_{CTC}$} & \textbf{Fokus} \\
+\hline
+Warmup & 1--20 & 0.05 & Struktur visual dasar \\
+Ramp-up & 21--40 & 0.10 & \textit{Guidance} keterbacaan \\
+Full Training & 41--100 & 0.15 & Optimasi penuh \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Implementasi Multi-Component Loss Function}
+\label{subsubsec:loss-implementasi}
+
+Fungsi \textit{loss generator} mengoptimalkan kualitas visual dan keterbacaan tekstual melalui kombinasi terbobot lima komponen:\footnote{Formulasi matematis lengkap tersedia di Lampiran A.} (1) \textit{Adversarial loss} untuk realisme visual, (2) \textit{Pixel L1 loss} untuk preservasi struktur, (3) \textit{Perceptual loss} untuk fitur semantik, (4) \textit{CTC loss} untuk keterbacaan HTR (di-\textit{clip} 400.0 mencegah \textit{gradient explosion}), (5) \textit{Recognition feature loss} (dinonaktifkan produksi, $\lambda=0.0$, redundan dengan CTC).
+
+Bobot \textit{loss} ditentukan \textit{grid search} empiris:\footnote{Validasi \textit{trade-off} multi-objektif pada Bab V.}
+
+\begin{table}[H]
+\centering
+\caption{Konfigurasi bobot \textit{loss} optimal}
+\label{tab:loss-weights}
+\small
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Komponen} & \textbf{Bobot ($\lambda$)} \\
+\hline
+Adversarial & 3.0 \\
+Pixel L1 & 50.0 \\
+Perceptual & 1.0 \\
+CTC & 0.15 \\
+Rec-Feature & 0.0 (dinonaktifkan) \\
+\hline
+\end{tabular}
+\end{table}
+
+Bobot L1 tinggi (50.0) untuk preservasi struktur, CTC rendah (0.15) dikompensasi magnitudo natural ($\sim$100-300 vs L1 $\sim$0.1-0.5), \textit{adversarial} moderat (3.0) untuk realisme tanpa instabilitas, \textit{rec-feature} dinonaktifkan ($\Delta$CER $<$0.5\%, \textit{overhead} +15\%).
+
+% \begin{figure}[H]
+% \centering
+% \includegraphics[width=0.9\textwidth]{/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/drawio/main_framework.png}
+% \caption{Kerangka kerja restorasi dokumen berorientasi HTR dengan discriminator dual-modal dan frozen HTR recognizer. Tiga komponen utama: (1) Generator U-Net Enhanced untuk restorasi citra, (2) Discriminator Dual-Modal (CNN+BiLSTM) untuk validasi visual-tekstual bilateral, (3) Frozen HTR Recognizer untuk gradient HTR-aware. Training menggunakan curriculum learning dengan multi-component loss (pixel, perceptual, adversarial, recognition feature, HTR). Total parameter yang dilatih: 108.3M (Generator 89.4M + Discriminator 18.9M), Recognizer frozen: 27.86M.}
+% \label{fig:multi-loss}
+% \end{figure}
+
+\subsubsection{Implementasi Mode Diskriminator}
+\label{subsubsec:discriminator-mode-impl}
+
+\textit{Dual-modal discriminator} mendukung dua mode:\footnote{Perbandingan kuantitatif pada Bab V.4.3 (Ablasi \textit{Discriminator Mode}).} (1) \textit{Ground Truth Mode} menggunakan teks \textit{ground truth}, memberikan stabilitas superior (konvergensi 100\% vs 85\%, target PSNR tercapai \textit{epoch} 38 vs 45, deviasi standar \textit{validation loss} 35\% lebih rendah), (2) \textit{Predicted Mode} menggunakan prediksi \textit{frozen recognizer}, lebih realistis untuk \textit{deployment} namun menantang dengan CER 33.72\% (perlu durasi $\sim$1.15x \textit{epoch}, pemantauan stabilitas cermat).
+
+Implementasi final menggunakan \textit{Ground Truth Mode} berdasarkan validasi eksperimen (5 \textit{independent runs}): performa sebanding (perbedaan PSNR $<$0.3 dB, $p>0.05$) namun \textit{Predicted Mode} konvergensi 15\% lebih lambat dengan degradasi CER validasi +1.2\%.
+
+
+
+\subsubsection{Implementasi Kebijakan Presisi}
+\label{subsubsec:precision-policy-implementasi}
+
+Kebijakan presisi \textit{pure FP32} diimplementasikan secara eksplisit untuk memastikan stabilitas numerik dalam pelatihan, terutama untuk kalkulasi \textit{CTC loss} yang memerlukan presisi penuh.
+
+\paragraph{Alasan Kebijakan FP32:}
+
+Pemilihan \textit{pure FP32} (tanpa \textit{mixed precision FP16}) didasarkan pada analisis stabilitas numerik:
+
+\begin{enumerate}[nosep]
+\item \textbf{Presisi Numerik CTC Loss}: Algoritma CTC melakukan komputasi \textit{log-probability} pada \textit{sequence alignment} yang sensitif terhadap \textit{underflow}. Eksperimen awal dengan \textit{mixed precision FP16} (diuji pada 3 \textit{runs}) menunjukkan \textit{gradient underflow} pada \textit{epoch} 15--20, menyebabkan divergensi pelatihan pada 1 dari 3 \textit{runs} (tingkat kegagalan 33\%).
+
+\item \textbf{Konsistensi Multi-Component Loss}: Dengan 5 komponen \textit{loss} berbeda (\textit{adversarial}, L1, \textit{perceptual}, CTC, \textit{rec-feat}), presisi konsisten diperlukan untuk penyeimbangan yang stabil. FP16 dapat menyebabkan inkonsistensi numerik antar komponen karena perbedaan magnitudo (\textit{adversarial loss} $\sim$0.1--1.0, \textit{L1 loss} $\sim$10--50).
+
+\item \textbf{Stabilitas Gradient Flow}: \textit{Pure FP32} memastikan \textit{backpropagation} melalui \textit{frozen recognizer} (27.86M parameter) tidak mengalami kehilangan presisi yang dapat merusak gradien \textit{generator}.
+\end{enumerate}
+
+Kebijakan \textit{pure FP32} dipilih untuk stabilitas numerik \textit{CTC loss} dan reproduktifitas, dengan \textit{trade-off} waktu pelatihan $\sim$28\% lebih lambat dibanding \textit{mixed precision FP16}. Validasi empiris analisis biaya-manfaat dilaporkan pada Bab V Subbab 5.2 (Ablasi Presisi Numerik).
+
+% \vspace{0.5em}
+% \noindent\textit{Strategi pelatihan yang telah diuraikan pada subsection IV.4.1--IV.4.4 (curriculum learning, multi-component loss, discriminator mode, precision policy) membentuk metodologi inti framework GAN-HTR. Implementasi strategi ini memerlukan konfigurasi discriminator dan sistem evaluasi yang tepat untuk memastikan adversarial equilibrium dan monitoring performa secara menyeluruh, yang akan diuraikan pada bagian berikutnya.}
+% \vspace{0.5em}
+
+% \textbf{Catatan:} \textit{Pipeline} pelatihan \textit{Recognizer} yang digunakan sebagai komponen beku (metodologi, rasional, strategi \textit{curriculum learning}) telah diuraikan pada Bab III Fase 2. Subsection IV.4 fokus pada strategi pelatihan \textit{framework} GAN-HTR yang mengintegrasikan \textit{recognizer} tersebut sebagai mekanisme \textit{guidance}.
+
+% Shared bibliography - imported from external file
+\input{bibliography.bib}
+

@@ -121,7 +121,7 @@ Berdasarkan hasil evaluasi komprehensif yang telah disajikan pada Bab V, penelit
 
 \textbf{PR3 - Optimasi Multi-Objective:}
 
-Bayesian Optimization dengan 29 trial menemukan konfigurasi bobot optimal: $\lambda_{pixel}$ = 120.0, $\lambda_{rec\_feat}$ = 80.0, $\lambda_{adv}$ = 2.5. Konfigurasi ini memberikan skor objektif tertinggi (0.1464) dengan keseimbangan superior antara metrik visual (PSNR, SSIM) dan metrik keterbacaan (CER, WER). Analisis fANOVA mengidentifikasi adversarial loss weight sebagai parameter paling kritis (66.4\% importance) dengan sensitivitas tinggi terhadap mode collapse.
+Bayesian Optimization dengan 29 trial menemukan konfigurasi bobot optimal: $\lambda_{pixel}$ = 120.0, $\lambda_{rec\_feat}$ = 80.0, $\lambda_{adv}$ = 2.5. Konfigurasi ini memberikan skor objektif tertinggi (0.1464) dengan keseimbangan superior antara metrik visual (PSNR, SSIM) dan metrik keterbacaan (CER, WER). Analisis fANOVA mengidentifikasi adversarial loss weight sebagai parameter paling signifikan (66.4\% importance) dengan sensitivitas tinggi terhadap mode collapse.
 
 \textbf{PR4 - Evaluasi Komprehensif:}
 
@@ -160,7 +160,7 @@ Evaluasi terhadap tujuan khusus yang dirumuskan di Bab I.3:
 \begin{enumerate}[label=\arabic*., leftmargin=0.5cm]
     \item \textbf{CTC Backpropagation:} CTC Loss yang di-backpropagate ke Generator (bukan hanya monitoring) terbukti efektif mengoptimasi visual quality untuk keterbacaan teks. Frozen Recognizer berfungsi sebagai "ground truth metric" yang stabil.
     
-    \item \textbf{Adversarial Loss Sensitivity:} Bobot adversarial loss ($\lambda_{adv}$) memiliki sensitivitas kritis dengan threshold bahaya $\geq$ 6.0 yang menyebabkan mode collapse. Zona optimal: 2.0-5.0.
+    \item \textbf{Adversarial Loss Sensitivity:} Bobot adversarial loss ($\lambda_{adv}$) memiliki sensitivitas signifikan dengan threshold bahaya $\geq$ 6.0 yang menyebabkan mode collapse. Zona optimal: 2.0-5.0.
     
     \item \textbf{Reconstruction-Recognition Balance:} Rasio optimal $\lambda_{pixel}$:$\lambda_{rec\_feat}$ = 1.5:1 (120:80) memberikan sweet spot antara preservasi konten dan guidance HTR.
     
@@ -199,7 +199,7 @@ Penelitian ini memberikan kontribusi pada dimensi teoretis (ilmiah) dan praktis 
     Memvalidasi efektivitas Bayesian Optimization dengan fANOVA analysis untuk hyperparameter tuning dalam multi-component loss GAN, memberikan framework reproducible untuk future research.
     
     \item \textbf{Empirical Insights:} \\
-    Mengidentifikasi sensitivitas kritis adversarial loss weight (66.4\% importance) dan threshold bahaya mode collapse ($\lambda_{adv} \geq 6.0$), memberikan panduan empiris untuk training stable GAN.
+    Mengidentifikasi sensitivitas signifikan adversarial loss weight (66.4\% importance) dan threshold bahaya mode collapse ($\lambda_{adv} \geq 6.0$), memberikan panduan empiris untuk training stable GAN.
     
     \item \textbf{Curriculum Learning for Frozen Model Training:} \\
     Mendemonstrasikan efektivitas curriculum learning strategy (warmup + cosine annealing) untuk training deep transformer pada limited synthetic dataset, dengan frozen model dual-purpose usage.

@@ -1197,9 +1197,9 @@ These degradation artifacts severely disrupt HTR system performance, which is es
 \label{fig:degradation_examples}
 \end{figure}
 
-\subsection{Limitations of Existing Approaches}
+\subsection{Limitations of yang ada Approaches}
 
-Degraded historical documents present unique challenges for HTR systems, as noise, stains, blur, and background degradation can significantly reduce recognition accuracy. Automated document restoration aims to enhance image quality before HTR processing, yet existing approaches have fundamental limitations:
+Degraded historical documents present unique challenges for HTR systems, as noise, stains, blur, and background degradation can significantly reduce recognition accuracy. Automated document restoration aims to enhance image quality before HTR processing, yet yang ada approaches have fundamental limitations:
 
 First, conventional document restoration methods (including classical thresholding such as Otsu~\cite{otsu1979threshold} and Sauvola~\cite{sauvola2000adaptive}, as well as deep learning approaches based on U-Net and GAN) optimize purely visual metrics (PSNR, SSIM) without considering the impact on HTR readability. Consequently, models may produce visually appealing images while damaging text structure (e.g., broken strokes, missing character connections) that is critical for HTR accuracy.
 
@@ -1295,7 +1295,7 @@ Relevance to This Research: HTR systems are sensitive to image quality—degrada
 
 \subsection{Gap Analysis and Positioning}
 
-Based on the literature review above, Table~\ref{table_comparison} summarizes this research's position relative to existing approaches in terms of visual quality, HTR awareness, discriminator architecture, and loss optimization. The identified gaps are: (1) exploration of dual-modal (visual + textual) architecture in the discriminator as architectural completeness for bilateral validation—although ablation studies show marginal impact on final metrics (see Section~VI), (2) absence of systematic loss weight optimization to balance visual quality and HTR readability, and (3) potential instabilities from joint recognizer-generator training that can be addressed with a frozen recognizer approach, as motivated by theoretical concerns discussed in Section~II. Empirical validation of each component's relative contribution is presented in comprehensive ablation studies (Section~V), with Gap \#2 (systematic loss weight optimization) showing the most significant impact on final performance.
+Based on the literature review above, Table~\ref{table_comparison} summarizes this research's position relative to yang ada approaches in terms of visual quality, HTR awareness, discriminator architecture, and loss optimization. The identified gaps are: (1) exploration of dual-modal (visual + textual) architecture in the discriminator as architectural completeness for bilateral validation—although ablation studies show marginal impact on final metrics (see Section~VI), (2) absence of systematic loss weight optimization to balance visual quality and HTR readability, and (3) potential instabilities from joint recognizer-generator training that can be addressed with a frozen recognizer approach, as motivated by theoretical concerns discussed in Section~II. Empirical validation of each component's relative contribution is presented in comprehensive ablation studies (Section~V), with Gap \#2 (systematic loss weight optimization) showing the most significant impact on final performance.
 
 \begin{table}[!t]
 \renewcommand{\arraystretch}{1.3}

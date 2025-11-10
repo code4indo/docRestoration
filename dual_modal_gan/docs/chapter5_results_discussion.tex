@@ -97,7 +97,7 @@ Untuk memahami kontribusi relatif setiap \textit{hyperparameter} terhadap perfor
 \toprule
 \textbf{Parameter} & \textbf{Kepentingan} & \textbf{Interpretasi} \\
 \midrule
-\texttt{adv\_loss\_weight} & \textbf{66.4\%} & \textbf{PARAMETER PALING KRITIS}. Memiliki dampak terbesar pada skor objektif. Korelasi negatif kuat: nilai tinggi $\rightarrow$ performa buruk (risiko \textit{mode collapse}) \\
+\texttt{adv\_loss\_weight} & \textbf{66.4\%} & \textbf{PARAMETER PALING PENTING}. Memiliki dampak terbesar pada skor objektif. Korelasi negatif kuat: nilai tinggi $\rightarrow$ performa buruk (risiko \textit{mode collapse}) \\
 \texttt{rec\_feat\_loss\_weight} & 24.3\% & Dampak SEDANG. Berkorelasi positif lemah dengan skor objektif. Penting untuk keseimbangan visual-HTR \\
 \texttt{pixel\_loss\_weight} & 9.3\% & Dampak LEMAH. \textit{Range} lebar (50-200) masih memberikan hasil acceptable \\
 \bottomrule
@@ -107,7 +107,7 @@ Untuk memahami kontribusi relatif setiap \textit{hyperparameter} terhadap perfor
 \paragraph{Temuan Kunci dari HPO:}
 
 \begin{enumerate}
-    \item \textbf{Sensitivitas Kritis Bobot Adversarial:} 
+    \item \textbf{Sensitivitas Signifikan Bobot Adversarial:} 
     \begin{itemize}
         \item \textit{Range} optimal: 2.0 - 5.0
         \item Zona bahaya: $\geq$ 6.0 (risiko tinggi \textit{mode collapse})
@@ -278,7 +278,7 @@ Bukti empiris:
 \begin{itemize}
     \item Optimal weight configuration: pixel=120, rec\_feat=80, adv=2.5
     \item Performance gain: PSNR +20\%, SSIM +24\%, CER -17\%, WER -10\% vs manual tuning
-    \item Sensitivitas parameter: adv\_loss\_weight paling kritis (66.4\% importance)
+    \item Sensitivitas parameter: adv\_loss\_weight paling penting (66.4\% importance)
 \end{itemize}
 
 \paragraph{PR4: Evaluasi Komprehensif}

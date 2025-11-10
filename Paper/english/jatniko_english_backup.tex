@@ -432,7 +432,7 @@ Artefak degradasi ini sangat mengganggu performa sistem Handwritten Text Recogni
 
 Metode binarisasi dan peningkatan kualitas dokumen tradisional dapat dikategorikan secara luas menjadi tiga generasi:
 
-\textbf{Metode Klasik Pemrosesan Gambar:} Pendekatan awal menggunakan teknik thresholding (global atau adaptif), operasi morfologi, dan kerangka kerja minimisasi energi. Metode representatif termasuk thresholding Otsu~\cite{otsu1979threshold}, thresholding adaptif lokal Sauvola~\cite{sauvola2000adaptive}, dan pendekatan yang lebih canggih seperti yang dievaluasi dalam kompetisi DIBCO (Document Image Binarization Contest). Meskipun efisien secara komputasi, metode-metode ini sangat sensitif terhadap tingkat degradasi dan penyetelan parameter, sering gagal pada dokumen yang sangat terdegradasi dengan latar belakang yang kompleks.
+\textbf{Metode Klasik Pemrosesan Gambar:} Pendekatan awal menggunakan teknik thresholding (global atau adaptif), operasi morfologi, dan kerangka kerja minimisasi energi. Metode representatif termasuk thresholding Otsu~\cite{otsu1979threshold}, thresholding adaptif lokal Sauvola~\cite{sauvola2000adaptive}, dan pendekatan yang lebih sophisticated seperti yang dievaluasi dalam kompetisi DIBCO (Document Image Binarization Contest). Meskipun efisien secara komputasi, metode-metode ini sangat sensitif terhadap tingkat degradasi dan penyetelan parameter, sering gagal pada dokumen yang sangat terdegradasi dengan latar belakang yang kompleks.
 
 \textbf{Metode Berbasis Machine Learning:} Pendekatan supervised learning, khususnya menggunakan Support Vector Machines (SVM) dan Random Forests, mencoba mengklasifikasikan piksel sebagai foreground atau background berdasarkan fitur yang dibuat secara manual. Metode-metode ini menunjukkan ketahanan yang lebih baik tetapi masih kesulitan dengan degradasi parah dan memerlukan feature engineering yang ekstensif.
 
@@ -1260,7 +1260,7 @@ For deploying our system in archival digitization workflows, several considerati
 % ============================================================
 \section{Conclusion}
 
-This paper presented a novel HTR-oriented document restoration framework addressing a critical gap in existing document enhancement methods: the lack of explicit optimization for text recognition performance. Our approach integrates three key innovations within a GAN architecture:
+This paper presented a novel HTR-oriented document restoration framework addressing a critical gap in yang ada document enhancement methods: the lack of explicit optimization for text recognition performance. Our approach integrates three key innovations within a GAN architecture:
 
 \begin{enumerate}
     \item A dual-modal discriminator with parallel CNN and LSTM pathways that simultaneously assesses visual quality and sequential text coherence
