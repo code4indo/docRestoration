@@ -124,7 +124,7 @@ Pola ini mengindikasikan adanya kompromi mendasar antara optimasi visual dan ket
 Implikasi dari temuan ini sangat penting, yaitu ditemukan fakta bahwa  citra yang terlihat bersih secara visual belum tentu optimal untuk sistem HTR. Metrik visual seperti PSNR dan SSIM mengukur kemiripan piksel secara keseluruhan, namun tidak sensitif terhadap distorsi halus pada struktur karakter yang krusial untuk pengenalan teks. Oleh karena itu, diperlukan pendekatan yang secara eksplisit mengintegrasikan evaluasi keterbacaan ke dalam proses restorasi dokumen.
 
 \vspace{0.5cm}  % Menambah jarak 0.8 cm sebelum paragraf ini
-Kesenjangan antara optimasi visual dan optimasi keterbacaan ini menjadi fokus utama penelitian ini. Untuk mengatasi keterbatasan tersebut, penelitian ini mengusulkan kerangka kerja GAN yang mengintegrasikan empat komponen inovatif dalam dua kontribusi utama. \textbf{Pertama}, arsitektur kerangka kerja dengan Diskriminator Dual-Modal yang memiliki cabang visual (CNN) dan cabang tekstual (LSTM) untuk mengevaluasi koherensi gambar-teks secara simultan, serta strategi \textit{Frozen Recognizer} yang mengintegrasikan CTC \textit{loss} dari model HTR \textit{pre-trained} tanpa mengubah bobotnya untuk memberikan gradien HTR-\textit{aware} yang stabil. \textbf{Kedua}, strategi pelatihan multi-objektif dengan \textit{Curriculum Learning} untuk CTC \textit{loss annealing} yang mencegah ketidakstabilan pelatihan akibat perbedaan skala \textit{multiple loss components}, dilengkapi dengan studi \textit{ablation} sistematis untuk validasi empiris kontribusi setiap komponen terhadap keseimbangan optimal antara kualitas visual (PSNR/SSIM) dan keterbacaan teks (CER/WER).
+Kesenjangan antara optimasi visual dan optimasi keterbacaan ini menjadi fokus utama penelitian ini. Untuk mengatasi keterbatasan tersebut, penelitian ini mengusulkan kerangka kerja GAN yang mengintegrasikan empat komponen inovatif dalam dua kontribusi utama. Pertama, arsitektur kerangka kerja dengan Diskriminator Dual-Modal yang memiliki cabang visual (CNN) dan cabang tekstual (LSTM) untuk mengevaluasi koherensi gambar-teks secara simultan, serta strategi \textit{Frozen Recognizer} yang mengintegrasikan CTC \textit{loss} dari model HTR pralatih tanpa mengubah bobotnya untuk memberikan gradien HTR-\textit{aware} yang stabil. Kedua, strategi pelatihan multi-objektif dengan \textit{Curriculum Learning} untuk penurunan bobot CTC \textit{loss} yang mencegah ketidakstabilan pelatihan akibat perbedaan skala komponen loss ganda, dilengkapi dengan studi \textit{ablation} sistematis untuk validasi empiris kontribusi setiap komponen terhadap keseimbangan optimal antara kualitas visual (PSNR/SSIM) dan keterbacaan teks (CER/WER).
 
 \vspace{0.8em}
 Diskriminator Dual Modal dirancang dengan arsitektur dua cabang paralel. Cabang visual menggunakan jaringan konvolusional untuk mengekstrak fitur spasial dari gambar. Sementara itu, cabang tekstual menggunakan pemodelan urutan (LSTM/\textit{Transformer}) untuk memproses representasi teks dari model HTR. Kedua cabang ini kemudian difusikan melalui lapisan konkatenasi dan lapisan terhubung penuh (\textit{dense layers}) untuk menghasilkan skor validitas koherensi gambar-teks.
@@ -133,7 +133,7 @@ Diskriminator Dual Modal dirancang dengan arsitektur dua cabang paralel. Cabang 
 Pendekatan ini didukung oleh penelitian terkini yang menunjukkan bahwa arsitektur multi-modal dapat meningkatkan stabilitas pelatihan dan kualitas keluaran GAN (Baltrusaitis dkk., 2019). Sementara itu, integrasi CTC \textit{Loss} memungkinkan generator untuk belajar secara langsung dari umpan balik sistem HTR, sehingga restorasi yang dihasilkan tidak hanya terlihat bersih, tetapi juga memaksimalkan keterbacaan teks (Graves dkk., 2006).
 
 \vspace{0.8em}
-Kebaruan penelitian ini terletak pada kombinasi keempat inovasi tersebut dalam satu kerangka kerja terpadu. Berbeda dengan DE-GAN yang hanya menggunakan diskriminator visual-only tanpa integrasi HTR, atau ERB-MultiTask yang menggunakan diskriminator visual-only dengan \textit{joint pelatihan recognizer} (berpotensi tidak stabil), penelitian ini mengembangkan diskriminator dual-modal yang secara eksplisit mengevaluasi koherensi visual-tekstual sambil menggunakan \textit{frozen recognizer} untuk stabilitas gradien. Berbeda dengan DocEnTr atau Text-DIAE yang fokus pada \textit{transformer-only} tanpa komponen \textit{adversarial}, kerangka kerja yang diusulkan mengkombinasikan keunggulan GAN \textit{adversarial pelatihan} dengan evaluasi dual-modal dan \textit{curriculum learning} untuk CTC \textit{loss annealing}. Dengan demikian, penelitian ini tidak hanya berkontribusi pada pengembangan arsitektur diskriminator yang lebih komprehensif dan strategi pelatihan yang lebih stabil, tetapi juga memberikan solusi praktis untuk mendukung preservasi digital dan aksesibilitas arsip nasional.
+Kebaruan penelitian ini terletak pada kombinasi keempat inovasi tersebut dalam satu kerangka kerja terpadu. Berbeda dengan DE-GAN yang hanya menggunakan diskriminator berbasis visual saja tanpa integrasi HTR, atau ERB-MultiTask yang menggunakan diskriminator visual saja dengan pelatihan bersama recognizer (berpotensi tidak stabil), penelitian ini mengembangkan diskriminator dual-modal yang secara eksplisit mengevaluasi koherensi visual-tekstual sambil menggunakan \textit{frozen recognizer} untuk stabilitas gradien. Berbeda dengan DocEnTr atau Text-DIAE yang fokus pada berbasis transformer saja tanpa komponen \textit{adversarial}, kerangka kerja yang diusulkan mengkombinasikan keunggulan  pelatihan adversarial dengan evaluasi dual-modal dan \textit{curriculum learning} untuk penurunan bobot CTC \textit{loss}. Dengan demikian, penelitian ini tidak hanya berkontribusi pada pengembangan arsitektur diskriminator yang lebih komprehensif dan strategi pelatihan yang lebih stabil, tetapi juga memberikan solusi praktis untuk mendukung preservasi digital dan aksesibilitas arsip nasional.
 
 \vspace{0.8em}
 Penelitian ini dimotivasi oleh premis bahwa diskriminator dual-modal yang menggabungkan evaluasi visual dan tekstual dapat memberikan umpan balik yang lebih komprehensif kepada generator, dan kombinasi dengan strategi \textit{frozen recognizer} serta \textit{curriculum learning} dapat mengatasi ketidakstabilan pelatihan dalam optimisasi multi-objektif.
@@ -147,14 +147,14 @@ Berdasarkan analisis latar belakang, penelitian ini mengidentifikasi empat masal
     \item Kesenjangan antara Optimasi Visual dan Keterbacaan Teks \\
     Metode \textit{state-of-the-art} (DE-GAN, DocEnTr, Text-DIAE) mengoptimalkan metrik visual (PSNR/SSIM) tanpa integrasi eksplisit dengan evaluasi HTR. Peningkatan kualitas visual tidak berkorelasi langsung dengan penurunan CER, karena metrik piksel tidak sensitif terhadap distorsi struktur karakter yang sangat penting untuk pengenalan teks.
 
-    \item Keterbatasan Arsitektur Diskriminator Hanya Visual \\
-    Metode berbasis GAN yang ada (DE-GAN, ERB-MultiTask) menggunakan diskriminator yang hanya mengevaluasi realisme visual tanpa mempertimbangkan koherensi tekstual. Diskriminator tidak dapat menilai apakah struktur karakter yang dihasilkan tetap dapat dibaca oleh sistem HTR, sehingga generator mungkin menghasilkan citra yang terlihat bersih secara visual namun kehilangan detail karakter penting untuk pengenalan teks.
+    \item Keterbatasan Arsitektur Diskriminator Hanya Berbasis Visual Saja \\
+    Metode berbasis GAN yang ada menggunakan diskriminator yang hanya mengevaluasi realisme visual tanpa mempertimbangkan koherensi tekstual. Diskriminator tidak dapat menilai apakah struktur karakter yang dihasilkan tetap dapat dibaca oleh sistem HTR, sehingga generator mungkin menghasilkan citra yang terlihat bersih secara visual namun kehilangan detail karakter penting untuk pengenalan teks.
 
     \item Ketiadaan Fungsi Loss Berorientasi HTR dengan Strategi Frozen Recognizer \\
     Meskipun ERB-MultiTask mengintegrasikan \textit{CTC loss}, pendekatan pelatihan bersama yang digunakan (melatih generator, diskriminator, dan \textit{recognizer} secara bersamaan) berpotensi tidak stabil karena kompetisi gradien. Strategi \textit{frozen recognizer} yang dapat memberikan gradien berorientasi HTR secara konsisten tanpa mengganggu bobot model pengenal belum dieksplorasi secara sistematis untuk restorasi dokumen.
 
     \item Ketidakstabilan Pelatihan dengan Komponen Loss Ganda \\
-    Pelatihan GAN dengan \textit{adversarial}, \textit{reconstruction}, dan \textit{recognition loss} secara simultan mengalami ketidakstabilan karena perbedaan skala dan dinamika konvergensi. Belum ada penelitian yang mengevaluasi \textit{curriculum learning} untuk \textit{CTC loss annealing} guna mencegah dominasi satu komponen pada fase awal pelatihan dan memastikan konvergensi yang stabil.
+    Pelatihan GAN dengan \textit{adversarial}, \textit{reconstruction}, dan \textit{recognition loss} secara simultan mengalami ketidakstabilan karena perbedaan skala dan dinamika konvergensi. Belum ada penelitian yang mengevaluasi \textit{curriculum learning} untuk penurunan bobot CTC \textit{loss} guna mencegah dominasi satu komponen pada fase awal pelatihan dan memastikan konvergensi yang stabil.
 
     % \item Kompleksitas Data dan Kurangnya Framework Evaluasi Komprehensif \\
     % CycleGAN menawarkan solusi pembelajaran tidak berpasangan namun mengalami mode collapse dan ketidakstabilan. Alur proses degradasi semi-sintetis sering tidak representatif terhadap degradasi alami dokumen historis. Benchmark standar (DIBCO) hanya mengevaluasi metrik visual tanpa metrik keterbacaan (CER/WER). Tidak ada standar evaluasi yang menggabungkan kualitas visual dan performa HTR secara terpadu.
@@ -182,7 +182,7 @@ Pertanyaan Penelitian Spesifik:
     Bagaimana strategi \textit{frozen recognizer} dengan integrasi \textit{CTC loss} dibandingkan dengan pendekatan pelatihan bersama dalam hal: (a) stabilitas gradien selama pelatihan, (b) performa keterbacaan teks yang dihasilkan, dan (c) efisiensi komputasi dalam proses optimisasi?
 
     \item Strategi Curriculum Learning: \\
-    Bagaimana merancang strategi temporal \textit{curriculum learning} untuk \textit{CTC loss annealing} yang memastikan konvergensi stabil dengan beberapa komponen loss (\textit{adversarial}, \textit{reconstruction}, \textit{recognition}) pada fase awal hingga akhir pelatihan?
+    Bagaimana merancang strategi temporal \textit{curriculum learning} untuk penurunan bobot CTC \textit{loss} yang memastikan konvergensi stabil dengan beberapa komponen loss (\textit{adversarial}, \textit{reconstruction}, \textit{recognition}) pada fase awal hingga akhir pelatihan?
 
     \item Optimasi Multi-Objektif: \\
     Bagaimana menentukan konfigurasi bobot akhir yang optimal untuk \textit{adversarial}, \textit{reconstruction}, dan \textit{recognition loss} guna mencapai keseimbangan terbaik antara kualitas visual (PSNR/SSIM) dan keterbacaan teks (CER/WER) pada hasil restorasi?
@@ -203,7 +203,7 @@ Mengembangkan kerangka kerja restorasi dokumen berbasis GAN dengan diskriminator
     Mengembangkan diskriminator dengan cabang visual dan tekstual untuk mengevaluasi koherensi gambar-teks. Melakukan evaluasi komparatif terhadap diskriminator hanya visual untuk mengukur kontribusinya pada kualitas restorasi.
 
     \item Mengintegrasikan CTC Loss dengan Strategi Frozen Recognizer: \\
-    Membangun mekanisme integrasi \textit{CTC loss} dari model HTR \textit{pre-trained} ke dalam fungsi objektif generator. Pendekatan ini menjaga stabilitas pelatihan dan mencegah \textit{catastrophic forgetting} dibandingkan pendekatan pelatihan bersama yang tidak stabil.
+    Membangun mekanisme integrasi \textit{CTC loss} dari model HTR pralatih ke dalam fungsi objektif generator. Pendekatan ini menjaga stabilitas pelatihan dan mencegah \textit{catastrophic forgetting} dibandingkan pendekatan pelatihan bersama yang tidak stabil.
 
     \item Mengoptimalkan Fungsi Loss Multi-Objektif: \\
     Merancang fungsi \textit{loss} gabungan yang mengintegrasikan \textit{adversarial}, \textit{reconstruction}, dan \textit{recognition loss} dengan bobot terkalibrasi. Mengimplementasikan strategi \textit{curriculum learning} untuk mengatasi ketidakstabilan pelatihan dan memastikan konvergensi yang stabil.
@@ -231,7 +231,7 @@ Untuk memastikan fokus dan ketercapaian tujuan penelitian, ditetapkan ruang ling
 
 
     \item Asumsi Penelitian: \\
-    Degradasi semi-sintetis dapat mewakili kondisi dokumen riil dalam batas tertentu untuk keperluan pelatihan, model HTR \textit{pre-trained} memiliki performa yang baik pada data bersih, dan peningkatan metrik CER/WER berkorelasi dengan keterbacaan teks praktis.
+    Degradasi semi-sintetis dapat mewakili kondisi dokumen riil dalam batas tertentu untuk keperluan pelatihan, model HTR pralatih memiliki performa yang baik pada data bersih, dan peningkatan metrik CER/WER berkorelasi dengan keterbacaan teks praktis.
 \end{enumerate}
 
 % ===================================Hipotesis Akhir=================================
@@ -310,7 +310,7 @@ Kontribusi Praktis:
     Menyediakan kerangka kerja praktis untuk mendukung program digitalisasi Arsip Nasional RI, memfasilitasi preservasi digital dan aksesibilitas informasi historis melalui restorasi dokumen dan transkripsi otomatis HTR yang lebih akurat.
 
     \item Kumpulan Data sebagai Sumber Daya dengan Ground Truth untuk Penelitian Lanjutan: \\
-    Menyediakan \textit{kumpulan data} dokumen terdegradasi semi-sintetis dengan \textit{ground truth data berpasangan} sebagai \textit{sumber daya} untuk mendukung penelitian dalam domain restorasi dokumen dan HTR.
+    Menyediakan kumpulan data dokumen terdegradasi semi-sintetis dengan \textit{ground truth} data berpasangan sebagai sumber daya untuk mendukung penelitian dalam domain restorasi dokumen dan HTR.
 \end{enumerate}
 
 \vspace{0.8em}

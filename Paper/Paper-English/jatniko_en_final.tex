@@ -1126,8 +1126,8 @@
 % author names and affiliations
 \author{Jatniko~Nur~Mutaqin
         and~I~Gusti~Bagus~Baskara~Nugraha,~\IEEEmembership{Member,~IEEE}% <-this % stops a space
-\thanks{Jatniko Nur Mutaqin is a graduate student in the Smart System Study Program, School of Electrical Engineering and Informatics, Bandung Institute of Technology, Bandung 40132, Indonesia, and works at the National Archives of the Republic of Indonesia, Jakarta, Indonesia (e-mail: 23523314@mahasiswa.itb.ac.id).}% <-this % stops a space
-\thanks{I Gusti Bagus Baskara Nugraha is a lecturer at the School of Electrical Engineering and Informatics, Bandung Institute of Technology, Bandung 40132, Indonesia (e-mail: baskara@stei.itb.ac.id).}% <-this % stops a space
+\thanks{Jatniko Nur Mutaqin is a Graduate Program in Informatics, School of Electrical Engineering and Informatics, Bandung Institute of Technology, Bandung 40132, Indonesia, and works at the National Archives of the Republic of Indonesia, Jakarta, Indonesia (e-mail: 23523314@mahasiswa.itb.ac.id).}% <-this % stops a space
+\thanks{I Gusti Bagus Baskara Nugraha is a associate professor at the School of Electrical Engineering and Informatics, Bandung Institute of Technology, Bandung 40132, Indonesia (e-mail: baskara@itb.ac.id).}% <-this % stops a space
 \thanks{Manuscript received [Date]; revised [Date].}}
 
 % The paper headers
@@ -1207,13 +1207,13 @@ Second, HTR integration in document restoration has been proposed by Souibgui \t
 
 Third, an evaluation gap exists—most benchmarks (DIBCO series) only provide visual ground truth without text transcriptions, making HTR impact validation infeasible without additional annotations. Datasets for 16th-18th century paleographic documents with authentic degradation are limited.
 
-This research addresses these limitations with the following contributions. Core contributions: (1) Frozen HTR recognizer strategy providing stable text-aware gradients without joint training instabilities ($p<0.001$); (2) Multi-component loss function optimization through systematic ablation studies identifying an optimal 4-component configuration (pixel, adversarial, perceptual, CTC). Methodological contributions: (3) Evaluation on authentic 16th-18th century paleographic manuscripts from the National Archives of Indonesia; (4) Ablation studies measuring each component's contribution, including the finding that dual-modal discriminator provides marginal contribution ($\Delta$PSNR +0.28~dB, $p>0.05$), confirming that training protocol and generator capacity are more critical than discriminator architectural complexity.
+This research addresses these limitations with the following contributions. Main contributions: (1) Frozen HTR recognizer strategy providing stable text-aware gradients without joint training instabilities ($p<0.001$); (2) Multi-component loss function optimization through systematic ablation studies identifying an optimal 4-component configuration (pixel, adversarial, perceptual, CTC). Methodological contributions: (3) Evaluation on authentic 16th-18th century paleographic manuscripts from the National Archives of Indonesia; (4) Ablation studies measuring each component's contribution, including the finding that dual-modal discriminator provides marginal contribution ($\Delta$PSNR +0.28~dB, $p>0.05$), confirming that training protocol and generator capacity are more critical than discriminator architectural complexity.
 
 \subsection{Research Contributions}
 
 This research proposes an HTR-oriented document restoration framework that explicitly optimizes text readability while maintaining visual quality. Based on empirical validation through systematic ablation studies, the research contributions are organized as follows:
 
-Core Contributions:
+Main Contributions:
 \begin{enumerate}
     \item Frozen HTR Recognizer Strategy: Using a frozen pre-trained HTR recognizer provides stable text-aware gradients without joint training instabilities. Ablation studies demonstrate significant impact on convergence stability ($p<0.001$) and preservation of recognition capabilities (see Section~V-B).
     
@@ -3110,7 +3110,7 @@ is currently pursuing a master's degree at Bandung Institute of Technology (ITB)
 \hfill
 \begin{minipage}[t]{0.48\textwidth}
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/penulis/fotoBhaskara.jpg}}]{I Gusti Bagus Baskara Nugraha}
-(Ir., S.T., M.T., Ph.D.) is an academic and researcher affiliated with Bandung Institute of Technology (ITB), specifically at the School of Electrical Engineering and Informatics. His expertise lies in Management Information Systems, with research topics including smart city platforms, blockchain-based systems, machine learning, and energy management systems. He has contributed to various academic papers and conferences, with leading research in blockchain, smart city technology, and artificial intelligence applications.
+(Ir., S.T., M.T., Ph.D.) is an academic and researcher affiliated with Bandung Institute of Technology (ITB), specifically at the School of Electrical Engineering and Informatics. His expertise lies in management information systems, trusted and trustworthy system. He has contributed to various academic papers and conferences, with leading research in blockchain, smart city technology, and artificial intelligence applications.
 \end{IEEEbiography}
 \end{minipage}
 
