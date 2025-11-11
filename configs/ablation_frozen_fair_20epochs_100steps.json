@@ -1,0 +1,98 @@
+{
+  "experiment_name": "ablation_frozen_fair_20epochs_100steps",
+  "description": "FAIR ABLATION STUDY: Frozen Recognizer with IDENTICAL config to joint training (20 epochs, 100 steps/epoch). Apple-to-apple comparison for scientific validity. Expected: Stable CER ~34-36%, no catastrophic forgetting.",
+
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/ablation_frozen_fair",
+  "sample_dir": "dual_modal_gan/outputs/samples_ablation_frozen_fair",
+
+  "resume": false,
+  "no_restore": true,
+
+  "epochs": 20,
+  "batch_size": 2,
+  "steps_per_epoch": 100,
+  "save_interval": 5,
+  "eval_interval": 2,
+  "seed": 42,
+  "max_checkpoints": 3,
+  "gpu_id": "0",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": false,
+    "patience": 10,
+    "min_delta": 0.1,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "combined",
+  "psnr_improvement_threshold": 2.0,
+  "cer_weight": 0.3,
+
+  "lr_g": 0.0001,
+  "lr_d": 0.0001,
+  "use_lr_schedule": false,
+
+  "pixel_loss_weight": 50.0,
+  "adv_loss_weight": 3.0,
+  "rec_feat_loss_weight": 0.0,
+  "ctc_loss_weight": 1.0,
+  "perceptual_loss_weight": 0.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 400.0,
+
+  "discriminator_mode": "predicted",
+
+  "adaptive_loss_balancing": false,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.1,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "experiment_notes": {
+    "purpose": "FAIR comparison baseline for joint training ablation study",
+    "design": "IDENTICAL configuration to joint training except recognizer_trainable=False",
+    "comparison_config": "configs/ablation_joint_training_vs_frozen.json",
+    "fairness_protocol": {
+      "epochs": "20 (SAME as joint)",
+      "steps_per_epoch": "100 (SAME as joint)",
+      "batch_size": "2 (SAME as joint)",
+      "optimizer_g": "Adam 1e-4 (SAME as joint)",
+      "optimizer_d": "Adam 1e-4 (SAME as joint)",
+      "loss_weights": "Identical pixel=50, adv=3, ctc=1",
+      "only_difference": "Recognizer frozen vs trainable"
+    },
+    "hypothesis": "Frozen recognizer prevents catastrophic forgetting while maintaining restoration quality",
+    "expected_outcome": {
+      "cer": "~34-36% (stable, near baseline 33.72%)",
+      "psnr": "~25-28 dB (reasonable for 20 epochs)",
+      "ssim": "~0.94-0.96",
+      "stability": "No gradient conflicts, smooth convergence"
+    },
+    "baseline_reference": {
+      "recognizer_standalone": "50 epochs unlimited steps, CER 33.72%",
+      "production_v3": "50 epochs unlimited steps, CER 34.9%, PSNR 30.74 dB"
+    },
+    "scientific_validity": "This ensures fair ablation study publishable in Q1 journal"
+  }
+}

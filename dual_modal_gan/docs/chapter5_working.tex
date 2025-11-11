@@ -1,0 +1,94 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[bahasa]{babel}
+\usepackage{mathptmx} % Times New Roman font
+\usepackage{microtype} % Untuk optimasi typography dan spacing
+\usepackage[none]{hyphenat} % Menonaktifkan hyphenation
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{setspace}
+\usepackage{geometry}
+\usepackage{tikz}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\hypersetup{
+    pdfencoding=auto,
+    pdftitle={Bab 5: Hasil dan Pembahasan},
+    pdfauthor={},
+    pdfsubject={Tesis},
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=blue,
+    pdfstartview=FitH,
+    bookmarksopen=true,
+    bookmarksnumbered=true
+}
+\usepackage{tocloft}
+\usepackage{caption}
+\usepackage{textcomp} % For special symbols
+\usepackage{booktabs} % Untuk tabel yang lebih baik
+
+% Aktifkan hyphenation Bahasa Indonesia dan optimasi spasi agar tidak keluar margin
+\lefthyphenmin=2
+\righthyphenmin=2
+\pretolerance=1000
+\tolerance=2000
+\emergencystretch=3em
+\hbadness=10000
+\vbadness=10000
+\hyphenpenalty=500
+\exhyphenpenalty=500
+\sloppy
+% Aktifkan microtype untuk Bahasa Indonesia
+\microtypesetup{activate=true,protrusion=true,expansion=true,tracking=true,kerning=true}
+\microtypecontext{spacing=nonfrench}
+
+% Pengaturan paragraf: tanpa indentasi dan jarak minimal antar paragraf
+\setlength{\parindent}{0pt} % Menghilangkan indentasi awal paragraf
+\setlength{\parskip}{0pt} % Tidak ada jarak antar paragraf
+
+% Pengaturan jarak untuk subsection
+\usepackage{titlesec}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{0pt}{0pt} % Tidak ada jarak sebelum atau setelah judul
+
+% Pengaturan margin: kiri 4cm, lainnya 3cm
+\geometry{
+    a4paper,
+    left=4cm,
+    right=3cm,
+    top=3cm,
+    bottom=3cm
+}
+
+% Pengaturan spasi
+\onehalfspacing
+
+% Pengaturan heading
+\renewcommand{\thesection}{\Roman{section}}
+renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+
+\begin{document}
+
+% ============================================================
+% BAB V: HASIL DAN PEMBAHASAN
+% ============================================================
+
+\vspace{2cm}
+\begin{center}
+{\fontsize{14}{16.8}\selectfont\textbf{BAB V. Hasil dan Pembahasan}}\\[1em]
+\end{center}
+\label{sec:hasil-pembahasan}
+\addcontentsline{toc}{section}{BAB V HASIL DAN PEMBAHASAN}
+\恢复了{section}{5}
+\恢复了{subsection}{0}
+\vspace{2em}
+
+Bab ini menyajikan hasil komprehensif dari eksperimen restorasi dokumen berbasis Generative Adversarial Network dengan Diskriminator Dual-Modal yang telah dikembangkan. Pembahasan mencakup analisis mendalam terhadap hasil training dengan strategi Frozen Recognizer vs Joint Training, evaluasi performa menggunakan metrik objektif dan subjektif, perbandingan dengan metode state-of-the-art, serta validasi hipotesis penelitian melalui analisis statistik. Semua eksperimen dilakukan dengan kontrol yang ketat untuk memastikan validitas dan reproduktifitas hasil.
+
+\end{document}

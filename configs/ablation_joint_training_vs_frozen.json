@@ -1,0 +1,98 @@
+{
+  "experiment_name": "ablation_joint_training_vs_frozen",
+  "description": "ABLATION STUDY: Joint-training vs Frozen Recognizer. Limited epochs (20) to test stability and catastrophic forgetting. Goal: Prove frozen approach superiority through empirical evidence.",
+
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/ablation_joint_training",
+  "sample_dir": "dual_modal_gan/outputs/samples_ablation_joint_training",
+
+  "resume": false,
+  "no_restore": true,
+
+  "epochs": 20,
+  "batch_size": 2,
+  "steps_per_epoch": 100,
+  "save_interval": 5,
+  "eval_interval": 2,
+  "seed": 42,
+  "max_checkpoints": 3,
+  "gpu_id": "0",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "joint_training_mode": true,
+  "joint_training_config": {
+    "enabled": true,
+    "recognizer_trainable": true,
+    "scenario": "S1",
+    "optimizer": "RMSProp",
+    "lr_recognizer": 0.0003,
+    "gradient_clip_recognizer": 1.0,
+    "ctc_weight_recognizer": 1.0,
+    "monitor_forgetting": true,
+    "baseline_cer": 33.72
+  },
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": true,
+    "curriculum_aware": false,
+    "patience": 10,
+    "min_delta": 0.1,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "combined",
+  "psnr_improvement_threshold": 2.0,
+  "cer_weight": 0.3,
+
+  "lr_g": 0.0001,
+  "lr_d": 0.0001,
+  "use_lr_schedule": false,
+
+  "pixel_loss_weight": 50.0,
+  "adv_loss_weight": 3.0,
+  "rec_feat_loss_weight": 0.0,
+  "ctc_loss_weight": 1.0,
+  "perceptual_loss_weight": 0.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 400.0,
+
+  "discriminator_mode": "predicted",
+
+  "adaptive_loss_balancing": false,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.1,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  },
+
+  "experiment_notes": {
+    "purpose": "Ablation study to validate frozen recognizer superiority",
+    "hypothesis": "Joint training causes: (1) gradient conflicts, (2) catastrophic forgetting (CER degradation from 33.72%), (3) training instability",
+    "expected_frozen_outcome": "Stable CER ~33-35%, smooth convergence, no recognizer degradation",
+    "expected_joint_outcome": "CER drift >40%, oscillations, gradient conflicts, potential mode collapse",
+    "metrics_to_track": [
+      "recognizer_cer_drift (from baseline 33.72%)",
+      "gradient_norm_variance (G, D, R)",
+      "loss_oscillation_frequency",
+      "convergence_stability_score"
+    ],
+    "reference": "Souibgui et al. - joint training with λ=1, β=10"
+  }
+}
