@@ -44,6 +44,7 @@
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(f)}{\ignorespaces {Combined Degradation}}}{2}{subfigure.1.6}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {I-B}}Research Contributions}{2}{subsection.1.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {I-C}}Research Hypothesis and Validation}{2}{subsection.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {I-D}}Paper Organization}{2}{subsection.1.4}\protected@file@percent }
 \citation{otsu1979threshold}
 \citation{sauvola2000adaptive}
 \citation{niblack1986introduction}
@@ -56,7 +57,6 @@
 \citation{souibgui2020degan}
 \citation{souibgui2022docent}
 \citation{souibgui2021enhance}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {I-D}}Paper Organization}{3}{subsection.1.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {II}Related Work}{3}{section.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Document Image Restoration and Enhancement}{3}{subsection.2.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {II-A}1}Classical Methods: Binarization and Thresholding}{3}{subsubsection.2.1.1}\protected@file@percent }
@@ -67,25 +67,29 @@
 \citation{shi2016crnn}
 \citation{bluche2017scan}
 \citation{michael2019evaluating,diaz2021rethinking}
+\citation{otsu1979threshold,sauvola2000adaptive}
+\citation{ronneberger2015unet}
+\citation{souibgui2020degan}
+\citation{souibgui2021enhance}
+\citation{souibgui2021enhance}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Handwritten Text Recognition Systems}{4}{subsection.2.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-D}}Gap Analysis and Positioning}{4}{subsection.2.4}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Comparison of Document Enhancement Approaches: evaluation of state-of-the-art methods based on visual quality, HTR awareness, dual-modal discriminator architecture, and loss function optimization. The proposed approach integrates all features for HTR-oriented document restoration, with relative contribution of each component validated through ablation studies (Sections V--VI).\relax }}{4}{table.caption.2}\protected@file@percent }
-\newlabel{table_comparison}{{I}{4}{Comparison of Document Enhancement Approaches: evaluation of state-of-the-art methods based on visual quality, HTR awareness, dual-modal discriminator architecture, and loss function optimization. The proposed approach integrates all features for HTR-oriented document restoration, with relative contribution of each component validated through ablation studies (Sections V--VI).\relax }{table.caption.2}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {III}Proposed Method}{4}{section.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Comparison of document enhancement approaches based on visual quality, HTR awareness, dual-modal discriminator, and loss optimization with component validation through ablation studies.\relax }}{4}{table.caption.2}\protected@file@percent }
+\newlabel{table_comparison}{{I}{4}{Comparison of document enhancement approaches based on visual quality, HTR awareness, dual-modal discriminator, and loss optimization with component validation through ablation studies.\relax }{table.caption.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Framework Overview}{4}{subsection.3.1}\protected@file@percent }
-\citation{souibgui2021enhance}
 \citation{zhang2018residual}
 \citation{woo2018cbam}
 \citation{lin2017fpn}
 \citation{chen2017deeplab}
 \citation{oktay2018attention}
 \citation{he2016deep}
+\citation{lin2017fpn}
+\citation{chen2017deeplab}
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces HTR-oriented document restoration framework with dual-modal discriminator and frozen HTR recognizer. Three main components: (1) Enhanced U-Net Generator for image restoration, (2) Dual-Modal Discriminator (CNN+BiLSTM) for bilateral visual-textual validation, (3) Frozen HTR Recognizer for HTR-aware gradients. Training uses curriculum learning with multi-component loss (pixel, perceptual, adversarial, recognition feature, HTR). Total trainable parameters: 108.3M (Generator 89.4M + Discriminator 18.9M), Frozen recognizer: 27.86M.\relax }}{5}{figure.caption.3}\protected@file@percent }
 \newlabel{fig:architecture_overview}{{2}{5}{HTR-oriented document restoration framework with dual-modal discriminator and frozen HTR recognizer. Three main components: (1) Enhanced U-Net Generator for image restoration, (2) Dual-Modal Discriminator (CNN+BiLSTM) for bilateral visual-textual validation, (3) Frozen HTR Recognizer for HTR-aware gradients. Training uses curriculum learning with multi-component loss (pixel, perceptual, adversarial, recognition feature, HTR). Total trainable parameters: 108.3M (Generator 89.4M + Discriminator 18.9M), Frozen recognizer: 27.86M.\relax }{figure.caption.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Generator Architecture: Enhanced U-Net with Residual Blocks}{5}{subsection.3.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-B}1}Network Specification}{5}{subsubsection.3.2.1}\protected@file@percent }
-\citation{lin2017fpn}
-\citation{chen2017deeplab}
 \citation{ronneberger2015unet}
 \citation{lin2017fpn}
 \citation{chen2017deeplab}
@@ -107,33 +111,34 @@
 \newlabel{eq:cross_text_proj}{{8}{8}{Architecture Specification}{equation.3.8}{}}
 \newlabel{eq:cross_text_att}{{9}{8}{Architecture Specification}{equation.3.9}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-C}2}Design Rationale}{8}{subsubsection.3.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-D}}Frozen HTR Recognizer Integration}{8}{subsection.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-D}1}Architecture and Training Configuration}{8}{subsubsection.3.4.1}\protected@file@percent }
 \citation{sanchez2016icfhr}
 \citation{sanchez2017icdar}
 \citation{johnson2016perceptual}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-D}}Frozen HTR Recognizer Integration}{9}{subsection.3.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-D}1}Architecture and Training Configuration}{9}{subsubsection.3.4.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-D}2}Benefits of Freezing Strategy}{9}{subsubsection.3.4.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-D}3}Feature Extraction and Loss Computation}{9}{subsubsection.3.4.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-E}}Multi-Component Loss Function}{9}{subsection.3.5}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-E}1}Adversarial Loss}{9}{subsubsection.3.5.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-E}2}Pixel-Level Reconstruction Loss}{9}{subsubsection.3.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-E}3}Perceptual Loss}{9}{subsubsection.3.5.3}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces Loss Weight Configuration: optimal weights from empirical grid search to balance visual quality with text readability on validation dataset\relax }}{10}{table.caption.8}\protected@file@percent }
 \newlabel{table_optimal_weights}{{IV}{10}{Loss Weight Configuration: optimal weights from empirical grid search to balance visual quality with text readability on validation dataset\relax }{table.caption.8}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-E}3}Perceptual Loss}{10}{subsubsection.3.5.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-E}4}Recognition Feature Loss}{10}{subsubsection.3.5.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-F}}Training Strategy}{10}{subsection.3.6}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-F}1}Curriculum Learning and Optimization Protocol}{10}{subsubsection.3.6.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-F}2}Stability Analysis and Regularization}{10}{subsubsection.3.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {III-F}2a}Technical Implementation Details}{10}{paragraph.3.6.2.1}\protected@file@percent }
 \citation{souibgui2021enhance,zhao2019document}
 \citation{souibgui2020degan}
 \@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Training convergence trajectory over 50 epochs: (a) Generator loss shows stable decrease without mode collapse, (b) PSNR increases reaching established targets, (c) SSIM achieves high values indicating structure preservation. Best model (marked by dashed vertical line and red star) selected based on combined PSNR-SSIM criteria. Smooth convergence curves validate effectiveness of proposed curriculum learning strategy.\relax }}{11}{figure.caption.9}\protected@file@percent }
 \newlabel{fig:convergence_analysis}{{5}{11}{Training convergence trajectory over 50 epochs: (a) Generator loss shows stable decrease without mode collapse, (b) PSNR increases reaching established targets, (c) SSIM achieves high values indicating structure preservation. Best model (marked by dashed vertical line and red star) selected based on combined PSNR-SSIM criteria. Smooth convergence curves validate effectiveness of proposed curriculum learning strategy.\relax }{figure.caption.9}{}}
-\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {III-F}2a}Technical Implementation Details}{11}{paragraph.3.6.2.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {III-F}2b}Early Stopping Note}{11}{paragraph.3.6.2.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {IV}Experimental Setup}{11}{section.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Datasets}{11}{subsection.4.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-A}1}Realistic Semi-Synthetic Dataset for Quantitative Evaluation}{11}{subsubsection.4.1.1}\protected@file@percent }
 \citation{perlin1985image}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {IV-A}1a}Dataset Split (Academic Protocol)}{12}{paragraph.4.1.1.1}\protected@file@percent }
 \newlabel{fig:synthetic_gt}{{6a}{12}{Subfigure 6a}{subfigure.6.1}{}}
 \newlabel{sub@fig:synthetic_gt}{{(a)}{a}{Subfigure 6a\relax }{subfigure.6.1}{}}
 \newlabel{fig:synthetic_deg}{{6b}{12}{Subfigure 6b}{subfigure.6.2}{}}
@@ -142,9 +147,9 @@
 \newlabel{fig:synthetic_examples}{{6}{12}{Realistic semi-synthetic dataset pair: (a) Ground truth from 16th--18th century ANRI documents showing authentic paleographic handwriting with stroke variation, ligatures, and historical writing styles that cannot be replicated by synthetic fonts, (b) Degraded image combines real historical degradation patterns (paper aging, organic stains from authentic archives) with controlled augmentation (bleed-through, blur), preserving realism of centuries-old document degradation while providing perfect pixel alignment for quantitative evaluation.\relax }{figure.caption.10}{}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Ground Truth Image - Authentic ANRI Paleographic Handwriting}}}{12}{subfigure.6.1}\protected@file@percent }
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Degraded Image - Combination of Real Historical Degradation + Augmentation}}}{12}{subfigure.6.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {IV-A}1a}Dataset Split (Academic Protocol)}{12}{paragraph.4.1.1.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {IV-A}1b}Computational Specifications}{12}{paragraph.4.1.1.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-A}2}Real Historical Documents Dataset (ANRI)}{12}{subsubsection.4.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {IV-A}2a}Test Dataset Characteristics (n=15)}{12}{paragraph.4.1.2.1}\protected@file@percent }
 \citation{souibgui2021enhance,souibgui2020degan}
 \citation{otsu1979threshold}
 \citation{sauvola2000adaptive}
@@ -153,19 +158,18 @@
 \citation{souibgui2021enhance}
 \citation{tensmeyer2017document}
 \citation{wang2004ssim}
-\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {IV-A}2a}Test Dataset Characteristics (n=15)}{13}{paragraph.4.1.2.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Baseline Methods and Evaluation Strategy}{13}{subsection.4.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-B}1}Classical Methods for Quantitative Comparison}{13}{subsubsection.4.2.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-B}2}State-of-the-Art Deep Learning Methods (Research Context)}{13}{subsubsection.4.2.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-B}3}Ablation Study as Component Validation}{13}{subsubsection.4.2.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Evaluation Metrics}{13}{subsection.4.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-C}1}Visual Quality Metrics}{13}{subsubsection.4.3.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-C}2}Artifact Detection Metrics (Secondary Monitoring)}{14}{subsubsection.4.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-C}2}Artifact Detection Metrics (Secondary Monitoring)}{13}{subsubsection.4.3.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-C}3}HTR Performance Metrics}{14}{subsubsection.4.3.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {IV-C}3a}Frozen Recognizer CER Baseline Clarification}{14}{paragraph.4.3.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {IV-C}3b}Statistical Reporting and Evaluation Protocol}{14}{paragraph.4.3.3.2}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Summary of CER Metrics Across Various Datasets and Conditions\relax }}{14}{table.caption.11}\protected@file@percent }
 \newlabel{table:cer_summary}{{V}{14}{Summary of CER Metrics Across Various Datasets and Conditions\relax }{table.caption.11}{}}
-\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {IV-C}3b}Statistical Reporting and Evaluation Protocol}{14}{paragraph.4.3.3.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {V}Results and Discussion}{14}{section.5}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Quantitative Results on Realistic Semi-Synthetic Test Set}{14}{subsection.5.1}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces Quantitative Results on Realistic Semi-Synthetic Test Set (n=712, constructed from authentic ANRI documents)\relax }}{15}{table.caption.12}\protected@file@percent }
@@ -177,24 +181,26 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Qualitative Evaluation on Real Historical Documents (ANRI)}{16}{subsection.5.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-B}1}Dataset and Evaluation Methodology}{16}{subsubsection.5.2.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-B}2}Qualitative Results and Systematic Observations}{16}{subsubsection.5.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {V-B}2a}Observations by Degradation Category (n=15 documents)}{16}{paragraph.5.2.2.1}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Validation metric trajectories with 95\% confidence intervals over 50 epochs (n=710): (a) PSNR reaches 30.91±0.42\nobreakspace  {}dB, (b) SSIM reaches 0.987±0.001, (c,d) CER and WER approach clean image baseline. Best model (epoch 44, red star) selected based on combined PSNR-CER criteria. Narrow confidence intervals indicate consistent performance. Final evaluation on test set: PSNR 30.74\nobreakspace  {}dB, SSIM 0.987, CER 34.9\% (Table\nobreakspace  {}\ref  {table_synthetic_results}).\relax }}{17}{figure.caption.14}\protected@file@percent }
 \newlabel{fig:validation_metrics}{{8}{17}{Validation metric trajectories with 95\% confidence intervals over 50 epochs (n=710): (a) PSNR reaches 30.91±0.42~dB, (b) SSIM reaches 0.987±0.001, (c,d) CER and WER approach clean image baseline. Best model (epoch 44, red star) selected based on combined PSNR-CER criteria. Narrow confidence intervals indicate consistent performance. Final evaluation on test set: PSNR 30.74~dB, SSIM 0.987, CER 34.9\% (Table~\ref {table_synthetic_results}).\relax }{figure.caption.14}{}}
-\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {V-B}2a}Observations by Degradation Category (n=15 documents)}{17}{paragraph.5.2.2.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-B}3}Performance Analysis Based on Input Contrast}{17}{subsubsection.5.2.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces Restoration Performance on ANRI Documents by Input Contrast Level (n=15)\relax }}{17}{table.caption.16}\protected@file@percent }
+\newlabel{table:anri_contrast_analysis}{{VII}{17}{Restoration Performance on ANRI Documents by Input Contrast Level (n=15)\relax }{table.caption.16}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Qualitative restoration on authentic 17th--18th century ANRI documents (n=15): each pair shows degraded input (left) and restored output (right). \textbf  {Row 1 (a--c):} high-contrast success cases with substantial background cleaning and text preservation. \textbf  {Row 2 (d--f):} challenging low-moderate contrast cases using conservative strategy to avoid artifacts.\relax }}{18}{figure.caption.15}\protected@file@percent }
 \newlabel{fig:anri_qualitative}{{9}{18}{Qualitative restoration on authentic 17th--18th century ANRI documents (n=15): each pair shows degraded input (left) and restored output (right). \textbf {Row 1 (a--c):} high-contrast success cases with substantial background cleaning and text preservation. \textbf {Row 2 (d--f):} challenging low-moderate contrast cases using conservative strategy to avoid artifacts.\relax }{figure.caption.15}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces Restoration Performance on ANRI Documents by Input Contrast Level (n=15)\relax }}{18}{table.caption.16}\protected@file@percent }
-\newlabel{table:anri_contrast_analysis}{{VII}{18}{Restoration Performance on ANRI Documents by Input Contrast Level (n=15)\relax }{table.caption.16}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-B}4}Expert Validation (Paleographic Assessment)}{18}{subsubsection.5.2.4}\protected@file@percent }
+\citation{landis1977}
+\citation{landis1977}
 \@writefile{lot}{\contentsline {table}{\numberline {VIII}{\ignorespaces Paleographic Expert Validation Results on ANRI Documents (n=15)\relax }}{19}{table.caption.17}\protected@file@percent }
 \newlabel{table:anri_expert_validation}{{VIII}{19}{Paleographic Expert Validation Results on ANRI Documents (n=15)\relax }{table.caption.17}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Degradation Level Correlation Analysis}{19}{subsection.5.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-C}1}Correlation Findings}{19}{subsubsection.5.3.1}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Degradation level correlation analysis on validation set (n=710): (a) strong negative correlation (Pearson r=--0.963, p<0.001) between SNR and CER improvement shows restoration more effective on heavily degraded documents, (b) PSNR vs post-restoration CER shows model brings all degradation levels close to clean image reference value (26.6\%, green line), (c) SSIM vs CER shows weak correlation indicating structural similarity not sole predictor for HTR accuracy, (d) before-after CER comparison shows majority of samples experience improvement (points below diagonal y=x, gray). Note: Data from validation set (n=710) with statistics PSNR 30.91±5.60 dB, CER 27.11±20.83\%, SSIM 0.987±0.014. Final evaluation on test set (n=712) reported in Table\nobreakspace  {}\ref  {table_synthetic_results}: PSNR 30.74 dB, CER 34.9\%, SSIM 0.987.\relax }}{20}{figure.caption.18}\protected@file@percent }
 \newlabel{fig:degradation_correlation}{{10}{20}{Degradation level correlation analysis on validation set (n=710): (a) strong negative correlation (Pearson r=--0.963, p<0.001) between SNR and CER improvement shows restoration more effective on heavily degraded documents, (b) PSNR vs post-restoration CER shows model brings all degradation levels close to clean image reference value (26.6\%, green line), (c) SSIM vs CER shows weak correlation indicating structural similarity not sole predictor for HTR accuracy, (d) before-after CER comparison shows majority of samples experience improvement (points below diagonal y=x, gray). Note: Data from validation set (n=710) with statistics PSNR 30.91±5.60 dB, CER 27.11±20.83\%, SSIM 0.987±0.014. Final evaluation on test set (n=712) reported in Table~\ref {table_synthetic_results}: PSNR 30.74 dB, CER 34.9\%, SSIM 0.987.\relax }{figure.caption.18}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-C}2}Implications for Historical Document Digitization}{20}{subsubsection.5.3.2}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {IX}{\ignorespaces Comparison of synthetic training data characteristics vs real ANRI documents: domain gap analysis between synthetic and authentic degradation.\relax }}{21}{table.caption.19}\protected@file@percent }
 \newlabel{table:synthetic_vs_real_comparison}{{IX}{21}{Comparison of synthetic training data characteristics vs real ANRI documents: domain gap analysis between synthetic and authentic degradation.\relax }{table.caption.19}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-C}2}Implications for Historical Document Digitization}{21}{subsubsection.5.3.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-C}3}Domain Shift Analysis: Synthetic vs Real}{21}{subsubsection.5.3.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {V-C}3a}Observed Domain Gap Effects}{21}{paragraph.5.3.3.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {V-C}3b}Generalization Analysis}{21}{paragraph.5.3.3.2}\protected@file@percent }
@@ -202,48 +208,48 @@
 \@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {V-C}4a}Current Evaluation Limitations}{21}{paragraph.5.3.4.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {V-C}4b}Future Work Plan}{21}{paragraph.5.3.4.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {V-C}4c}ANRI Evaluation Conclusion}{21}{paragraph.5.3.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-D}}Ablation Study}{21}{subsection.5.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-D}1}Discriminator Architecture Ablation}{21}{subsubsection.5.4.1}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {X}{\ignorespaces Discriminator Architecture Ablation Study on Validation Set (n=710): comparison of single CNN discriminator (baseline) against proposed dual-modal architecture to validate contribution of text branch and bilateral cross-attention mechanism to restoration quality (PSNR/SSIM) and HTR accuracy (CER). Both variants trained with identical configuration to isolate architectural impact.\relax }}{22}{table.caption.20}\protected@file@percent }
 \newlabel{table_ablation_discriminator}{{X}{22}{Discriminator Architecture Ablation Study on Validation Set (n=710): comparison of single CNN discriminator (baseline) against proposed dual-modal architecture to validate contribution of text branch and bilateral cross-attention mechanism to restoration quality (PSNR/SSIM) and HTR accuracy (CER). Both variants trained with identical configuration to isolate architectural impact.\relax }{table.caption.20}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-D}}Ablation Study}{22}{subsection.5.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-D}1}Discriminator Architecture Ablation}{22}{subsubsection.5.4.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-D}2}Incremental Ablation Study: Loss Component Contributions}{22}{subsubsection.5.4.2}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {XI}{\ignorespaces Incremental Ablation Study of Loss Components: contribution of each loss component to document restoration quality. Five experiment configurations with incremental component addition: (1) baseline pixel loss (L1), (2) addition of adversarial loss, (3) addition of perceptual loss (VGG-19), (4) addition of CTC loss for HTR awareness, (5) addition of recognizer feature loss. Each experiment is trained for 15 epochs with identical hyperparameters to isolate individual component impact. Evaluation metrics include PSNR (pixel quality), SSIM (structural similarity), and CER (HTR performance) on validation set ($n$=710 images).\relax }}{23}{table.caption.21}\protected@file@percent }
 \newlabel{table_ablation_loss}{{XI}{23}{Incremental Ablation Study of Loss Components: contribution of each loss component to document restoration quality. Five experiment configurations with incremental component addition: (1) baseline pixel loss (L1), (2) addition of adversarial loss, (3) addition of perceptual loss (VGG-19), (4) addition of CTC loss for HTR awareness, (5) addition of recognizer feature loss. Each experiment is trained for 15 epochs with identical hyperparameters to isolate individual component impact. Evaluation metrics include PSNR (pixel quality), SSIM (structural similarity), and CER (HTR performance) on validation set ($n$=710 images).\relax }{table.caption.21}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Incremental ablation study of loss components: (a--b) Absolute PSNR and SSIM metrics for each configuration, (c--d) Incremental improvement relative to pixel-only baseline. Error bars indicate standard deviation on validation set. Adversarial loss provides highest PSNR improvement (+0.27 dB), while perceptual loss optimizes structural similarity (+0.0016 SSIM).\relax }}{23}{figure.caption.22}\protected@file@percent }
 \newlabel{fig:ablation_comparison}{{11}{23}{Incremental ablation study of loss components: (a--b) Absolute PSNR and SSIM metrics for each configuration, (c--d) Incremental improvement relative to pixel-only baseline. Error bars indicate standard deviation on validation set. Adversarial loss provides highest PSNR improvement (+0.27 dB), while perceptual loss optimizes structural similarity (+0.0016 SSIM).\relax }{figure.caption.22}{}}
-\newlabel{sec:recfeat_analysis}{{\mbox  {V-D}3}{24}{In-Depth Analysis: Recognizer Feature Loss Ineffectiveness}{subsubsection.5.4.3}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-D}3}In-Depth Analysis: Recognizer Feature Loss Ineffectiveness}{24}{subsubsection.5.4.3}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {XII}{\ignorespaces Loss Component Magnitude Comparison: magnitude disparity analysis to validate weighting configuration. Shows raw values, applied weights, and weighted contributions for each component to total generator loss.\relax }}{24}{table.caption.23}\protected@file@percent }
 \newlabel{table_loss_magnitude}{{XII}{24}{Loss Component Magnitude Comparison: magnitude disparity analysis to validate weighting configuration. Shows raw values, applied weights, and weighted contributions for each component to total generator loss.\relax }{table.caption.23}{}}
+\newlabel{sec:recfeat_analysis}{{\mbox  {V-D}3}{24}{In-Depth Analysis: Recognizer Feature Loss Ineffectiveness}{subsubsection.5.4.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-D}3}In-Depth Analysis: Recognizer Feature Loss Ineffectiveness}{24}{subsubsection.5.4.3}\protected@file@percent }
 \citation{kirkpatrick2017overcoming}
 \citation{souibgui2022,kang2021pay}
 \citation{kirkpatrick2017overcoming}
-\citation{souibgui2022}
-\citation{souibgui2022,kang2021pay}
-\newlabel{sec:exp04_optimal}{{\mbox  {V-D}4}{25}{Optimal Configuration Analysis: Why Experiment 04 is the Best Choice}{subsubsection.5.4.4}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-D}4}Optimal Configuration Analysis: Why Experiment 04 is the Best Choice}{25}{subsubsection.5.4.4}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {XIII}{\ignorespaces Computational Comparison: Experiment 04 vs Experiment 05\relax }}{25}{table.caption.24}\protected@file@percent }
 \newlabel{table_exp04_computational}{{XIII}{25}{Computational Comparison: Experiment 04 vs Experiment 05\relax }{table.caption.24}{}}
+\newlabel{sec:exp04_optimal}{{\mbox  {V-D}4}{25}{Optimal Configuration Analysis: Why Experiment 04 is the Best Choice}{subsubsection.5.4.4}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-D}4}Optimal Configuration Analysis: Why Experiment 04 is the Best Choice}{25}{subsubsection.5.4.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {XIV}{\ignorespaces Comparative Analysis of HTR Recognizer Integration Strategies\relax }}{25}{table.caption.25}\protected@file@percent }
+\newlabel{table_ablation_recognizer_strategy}{{XIV}{25}{Comparative Analysis of HTR Recognizer Integration Strategies\relax }{table.caption.25}{}}
 \newlabel{sec:ablation}{{\mbox  {V-D}5}{25}{Justification for HTR Recognizer Integration Strategy}{subsubsection.5.4.5}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-D}5}Justification for HTR Recognizer Integration Strategy}{25}{subsubsection.5.4.5}\protected@file@percent }
+\citation{souibgui2022}
+\citation{souibgui2022,kang2021pay}
 \citation{souibgui2022,kang2021pay}
 \citation{souibgui2022}
 \citation{souibgui2022,kang2021pay}
 \citation{souibgui2022}
-\@writefile{lot}{\contentsline {table}{\numberline {XIV}{\ignorespaces Comparative Analysis of HTR Recognizer Integration Strategies\relax }}{26}{table.caption.25}\protected@file@percent }
-\newlabel{table_ablation_recognizer_strategy}{{XIV}{26}{Comparative Analysis of HTR Recognizer Integration Strategies\relax }{table.caption.25}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-E}}Quantitative Analysis of Failure Cases}{26}{subsection.5.5}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {XV}{\ignorespaces Failure Pattern Distribution on Test Set ($n=712$)\relax }}{27}{table.caption.26}\protected@file@percent }
 \newlabel{table_failure_distribution}{{XV}{27}{Failure Pattern Distribution on Test Set ($n=712$)\relax }{table.caption.26}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-F}}Research Hypothesis Validation}{27}{subsection.5.6}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {VI}Discussion}{27}{section.6}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-A}}Dual-Modal Architecture Contribution and Training Protocol Insights}{27}{subsection.6.1}\protected@file@percent }
+\citation{souibgui2021enhance}
 \@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Failure pattern distribution (left) and severity levels (right) on test set ($n=712$). Paleographic ligatures dominate (62.9\%) but with moderate CER (35.2\%), while rare cases (faded text, symbol artifacts) show severe failure (CER$\approx $100\%), indicating that the majority of errors originate from paleographic handwriting complexity, not total restoration failure.\relax }}{28}{figure.caption.27}\protected@file@percent }
 \newlabel{fig:failure_distribution}{{12}{28}{Failure pattern distribution (left) and severity levels (right) on test set ($n=712$). Paleographic ligatures dominate (62.9\%) but with moderate CER (35.2\%), while rare cases (faded text, symbol artifacts) show severe failure (CER$\approx $100\%), indicating that the majority of errors originate from paleographic handwriting complexity, not total restoration failure.\relax }{figure.caption.27}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {XVI}{\ignorespaces Hypothesis Testing Results on Test Set ($n=712$, $\alpha =0.05$ for H1, $\alpha =0.0167$ for H2)\footnotemark \relax }}{28}{table.caption.28}\protected@file@percent }
 \newlabel{table_hypothesis_test}{{XVI}{28}{Hypothesis Testing Results on Test Set ($n=712$, $\alpha =0.05$ for H1, $\alpha =0.0167$ for H2)\protect \footnotemark \relax }{table.caption.28}{}}
-\citation{souibgui2021enhance}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-B}}Frozen Recognizer Strategy and Training Stability}{29}{subsection.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-B}}Frozen Recognizer Strategy and Training Stability}{28}{subsection.6.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-C}}Loss Weight Optimization Insights}{29}{subsection.6.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-D}}Generalization to Real Historical Documents}{29}{subsection.6.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-E}}Practical Deployment Considerations}{29}{subsection.6.5}\protected@file@percent }
@@ -253,6 +259,7 @@
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {VI-G}2}Hallucination Detection and Mitigation}{30}{subsubsection.6.7.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {VI-G}3}Training Data Bias}{30}{subsubsection.6.7.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {VI-G}4}Recommendations for Practitioners}{30}{subsubsection.6.7.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VII}Conclusion}{30}{section.7}\protected@file@percent }
 \bibstyle{IEEEtran}
 \bibcite{otsu1979threshold}{1}
 \bibcite{sauvola2000adaptive}{2}
@@ -285,12 +292,12 @@
 \bibcite{kirkpatrick2017overcoming}{29}
 \bibcite{souibgui2022}{30}
 \bibcite{kang2021pay}{31}
-\@writefile{toc}{\contentsline {section}{\numberline {VII}Conclusion}{31}{section.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{References}{31}{section*.29}\protected@file@percent }
 \bibcite{he2016deep}{32}
 \bibcite{hochreiter1997lstm}{33}
 \bibcite{vaswani2017attention}{34}
 \bibcite{pratikakis2016hdibco}{35}
+\bibcite{landis1977}{36}
+\@writefile{toc}{\contentsline {section}{References}{31}{section*.29}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{Biographies}{32}{IEEEbiography.0}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{Jatniko Nur Mutaqin}{32}{IEEEbiography.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{I Gusti Bagus Baskara Nugraha}{32}{IEEEbiography.2}\protected@file@percent }
