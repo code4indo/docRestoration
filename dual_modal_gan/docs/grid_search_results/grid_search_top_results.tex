@@ -1,0 +1,24 @@
+% Mini Grid Search Results - Two-Stage Approach
+
+\begin{table}[H]
+\centering
+\caption{Mini Grid Search: Top 10 Konfigurasi Loss Weights}
+\label{tab:mini-grid-search}
+\footnotesize
+\begin{tabular}{cccccccccc}
+\hline
+\textbf{Rank} & \textbf{Px} & \textbf{Adv} & \textbf{Perc} & \textbf{CTC} & \textbf{RecF} & \textbf{PSNR} & \textbf{CER} & \textbf{Score} & \textbf{Status} \\
+\hline
+1 & 100 & 3.0 & 1.0 & 0.15 & 16.0 & 11.39 & 86.8\% & -5.97 & \textbf{Best} \\
+2 & 100 & 1.5 & 0.5 & 0.07 & 0.0 & 4.17 & 84.3\% & -12.69 &  \\
+3 & 100 & 6.0 & 1.0 & 0.30 & 0.0 & 5.17 & 89.5\% & -12.73 &  \\
+4 & 50 & 6.0 & 0.5 & 0.30 & 16.0 & 5.90 & 96.2\% & -13.34 &  \\
+5 & 100 & 1.5 & 2.0 & 0.07 & 16.0 & 5.06 & 98.4\% & -14.62 &  \\
+6 & 25 & 1.5 & 2.0 & 0.07 & 16.0 & 3.57 & 93.8\% & -15.19 &  \\
+7 & 25 & 6.0 & 0.5 & 0.30 & 16.0 & 3.61 & 97.7\% & -15.93 &  \\
+8 & 100 & 6.0 & 0.5 & 0.30 & 16.0 & 2.38 & 94.3\% & -16.47 &  \\
+9 & 100 & 1.5 & 1.0 & 0.07 & 8.0 & 3.33 & 99.6\% & -16.59 &  \\
+10 & 25 & 3.0 & 2.0 & 0.15 & 0.0 & 3.23 & 99.2\% & -16.61 &  \\
+\hline
+\multicolumn{10}{l}{\footnotesize Strategic sampling: 27 configs covering all 5 components (Orthogonal Array)} \\
+\multicolumn{10}{l}{\footnotesize Score = PSNR - 0.2×CER×100 (higher better)} \\

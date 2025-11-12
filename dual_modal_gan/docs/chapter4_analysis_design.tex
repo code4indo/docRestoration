@@ -197,7 +197,19 @@ Total Parameter & 21.8M (konfigurasi optimal)\textsuperscript{*} \\
 
 Penelitian ini mengintegrasikan \textit{recognizer} teks praterlatih dengan strategi pembekuan bobot (\textit{frozen recognizer}) untuk memberikan gradien sadar-teks yang stabil tanpa risiko \textit{catastrophic forgetting}. Berbeda dengan pendekatan \textit{joint training} pada ERB-MultiTask~\cite{erb2021}, komponen \textit{Recognizer} (R) berfungsi sebagai evaluator objektif yang menghasilkan distribusi probabilitas karakter untuk: (1) \textit{input} teks bagi \textit{Discriminator dual-modal} dalam menilai koherensi visual-tekstual, dan (2) kalkulasi \textit{CTC Loss} dan \textit{Recognition Feature Loss} untuk mengukur keterbacaan hasil restorasi.
 
-Strategi pembekuan memberikan keuntungan: stabilitas pelatihan tanpa konflik gradien antara \textit{generator} dan \textit{recognizer}, efisiensi komputasi dengan membekukan 27.86M parameter, konsistensi metrik CER/WER sebagai evaluasi objektif, pencegahan \textit{catastrophic forgetting} pada kemampuan pengenalan, serta optimasi terfokus pada peningkatan kualitas visual citra untuk keterbacaan (bukan adaptasi \textit{recognizer} pada citra berkualitas rendah).
+\paragraph{Mekanisme Pembekuan dan Pencegahan Kompetisi Gradien}
+
+Strategi pembekuan bobot \textit{recognizer} dirancang untuk mengatasi masalah fundamental pada \textit{joint training}: kompetisi gradien yang destruktif antara dua tujuan yang berlawanan. Dalam \textit{joint training}, generator berusaha menghasilkan citra yang mudah dibaca (untuk menurunkan CTC \textit{loss}), sementara \textit{recognizer} secara simultan dilatih untuk mempertahankan akurasi pada citra bersih \textit{ground truth}. Konflik ini menyebabkan gradien yang berlawanan arah mengalir ke kedua komponen, mengakibatkan ketidakstabilan pelatihan dan \textit{catastrophic forgetting} pada \textit{recognizer}.
+
+Dengan membekukan bobot \textit{recognizer} (total 27.86M parameter), konflik gradien ini dieliminasi sepenuhnya. Generator menerima sinyal CTC \textit{loss} yang konsisten dari \textit{recognizer} yang stabil, memungkinkan optimasi terfokus pada peningkatan kualitas visual citra untuk keterbacaan—bukan adaptasi \textit{recognizer} pada citra berkualitas rendah. Mekanisme ini memastikan bahwa: (1) \textit{recognizer} mempertahankan kemampuan pengenalan yang telah dipelajari selama pra-pelatihan, (2) generator menerima gradien sadar-teks yang objektif dan konsisten, dan (3) pelatihan mencapai stabilitas tanpa osilasi atau \textit{mode collapse}.
+
+\paragraph{Keuntungan Strategi Frozen Recognizer}
+
+Strategi pembekuan memberikan keuntungan teknis dan operasional: (a) \textbf{stabilitas pelatihan} tanpa konflik gradien antara \textit{generator} dan \textit{recognizer}, (b) \textbf{efisiensi komputasi} dengan membekukan 27.86M parameter (pengurangan 61.6\% parameter \textit{trainable} vs \textit{joint training} yang melatih $\sim$45.3M parameter), (c) \textbf{konsistensi metrik} CER/WER sebagai evaluasi objektif, (d) \textbf{pencegahan \textit{catastrophic forgetting}} pada kemampuan pengenalan, dan (e) \textbf{optimasi terfokus} pada peningkatan kualitas visual citra untuk keterbacaan.
+
+Validasi empiris (Bab~V.6.3) menunjukkan bahwa \textit{frozen recognizer} mempertahankan CER 31.63\% (degradasi moderat +5.06\% dari \textit{baseline} pra-pelatihan 26.57\%), sementara \textit{joint training} mengalami \textit{catastrophic forgetting} total dengan CER 100.00\% (degradasi +73.43\%), membuktikan keefektifan strategi pembekuan untuk domain dokumen paleografi historis.
+
+\paragraph{Spesifikasi Arsitektur}
 
 Arsitektur hibrida CNN-Transformer terdiri dari: CNN \textit{Backbone} 8-lapisan (4 tahap, 64$\rightarrow$512 kanal), \textit{Transformer Encoder} 6-lapisan (8 \textit{attention heads}, dimensi 512), dan \textit{CTC Output Layer} untuk prediksi urutan (95 karakter). Total 27.86M parameter dibekukan selama pelatihan GAN. Justifikasi pemilihan arsitektur dibahas pada Bab II.3.4; \textit{recognizer} dilatih pada dokumen ANRI era kolonial abad 16--18.
 

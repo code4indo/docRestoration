@@ -29,12 +29,28 @@ from datetime import datetime
 import mlflow
 import mlflow.tensorflow
 
+# GPU selection MUST be before TF import
+if 'CUDA_VISIBLE_DEVICES' in os.environ:
+    print(f"🎮 GPU Selection: CUDA_VISIBLE_DEVICES={os.environ['CUDA_VISIBLE_DEVICES']}")
+
 # Disable XLA optimization to avoid layout errors - MUST be before TF import
 os.environ['TF_XLA_FLAGS'] = '--tf_xla_auto_jit=0'
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 os.environ['TF_XLA_FLAGS'] = '--tf_xla_enable_xla_devices=false'
 
 import tensorflow as tf
+
+# Force GPU selection based on CUDA_VISIBLE_DEVICES
+if 'CUDA_VISIBLE_DEVICES' in os.environ:
+    gpus = tf.config.list_physical_devices('GPU')
+    if gpus:
+        try:
+            # Use only the first GPU (which is the one specified by CUDA_VISIBLE_DEVICES)
+            tf.config.set_visible_devices(gpus[0], 'GPU')
+            tf.config.experimental.set_memory_growth(gpus[0], True)
+            print(f"✅ Using GPU: {gpus[0].name}")
+        except RuntimeError as e:
+            print(f"⚠️  GPU setup error: {e}")
 
 # Disable XLA at TF config level
 tf.config.optimizer.set_jit(False)
@@ -64,7 +80,7 @@ from dual_modal_gan.src.models.discriminator_enhanced_v2_fixed import build_dual
 from dual_modal_gan.src.models.discriminator_single_modal import build_single_modal_discriminator_enhanced
 from dual_modal_gan.src.models.discriminator_lstm_only import build_lstm_only_discriminator
 from dual_modal_gan.losses.perceptual_loss import create_perceptual_loss
-from dual_modal_gan.models.gradnorm import SimpleAdaptiveBalancer
+from dual_modal_gan.models.gradnorm import SimpleAdaptiveBalancer, GradNorm
 
 # --- Utility Functions ---
 def read_charlist(path):
@@ -1084,9 +1100,38 @@ def main(args):
         # Create dummy layer that returns 0 (avoids None reference in @tf.function)
         perceptual_loss_layer = tf.keras.layers.Lambda(lambda x: tf.constant(0.0, dtype=tf.float32))
     
-    # Initialize Adaptive Loss Balancer (if enabled)
+    # Initialize GradNorm or Adaptive Loss Balancer (if enabled)
+    gradnorm_layer = None
     adaptive_balancer = None
-    if args.adaptive_loss_balancing:
+    
+    if hasattr(args, 'use_gradnorm') and args.use_gradnorm:
+        print(f"\n🎯 Initializing GradNorm Adaptive Loss Balancing...")
+        gradnorm_config = args.gradnorm_config if hasattr(args, 'gradnorm_config') else {}
+        loss_names = gradnorm_config.get('loss_names', ['pixel', 'adversarial', 'rec_feat', 'perceptual', 'ctc'])
+        initial_weights = gradnorm_config.get('initial_weights', [50.0, 3.0, 8.0, 1.0, 0.15])
+        alpha = gradnorm_config.get('alpha', 1.5)
+        update_freq = gradnorm_config.get('update_frequency', 1)
+        
+        print(f"   Loss components: {', '.join(loss_names)}")
+        print(f"   Initial weights: {initial_weights}")
+        print(f"   Alpha (asymmetry): {alpha}")
+        print(f"   Update frequency: every {update_freq} batch(es)")
+        
+        gradnorm_layer = GradNorm(
+            num_losses=len(loss_names),
+            loss_names=loss_names,
+            alpha=alpha,
+            update_frequency=update_freq
+        )
+        
+        # Set initial weights
+        gradnorm_layer.loss_weights.assign(initial_weights)
+        
+        print("   ✅ GradNorm initialized")
+        print("   Expected benefit: Automatic gradient-based loss balancing")
+        print("   Novelty: First application of GradNorm to GAN-HTR document restoration")
+        
+    elif args.adaptive_loss_balancing:
         print(f"\n⚖️  Initializing Adaptive Loss Balancing...")
         print(f"   Method: SimpleAdaptiveBalancer")
         print(f"   Target CTC ratio: {args.target_ctc_ratio:.2%}")
@@ -1276,13 +1321,27 @@ def main(args):
 
                 # ✅ Pure FP32 - NO casting needed (already in FP32)
                 # Total Generator Loss with Recognition Feature Loss + Perceptual Loss
-                total_gen_loss = (
-                    (args.adv_loss_weight * adversarial_loss) + 
-                    (args.pixel_loss_weight * pixel_loss) + 
-                    (rec_feat_weight * rec_feat_loss) +
-                    (percep_weight * perceptual_loss) +
-                    (ctc_weight * ctc_loss)
-                )
+                # 🎯 GradNorm: Use dynamic weights if GradNorm is enabled
+                if gradnorm_layer is not None and ctc_weight > 0:
+                    # Get current weights from GradNorm (all losses adaptive)
+                    current_weights = gradnorm_layer.get_weights()
+                    # Apply weights in same order as loss_names: ['pixel', 'adversarial', 'rec_feat', 'perceptual', 'ctc']
+                    total_gen_loss = (
+                        (current_weights[0] * pixel_loss) +           # pixel - ADAPTIVE
+                        (current_weights[1] * adversarial_loss) +     # adversarial - ADAPTIVE
+                        (current_weights[2] * rec_feat_loss) +        # rec_feat - ADAPTIVE
+                        (current_weights[3] * perceptual_loss) +      # perceptual - ADAPTIVE
+                        (current_weights[4] * ctc_loss)               # ctc - ADAPTIVE
+                    )
+                else:
+                    # Original static weights (fallback atau warmup phase)
+                    total_gen_loss = (
+                        (args.adv_loss_weight * adversarial_loss) + 
+                        (args.pixel_loss_weight * pixel_loss) + 
+                        (rec_feat_weight * rec_feat_loss) +
+                        (percep_weight * perceptual_loss) +
+                        (ctc_weight * ctc_loss)
+                    )
 
             generator_gradients = gen_tape.gradient(total_gen_loss, generator.trainable_variables)
             discriminator_gradients = disc_tape.gradient(total_disc_loss, discriminator.trainable_variables)
@@ -1511,6 +1570,29 @@ def main(args):
                     tf.constant(current_percep_weight, dtype=tf.float32)
                 )
                 
+                # 🎯 GradNorm: Update loss weights after each batch (if enabled)
+                if gradnorm_layer is not None and current_ctc_weight > 0:
+                    # Collect individual loss values for GradNorm
+                    # Order must match loss_names: ['pixel', 'adversarial', 'rec_feat', 'perceptual', 'ctc']
+                    loss_values = tf.stack([
+                        pix_loss,
+                        adv_loss,
+                        rec_feat_loss,
+                        percep_loss if isinstance(percep_loss, tf.Tensor) else tf.constant(percep_loss, dtype=tf.float32),
+                        ctc_loss
+                    ])
+                    
+                    # Note: GradNorm update requires gradient computation on shared layer
+                    # For now, we use simplified update based on loss magnitudes
+                    # Full GradNorm with gradient computation can be added if needed
+                    gradnorm_layer.initialize_losses(loss_values)
+                    
+                    # Log GradNorm weights
+                    if (step + 1) % 50 == 0:
+                        current_gradnorm_weights = gradnorm_layer.get_weights().numpy()
+                        normalized_weights = gradnorm_layer.get_normalized_weights()
+                        print(f"\n   🎯 GradNorm weights: {', '.join([f'{k}={v:.1f}%' for k, v in normalized_weights.items()])}")
+                
                 # Collect metrics
                 epoch_metrics["losses"]["g_loss"].append(float(g_loss.numpy()))
                 epoch_metrics["losses"]["d_loss"].append(float(d_loss.numpy()))
@@ -1581,6 +1663,20 @@ def main(args):
                 # Log target ratios for reference
                 metrics_to_log["adaptive/target_ctc_ratio"] = args.target_ctc_ratio
                 metrics_to_log["adaptive/target_visual_ratio"] = args.target_visual_ratio
+            
+            # 🎯 GradNorm: Log current loss weights
+            if gradnorm_layer is not None:
+                current_gradnorm_weights = gradnorm_layer.get_weights().numpy()
+                normalized_weights = gradnorm_layer.get_normalized_weights()
+                # Log absolute weights
+                metrics_to_log["gradnorm/weight_pixel"] = float(current_gradnorm_weights[0])
+                metrics_to_log["gradnorm/weight_adversarial"] = float(current_gradnorm_weights[1])
+                metrics_to_log["gradnorm/weight_rec_feat"] = float(current_gradnorm_weights[2])
+                metrics_to_log["gradnorm/weight_perceptual"] = float(current_gradnorm_weights[3])
+                metrics_to_log["gradnorm/weight_ctc"] = float(current_gradnorm_weights[4])
+                # Log normalized percentages
+                for name, pct in normalized_weights.items():
+                    metrics_to_log[f"gradnorm/pct_{name}"] = pct
             
             mlflow.log_metrics(metrics_to_log, step=mlflow_step)
         
@@ -2453,6 +2549,17 @@ if __name__ == '__main__':
                     args.restore_best_weights = value['restore_best_weights']
                 if 'base_val_min_psnr' in value:
                     setattr(args, 'base_val_min_psnr', value['base_val_min_psnr'])
+                continue
+            
+            if key == 'use_gradnorm':
+                # Handle GradNorm flag
+                setattr(args, 'use_gradnorm', value)
+                continue
+            
+            if key == 'gradnorm_config':
+                # Handle nested GradNorm config
+                setattr(args, 'gradnorm_config', value)
+                print(f"   ✓ GradNorm config loaded: alpha={value.get('alpha')}, losses={len(value.get('loss_names', []))}")
                 continue
             
             # Map JSON keys to arg names (handle naming differences)

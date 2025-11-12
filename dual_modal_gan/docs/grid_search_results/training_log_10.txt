@@ -1,0 +1,499 @@
+2025-11-12 12:27:11.182342: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:477] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1762925231.199369 1661926 cuda_dnn.cc:8310] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+E0000 00:00:1762925231.204572 1661926 cuda_blas.cc:1418] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2025-11-12 12:27:11.221796: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+I0000 00:00:1762925233.239910 1661926 gpu_device.cc:2022] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 14268 MB memory:  -> device: 0, name: NVIDIA RTX A4000, pci bus id: 0000:61:00.0, compute capability: 8.6
+2025-11-12 12:27:13.274203: I tensorflow/core/kernels/data/tf_record_dataset_op.cc:370] TFRecordDataset `buffer_size` is unspecified, default to 262144
+2025-11-12 12:27:15.125398: I tensorflow/core/framework/local_rendezvous.cc:405] Local rendezvous is aborting with status: OUT_OF_RANGE: End of sequence
+/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/.venv/lib/python3.11/site-packages/keras/src/layers/activations/leaky_relu.py:41: UserWarning: Argument `alpha` is deprecated. Use `negative_slope` instead.
+  warnings.warn(
+/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/.venv/lib/python3.11/site-packages/keras/src/layers/layer.py:970: UserWarning: Layer 'self_attention' (of type SelfAttentionText) was passed an input with a mask attached to it. However, this layer does not support masking and will therefore destroy the mask information. Downstream layers will not see the mask.
+  warnings.warn(
+🎮 GPU Selection: CUDA_VISIBLE_DEVICES=1
+✅ Using GPU: /physical_device:GPU:0
+✅ Pure FP32 precision enabled for training stability
+   (FP16 disabled: Required for CTC loss numerical stability)
+
+📄 Loading configuration from JSON: dual_modal_gan/docs/grid_search_results/config_10.json
+   ✓ experiment_name: mini_grid_search_10
+   ✓ generator_version: enhanced
+   ✓ discriminator_version: enhanced_v2_fixed
+   ✓ tfrecord_path: dual_modal_gan/data/dataset_gan.tfrecord
+   ✓ charset_path: real_data_preparation/real_data_charlist.txt
+   ✓ recognizer_weights: /home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5
+   ✓ checkpoint_dir: dual_modal_gan/checkpoints/mini_grid_search_10
+   ✓ sample_dir: dual_modal_gan/outputs/mini_grid_search_10
+   ✓ resume: False
+   ✓ no_restore: True
+   ✓ epochs: 3
+   ✓ batch_size: 4
+   ✓ steps_per_epoch: 20
+   ✓ save_interval: 10
+   ✓ eval_interval: 1
+   ✓ seed: 42
+   ✓ max_checkpoints: 5
+   ✓ gpu_id: 0
+   ✓ train_split: 0.7
+   ✓ val_split: 0.15
+   ✓ early_stopping_metric: combined
+   ✓ psnr_improvement_threshold: 2.0
+   ✓ cer_weight: 0.2
+   ✓ lr_g: 0.0002
+   ✓ lr_d: 0.0002
+   ✓ use_lr_schedule: False
+   ✓ warmup_epochs: 0
+   ✓ annealing_epochs: 0
+   ✓ pixel_loss_weight: 50.0
+   ✓ adv_loss_weight: 1.5
+   ✓ rec_feat_loss_weight: 0.0
+   ✓ ctc_loss_weight: 0.075
+   ✓ perceptual_loss_weight: 0.5
+   ✓ gradient_clip_norm: 1.0
+   ✓ ctc_loss_clip_max: 400.0
+   ✓ discriminator_mode: predicted
+   ✓ adaptive_loss_balancing: True
+   ✓ target_ctc_ratio: 0.4
+   ✓ target_visual_ratio: 0.6
+   ✓ adaptation_rate: 0.08
+✅ Configuration loaded from JSON
+✅ GPU 0 configured exclusively: /physical_device:GPU:0
+--- Configuring to use GPU: 0 ---
+--- Dual-Modal GAN-HTR Training (Pure FP32 - OPTIMIZED) ---
+    Version: train32.py (Perfected)
+    Precision: Pure FP32 (NO mixed precision)
+    Optimized for: Balanced loss, CTC stability, visual quality
+--- Random seeds set to 42 for reproducibility ---
+Running with strategy: <tensorflow.python.distribute.distribute_lib._DefaultDistributionStrategy object at 0x71fb5f5c0b90>
+
+[Phase 1/6] Loading Datasets and Charset...
+Charset loaded: 109 characters (including blank token)
+
+📊 Dataset Split (Academic Protocol):
+   Total samples: 4739
+   Train:      3317 samples (70%) - for learning
+   Validation: 710 samples (15%) - for hyperparameter tuning
+   Test:       712 samples (15%) - for FINAL evaluation (LOCKED)
+   ⚠️  Test set should NEVER be used during training!
+Dataset created: 3317 training, 710 validation, 712 test samples.
+⚠️  Test set is LOCKED - will only be evaluated after training completion!
+
+   Standard validation mode (single dataset)
+
+[Phase 2/6] Building Models...
+   ✅ Using ENHANCED generator (U-Net with Residual Blocks and Attention)
+   🔧 Loading recognizer for CTC/RecFeat losses...
+[Recognizer Fixed] Creating HTR model for 108 characters...
+[Recognizer Fixed] Architecture: 6 layers, 8 heads, FFN dim 2048, dropout 0.2
+[Recognizer Fixed] FIX APPLIED: Layer name changed to 'proj_dense' to match weights file
+[Recognizer Fixed] Loading weights from: /home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5
+[Recognizer Fixed] Weights loaded successfully with skip_mismatch=True
+[Recognizer Fixed] Freezing model (setting trainable=False)...
+[Recognizer Fixed] Frozen HTR model ready (Stage 3, CER 33.72%) - ARCHITECTURE FIXED
+   ✅ Recognizer loaded: /home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5
+
+================================================================================
+BUILDING ENHANCED DUAL-MODAL DISCRIMINATOR V2 - FIXED
+================================================================================
+FIXES APPLIED:
+  ✓ Spatial attention kernel: 3x3
+  ✓ Cross-modal common dimension: 128
+  ✓ BatchNorm momentum: 0.9
+  ✓ Dropout rate: 0.1
+
+[1/3] Building Image Branch (ResNet + Fixed Attention)...
+   Image features shape: (None, 512)
+
+[2/3] Building Text Branch (BiLSTM + Self-Attention)...
+   Text features shape: (None, 512)
+
+[3/3] Building Cross-Modal Fusion (Fixed Attention)...
+   Combined features shape: (None, 256)
+
+================================================================================
+ENHANCED DISCRIMINATOR V2 - FIXED SUMMARY
+================================================================================
+Model: "dual_modal_discriminator_enhanced_v2_fixed"
+┏━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┓
+┃ Layer (type)        ┃ Output Shape      ┃    Param # ┃ Connected to      ┃
+┡━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
+│ image_input         │ (None, 1024, 128, │          0 │ -                 │
+│ (InputLayer)        │ 1)                │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ conv2d_43 (Conv2D)  │ (None, 1024, 128, │        640 │ image_input[0][0] │
+│                     │ 64)               │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ batch_normalizatio… │ (None, 1024, 128, │        256 │ conv2d_43[0][0]   │
+│ (BatchNormalizatio… │ 64)               │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ leaky_re_lu_26      │ (None, 1024, 128, │          0 │ batch_normalizat… │
+│ (LeakyReLU)         │ 64)               │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ conv2d_44 (Conv2D)  │ (None, 1024, 128, │     36,928 │ leaky_re_lu_26[0… │
+│                     │ 64)               │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ batch_normalizatio… │ (None, 1024, 128, │        256 │ conv2d_44[0][0]   │
+│ (BatchNormalizatio… │ 64)               │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ leaky_re_lu_27      │ (None, 1024, 128, │          0 │ batch_normalizat… │
+│ (LeakyReLU)         │ 64)               │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ conv2d_45 (Conv2D)  │ (None, 1024, 128, │     36,928 │ leaky_re_lu_27[0… │
+│                     │ 64)               │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ batch_normalizatio… │ (None, 1024, 128, │        256 │ conv2d_45[0][0]   │
+│ (BatchNormalizatio… │ 64)               │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ add_26 (Add)        │ (None, 1024, 128, │          0 │ batch_normalizat… │
+│                     │ 64)               │            │ leaky_re_lu_26[0… │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ leaky_re_lu_28      │ (None, 1024, 128, │          0 │ add_26[0][0]      │
+│ (LeakyReLU)         │ 64)               │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ conv2d_46 (Conv2D)  │ (None, 512, 64,   │     65,600 │ leaky_re_lu_28[0… │
+│                     │ 64)               │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ batch_normalizatio… │ (None, 512, 64,   │        256 │ conv2d_46[0][0]   │
+│ (BatchNormalizatio… │ 64)               │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ leaky_re_lu_29      │ (None, 512, 64,   │          0 │ batch_normalizat… │
+│ (LeakyReLU)         │ 64)               │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ conv2d_47 (Conv2D)  │ (None, 512, 64,   │     73,856 │ leaky_re_lu_29[0… │
+│                     │ 128)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ batch_normalizatio… │ (None, 512, 64,   │        512 │ conv2d_47[0][0]   │
+│ (BatchNormalizatio… │ 128)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ leaky_re_lu_30      │ (None, 512, 64,   │          0 │ batch_normalizat… │
+│ (LeakyReLU)         │ 128)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ conv2d_48 (Conv2D)  │ (None, 512, 64,   │    147,584 │ leaky_re_lu_30[0… │
+│                     │ 128)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ batch_normalizatio… │ (None, 512, 64,   │        512 │ conv2d_48[0][0]   │
+│ (BatchNormalizatio… │ 128)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ conv2d_49 (Conv2D)  │ (None, 512, 64,   │      8,320 │ leaky_re_lu_29[0… │
+│                     │ 128)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ add_27 (Add)        │ (None, 512, 64,   │          0 │ batch_normalizat… │
+│                     │ 128)              │            │ conv2d_49[0][0]   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ leaky_re_lu_31      │ (None, 512, 64,   │          0 │ add_27[0][0]      │
+│ (LeakyReLU)         │ 128)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ conv2d_50 (Conv2D)  │ (None, 256, 32,   │    262,272 │ leaky_re_lu_31[0… │
+│                     │ 128)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ batch_normalizatio… │ (None, 256, 32,   │        512 │ conv2d_50[0][0]   │
+│ (BatchNormalizatio… │ 128)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ leaky_re_lu_32      │ (None, 256, 32,   │          0 │ batch_normalizat… │
+│ (LeakyReLU)         │ 128)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ conv2d_51 (Conv2D)  │ (None, 256, 32,   │    295,168 │ leaky_re_lu_32[0… │
+│                     │ 256)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ batch_normalizatio… │ (None, 256, 32,   │      1,024 │ conv2d_51[0][0]   │
+│ (BatchNormalizatio… │ 256)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ leaky_re_lu_33      │ (None, 256, 32,   │          0 │ batch_normalizat… │
+│ (LeakyReLU)         │ 256)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ conv2d_52 (Conv2D)  │ (None, 256, 32,   │    590,080 │ leaky_re_lu_33[0… │
+│                     │ 256)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ batch_normalizatio… │ (None, 256, 32,   │      1,024 │ conv2d_52[0][0]   │
+│ (BatchNormalizatio… │ 256)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ conv2d_53 (Conv2D)  │ (None, 256, 32,   │     33,024 │ leaky_re_lu_32[0… │
+│                     │ 256)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ add_28 (Add)        │ (None, 256, 32,   │          0 │ batch_normalizat… │
+│                     │ 256)              │            │ conv2d_53[0][0]   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ leaky_re_lu_34      │ (None, 256, 32,   │          0 │ add_28[0][0]      │
+│ (LeakyReLU)         │ 256)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ conv2d_54 (Conv2D)  │ (None, 128, 16,   │  1,048,832 │ leaky_re_lu_34[0… │
+│                     │ 256)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ batch_normalizatio… │ (None, 128, 16,   │      1,024 │ conv2d_54[0][0]   │
+│ (BatchNormalizatio… │ 256)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ leaky_re_lu_35      │ (None, 128, 16,   │          0 │ batch_normalizat… │
+│ (LeakyReLU)         │ 256)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ conv2d_55 (Conv2D)  │ (None, 128, 16,   │  1,180,160 │ leaky_re_lu_35[0… │
+│                     │ 512)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ batch_normalizatio… │ (None, 128, 16,   │      2,048 │ conv2d_55[0][0]   │
+│ (BatchNormalizatio… │ 512)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ leaky_re_lu_36      │ (None, 128, 16,   │          0 │ batch_normalizat… │
+│ (LeakyReLU)         │ 512)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ conv2d_56 (Conv2D)  │ (None, 128, 16,   │  2,359,808 │ leaky_re_lu_36[0… │
+│                     │ 512)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ batch_normalizatio… │ (None, 128, 16,   │      2,048 │ conv2d_56[0][0]   │
+│ (BatchNormalizatio… │ 512)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ conv2d_57 (Conv2D)  │ (None, 128, 16,   │    131,584 │ leaky_re_lu_35[0… │
+│                     │ 512)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ add_29 (Add)        │ (None, 128, 16,   │          0 │ batch_normalizat… │
+│                     │ 512)              │            │ conv2d_57[0][0]   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ leaky_re_lu_37      │ (None, 128, 16,   │          0 │ add_29[0][0]      │
+│ (LeakyReLU)         │ 512)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ conv2d_58 (Conv2D)  │ (None, 64, 8,     │  4,194,816 │ leaky_re_lu_37[0… │
+│                     │ 512)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ batch_normalizatio… │ (None, 64, 8,     │      2,048 │ conv2d_58[0][0]   │
+│ (BatchNormalizatio… │ 512)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ leaky_re_lu_38      │ (None, 64, 8,     │          0 │ batch_normalizat… │
+│ (LeakyReLU)         │ 512)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ lambda (Lambda)     │ (None, 64, 8, 1)  │          0 │ leaky_re_lu_38[0… │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ lambda_1 (Lambda)   │ (None, 64, 8, 1)  │          0 │ leaky_re_lu_38[0… │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ concatenate_4       │ (None, 64, 8, 2)  │          0 │ lambda[0][0],     │
+│ (Concatenate)       │                   │            │ lambda_1[0][0]    │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ conv2d_59 (Conv2D)  │ (None, 64, 8, 1)  │         19 │ concatenate_4[0]… │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ multiply_4          │ (None, 64, 8,     │          0 │ leaky_re_lu_38[0… │
+│ (Multiply)          │ 512)              │            │ conv2d_59[0][0]   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ conv2d_60 (Conv2D)  │ (None, 64, 8,     │  2,359,808 │ multiply_4[0][0]  │
+│                     │ 512)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ batch_normalizatio… │ (None, 64, 8,     │      2,048 │ conv2d_60[0][0]   │
+│ (BatchNormalizatio… │ 512)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ leaky_re_lu_39      │ (None, 64, 8,     │          0 │ batch_normalizat… │
+│ (LeakyReLU)         │ 512)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ text_input          │ (None, 128)       │          0 │ -                 │
+│ (InputLayer)        │                   │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ conv2d_61 (Conv2D)  │ (None, 64, 8,     │  2,359,808 │ leaky_re_lu_39[0… │
+│                     │ 512)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ text_embedding      │ (None, 128, 128)  │     14,080 │ text_input[0][0]  │
+│ (Embedding)         │                   │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ batch_normalizatio… │ (None, 64, 8,     │      2,048 │ conv2d_61[0][0]   │
+│ (BatchNormalizatio… │ 512)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ dropout_6 (Dropout) │ (None, 128, 128)  │          0 │ text_embedding[0… │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ not_equal           │ (None, 128)       │          0 │ text_input[0][0]  │
+│ (NotEqual)          │                   │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ add_30 (Add)        │ (None, 64, 8,     │          0 │ batch_normalizat… │
+│                     │ 512)              │            │ multiply_4[0][0]  │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ bidirectional_lstm  │ (None, 128, 512)  │    788,480 │ dropout_6[0][0],  │
+│ (Bidirectional)     │                   │            │ not_equal[0][0]   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ leaky_re_lu_40      │ (None, 64, 8,     │          0 │ add_30[0][0]      │
+│ (LeakyReLU)         │ 512)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ self_attention      │ (None, 128, 512)  │    787,968 │ bidirectional_ls… │
+│ (SelfAttentionText) │                   │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ global_average_poo… │ (None, 512)       │          0 │ leaky_re_lu_40[0… │
+│ (GlobalAveragePool… │                   │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ global_average_poo… │ (None, 512)       │          0 │ self_attention[0… │
+│ (GlobalAveragePool… │                   │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ cross_modal_attent… │ [(None, 128),     │    393,984 │ global_average_p… │
+│ (CrossModalAttenti… │ (None, 128)]      │            │ global_average_p… │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ concatenate_5       │ (None, 256)       │          0 │ cross_modal_atte… │
+│ (Concatenate)       │                   │            │ cross_modal_atte… │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ dense (Dense)       │ (None, 512)       │    131,584 │ concatenate_5[0]… │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ leaky_re_lu_41      │ (None, 512)       │          0 │ dense[0][0]       │
+│ (LeakyReLU)         │                   │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ dropout_7 (Dropout) │ (None, 512)       │          0 │ leaky_re_lu_41[0… │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ dense_1 (Dense)     │ (None, 256)       │    131,328 │ dropout_7[0][0]   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ leaky_re_lu_42      │ (None, 256)       │          0 │ dense_1[0][0]     │
+│ (LeakyReLU)         │                   │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ dropout_8 (Dropout) │ (None, 256)       │          0 │ leaky_re_lu_42[0… │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ validity_score      │ (None, 1)         │        257 │ dropout_8[0][0]   │
+│ (Dense)             │                   │            │                   │
+└─────────────────────┴───────────────────┴────────────┴───────────────────┘
+ Total params: 17,448,788 (66.56 MB)
+ Trainable params: 17,440,852 (66.53 MB)
+ Non-trainable params: 7,936 (31.00 KB)
+2025/11/12 12:27:18 INFO mlflow.tracking.fluent: Experiment with name 'GAN_HTR_FP32_predicted_20251112_122718' does not exist. Creating a new experiment.
+
+================================================================================
+Total Parameters: 17,448,788
+Trainable Parameters: 17,440,852
+Original Discriminator: ~137M params
+Reduction: 87.3%
+================================================================================
+
+✅ Enhanced Dual-Modal Discriminator V2 - FIXED built successfully!
+
+KEY FIXES APPLIED:
+  ✓ Smaller spatial attention kernel (3x3) - reduces white dots
+  ✓ Reduced cross-modal complexity (128) - prevents over-constraint
+  ✓ Improved BatchNorm stability (0.9) - better gradient flow
+  ✓ Lower dropout (0.1) - maintains feature richness
+  ✓ Preserved text recognition capabilities
+
+✅ Discriminator selected: ENHANCED_V2_FIXED (Reduced visual artifacts)
+   ✓ Smaller spatial attention (3x3 kernel)
+   ✓ Reduced cross-modal complexity (128 dim)
+   ✓ Improved BatchNorm stability (0.9)
+   ✓ Lower dropout (0.1)
+All models built.
+   ⚠️  Layer freezing: DISABLED (all layers trainable)
+
+[Phase 3/6] Setting up Optimizers and Checkpoints...
+  Generator optimizer: Adam(lr=0.0002, clipnorm=1.0) [PURE FP32]
+  Discriminator optimizer: SGD(lr=0.0002, momentum=0.9, clipnorm=1.0) [PURE FP32]
+✅ Checkpoint system initialized:
+   Main checkpoints: dual_modal_gan/checkpoints/mini_grid_search_10 (max_to_keep=5)
+   Best model: dual_modal_gan/checkpoints/mini_grid_search_10/best_model (separate,不会被max_checkpoints影响)
+Initializing from scratch.
+
+🎨 Initializing VGG Perceptual Loss (weight=0.5)...
+✅ VGG Perceptual Loss initialized with 5 layers:
+   - block1_conv2: (None, None, None, 64)
+   - block2_conv2: (None, None, None, 128)
+   - block3_conv4: (None, None, None, 256)
+   - block4_conv4: (None, None, None, 512)
+   - block5_conv4: (None, None, None, 512)
+   Expected benefit: +0.3-0.5 dB PSNR improvement
+
+⚖️  Initializing Adaptive Loss Balancing...
+   Method: SimpleAdaptiveBalancer
+   Target CTC ratio: 40.00%
+   Target Visual ratio: 60.00%
+   Adaptation rate: 0.08
+   ✅ Adaptive balancer initialized
+   Expected benefit: Automatic loss balancing, prevents CTC dominance
+
+[Phase 4/6] Starting Training Loop...
+
+📊 MLflow tracking enabled: GAN_HTR_FP32_predicted_20251112_122718
+   View at: http://localhost:5000 (run: poetry run mlflow ui)
+
+
+✅ Annealing complete. Using full CTC loss weight.
+
+Epoch 1/3 (Full Training, CTC_w=0.1)
+  🚫 Early Stopping: DISABLED (will train for all 3 epochs)
+Epoch 1:   0%|          | 0/20 [00:00<?, ?it/s]/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/.venv/lib/python3.11/site-packages/keras/src/layers/layer.py:970: UserWarning: Layer 'self_attention' (of type SelfAttentionText) was passed an input with a mask attached to it. However, this layer does not support masking and will therefore destroy the mask information. Downstream layers will not see the mask.
+  warnings.warn(
+I0000 00:00:1762925272.678423 1662195 cuda_dnn.cc:529] Loaded cuDNN version 91400
+Epoch 1:   5%|▌         | 1/20 [00:47<15:08, 47.81s/it]Epoch 1:  10%|█         | 2/20 [00:49<06:07, 20.40s/it]Epoch 1:  15%|█▌        | 3/20 [00:50<03:17, 11.64s/it]Epoch 1:  20%|██        | 4/20 [00:51<02:00,  7.52s/it]Epoch 1:  25%|██▌       | 5/20 [00:52<01:18,  5.24s/it]Epoch 1:  30%|███       | 6/20 [00:53<00:54,  3.87s/it]Epoch 1:  35%|███▌      | 7/20 [00:55<00:38,  3.00s/it]Epoch 1:  40%|████      | 8/20 [00:56<00:29,  2.43s/it]Epoch 1:  45%|████▌     | 9/20 [00:57<00:22,  2.04s/it]Epoch 1:  50%|█████     | 10/20 [00:58<00:17,  1.79s/it]Epoch 1:  55%|█████▌    | 11/20 [00:59<00:14,  1.61s/it]Epoch 1:  60%|██████    | 12/20 [01:01<00:11,  1.49s/it]Epoch 1:  65%|██████▌   | 13/20 [01:02<00:09,  1.40s/it]Epoch 1:  70%|███████   | 14/20 [01:03<00:08,  1.34s/it]Epoch 1:  75%|███████▌  | 15/20 [01:04<00:06,  1.30s/it]Epoch 1:  80%|████████  | 16/20 [01:05<00:05,  1.27s/it]Epoch 1:  85%|████████▌ | 17/20 [01:07<00:03,  1.26s/it]Epoch 1:  90%|█████████ | 18/20 [01:08<00:02,  1.24s/it]Epoch 1:  95%|█████████▌| 19/20 [01:09<00:01,  1.24s/it]Epoch 1: 100%|██████████| 20/20 [01:10<00:00,  1.23s/it]Epoch 1: 100%|██████████| 20/20 [01:10<00:00,  3.54s/it]
+2025-11-12 12:29:28.244676: I tensorflow/core/framework/local_rendezvous.cc:405] Local rendezvous is aborting with status: OUT_OF_RANGE: End of sequence
+  Running validation on full validation set...
+
+📝 [SAMPLE TEXT RECOGNITION VALIDATION]
+  🎯 Ground Truth:    'A:o 1692. April Banda in t Castel Nasauw.'
+  ✨ Clean Image:     '2. 1. S rueJaaa t Casteee Nadu0.' (CER: 0.537)
+  🤖 Generated Image: '' (CER: 1.000)
+  📊 Quality Gap:     ΔCER = +0.463 (generated vs clean)
+
+  📊 Validation Statistics (n=708 samples, 177 batches):
+     PSNR: 11.35 ± 2.01 dB (95% CI: [11.20, 11.50])
+     SSIM: 0.7543 ± 0.0688 (95% CI: [0.7493, 0.7594])
+     CER:  0.9999 ± 0.0016 (baseline: 0.2643)
+     WER:  1.0000 ± 0.0000 (baseline: 0.7449)
+  ✅ New best model saved! (Improvement: inf)
+     💾 Best model preserved: dual_modal_gan/checkpoints/mini_grid_search_10/best_model/ckpt-1
+     📋 Epoch 1 → Checkpoint ckpt-1
+     📄 Debug checkpoint: dual_modal_gan/checkpoints/mini_grid_search_10/ckpt-2
+     💰 Total disk usage: 2 checkpoints (best + debug)
+     PSNR: 11.35, CER: 0.9999
+     Combined Score: 9.35 (PSNR: +11.35, CER: -2.00)
+     Best Metric (combined): Combined: 9.35
+     Best Epoch: 1, Patience Counter: 0/15
+Epoch 1 completed in 131.55s
+
+Epoch 2/3 (Full Training, CTC_w=0.1)
+  🚫 Early Stopping: DISABLED (will train for all 3 epochs)
+Epoch 2:   0%|          | 0/20 [00:00<?, ?it/s]Epoch 2:   5%|▌         | 1/20 [00:01<00:23,  1.22s/it]Epoch 2:  10%|█         | 2/20 [00:02<00:21,  1.22s/it]Epoch 2:  15%|█▌        | 3/20 [00:03<00:20,  1.22s/it]Epoch 2:  20%|██        | 4/20 [00:04<00:19,  1.22s/it]Epoch 2:  25%|██▌       | 5/20 [00:06<00:18,  1.22s/it]Epoch 2:  30%|███       | 6/20 [00:07<00:17,  1.22s/it]Epoch 2:  35%|███▌      | 7/20 [00:08<00:15,  1.22s/it]Epoch 2:  40%|████      | 8/20 [00:09<00:14,  1.22s/it]Epoch 2:  45%|████▌     | 9/20 [00:10<00:13,  1.22s/it]Epoch 2:  50%|█████     | 10/20 [00:12<00:12,  1.22s/it]Epoch 2:  55%|█████▌    | 11/20 [00:13<00:10,  1.22s/it]Epoch 2:  60%|██████    | 12/20 [00:14<00:09,  1.22s/it]Epoch 2:  65%|██████▌   | 13/20 [00:15<00:08,  1.22s/it]Epoch 2:  70%|███████   | 14/20 [00:17<00:07,  1.22s/it]Epoch 2:  75%|███████▌  | 15/20 [00:18<00:06,  1.22s/it]Epoch 2:  80%|████████  | 16/20 [00:19<00:04,  1.22s/it]Epoch 2:  85%|████████▌ | 17/20 [00:20<00:03,  1.22s/it]Epoch 2:  90%|█████████ | 18/20 [00:21<00:02,  1.22s/it]Epoch 2:  95%|█████████▌| 19/20 [00:23<00:01,  1.23s/it]Epoch 2: 100%|██████████| 20/20 [00:24<00:00,  1.23s/it]Epoch 2: 100%|██████████| 20/20 [00:24<00:00,  1.22s/it]
+  Running validation on full validation set...
+
+📝 [SAMPLE TEXT RECOGNITION VALIDATION]
+  🎯 Ground Truth:    'A:o 1692. April Banda in t Castel Nasauw.'
+  ✨ Clean Image:     '2. 1. S rueJaaa t Casteee Nadu0.' (CER: 0.537)
+  🤖 Generated Image: '.........' (CER: 0.951)
+  📊 Quality Gap:     ΔCER = +0.415 (generated vs clean)
+
+  📊 Validation Statistics (n=708 samples, 177 batches):
+     PSNR: 12.06 ± 2.15 dB (95% CI: [11.90, 12.22])
+     SSIM: 0.7512 ± 0.0591 (95% CI: [0.7468, 0.7556])
+     CER:  0.9186 ± 0.1338 (baseline: 0.2643)
+     WER:  1.0464 ± 0.2416 (baseline: 0.7449)
+  ✅ New best model saved! (Improvement: 0.87)
+     💾 Best model preserved: dual_modal_gan/checkpoints/mini_grid_search_10/best_model/ckpt-4
+     📋 Epoch 2 → Checkpoint ckpt-4
+     📄 Debug checkpoint: dual_modal_gan/checkpoints/mini_grid_search_10/ckpt-5
+     💰 Total disk usage: 2 checkpoints (best + debug)
+     PSNR: 12.06, CER: 0.9186
+     Combined Score: 10.22 (PSNR: +12.06, CER: -1.84)
+     Best Metric (combined): Combined: 10.22
+     Best Epoch: 2, Patience Counter: 0/15
+Epoch 2 completed in 82.67s
+
+Epoch 3/3 (Full Training, CTC_w=0.1)
+  🚫 Early Stopping: DISABLED (will train for all 3 epochs)
+Epoch 3:   0%|          | 0/20 [00:00<?, ?it/s]Epoch 3:   5%|▌         | 1/20 [00:01<00:22,  1.21s/it]Epoch 3:  10%|█         | 2/20 [00:02<00:21,  1.22s/it]Epoch 3:  15%|█▌        | 3/20 [00:03<00:20,  1.21s/it]Epoch 3:  20%|██        | 4/20 [00:04<00:19,  1.21s/it]Epoch 3:  25%|██▌       | 5/20 [00:06<00:18,  1.21s/it]Epoch 3:  30%|███       | 6/20 [00:07<00:17,  1.22s/it]Epoch 3:  35%|███▌      | 7/20 [00:08<00:15,  1.22s/it]Epoch 3:  40%|████      | 8/20 [00:09<00:14,  1.22s/it]Epoch 3:  45%|████▌     | 9/20 [00:10<00:13,  1.22s/it]Epoch 3:  50%|█████     | 10/20 [00:12<00:12,  1.23s/it]Epoch 3:  55%|█████▌    | 11/20 [00:13<00:11,  1.23s/it]Epoch 3:  60%|██████    | 12/20 [00:14<00:09,  1.23s/it]Epoch 3:  65%|██████▌   | 13/20 [00:15<00:08,  1.23s/it]Epoch 3:  70%|███████   | 14/20 [00:17<00:07,  1.23s/it]Epoch 3:  75%|███████▌  | 15/20 [00:18<00:06,  1.23s/it]Epoch 3:  80%|████████  | 16/20 [00:19<00:04,  1.22s/it]Epoch 3:  85%|████████▌ | 17/20 [00:20<00:03,  1.22s/it]Epoch 3:  90%|█████████ | 18/20 [00:22<00:02,  1.22s/it]Epoch 3:  95%|█████████▌| 19/20 [00:23<00:01,  1.23s/it]Epoch 3: 100%|██████████| 20/20 [00:24<00:00,  1.24s/it]Epoch 3: 100%|██████████| 20/20 [00:24<00:00,  1.23s/it]
+2025-11-12 12:32:16.913981: I tensorflow/core/framework/local_rendezvous.cc:405] Local rendezvous is aborting with status: OUT_OF_RANGE: End of sequence
+  Running validation on full validation set...
+
+📝 [SAMPLE TEXT RECOGNITION VALIDATION]
+  🎯 Ground Truth:    'A:o 1692. April Banda in t Castel Nasauw.'
+  ✨ Clean Image:     '2. 1. S rueJaaa t Casteee Nadu0.' (CER: 0.537)
+  🤖 Generated Image: '' (CER: 1.000)
+  📊 Quality Gap:     ΔCER = +0.463 (generated vs clean)
+
+  📊 Validation Statistics (n=708 samples, 177 batches):
+     PSNR: 9.30 ± 1.78 dB (95% CI: [9.17, 9.43])
+     SSIM: 0.5576 ± 0.1111 (95% CI: [0.5494, 0.5657])
+     CER:  0.9246 ± 0.1281 (baseline: 0.2643)
+     WER:  1.0069 ± 0.1195 (baseline: 0.7449)
+     ⏱️  Patience Counter incremented: 1/15
+  ⚠️  No improvement (Combined: 7.45 (best: 10.22))
+     Combined Score Breakdown: PSNR=+9.30, CER=-1.85
+     Patience Counter: 1/15
+     🎓 Curriculum Complete: Early stopping ALLOWED
+     📊 Full Training Phase (CTC weight: 0.04)
+Epoch 3 completed in 81.09s
+
+✅ Training metrics saved to: dual_modal_gan/checkpoints/mini_grid_search_10/metrics/training_metrics_fp32_final.json
+📊 All metrics logged to MLflow
+
+🚀 View results: poetry run mlflow ui
+   Then open: http://localhost:5000
+
+
+[Phase 6/6] Training Finished.
+
+🎉 Training completed successfully with Pure FP32!
+   Best model from epoch: 2
+   ✅ Numerical stability maintained
+   ✅ Balanced loss optimization
+   ✅ Superior convergence quality

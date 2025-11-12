@@ -1,0 +1,6 @@
+Component,Current Weight,Current Scale,Current Score,Optimal Scale,Optimal Weight,Optimal Score,ΔScore,Status
+Pixel,50.00,1.00,23.76,2.00,100.00,25.30,1.537,⚠ Suboptimal
+Adversarial,3.00,1.00,23.76,2.00,6.00,24.53,0.768,⚠ Suboptimal
+Rec_feat,8.00,1.00,23.76,2.00,16.00,24.11,0.349,⚠ Suboptimal
+Perceptual,1.00,1.00,23.76,2.00,2.00,26.83,3.074,⚠ Suboptimal
+Ctc,0.15,1.00,23.76,2.00,0.30,25.16,1.396,⚠ Suboptimal

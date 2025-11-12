@@ -1,0 +1,24 @@
+% Table: Loss Weights Justification
+% Generated automatically from training logs
+
+\begin{table}[!t]
+\renewcommand{\arraystretch}{1.3}
+\caption{Justifikasi Empiris Bobot Loss: Analisis Magnitude dan Kontribusi}
+\label{table:loss_weights_justification}
+\centering
+\footnotesize
+\begin{tabular}{|l|c|c|c|c|c|}
+\hline
+\textbf{Komponen} & \textbf{Bobot} & \textbf{Rerata Raw} & \textbf{Std Raw} & \textbf{Rerata Tertimbang} & \textbf{Kontribusi (\%)} \\
+\hline
+Pixel & 50.00 & 0.0123 & 0.0059 & 0.62 & 0.7\% \\
+Adversarial & 3.00 & 0.8882 & 0.2045 & 2.66 & 2.9\% \\
+RecFeat & 8.00 & 0.0099 & 0.0161 & 0.08 & 0.1\% \\
+Perceptual & 1.00 & 24.9244 & 12.0710 & 24.92 & 27.4\% \\
+CTC & 0.15 & 392.0111 & 31.0152 & 58.80 & 64.7\% \\
+\hline
+\multicolumn{6}{|l|}{\footnotesize Raw values: unweighted loss dari backpropagation} \\
+\multicolumn{6}{|l|}{\footnotesize Tertimbang: raw $\times$ weight, kontribusi terhadap total $\mathcal{{L}}_G$} \\
+\multicolumn{6}{|l|}{\footnotesize Data dari epoch 11-50 (post-warmup), n=82150 batches} \\
+\end{tabular}
+\end{table}

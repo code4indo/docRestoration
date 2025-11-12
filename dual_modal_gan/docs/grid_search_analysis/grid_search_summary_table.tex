@@ -1,0 +1,23 @@
+% Grid Search Sensitivity Analysis Summary
+
+\begin{table}[H]
+\centering
+\caption{Grid Search Sensitivity Analysis: Validasi Optimality Bobot Loss}
+\label{tab:grid-search-sensitivity}
+\footnotesize
+\begin{tabular}{lccccc}
+\hline
+\textbf{Komponen} & \textbf{Current} & \textbf{Current} & \textbf{Optimal} & \textbf{Optimal} & \textbf{$\Delta$Score} \\
+& \textbf{Weight} & \textbf{Score} & \textbf{Scale} & \textbf{Score} & \\
+\hline
+Pixel & 50.00 & 23.76 & 2.00 & 25.30 & 1.537 $\triangle$ \\
+Adversarial & 3.00 & 23.76 & 2.00 & 24.53 & 0.768 $\triangle$ \\
+Rec_feat & 8.00 & 23.76 & 2.00 & 24.11 & 0.349 $\triangle$ \\
+Perceptual & 1.00 & 23.76 & 2.00 & 26.83 & 3.074 $\triangle$ \\
+Ctc & 0.15 & 23.76 & 2.00 & 25.16 & 1.396 $\triangle$ \\
+\hline
+\multicolumn{6}{l}{\footnotesize $\checkmark$ = optimal (within 10\% of best), $\triangle$ = suboptimal} \\
+\multicolumn{6}{l}{\footnotesize Score = PSNR - 0.2$\times$CER$\times$100 (higher is better)} \\
+\multicolumn{6}{l}{\footnotesize Scale factor: multiplier dari baseline weight (1.0 = current config)} \\
+\end{tabular}
+\end{table}
