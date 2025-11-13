@@ -766,6 +766,8 @@ INPUT /usr/share/texlive/texmf-dist/fonts/vf/adobe/times/zptmcm7t.vf
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/symbol/psyr.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmr8r.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr10.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmri8t.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/vf/adobe/times/ptmri8t.vf
 INPUT chapter6_kesimpulan.aux
 INPUT ./chapter6_kesimpulan.out
 INPUT ./chapter6_kesimpulan.out

@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1763011548 "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter4_analysis_design.tex" "chapter4_analysis_design.pdf" "chapter4_analysis_design" 1763011549
+["pdflatex"] 1763073450 "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter4_analysis_design.tex" "chapter4_analysis_design.pdf" "chapter4_analysis_design" 1763073450
   "/etc/texmf/web2c/texmf.cnf" 1735821572 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/data_dukung/fig_convergence_analysis_combined.pdf" 1762582915 28979 543d07cd8f96d28eee6cb1e9d2766981 ""
   "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/data_dukung/gambar_degGT/deg1.png" 1762582915 64021 0d308e49b83f10dad8705d428d41fc1c ""
@@ -7,7 +7,7 @@
   "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/drawio/arsitektur-dualModal.png" 1762583130 254792 960003974f82412683d09a7ebd7cd980 ""
   "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/drawio/arsitektur_generator.png" 1762583130 273397 1878a9a83cdda44901d9c74215209186 ""
   "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/drawio/main_framework.png" 1762583130 474953 03b68156435807b676d15c45000053c6 ""
-  "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter4_analysis_design.tex" 1763011543 102654 3e0d811b731a71aa300a3654112c171a ""
+  "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter4_analysis_design.tex" 1763073384 102139 30645fdfb174298f9a8938427fc1fb3b ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/symbol/psyr.tfm" 1136768653 1408 5937f58aa508ea2cea4901c07d10f5fe ""
@@ -213,9 +213,9 @@
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1759233803 4379155 98693266ff65f58d9f98aff394de12d2 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1759233835 2798526 797e2e5e8fb6f85d658ad96238072e6c ""
   "bibliography.bib" 1762932782 10367 c9ec0aba7d989f863448c54b9b64fbc0 ""
-  "chapter4_analysis_design.aux" 1763011548 29969 bb95eae71b45898f893dc659ed4c14b8 "pdflatex"
-  "chapter4_analysis_design.out" 1763011548 12617 b6358fe17cf88e1aab17f7f41fcc9910 "pdflatex"
-  "chapter4_analysis_design.tex" 1763011543 102654 3e0d811b731a71aa300a3654112c171a ""
+  "chapter4_analysis_design.aux" 1763073450 22527 eff5c9e0523cb6d435b7f4735c259624 "pdflatex"
+  "chapter4_analysis_design.out" 1763073450 8928 5de4536f933ca5c5721a65a49b400268 "pdflatex"
+  "chapter4_analysis_design.tex" 1763073384 102139 30645fdfb174298f9a8938427fc1fb3b ""
   (generated)
   "chapter4_analysis_design.aux"
   "chapter4_analysis_design.log"

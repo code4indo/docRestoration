@@ -59,7 +59,7 @@
 \label{subsec:kesimpulan}
 \vspace{0.8em}
 
-Penelitian ini mengusulkan kerangka kerja restorasi dokumen berorientasi HTR berbasis GAN dengan dua kontribusi utama yang divalidasi empiris: (1) strategi pengenal HTR beku yang memberikan gradien sadar-teks stabil tanpa ketidakstabilan pelatihan bersama ($p<0.001$), dan (2) optimasi fungsi kerugian 5-komponen (piksel, adversarial, perseptual, CTC, recognition feature) yang mencapai keseimbangan Pareto antara kualitas visual dan keterbacaan teks.
+Penelitian ini mengusulkan kerangka kerja restorasi dokumen berorientasi HTR berbasis GAN dengan dua kontribusi utama yang divalidasi empiris: (1) strategi pengenal HTR beku yang memberikan gradien sadar-teks stabil tanpa ketidakstabilan pelatihan bersama ($p<0.001$), dan (2) optimasi fungsi loss 5-komponen (piksel, adversarial, perseptual, CTC, fitur rekognisi) yang mencapai keseimbangan Pareto antara kualitas visual dan keterbacaan teks.
 
 \vspace{0.8em}
 
@@ -79,109 +79,52 @@ Keterbatasan penelitian meliputi: (1) tantangan pada degradasi ekstrem dengan ko
 
 \vspace{0.8em}
 
-\subsection{Saran}
+\subsection{Arah Penelitian Mendatang}
 \label{subsec:saran}
 \vspace{0.8em}
 
-\subsubsection{Penelitian Mendatang}
-\label{subsubsec:saran-penelitian}
-\paragraph{1. Pelestarian Ligatur Paleografi}
-\qquad
-Mengembangkan mekanisme atensi spasial berbasis transformer dengan atensi mandiri untuk mempelajari pola ligatur kompleks. Pendekatan dapat mencakup kerugian tambahan yang menghukum distorsi pada region ligatur terdeteksi.
+Penelitian mendatang dapat diarahkan pada lima area utama:
 
-\paragraph{2. Pemodelan Degradasi Kimia Historis}
-\qquad
-Membangun model degradasi berbasis fisika untuk mensimulasikan korosi tinta iron gall, foxing biologis, dan pemudaran foto-oksidatif melalui kolaborasi dengan konservator dokumen dan ahli kimia.
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\item Arsitektur Transformer-GAN Hibrid untuk Ligatur Paleografi \mbox{}\\[0.1em]
+Integrasi mekanisme atensi mandiri berbasis transformer (ViT, Swin Transformer) dengan arsitektur GAN untuk menangkap konteks global ligatur kompleks yang menyumbang 62.9\% kasus kegagalan, dengan fungsi loss khusus yang melestarikan struktur ligatur.
 
-\paragraph{3. Pemisahan Layer untuk Bleed-Through}
-\qquad
-Mengeksplorasi arsitektur pemisahan sumber yang memisahkan konten halaman depan dan belakang menjadi dua layer independen, mengadopsi teknik dari pemisahan sumber buta.
+\item Pemodelan Degradasi Berbasis Fisika \mbox{}\\[0.1em]
+Pengembangan model degradasi kimia historis autentik (korosi tinta \textit{iron gall}, \textit{foxing} biologis, pemudaran foto-oksidatif) dan arsitektur pemisahan sumber untuk \textit{bleed-through}, meningkatkan realisme dataset sintetis dan ketahanan pada degradasi ekstrem.
 
-\paragraph{4. Ketahanan Kontras Rendah}
-\qquad
-Mengembangkan modul prapemrosesan adaptif berbasis pembelajaran meta yang mendeteksi tingkat degradasi dan menerapkan transformasi optimal (peregangan kontras, ekualisasi histogram adaptif).
+\item Pembelajaran Transfer Lintas Domain dan Estimasi Ketidakpastian \mbox{}\\[0.1em]
+Validasi generalisasi sistematis pada korpus multi-bahasa dan multi-aksara (Arab, Jawa Kuno, aksara Nusantara) dengan estimasi ketidakpastian Bayesian untuk verifikasi selektif pada region dengan kepercayaan restorasi rendah.
 
-\paragraph{5. Validasi Pembelajaran Transfer Lintas Domain}
-\qquad
-Melakukan studi sistematis generalisasi pada korpus multi-bahasa (Indonesia, Jawa Kuno, Arab) dan multi-aksara melalui adaptasi domain dengan pelatihan adversarial dan pembelajaran beberapa kali.
+\item Optimasi Efisiensi Komputasional \mbox{}\\[0.1em]
+Pengembangan arsitektur \textit{lightweight} dan teknik kompresi model (\textit{pruning}, \textit{quantization}, \textit{knowledge distillation}) untuk mengurangi kompleksitas komputasional (48 GPU-jam) dan memungkinkan deployment pada sumber daya terbatas.
 
-\paragraph{6. Integrasi Estimasi Ketidakpastian}
-\qquad
-Mengimplementasikan estimasi ketidakpastian berbasis Bayesian atau ensemble untuk mengidentifikasi region dengan kepercayaan restorasi rendah, memicu verifikasi manual selektif atau strategi restorasi alternatif.
+\item Benchmark Dataset Standar Paleografi Indonesia \mbox{}\\[0.1em]
+Pembangunan dataset tolok ukur komprehensif dokumen paleografi Indonesia berbagai era dengan degradasi autentik dan anotasi \textit{ground truth} berkualitas tinggi untuk evaluasi standar, perbandingan metode, dan akselerasi penelitian komunitas.
+\end{enumerate} 
 
-\paragraph{7. Arsitektur Transformer-GAN Hibrid}
-\qquad
-Mengintegrasikan transformer visi (ViT) atau Transformer Swin sebagai backbone generator dengan diskriminator GAN untuk mengatasi keterbatasan CNN dalam menangkap konteks global ligatur paleografi.
 
-\paragraph{8. Tolok Ukur Dataset Standar}
-\qquad
-Membangun tolok ukur restorasi dokumen paleografi Indonesia dari berbagai era dengan degradasi autentik dan ground truth berpasangan untuk evaluasi standar dan perbandingan adil antar metode.
 
-\vspace{0.8em}
-
-\subsubsection{Penerapan Praktis}
-\label{subsubsec:saran-praktis}
-
-\paragraph{1. Sistem Siap Produksi}
-\qquad
-Mengembangkan pipeline otomatis dengan deteksi degradasi, pemrosesan batch, kontrol kualitas berbasis metrik, antarmuka verifikasi manual, dan integrasi dengan sistem manajemen arsip digital.
-
-\paragraph{2. Alat Keterjelasan}
-\qquad
-Mengimplementasikan peta atensi, peta aktivasi, dan visualisasi gradien untuk transparansi proses restorasi, membangun kepercayaan pengguna dan memfasilitasi deteksi halusinasi.
-
-\paragraph{3. Protokol Verifikasi Selektif}
-\qquad
-Merancang verifikasi manual efisien menggunakan estimasi ketidakpastian untuk memprioritaskan dokumen yang memerlukan tinjauan ahli, mengoptimalkan alokasi sumber daya manusia.
-
-\paragraph{4. Sistem Peng Versian Model}
-\qquad
-Membangun dokumentasi komprehensif versi model, hiperparameter, data pelatihan, metrik evaluasi, dan riwayat perubahan untuk reproduktibilitas dan jejak audit.
-
-\paragraph{5. Audit Bias Berkala}
-\qquad
-Melakukan analisis performa terstratifikasi, deteksi penurunan kinerja pada subgrup, dan mitigasi bias melalui pengambilan ulang atau penimbang ulang untuk keadilan akses arsip.
-
-\paragraph{6. Deteksi Halusinasi}
-\qquad
-Mengembangkan mekanisme perbandingan kamus ortografi historis, analisis konsistensi kontekstual menggunakan model bahasa, dan deteksi anomali berbasis kesalahan rekonstruksi.
-
-\paragraph{7. Pelatihan SDM}
-\qquad
-Merancang program pelatihan arsiparist dan konservator tentang penggunaan alat AI, interpretasi metrik (PSNR, SSIM, CER, WER), identifikasi kasus manual, dan praktik terbaik integrasi.
-
-\paragraph{8. Kolaborasi Interdisipliner}
-\qquad
-Membangun kemitraan ahli AI/ML, konservator, sejarawan, dan paleografer untuk validasi holistik yang melestarikan autentisitas historis dan konteks budaya.
-
-\paragraph{9. Infrastruktur Terdistribusi}
-\qquad
-Mengembangkan infrastruktur cloud atau on-premise cluster dengan penyeimbangan beban, ketahanan gangguan, dasbor pemantauan, dan sistem antrian untuk digitalisasi skala nasional.
-
-\vspace{0.8em}
+% \vspace{0.8em}
 
 \subsubsection{Rekomendasi Lembaga Kearsipan}
 \label{subsubsec:rekomendasi-lembaga}
 
-\paragraph{1. Adopsi Bertahap}
-\qquad
-Implementasi dimulai dengan proyek percontohan pada koleksi terbatas dengan metrik keberhasilan jelas, feedback loop berkelanjutan untuk penyempurnaan sistem sebelum ekspansi skala.
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\item Adopsi Bertahap \mbox{}\\[0.1em]
+Implementasi dimulai dengan proyek percontohan pada koleksi terbatas dengan metrik keberhasilan jelas, umpan balik berkelanjutan untuk penyempurnaan sistem sebelum ekspansi skala.
 
-\paragraph{2. Investasi Infrastruktur dan SDM}
-\qquad
-Alokasi anggaran infrastruktur komputasi (GPU workstation, cloud computing), program pelatihan AI/ML untuk arsiparist dan konservator, rekrutmen data scientist, dan analisis biaya-manfaat menyeluruh.
+\item Investasi Infrastruktur dan SDM \mbox{}\\[0.1em]
+Alokasi anggaran infrastruktur komputasi (GPU workstation, layanan komputasi), program pelatihan AI/ML untuk arsiparis, rekrutmen \textit{data scientist}, dan analisis biaya-manfaat menyeluruh.
 
-\paragraph{3. Koleksi Data Pelatihan Institusional}
-\qquad
-Membangun dataset anotasi ground truth berkualitas tinggi untuk fine-tuning model sesuai karakteristik degradasi dan gaya tulisan spesifik koleksi institusional.
+\item Koleksi Data Pelatihan Institusional \mbox{}\\[0.1em]
+Membangun dataset anotasi \textit{ground truth} berkualitas tinggi untuk \textit{fine-tuning} model sesuai karakteristik degradasi dan gaya tulisan spesifik koleksi institusional.
 
-\paragraph{4. Standarisasi Protokol}
-\qquad
-Pengembangan SOP digitalisasi komprehensif: protokol akuisisi citra konsisten, kriteria seleksi dokumen objektif, ambang batas metrik kontrol kualitas, dan prosedur eskalasi kasus kompleks.
+\item Standarisasi Protokol \mbox{}\\[0.1em]
+Pengembangan Standar Operasional Prosedur (SOP) digitalisasi: aturan pengambilan gambar seragam, kriteria pemilihan dokumen baik, batas minimum kualitas, dan cara menyelesaikan masalah.
 
-\paragraph{5. Kolaborasi Antar-Lembaga}
-\qquad
-Membentuk konsorsium untuk berbagi sumber daya komputasi, data pelatihan, dan praktik terbaik, mengurangi biaya investasi individual dan mempercepat adopsi teknologi melalui sinergi penelitian.
+\item Kolaborasi Antar-Lembaga \mbox{}\\[0.1em]
+Melakukan kerja sama dengan pihak lain, baik nasional maupun internasional untuk berbagi sumber daya komputasi, data pelatihan, dan praktik terbaik, mengurangi biaya investasi individual dan mempercepat adopsi teknologi melalui sinergi penelitian.
+\end{enumerate}
 
 \vspace{0.8em}
 
@@ -189,18 +132,9 @@ Membentuk konsorsium untuk berbagi sumber daya komputasi, data pelatihan, dan pr
 \label{subsec:penutup}
 \vspace{0.8em}
 
-Penelitian ini berhasil mengembangkan kerangka kerja restorasi dokumen berbasis GAN dengan integrasi eksplisit evaluasi keterbacaan teks, mencapai pengurangan CER 58.2\% sambil mempertahankan kualitas visual tinggi. Temuan bahwa arsitektur diskriminator dual-modal memberikan kontribusi marginal merevisi asumsi awal, menekankan dominasi protokol pelatihan dan strategi integrasi HTR.
+Penelitian ini mengembangkan kerangka kerja restorasi dokumen berorientasi HTR berbasis GAN yang mencapai pengurangan CER 58.2\% (dari 83.4\% menjadi 34.9\%, $p<0.001$) sambil mempertahankan kualitas visual tinggi (PSNR 30.74 dB, SSIM 0.987). Kontribusi utama meliputi strategi pengenal HTR beku yang memberikan gradien sadar-teks stabil dan optimasi fungsi loss 5-komponen yang mencapai keseimbangan Pareto antara metrik visual dan tekstual. Validasi empiris melalui studi ablasi sistematis dan analisis korelasi multimetrik memberikan wawasan mendalam tentang dinamika pelatihan multi-objektif, dengan temuan kritis bahwa protokol pelatihan lebih dominan daripada kompleksitas arsitektur diskriminator.
 
 \vspace{0.8em}
 
-Validasi empiris melalui studi ablasi sistematis, analisis koherensi visual-tekstual, dan konfirmasi GradNorm memberikan wawasan mendalam tentang dinamika pelatihan multi-objektif. Generalisasi efektif pada naskah ANRI autentik mengonfirmasi kemampuan menangani degradasi historis nyata, meskipun tantangan pada degradasi ekstrem dan ligatur paleografi kompleks mengindikasikan area penelitian mendatang.
-
-\vspace{0.8em}
-
-Kontribusi penelitian memiliki implikasi praktis langsung untuk digitalisasi arsip historis skala besar, meningkatkan efisiensi operasional lembaga kearsipan dan aksesibilitas informasi. Penelitian mendatang diharapkan mengatasi keterbatasan teridentifikasi melalui pengembangan mekanisme atensi ligatur, pemodelan degradasi kimia, estimasi ketidakpastian, dan validasi pembelajaran transfer lintas domain.
-
-\vspace{0.8em}
-
-Penerapan praktis memerlukan implementasi sistem siap produksi dengan alat keterjelasan, protokol verifikasi selektif, dan kolaborasi interdisipliner untuk memastikan restorasi tidak hanya memenuhi metrik teknis, tetapi juga melestarikan autentisitas historis dan nilai arkeologis dokumen. Penelitian ini berkontribusi pada pelestarian warisan budaya Indonesia melalui teknologi kecerdasan buatan, membuka jalan bagi penelitian lebih lanjut dalam restorasi dokumen berbasis deep learning yang berorientasi tugas spesifik.
-
+Generalisasi efektif pada 15 naskah ANRI autentik mengonfirmasi kemampuan menangani degradasi historis nyata, meskipun tantangan pada degradasi ekstrem (SNR $<$ 10) dan ligatur paleografi kompleks (62.9\% kegagalan) mengindikasikan area penelitian mendatang. Penelitian ini berkontribusi pada pelestarian warisan budaya Indonesia melalui teknologi kecerdasan artifisial, dengan implikasi langsung untuk digitalisasi arsip historis skala besar dan peningkatan aksesibilitas informasi bagi peneliti dan masyarakat.
 \end{document}
