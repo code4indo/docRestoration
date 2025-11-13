@@ -1,0 +1,280 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[bahasa]{babel}
+\usepackage{mathptmx} % Times New Roman font
+\usepackage{microtype} % Untuk optimasi typography dan spacing
+\usepackage[none]{hyphenat} % Menonaktifkan hyphenation
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{setspace}
+\usepackage{geometry}
+\usepackage{tikz}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{hyperref}
+\hypersetup{
+    pdfencoding=auto,
+    pdftitle={Daftar Lambang dan Singkatan},
+    pdfauthor={},
+    pdfsubject={Tesis},
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=blue,
+    pdfstartview=FitH,
+    bookmarksopen=true,
+    bookmarksnumbered=true
+}
+\usepackage{tocloft}
+\usepackage{caption}
+\usepackage{textcomp} % For special symbols
+
+
+% Aktifkan hyphenation Bahasa Indonesia dan optimasi spasi agar tidak keluar margin
+\lefthyphenmin=2
+\righthyphenmin=2
+\pretolerance=1000
+\tolerance=2000
+\emergencystretch=3em
+\hbadness=10000
+\vbadness=10000
+\hyphenpenalty=500
+\exhyphenpenalty=500
+\sloppy
+% Aktifkan microtype untuk Bahasa Indonesia
+\microtypesetup{activate=true,protrusion=true,expansion=true,tracking=true,kerning=true}
+\microtypecontext{spacing=nonfrench}
+
+% Pengaturan paragraf: tanpa indentasi dan jarak minimal antar paragraf
+\setlength{\parindent}{0pt} % Menghilangkan indentasi awal paragraf
+\setlength{\parskip}{0pt} % Tidak ada jarak antar paragraf
+
+% Pengaturan jarak untuk subsection
+\usepackage{titlesec}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{0pt}{0pt} % Tidak ada jarak sebelum atau setelah judul
+
+% Pengaturan margin: kiri 4cm, lainnya 3cm
+\geometry{
+    a4paper,
+    left=4cm,
+    right=3cm,
+    top=3cm,
+    bottom=3cm
+}
+
+% Pengaturan spasi
+\onehalfspacing
+
+% Pengaturan penomoran
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+% Pengaturan heading
+\renewcommand{\thesection}{\Roman{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+
+\begin{document}
+
+% ============================================================
+% DAFTAR LAMBANG DAN SINGKATAN
+% ============================================================
+
+\vspace{2cm}
+\begin{center}
+{\fontsize{14}{16.8}\selectfont\textbf{DAFTAR LAMBANG DAN SINGKATAN}}\\[1em]
+\end{center}
+\label{sec:lambang-singkatan}
+\addcontentsline{toc}{section}{DAFTAR LAMBANG DAN SINGKATAN}
+\setcounter{section}{0}
+\setcounter{subsection}{0}
+\vspace{2em}
+
+% ============================================================
+% SECTION 1: DAFTAR SINGKATAN
+% ============================================================
+
+% \subsection{Daftar Singkatan}
+\label{subsec:daftar-singkatan}
+\vspace{0.8em}
+
+\begin{longtable}{@{} l p{11cm} @{}}
+\textbf{SINGKATAN} & \textbf{NAMA} \\
+
+% ============================================================
+% DATA SINGKATAN (ALFABETIS A-Z)
+% ============================================================
+
+AI & \textit{Artificial Intelligence} (Kecerdasan Buatan) \\
+ANRI & Arsip Nasional Republik Indonesia \\
+API & \textit{Application Programming Interface} \\
+BCE & \textit{Binary Cross-Entropy} \\
+BiGRU & \textit{Bidirectional Gated Recurrent Unit} \\
+BiLSTM & \textit{Bidirectional Long Short-Term Memory} \\
+CBAM & \textit{Convolutional Block Attention Module} \\
+CER & \textit{Character Error Rate} (Tingkat Kesalahan Karakter) \\
+cGAN & \textit{Conditional Generative Adversarial Network} \\
+CLI & \textit{Command-Line Interface} \\
+CNN & \textit{Convolutional Neural Network} (Jaringan Saraf Konvolusional) \\
+CRNN & \textit{Convolutional Recurrent Neural Network} \\
+CTC & \textit{Connectionist Temporal Classification} \\
+CUDA & \textit{Compute Unified Device Architecture} \\
+cuDNN & \textit{CUDA Deep Neural Network library} \\
+CWV & \textit{Core Web Vitals} \\
+DE-GAN & \textit{Document Enhancement GAN} \\
+DIBCO & \textit{Document Image Binarization Contest} \\
+DocEnTr & \textit{Document Enhancement Transformer} \\
+DRD & \textit{Distance Reciprocal Distortion} \\
+DSRM & \textit{Design Science Research Methodology} \\
+ERB & \textit{Enhance to Read Better} \\
+FCN & \textit{Fully Convolutional Network} \\
+FM & \textit{F-measure} \\
+Fps & \textit{pseudo-F-measure} \\
+FR & \textit{Functional Requirement} (Kebutuhan Fungsional) \\
+GAN & \textit{Generative Adversarial Network} (Jaringan Adversarial Generatif) \\
+GPU & \textit{Graphics Processing Unit} \\
+GT & \textit{Ground Truth} (Kebenaran Dasar) \\
+H-DIBCO & \textit{Handwritten Document Image Binarization Contest} \\
+HMM & \textit{Hidden Markov Model} \\
+HTR & \textit{Handwritten Text Recognition} (Pengenalan Teks Tulisan Tangan) \\
+IAM & \textit{IAM Handwriting Database} \\
+ICDAR & \textit{International Conference on Document Analysis and Recognition} \\
+IIIT5K & \textit{IIIT 5K-word dataset} \\
+KHATT & \textit{Arabic Handwritten Text Database} \\
+LSTM & \textit{Long Short-Term Memory} \\
+MAE & \textit{Mean Absolute Error} (Galat Absolut Rata-Rata) \\
+ML & \textit{Machine Learning} (Pembelajaran Mesin) \\
+MLflow & \textit{Machine Learning Flow} \\
+MSE & \textit{Mean Squared Error} (Galat Kuadrat Rata-Rata) \\
+MSFP & \textit{Multi-Scale Feature Pyramid} \\
+NFR & \textit{Non-Functional Requirement} (Kebutuhan Non-Fungsional) \\
+OCR & \textit{Optical Character Recognition} (Pengenalan Karakter Optik) \\
+PALM & \textit{Presentation Attack Liveness Detection in Mobile scenarios} \\
+Pix2Pix & \textit{Image-to-Image Translation with Conditional Adversarial Networks} \\
+PSNR & \textit{Peak Signal-to-Noise Ratio} (Rasio Puncak Sinyal terhadap Derau) \\
+RDB & \textit{Residual Dense Block} \\
+RMSProp & \textit{Root Mean Square Propagation} \\
+RNN & \textit{Recurrent Neural Network} (Jaringan Saraf Berulang) \\
+SDM & Sumber Daya Manusia \\
+SGD & \textit{Stochastic Gradient Descent} \\
+SNR & \textit{Signal-to-Noise Ratio} (Rasio Sinyal terhadap Derau) \\
+SOP & \textit{Standard Operating Procedure} (Prosedur Operasi Standar) \\
+SOTA & \textit{State-of-the-Art} \\
+SSIM & \textit{Structural Similarity Index Measure} (Indeks Kesamaan Struktural) \\
+UNESCO & \textit{United Nations Educational, Scientific and Cultural Organization} \\
+U-Net & \textit{U-shaped Convolutional Network} \\
+VGG & \textit{Visual Geometry Group} \\
+ViT & \textit{Vision Transformer} \\
+VOC & \textit{Visual Object Classes} \\
+WER & \textit{Word Error Rate} (Tingkat Kesalahan Kata) \\
+
+\end{longtable}
+
+\newpage
+
+% ============================================================
+% SECTION 2: DAFTAR LAMBANG DAN SIMBOL MATEMATIS
+% ============================================================
+
+% \subsection{Daftar Lambang dan Simbol Matematis}
+\label{subsec:daftar-lambang}
+\vspace{0.8em}
+
+\begin{longtable}{@{} l p{10cm} @{}}
+\textbf{LAMBANG} & \textbf{NAMA} \\
+
+% ============================================================
+% DATA LAMBANG DAN SIMBOL (KATEGORIS)
+% ============================================================
+
+\multicolumn{2}{l}{\textbf{Huruf Yunani (Parameter Model)}} \\
+
+$\alpha$ & Koefisien bobot untuk \textit{loss function}, tingkat signifikansi statistik \\
+$\beta$ & Koefisien bobot untuk \textit{Binary Cross-Entropy loss} \\
+$\lambda$ & Koefisien bobot untuk CTC \textit{loss}, parameter regularisasi \\
+$\theta$ & Parameter model \textit{neural network} \\
+$\sigma$ & Deviasi standar \\
+$\mu$ & Rata-rata (\textit{mean}) \\
+$\epsilon$ & \textit{Token blank}/kosong dalam CTC, konstanta kecil untuk stabilitas numerik \\
+$\Delta$ & Delta (selisih/perubahan nilai) \\
+$\pi$ & \textit{Alignment path} dalam CTC \\
+$\pi_t$ & \textit{Token} pada \textit{timestep} $t$ dalam \textit{alignment path} \\[1ex]
+
+\multicolumn{2}{l}{\textbf{Operator Matematis}} \\
+
+$\nabla$ atau $\partial$ & Operator gradien atau turunan parsial \\
+$\sum$ & Operator penjumlahan \\
+$\prod$ & Operator perkalian \\
+$\int$ & Operator integral \\
+argmax & Argumen yang memaksimalkan fungsi \\
+$\sim$ & Terdistribusi menurut \\
+$\to$ & Menuju atau konvergen ke \\[1ex]
+
+\multicolumn{2}{l}{\textbf{Fungsi \textit{Loss} dan Kerugian}} \\
+
+$\mathcal{L}$ & Fungsi \textit{loss} (kerugian) \\
+$\mathcal{L}_{total}$ & Total \textit{loss function} \\
+$\mathcal{L}_{adversarial}$ atau $\mathcal{L}_{adv}$ & \textit{Adversarial loss} \\
+$\mathcal{L}_{reconstruction}$ & \textit{Reconstruction loss} \\
+$\mathcal{L}_{L1}$ & L1 \textit{loss} (\textit{Mean Absolute Error}) \\
+$\mathcal{L}_{L2}$ & L2 \textit{loss} (\textit{Mean Squared Error}) \\
+$\mathcal{L}_{CTC}$ & CTC (\textit{Connectionist Temporal Classification}) \textit{loss} \\
+$\mathcal{L}_{perceptual}$ & \textit{Perceptual loss} \\
+$\mathcal{L}_{pixel}$ & \textit{Pixel-wise loss} \\
+$\mathcal{L}_{BCE}$ & \textit{Binary Cross-Entropy loss} \\
+$\mathcal{L}_{GAN}$ & GAN \textit{loss} \\
+$\mathcal{L}_{cycle}$ & \textit{Cycle consistency loss} \\[1ex]
+
+\multicolumn{2}{l}{\textbf{Variabel Model dan Komponen GAN}} \\
+
+$G$ & \textit{Generator} dalam GAN \\
+$D$ & \textit{Discriminator} dalam GAN \\
+$G(z)$ & \textit{Output} dari \textit{generator} dengan \textit{input} $z$ \\
+$D(x)$ & \textit{Output} dari \textit{discriminator} dengan \textit{input} $x$ \\
+$G_{A \to B}$ & \textit{Generator} dari domain $A$ ke $B$ \\
+$G_{B \to A}$ & \textit{Generator} dari domain $B$ ke $A$ \\
+$V(D, G)$ & Fungsi nilai (\textit{value function}) dalam GAN \\
+$x$ & Sampel data asli, \textit{input} citra \\
+$y$ & Label atau \textit{ground truth}, kondisi dalam \textit{conditional GAN} \\
+$z$ & \textit{Noise vector} atau representasi laten \\[1ex]
+
+\multicolumn{2}{l}{\textbf{Distribusi Probabilitas}} \\
+
+$\mathbb{E}$ & Ekspektasi atau nilai harapan \\
+$p_{data}$ & Distribusi data asli \\
+$p_z$ & Distribusi \textit{prior} (\textit{noise}) \\
+$p(y|x)$ & Probabilitas bersyarat \textit{output} $y$ \textit{given input} $x$ \\
+$p_t(\pi_t|x)$ & Probabilitas \textit{token} pada \textit{timestep} $t$ \\[1ex]
+
+\multicolumn{2}{l}{\textbf{Fungsi dan Transformasi CTC}} \\
+
+$\mathcal{B}$ & Fungsi penciutan (\textit{collapse function}) dalam CTC \\
+$\mathcal{B}^{-1}$ & Fungsi invers penciutan dalam CTC \\
+$T$ & Jumlah \textit{timestep} atau panjang \textit{sequence} \\[1ex]
+
+\multicolumn{2}{l}{\textbf{Metrik Jarak dan Norma}} \\
+
+$|x - G(y)|_1$ & L1 \textit{distance} antara \textit{ground truth} dan \textit{generated image} \\
+$|x - G(y)|_2$ & L2 \textit{distance} antara \textit{ground truth} dan \textit{generated image} \\
+$N \times N$ & Ukuran \textit{patch} dalam PatchGAN \\[1ex]
+
+\multicolumn{2}{l}{\textbf{Statistik dan Analisis}} \\
+
+$d$ & Cohen's $d$ (\textit{effect size}) \\
+$n$ & Jumlah sampel \\
+$p$ & \textit{p-value} (nilai probabilitas statistik) \\
+$r$ & Koefisien korelasi \\
+$R^2$ & Koefisien determinasi \\[1ex]
+
+\multicolumn{2}{l}{\textbf{Notasi Kompleksitas Komputasi}} \\
+
+$O(n)$ & Notasi Big-O untuk kompleksitas linear \\
+$O(n^2)$ & Notasi Big-O untuk kompleksitas kuadratik \\
+
+\end{longtable}
+
+\end{document}

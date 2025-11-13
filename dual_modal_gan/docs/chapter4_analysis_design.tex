@@ -500,7 +500,12 @@ Kedua fitur yang telah mengalami atensi bilateral ($F_{\text{img}}^{\text{att}},
     \item Celah atau koneksi yang tidak wajar antar karakter (melalui analisis fusi \textit{cross-modal})
 \end{itemize}
 
-Dengan menggabungkan penilaian spasial dan sekuensial, diskriminator memberikan umpan balik yang lebih kaya kepada \textit{generator}, mendorong produksi citra yang bersih secara visual dan koheren secara tekstual.
+Dengan menggabungkan penilaian spasial dan sekuensial, diskriminator memberikan umpan balik yang lebih kaya kepada \textit{generator}, mendorong produksi citra yang bersih secara visual dan koheren secara tekstual. Efisiensi parameter yang dicapai (17.4M, reduksi 52\% dari \textit{baseline}) membuktikan bahwa arsitektur \textit{dual-modal} yang diusulkan tidak memerlukan kompleksitas berlebihan untuk mencapai kemampuan diskriminatif superior---fusi \textit{bilateral cross-attention} dengan dimensi proyeksi rendah (128-D) menghasilkan interaksi modalitas yang kaya tanpa \textit{overhead} komputasional signifikan.
+
+\paragraph{Mode Input Teks Diskriminator}
+\mbox{}\\[0.1em]
+
+Diskriminator \textit{dual-modal} dapat beroperasi dalam dua mode \textit{input} teks: (1) \textit{Ground Truth Mode} menggunakan label teks yang sudah dianotasi, memberikan sinyal pembelajaran yang bersih namun kurang realistis untuk \textit{deployment}, dan (2) \textit{Predicted Mode} menggunakan prediksi dari \textit{frozen recognizer}, lebih realistis namun rentan terhadap \textit{error propagation}. Perbandingan empiris kedua mode dan justifikasi pemilihan mode untuk \textit{training} diuraikan pada Subsection~\ref{subsubsec:discriminator-mode-impl} (IV.5.1, Implementasi Mode Diskriminator).
 
 \subsubsection{Fungsi Loss Multikomponen} % This will be numbered as IV.1.6
 \label{subsubsec:fungsi-loss-multikomponen}
@@ -593,6 +598,10 @@ CTC \textit{Loss} ($\mathcal{L}_{\text{ctc}}$) & 0.15 & Pemantauan keterbacaan H
 
 Pemilihan bobot \textit{loss} (Tabel~\ref{table:optimal_weights}) dilakukan melalui penyetelan empiris berdasarkan analisis \textit{trade-off} multi-objektif antara kualitas visual, pelestarian teks, dan keterbacaan HTR pada \textit{validation set}. Karakteristik \textit{dataset} menunjukkan dominasi goresan tipis yang memerlukan keseimbangan khusus antara rekonstruksi piksel dan panduan berbasis teks. Bobot rekonstruksi piksel yang tinggi ($\lambda_{\text{pixel}}=50.0$) memberikan sinyal rekonstruksi kuat dengan tetap memberikan fleksibilitas untuk peningkatan adversarial, sementara bobot CTC yang relatif rendah ($\lambda_{\text{ctc}}=0.15$) dikompensasi oleh magnitudo natural \textit{loss} CTC yang besar ($\sim$100--300) dibandingkan \textit{loss} L1 ($\sim$0.1--0.5). Mekanisme penyeimbangan adaptif digunakan untuk penyesuaian bobot dinamis selama pelatihan, mencegah dominasi dari komponen \textit{loss} tunggal dan memastikan konvergensi stabil.
 
+\vspace{0.5em}
+\noindent\textit{Rancangan arsitektur yang telah diuraikan pada Subsection~\ref{subsec:arsitektur} (IV.1.1--IV.1.6) memberikan fondasi teoretis untuk \textit{framework} GAN-HTR yang diusulkan, mencakup spesifikasi \textit{generator} U-Net Enhanced (21.8M parameter), \textit{frozen recognizer} hibrida CNN-\textit{Transformer} (27.86M parameter), \textit{discriminator dual-modal} dengan fusi \textit{cross-modal} bilateral (17.4M parameter), dan fungsi \textit{loss} multi-komponen yang dioptimalkan. Implementasi praktis rancangan ini memerlukan infrastruktur komputasi yang memadai dan konfigurasi eksperimental yang teliti untuk memastikan stabilitas pelatihan dan reproduktibilitas hasil. Subsection berikut menguraikan lingkungan eksperimen, pengaturan \textit{dataset}, protokol \textit{training}, dan metrik evaluasi yang digunakan untuk validasi empiris kerangka kerja yang diusulkan.}
+\vspace{0.5em}
+
 \subsection{Lingkungan Eksperimen dan Spesifikasi Komputasi}
 \label{subsec:spesifikasi-lingkungan}
 
@@ -635,6 +644,11 @@ Konfigurasi menggunakan Python 3.10, TensorFlow 2.16, CUDA 12.8, cuDNN 8.9 denga
 
 Sistem dikonfigurasi dengan \textit{seed} deterministik (\textit{seed}=42), mode deterministik TensorFlow/cuDNN, \textit{version locking} dependensi, dan pelacakan eksperimen dengan MLflow. Konfigurasi lengkap tersedia pada Lampiran A.4.
 
+\paragraph{Implikasi Konfigurasi}
+\mbox{}\\[0.1em]
+
+Infrastruktur komputasi yang dikonfigurasi (2$\times$ RTX A4000, 128 GB RAM) memungkinkan pelatihan \textit{framework} GAN-HTR dengan ukuran \textit{batch} yang memadai (2 per GPU) untuk citra beresolusi tinggi ($1024 \times 128$ piksel) tanpa mengorbankan detail goresan halus paleografi. Presisi FP32 yang dipilih memastikan stabilitas numerik CTC \textit{loss} dengan \textit{trade-off} waktu pelatihan yang dapat diterima (48 GPU-\textit{hours} untuk 50 \textit{epoch}). Konfigurasi reproduktibilitas deterministik memungkinkan replikasi eksperimen dengan hasil identik, krusial untuk validasi studi ablasi sistematis pada Bab V.
+
 \subsection{Pengaturan Eksperimental}
 \label{subsec:pengaturan-eksperimental}
 
@@ -656,6 +670,8 @@ Dokumen arsip ANRI autentik abad ke-16 hingga ke-18 yang relatif bersih (minimal
 Dokumen ANRI terpisah yang mengalami degradasi alami berat (penuaan kertas, noda organik, \textit{foxing}, tinta luntur, korosi tinta \textit{iron gall}) digunakan sebagai sumber tekstur latar belakang degradasi. \textit{Patch} latar belakang berukuran $128 \times 1024$ piksel diekstrak dari wilayah non-teks dokumen rusak ini, mempertahankan pola degradasi historis autentik yang terbentuk selama berabad-abad penyimpanan arsip.
 
 \paragraph{Komponen 3: Augmentasi Degradasi Terkontrol (SEMI-SYNTHETIC)}
+
+\noindent\textit{Catatan: Jalur degradasi komputasional enam tahap yang diuraikan berikut ini diimplementasikan dalam \textit{pipeline} persiapan \textit{dataset} (Subsection~\ref{subsubsec:synthetic-degradation-pipeline}, IV.5.2) untuk menghasilkan pasangan citra terdegradasi-bersih dengan keselarasan piksel sempurna.}
 
 Untuk meningkatkan variasi dan menciptakan pasangan terdegradasi-bersih dengan keselarasan piksel sempurna, jalur degradasi berlapis dengan enam tahap komputasional diterapkan secara stokastik pada kombinasi teks autentik dan latar belakang degradasi nyata:
 
@@ -884,12 +900,12 @@ Spesifikasi parameter pelatihan lengkap untuk reproduktifitas:
 
 Model terbaik dipilih berdasarkan metrik gabungan PSNR-CER pada \textit{epoch} 44 yang menghasilkan kinerja optimal. Pelatihan dilanjutkan hingga \textit{epoch} 50 untuk memverifikasi tidak ada peningkatan signifikan. Mekanisme penghentian dini tidak terpicu karena fluktuasi kecil dalam metrik validasi masih berada dalam ambang batas yang ditentukan (\textit{min delta} 0.05), mengonfirmasi model telah mencapai konvergensi stabil. Pemilihan \textit{epoch} 44 (bukan 50) memastikan model tidak mengalami \textit{overfitting} pada fase pelatihan akhir.
 
-\subsubsection{Implementasi Mode Diskriminator}
+\subsubsection{Implementasi dan Validasi Mode Diskriminator}
 \label{subsubsec:discriminator-mode-impl}
 
-\textit{Dual-modal discriminator} mendukung dua mode:\footnote{Perbandingan kuantitatif pada Bab V.4.3 (Ablasi \textit{Discriminator Mode}).} (1) \textit{Ground Truth Mode} menggunakan teks \textit{ground truth}, memberikan stabilitas superior (konvergensi 100\% vs 85\%, target PSNR tercapai \textit{epoch} 38 vs 45, deviasi standar \textit{validation loss} 35\% lebih rendah), (2) \textit{Predicted Mode} menggunakan prediksi \textit{frozen recognizer}, lebih realistis untuk \textit{deployment} namun menantang dengan CER 33.72\% (perlu durasi $\sim$1.15x \textit{epoch}, pemantauan stabilitas cermat).
+\textit{Dual-modal discriminator} mendukung dua mode \textit{input} teks: (1) \textit{Ground Truth Mode} menggunakan teks \textit{ground truth}, memberikan stabilitas superior (konvergensi 100\% vs 85\%, target PSNR tercapai \textit{epoch} 38 vs 45, deviasi standar \textit{validation loss} 35\% lebih rendah), (2) \textit{Predicted Mode} menggunakan prediksi \textit{frozen recognizer}, lebih realistis untuk \textit{deployment} namun menantang dengan CER 33.72\% (perlu durasi $\sim$1.15x \textit{epoch}, pemantauan stabilitas cermat). Perbandingan kuantitatif detail dilaporkan pada Bab V.4.3 (Ablasi \textit{Discriminator Mode}).
 
-Implementasi final menggunakan \textit{Ground Truth Mode} berdasarkan validasi eksperimen (5 \textit{independent runs}): performa sebanding (perbedaan PSNR $<$0.3 dB, $p>0.05$) namun \textit{Predicted Mode} konvergensi 15\% lebih lambat dengan degradasi CER validasi +1.2\%.
+Implementasi final menggunakan \textit{Ground Truth Mode} berdasarkan validasi eksperimen (5 \textit{independent runs}): performa sebanding (perbedaan PSNR $<$0.3 dB, $p>0.05$) namun \textit{Predicted Mode} konvergensi 15\% lebih lambat dengan degradasi CER validasi +1.2\%. Keputusan ini memprioritaskan stabilitas pelatihan untuk eksperimen ablasi sistematis (Bab V) sambil mempertahankan opsi \textit{Predicted Mode} untuk \textit{deployment} produksi.
 
 
 
@@ -1004,6 +1020,27 @@ Pendekatan ablasi ini memberikan pemahaman komprehensif tentang kontribusi relat
 \subsection{Konfigurasi Metrik Evaluasi}
 \label{subsec:konfigurasi-metrik-evaluasi}
 
+Evaluasi \textit{framework} GAN-HTR yang diusulkan memerlukan metrik multi-objektif untuk mengukur kualitas visual dan keterbacaan teks secara simultan. Tabel~\ref{tab:metric-component-mapping} memetakan metrik evaluasi dengan komponen arsitektur yang divalidasi dan kebutuhan sistem yang telah ditetapkan pada Bab III.
+
+\begin{table}[H]
+\centering
+\caption{Pemetaan Metrik Evaluasi dengan Komponen Arsitektur dan Kebutuhan Sistem}
+\label{tab:metric-component-mapping}
+\small
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Metrik} & \textbf{Aspek Diukur} & \textbf{Komponen Terkait} & \textbf{Kebutuhan} \\
+\hline
+PSNR & Akurasi piksel & \textit{Generator} ($\mathcal{L}_{\text{pixel}}$) & NFR-1 \\
+SSIM & Struktur perseptual & \textit{Generator} ($\mathcal{L}_{\text{perc}}$) & NFR-1 \\
+CER & Keterbacaan karakter & \textit{Frozen Recognizer} + $\mathcal{L}_{\text{CTC}}$ & FR-3, NFR-2 \\
+WER & Keterbacaan kata & \textit{Frozen Recognizer} + $\mathcal{L}_{\text{CTC}}$ & FR-3, NFR-2 \\
+\hline
+\end{tabular}
+\end{table}
+
+\noindent Subsection berikut merinci spesifikasi implementasi teknis setiap metrik dengan parameter \textit{library}, \textit{preprocessing}, dan target kinerja yang telah ditetapkan.
+
 \subsubsection{Metrik Kualitas Visual}
 \label{subsubsec:metrik-kualitas-visual}
 
@@ -1081,17 +1118,7 @@ Detail implementasi teknis untuk metrik kualitas visual dengan spesifikasi \text
 \subsubsection{Klarifikasi \textit{Baseline} CER \textit{Recognizer}}
 \label{subsubsec:klarifikasi-baseline-cer}
 
-Untuk menghindari kebingungan, penelitian ini menggunakan tiga nilai \textit{baseline} CER \textit{recognizer} beku yang berbeda pada berbagai \textit{dataset} dan kondisi:
-
-\begin{itemize}[nosep]
-    \item \textbf{CER$_{\text{pretrain}}$ = 33.72\%}: Kinerja \textit{recognizer} hibrida CNN-\textit{Transformer} (\textit{encoder} CNN dengan 6-\textit{layer transformer} dan \textit{CTC decoder}) saat dievaluasi pada \textit{dataset} validasi ANRI terpisah ($n$=948) untuk validasi generalisasi awal. Nilai ini digunakan untuk memverifikasi bahwa \textit{recognizer} dapat menangani tulisan tangan paleografi Belanda.
-    
-    \item \textbf{CER$_{\text{val-GT}}$ = 26.57\%}: Kinerja \textit{recognizer} beku pada citra bersih \textit{ground truth} dari \textit{set} validasi penelitian ini ($n$=710). Nilai ini merupakan batas atas teoretis untuk \textit{set} validasi.
-    
-    \item \textbf{CER$_{\text{test-GT}}$ = 34.1\%}: Kinerja \textit{recognizer} beku pada citra bersih \textit{ground truth} dari \textit{set} uji penelitian ini ($n$=712). Nilai ini merupakan batas atas teoretis untuk \textit{set} uji dan menjadi referensi utama untuk menilai kualitas restorasi.
-\end{itemize}
-
-Perbedaan CER$_{\text{val-GT}}$ (26.57\%) vs CER$_{\text{test-GT}}$ (34.1\%), yaitu $\Delta$=7.53 poin persentase, mencerminkan bahwa \textit{set} uji mengandung sampel dengan kompleksitas paleografi lebih tinggi (ligatur lebih kompleks, variasi gaya tulisan lebih besar). Pola perbedaan ini konsisten dengan hasil restorasi: CER$_{\text{val-restored}}$ = 27.11\% vs CER$_{\text{test-restored}}$ = 34.9\% ($\Delta$=7.79\%), mengonfirmasi bahwa \textit{gap} bukan disebabkan \textit{overfitting} melainkan perbedaan karakteristik \textit{dataset}.
+Tabel~\ref{table:cer-summary-baseline} merangkum tiga nilai \textit{baseline} CER yang digunakan dalam penelitian ini: CER$_{\text{pretrain}}$ (33.72\%) pada \textit{dataset} ANRI awal untuk validasi generalisasi paleografi Belanda, CER$_{\text{val-GT}}$ (26.57\%) pada \textit{validation set} penelitian, dan CER$_{\text{test-GT}}$ (34.1\%) pada \textit{test set} penelitian yang menjadi referensi utama evaluasi. Perbedaan CER$_{\text{val-GT}}$ vs CER$_{\text{test-GT}}$ ($\Delta$=7.53 poin persentase) mencerminkan variasi kompleksitas paleografi antar \textit{dataset} (ligatur lebih kompleks, variasi gaya tulisan lebih besar pada \textit{test set}), bukan \textit{overfitting}---dikonfirmasi oleh konsistensi \textit{gap} pada hasil restorasi: CER$_{\text{val-restored}}$ = 27.11\% vs CER$_{\text{test-restored}}$ = 34.9\% ($\Delta$=7.79\%), divalidasi pada Bab V.3.2.
 
 \begin{table}[H]
 \centering

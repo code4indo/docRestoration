@@ -1,7 +1,7 @@
 # Fdb version 3
-["pdflatex"] 1763009731 "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter6_kesimpulan.tex" "chapter6_kesimpulan.pdf" "chapter6_kesimpulan" 1763009732
+["pdflatex"] 1763013684 "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter6_kesimpulan.tex" "chapter6_kesimpulan.pdf" "chapter6_kesimpulan" 1763013685
   "/etc/texmf/web2c/texmf.cnf" 1735821572 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter6_kesimpulan.tex" 1763009731 11761 7474a64fc7a7aae6f54902b1fa25e33e ""
+  "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter6_kesimpulan.tex" 1763013618 11714 7a48c3297f970b15b4705c6174dee011 ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/symbol/psyr.tfm" 1136768653 1408 5937f58aa508ea2cea4901c07d10f5fe ""
@@ -118,9 +118,9 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1759233803 4379155 98693266ff65f58d9f98aff394de12d2 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1759233835 2798526 797e2e5e8fb6f85d658ad96238072e6c ""
-  "chapter6_kesimpulan.aux" 1763009732 5092 37d1536635958bb47cb9d7b4b0bf5872 "pdflatex"
-  "chapter6_kesimpulan.out" 1763009732 1131 3cc85866120dab8b5873f44a93331cbe "pdflatex"
-  "chapter6_kesimpulan.tex" 1763009731 11761 7474a64fc7a7aae6f54902b1fa25e33e ""
+  "chapter6_kesimpulan.aux" 1763013685 5092 6b69afc0344b5421f89d23f190743c62 "pdflatex"
+  "chapter6_kesimpulan.out" 1763013685 1131 3cc85866120dab8b5873f44a93331cbe "pdflatex"
+  "chapter6_kesimpulan.tex" 1763013618 11714 7a48c3297f970b15b4705c6174dee011 ""
   (generated)
   "chapter6_kesimpulan.aux"
   "chapter6_kesimpulan.log"

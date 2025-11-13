@@ -1,0 +1,84 @@
+{
+  "experiment_name": "gradnorm_validation_v1",
+  "description": "VALIDATION RUN - GradNorm adaptive loss balancing. Quick test (5 epochs, 50 steps/epoch) to verify GradNorm functionality before full training.",
+
+  "generator_version": "enhanced",
+  "discriminator_version": "enhanced_v2_fixed",
+
+  "tfrecord_path": "dual_modal_gan/data/dataset_gan.tfrecord",
+  "charset_path": "real_data_preparation/real_data_charlist.txt",
+  "recognizer_weights": "/home/lambda_one/tesis/GAN-HTR-ORI/htr_improved_v2_20251001_221138/best_model.weights.h5",
+  "checkpoint_dir": "dual_modal_gan/checkpoints/gradnorm_validation",
+  "sample_dir": "dual_modal_gan/outputs/samples_gradnorm_validation",
+
+  "resume": false,
+  "no_restore": true,
+
+  "epochs": 5,
+  "batch_size": 4,
+  "steps_per_epoch": 50,
+  "save_interval": 2,
+  "eval_interval": 1,
+  "seed": 42,
+  "max_checkpoints": 3,
+  "gpu_id": "0",
+
+  "train_split": 0.7,
+  "val_split": 0.15,
+
+  "checkpoints": {
+    "save_best_model_separately": true
+  },
+
+  "early_stopping": {
+    "enabled": false,
+    "curriculum_aware": false,
+    "patience": 25,
+    "min_delta": 0.05,
+    "restore_best_weights": true
+  },
+
+  "early_stopping_metric": "combined",
+  "psnr_improvement_threshold": 2.0,
+  "cer_weight": 0.2,
+
+  "lr_g": 0.0002,
+  "lr_d": 0.0002,
+  "use_lr_schedule": true,
+  "warmup_epochs": 0,
+  "annealing_epochs": 0,
+
+  "use_gradnorm": true,
+  "gradnorm_config": {
+    "alpha": 1.5,
+    "update_frequency": 1,
+    "loss_names": ["pixel", "adversarial", "rec_feat", "perceptual", "ctc"],
+    "initial_weights": [50.0, 3.0, 8.0, 1.0, 0.15]
+  },
+
+  "pixel_loss_weight": 50.0,
+  "adv_loss_weight": 3.0,
+  "rec_feat_loss_weight": 8.0,
+  "ctc_loss_weight": 0.15,
+  "perceptual_loss_weight": 1.0,
+  "gradient_clip_norm": 1.0,
+  "ctc_loss_clip_max": 400.0,
+
+  "discriminator_mode": "predicted",
+
+  "adaptive_loss_balancing": false,
+  "target_ctc_ratio": 0.40,
+  "target_visual_ratio": 0.60,
+  "adaptation_rate": 0.08,
+
+  "discriminator_config": {
+    "spatial_attention_kernel": 3,
+    "cross_modal_common_dim": 128,
+    "batchnorm_momentum": 0.9,
+    "dropout_rate": 0.1,
+    "use_residual_blocks": true,
+    "use_spatial_attention": true,
+    "use_cross_modal_attention": true,
+    "attention_type": "scaled_dot_product"
+  }
+}
