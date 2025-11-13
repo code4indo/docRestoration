@@ -1,0 +1,194 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[bahasa]{babel}
+\usepackage{mathptmx} % Times New Roman font
+\usepackage{microtype} % Untuk optimasi typography dan spacing
+\usepackage[none]{hyphenat} % Menonaktifkan hyphenation
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{setspace}
+\usepackage{geometry}
+\usepackage{tikz}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\hypersetup{
+    pdfencoding=auto,
+    pdftitle={Restorasi Dokumen Terdegradasi Menggunakan Generative Adversarial Network dengan Diskriminator Dual-Modal dan Optimasi Loss Function Berorientasi HTR},
+    pdfauthor={},
+    pdfsubject={Tesis},
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=blue,
+    pdfstartview=FitH,
+    bookmarksopen=true,
+    bookmarksnumbered=true
+}
+\usepackage{tocloft}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{textcomp} % For special symbols
+\usepackage{booktabs} % For professional tables
+\usepackage{multirow} % For multirow in tables
+\usepackage{array} % For advanced column formatting
+\usepackage{subfig}
+
+% Aktifkan hyphenation Bahasa Indonesia dan optimasi spasi agar tidak keluar margin
+\lefthyphenmin=2
+\righthyphenmin=2
+\pretolerance=1000
+\tolerance=2000
+\emergencystretch=3em
+\hbadness=10000
+\vbadness=10000
+\hyphenpenalty=500
+\exhyphenpenalty=500
+\sloppy
+
+% Aktifkan microtype untuk Bahasa Indonesia
+\microtypesetup{activate=true,protrusion=true,expansion=true,tracking=true,kerning=true}
+\microtypecontext{spacing=nonfrench}
+
+% Pengaturan paragraf: tanpa indentasi dan jarak minimal antar paragraf
+\setlength{\parindent}{0pt} % Menghilangkan indentasi awal paragraf
+\setlength{\parskip}{0pt} % Tidak ada jarak antar paragraf
+
+% Pengaturan jarak untuk chapter dan section
+\usepackage{titlesec}
+\titleformat{\chapter}{\normalsize\bfseries\centering}{\thechapter}{1em}{}
+\titleformat{\section}{\normalsize\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection}{1em}{}
+\titlespacing*{\chapter}{0pt}{0pt}{1em}
+\titlespacing*{\section}{0pt}{0.5em}{0pt}
+\titlespacing*{\subsection}{0pt}{0pt}{0pt}
+\titlespacing*{\subsubsection}{0pt}{0.5cm}{0pt}
+
+% Pengaturan margin: kiri 4cm, lainnya 3cm
+\geometry{
+    a4paper,
+    left=4cm,
+    right=3cm,
+    top=3cm,
+    bottom=3cm
+}
+
+% Pengaturan spasi
+\onehalfspacing
+
+% Pengaturan penomoran
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+% Pengaturan heading untuk report class
+\renewcommand{\thechapter}{\Roman{chapter}}
+\renewcommand{\thesection}{\thechapter.\arabic{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+
+% Path gambar
+\graphicspath{{/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/}}
+
+\begin{document}
+
+% ============================================================
+% HALAMAN JUDUL
+% ============================================================
+\begin{titlepage}
+\centering
+\vspace*{2cm}
+
+{\Large\bfseries RESTORASI DOKUMEN TERDEGRADASI MENGGUNAKAN\\
+GENERATIVE ADVERSARIAL NETWORK DENGAN\\
+DISKRIMINATOR DUAL-MODAL DAN OPTIMASI\\
+LOSS FUNCTION BERORIENTASI HTR}
+
+\vspace{2cm}
+
+{\large TESIS}
+
+\vspace{1cm}
+
+{\normalsize Diajukan untuk memenuhi salah satu syarat\\
+memperoleh gelar Magister Komputer}
+
+\vfill
+
+{\normalsize Oleh:}\\[0.5cm]
+{\large\bfseries [NAMA MAHASISWA]}\\
+{\normalsize NIM: [NIM]}
+
+\vfill
+
+{\normalsize PROGRAM PASCASARJANA\\
+MAGISTER ILMU KOMPUTER\\
+UNIVERSITAS [NAMA UNIVERSITAS]\\
+TAHUN 2025}
+
+\end{titlepage}
+
+% ============================================================
+% DAFTAR ISI
+% ============================================================
+\tableofcontents
+\newpage
+
+% ============================================================
+% DAFTAR GAMBAR
+% ============================================================
+\listoffigures
+\newpage
+
+% ============================================================
+% DAFTAR TABEL
+% ============================================================
+\listoftables
+\newpage
+
+% ============================================================
+% BAB I: PENDAHULUAN
+% ============================================================
+\include{chapter1_pendahuluan_content}
+
+% ============================================================
+% BAB II: TINJAUAN PUSTAKA
+% ============================================================
+\include{chapter2_tinjauan_pustaka_content}
+
+% ============================================================
+% BAB III: METODOLOGI PENELITIAN
+% ============================================================
+\include{chapter3_metodologi_content}
+
+% ============================================================
+% BAB IV: ANALISIS DAN PERANCANGAN
+% ============================================================
+\include{chapter4_analysis_design_content}
+
+% ============================================================
+% BAB V: HASIL DAN PEMBAHASAN
+% ============================================================
+% Note: Chapter 5 menggunakan file standalone chapter5_hasil.tex
+% Untuk integrasi dengan main.tex, extract konten ke chapter5_hasil_content.tex
+\chapter{HASIL DAN PEMBAHASAN}
+\label{sec:hasil-dan-pembahasan}
+\input{chapter5_hasil_content}
+
+% ============================================================
+% BAB VI: KESIMPULAN DAN SARAN
+% ============================================================
+\include{chapter6_conclusion}
+
+% ============================================================
+% DAFTAR PUSTAKA
+% ============================================================
+\newpage
+\addcontentsline{toc}{chapter}{DAFTAR PUSTAKA}
+
+% Menggunakan bibliography yang sudah ada
+\input{bibliography.bib}
+
+\end{document}

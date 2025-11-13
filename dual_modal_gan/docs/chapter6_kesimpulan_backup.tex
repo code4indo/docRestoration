@@ -1,0 +1,398 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[bahasa]{babel}
+\usepackage{mathptmx} % Times New Roman font
+\usepackage{microtype} % Untuk optimasi typography dan spacing
+\usepackage[none]{hyphenat} % Menonaktifkan hyphenation
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{setspace}
+\usepackage{geometry}
+\usepackage{tikz}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\hypersetup{
+    pdfencoding=auto,
+    pdftitle={Restorasi Dokumen Terdegradasi Menggunakan Generative Adversarial Network dengan Diskriminator Dual-Modal dan Optimasi Loss Function Berorientasi HTR},
+    pdfauthor={},
+    pdfsubject={Tesis - BAB VI},
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=blue,
+    pdfstartview=FitH,
+    bookmarksopen=true,
+    bookmarksnumbered=true
+}
+\usepackage{tocloft}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{textcomp} % For special symbols
+\usepackage{booktabs} % For professional tables
+\usepackage{multirow} % For multirow in tables
+\usepackage{array} % For advanced column formatting
+
+% Aktifkan hyphenation Bahasa Indonesia dan optimasi spasi agar tidak keluar margin
+\lefthyphenmin=2
+\righthyphenmin=2
+\pretolerance=1000
+\tolerance=2000
+\emergencystretch=3em
+\hbadness=10000
+\vbadness=10000
+\hyphenpenalty=500
+\exhyphenpenalty=500
+\sloppy
+
+% Aktifkan microtype untuk Bahasa Indonesia
+\microtypesetup{activate=true,protrusion=true,expansion=true,tracking=true,kerning=true}
+\microtypecontext{spacing=nonfrench}
+
+% Pengaturan paragraf: tanpa indentasi dan jarak minimal antar paragraf
+\setlength{\parindent}{0pt} % Menghilangkan indentasi awal paragraf
+\setlength{\parskip}{0pt} % Tidak ada jarak antar paragraf
+
+% Pengaturan jarak untuk subsection
+\usepackage{titlesec}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{0pt}{0pt} % Tidak ada jarak sebelum atau setelah judul
+
+% Pengaturan margin: kiri 4cm, lainnya 3cm
+\geometry{
+    a4paper,
+    left=4cm,
+    right=3cm,
+    top=3cm,
+    bottom=3cm
+}
+
+% Pengaturan spasi
+\onehalfspacing
+
+% Pengaturan penomoran
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+% Pengaturan heading
+\renewcommand{\thesection}{\Roman{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+
+\begin{document}
+
+% ============================================================
+% BAB VI: KESIMPULAN DAN SARAN
+% ============================================================
+
+\vspace{2cm}
+\begin{center}
+{\fontsize{14}{16.8}\selectfont\textbf{BAB VI. Kesimpulan dan Saran}}\\[1em]
+\end{center}
+\label{sec:kesimpulan-dan-saran}
+\addcontentsline{toc}{section}{BAB VI KESIMPULAN DAN SARAN}
+\setcounter{section}{6}
+\setcounter{subsection}{0}
+\vspace{2em}
+
+\subsection{Kesimpulan}
+\label{subsec:kesimpulan}
+\vspace{0.8em}
+
+Penelitian ini mengusulkan kerangka kerja restorasi dokumen berorientasi HTR berbasis GAN yang mengatasi keterbatasan metode konvensional dalam mengoptimalkan keterbacaan teks untuk sistem pengenalan otomatis. Berdasarkan hasil eksperimen dan analisis komprehensif yang telah dilakukan pada Bab V, dapat ditarik kesimpulan utama sebagai berikut:
+
+\vspace{0.8em}
+
+\subsubsection{Kontribusi Utama Penelitian}
+\label{subsubsec:kontribusi-utama}
+
+Kerangka kerja yang diusulkan mengintegrasikan dua kontribusi utama yang telah divalidasi secara empiris:
+
+\paragraph{1. Strategi \textit{Frozen HTR Recognizer} sebagai Faktor Kunci Keberhasilan} \mbox{}\\[0.1em]
+Implementasi strategi \textit{frozen recognizer} terbukti menjadi komponen paling kritis dalam keberhasilan sistem. Pendekatan ini memberikan gradien sadar-teks yang stabil tanpa mengalami ketidakstabilan pelatihan bersama (\textit{joint training}). Validasi empiris melalui studi ablasi menunjukkan bahwa strategi ini mencegah \textit{catastrophic forgetting} dan mempertahankan stabilitas pelatihan ($p<0.001$), mengonfirmasi superioritas pendekatan \textit{frozen} dibandingkan pelatihan bersama yang rentan terhadap kompetisi gradien dan ketidakselarasan objektif.
+
+\paragraph{2. Optimasi Fungsi \textit{Loss} Multikomponen dengan Konfigurasi 4-Komponen} \mbox{}\\[0.1em]
+Studi ablasi sistematis mengidentifikasi konfigurasi optimal yang terdiri dari empat komponen: piksel L1, \textit{adversarial}, perseptual VGG-19, dan CTC. Konfigurasi ini mencapai keseimbangan Pareto antara kualitas visual dan keterbacaan HTR. Temuan penting menunjukkan bahwa komponen kelima (\textit{recognition feature loss}) bersifat kontraproduktif dan harus dihindari karena menyebabkan penurunan performa CER (+0.50\%) tanpa peningkatan visual signifikan akibat ketidaksesuaian arsitektural dan redundansi dengan komponen CTC.
+
+\vspace{0.8em}
+
+\subsubsection{Temuan Empiris Kinerja Sistem}
+\label{subsubsec:temuan-empiris}
+
+Evaluasi kuantitatif komprehensif pada \textit{dataset} semi-sintetis realistis berbasis dokumen paleografi ANRI abad ke-16 hingga ke-18 menghasilkan temuan signifikan:
+
+\paragraph{1. Peningkatan Keterbacaan Teks yang Substansial} \mbox{}\\[0.1em]
+Pada 712 citra uji semi-sintetis, metode yang diusulkan mencapai pengurangan CER dari 83.4\% (kondisi terdegradasi) menjadi 34.9\% (pascarestaorasi), menunjukkan pengurangan absolut 48.5 poin persentase atau pengurangan relatif 58.2\% ($p<0.001$). Hasil ini mendekati kinerja teoretis pada citra bersih (CER 34.1\%) dengan selisih hanya 0.8 poin persentase, mengindikasikan bahwa hambatan utama kinerja HTR bukan lagi degradasi citra, melainkan keterbatasan kapabilitas \textit{recognizer} HTR pada dokumen paleografi kompleks.
+
+\paragraph{2. Pelestarian Kualitas Visual yang Tinggi} \mbox{}\\[0.1em]
+Sistem berhasil mempertahankan kualitas visual tinggi dengan PSNR 30.74$\pm$5.09 dB dan SSIM 0.987$\pm$0.014, melampaui target yang ditetapkan (PSNR $>$ 30 dB, SSIM $>$ 0.95). Dibandingkan kondisi terdegradasi, terjadi peningkatan PSNR sebesar +22.83 dB (dari 7.91 ke 30.74 dB) dan SSIM sebesar +0.647 poin (dari 0.340 ke 0.987), memvalidasi efektivitas kombinasi \textit{recognizer} beku dengan optimasi fungsi \textit{loss} multikomponen.
+
+\paragraph{3. Keunggulan Terhadap Metode Klasik} \mbox{}\\[0.1em]
+Perbandingan dengan metode \textit{baseline} klasik menunjukkan superioritas metode yang diusulkan secara substansial. Metode \textit{thresholding} konvensional (Otsu: CER 85.7\%, Sauvola: CER 109.5\%) justru memperburuk performa HTR dibandingkan kondisi tanpa perbaikan (CER 83.4\%) karena menghasilkan artefak binarisasi dan hilangnya detail goresan penting. Hal ini memvalidasi pentingnya pendekatan restorasi berbasis \textit{deep learning} yang berorientasi HTR dibandingkan binarisasi konvensional.
+
+\paragraph{4. Generalisasi pada Data Historis Autentik} \mbox{}\\[0.1em]
+Validasi kualitatif pada 15 naskah ANRI autentik mengonfirmasi generalisasi efektif pada degradasi historis nyata yang tidak dapat direplikasi secara sintetis. Model mampu menangani variasi degradasi kompleks seperti korosi tinta \textit{iron gall}, \textit{foxing} heterogen, dan \textit{bleed-through} spasial yang tidak terdapat pada data pelatihan semi-sintetis, membuktikan kemampuan generalisasi lintas domain degradasi.
+
+\vspace{0.8em}
+
+\subsubsection{Temuan Kritis tentang Arsitektur Diskriminator}
+\label{subsubsec:temuan-diskriminator}
+
+Eksplorasi arsitektur diskriminator \textit{dual-modal} menghasilkan temuan penting yang merevisi asumsi awal penelitian:
+
+\paragraph{1. Kontribusi Marginal Arsitektur \textit{Dual-Modal}} \mbox{}\\[0.1em]
+Analisis komparatif antara diskriminator \textit{dual-modal} (CNN + LSTM) dan \textit{baseline} CNN-\textit{only} menunjukkan perbedaan performa yang tidak signifikan secara statistik ($\Delta$PSNR +0.28 dB, $p>0.05$; $\Delta$SSIM +0.001, $p>0.05$; $\Delta$CER -0.03\%, $p>0.92$). Temuan ini mengonfirmasi bahwa protokol pelatihan dan strategi \textit{recognizer} beku lebih dominan daripada kompleksitas arsitektur diskriminator.
+
+\paragraph{2. Faktor Pembatas Kapasitas Generator} \mbox{}\\[0.1em]
+Analisis mendalam mengungkapkan bahwa kapasitas generator merupakan faktor pembatas utama, bukan arsitektur diskriminator. Ketika generator mencapai batas kemampuannya, peningkatan kompleksitas diskriminator tidak memberikan manfaat tambahan karena tidak ada ruang untuk perbaikan lebih lanjut dalam representasi yang dihasilkan generator.
+
+\paragraph{3. Implikasi Desain Sistem} \mbox{}\\[0.1em]
+Temuan ini memiliki implikasi praktis penting: untuk aplikasi restorasi skala besar, arsitektur CNN-\textit{only} yang lebih sederhana sudah memadai dan lebih efisien secara komputasional. Kompleksitas tambahan dari cabang LSTM tidak memberikan \textit{return on investment} yang memadai dalam konteks implementasi saat ini.
+
+\vspace{0.8em}
+
+\subsubsection{Validasi Komponen Hipotesis Penelitian}
+\label{subsubsec:validasi-hipotesis}
+
+Pengujian hipotesis penelitian yang dirumuskan pada Bab I menghasilkan validasi parsial dengan temuan spesifik untuk setiap komponen:
+
+\paragraph{Hipotesis Komponen 1: Diskriminator \textit{Dual-Modal}} \mbox{}\\[0.1em]
+\textbf{Status: Tidak Terdukung Secara Empiris.} Arsitektur \textit{dual-modal} tidak menghasilkan peningkatan signifikan dibanding \textit{baseline} CNN-\textit{only} dalam implementasi saat ini. Kontribusi marginal ($\Delta$PSNR +0.28 dB, $p>0.05$) mengindikasikan bahwa evaluasi koherensi visual-tekstual eksplisit melalui cabang LSTM terpisah tidak memberikan nilai tambah substansial ketika \textit{frozen recognizer} sudah memberikan sinyal HTR yang kuat.
+
+\paragraph{Hipotesis Komponen 2: \textit{Frozen Recognizer}} \mbox{}\\[0.1em]
+\textbf{Status: Terdukung Penuh Secara Empiris.} Strategi ini terbukti kritis untuk mencegah \textit{catastrophic forgetting} dan mempertahankan stabilitas pelatihan. Validasi melalui ablasi menunjukkan bahwa pendekatan \textit{frozen} mengungguli alternatif pelatihan bersama dalam hal stabilitas gradien, konsistensi performa, dan efisiensi komputasi.
+
+\paragraph{Hipotesis Komponen 3: \textit{Curriculum Learning} dan Optimasi \textit{Loss}} \mbox{}\\[0.1em]
+\textbf{Status: Terdukung Parsial untuk \textit{Curriculum}, Terdukung Penuh untuk Optimasi \textit{Loss}.} Strategi \textit{curriculum learning} memberikan manfaat stabilitas pada fase awal pelatihan, namun analisis trajektori menunjukkan bahwa konfigurasi bobot \textit{loss} akhir (bukan jadwal temporal) yang menjadi faktor dominan untuk performa konvergensi. Optimasi fungsi \textit{loss} multikomponen dengan konfigurasi 4-komponen terbukti sebagai faktor kunci keberhasilan.
+
+\paragraph{Hipotesis Utama: Peningkatan Keterbacaan dengan Kualitas Visual Tinggi} \mbox{}\\[0.1em]
+\textbf{Status: Terdukung Penuh Secara Empiris.} Sistem mencapai pengurangan CER 58.2\% ($p<0.001$, Cohen's $d=0.85$ menunjukkan \textit{large effect size}) sambil mempertahankan kualitas visual tinggi (PSNR 30.74 dB, SSIM 0.987). Hasil ini memvalidasi premis penelitian bahwa integrasi eksplisit objektif HTR melalui \textit{frozen recognizer} dapat mengatasi kesenjangan antara optimasi visual dan keterbacaan teks.
+
+\vspace{0.8em}
+
+\subsubsection{Temuan Strategis tentang Koherensi Visual-Tekstual}
+\label{subsubsec:koherensi-visual-tekstual}
+
+Analisis koherensi mengungkapkan wawasan penting tentang hubungan antara metrik visual dan keterbacaan:
+
+\paragraph{1. Koherensi Tidak Bersifat Otomatis} \mbox{}\\[0.1em]
+Korelasi lemah antara PSNR dan CER pascarestaorasi ($r \approx -0.15$) mengindikasikan bahwa peningkatan kualitas visual tidak secara otomatis menjamin peningkatan akurasi HTR. Model cenderung membawa berbagai tingkat degradasi ke kinerja HTR yang relatif seragam mendekati nilai \textit{baseline} citra bersih (CER 26.6\% pada validasi, 34.1\% pada uji).
+
+\paragraph{2. Korelasi Kuat SNR dengan Peningkatan CER} \mbox{}\\[0.1em]
+Sebaliknya, korelasi sangat kuat ditemukan antara SNR masukan (tingkat degradasi) dan peningkatan CER dengan Pearson's $r = -0.963$, $R^2 = 0.927$, $p < 0.001$. Dokumen dengan SNR rendah (degradasi berat) mendapatkan peningkatan CER lebih besar dibanding dokumen dengan SNR tinggi (degradasi ringan), memvalidasi efektivitas metode untuk kasus degradasi berat.
+
+\paragraph{3. Implikasi untuk Evaluasi Sistem} \mbox{}\\[0.1em]
+Temuan ini menegaskan bahwa evaluasi multimetrik (PSNR + SSIM + CER) diperlukan untuk menilai kualitas restorasi secara komprehensif, daripada mengandalkan metrik kualitas visual tunggal. Keberhasilan sistem berasal dari kombinasi strategi \textit{frozen recognizer}, optimasi \textit{loss} multikomponen, dan \textit{curriculum learning}, bukan dari arsitektur diskriminator \textit{dual-modal} semata.
+
+\vspace{0.8em}
+
+\subsubsection{Validasi Konfigurasi Bobot \textit{Loss} dengan GradNorm}
+\label{subsubsec:validasi-gradnorm}
+
+Eksperimen validasi menggunakan algoritma GradNorm adaptif mengonfirmasi optimalitas konfigurasi bobot manual yang dirancang:
+
+\paragraph{1. Stabilitas Sempurna Distribusi Bobot} \mbox{}\\[0.1em]
+GradNorm mempertahankan distribusi bobot identik dengan konfigurasi manual (Pixel 80.5\% vs 81.0\%, Adversarial 4.8\% vs 4.9\%, RecFeat 12.9\% vs 13.0\%) dengan stabilitas 0\% variasi dan \textit{similarity} 99.5\%. Hasil ini mengonfirmasi hipotesis bahwa konfigurasi manual [50.0, 3.0, 8.0, 1.0, 0.15] sudah berada di titik keseimbangan optimal (\textit{reasonable equilibrium}).
+
+\paragraph{2. Justifikasi Empiris \textit{Inverse Scaling Principle}} \mbox{}\\[0.1em]
+Validasi ini memberikan justifikasi empiris untuk prinsip penskalaan terbalik yang diterapkan: komponen dengan magnitudo besar (piksel L1) menerima bobot lebih tinggi, sementara komponen dengan magnitudo kecil (adversarial, perseptual) menerima bobot lebih rendah untuk mencapai kontribusi gradien yang seimbang.
+
+\paragraph{3. Tujuan Validasi vs Kompetisi Performa} \mbox{}\\[0.1em]
+Penting untuk dicatat bahwa tujuan eksperimen GradNorm adalah validasi optimalitas, bukan kompetisi performa. Algoritma adaptif tidak menemukan penyesuaian yang lebih baik sepanjang 50 \textit{epoch}, mengonfirmasi bahwa desain manual berbasis analisis mendalam sudah mencapai konfigurasi optimal.
+
+\vspace{0.8em}
+
+\subsubsection{Sintesis Temuan dan Kontribusi Ilmiah}
+\label{subsubsec:sintesis-kontribusi}
+
+Berdasarkan keseluruhan hasil penelitian, dapat disintesiskan kontribusi ilmiah utama sebagai berikut:
+
+\paragraph{1. Kontribusi Teoretis} \mbox{}\\[0.1em]
+Penelitian ini memvalidasi bahwa integrasi eksplisit objektif HTR melalui \textit{frozen recognizer} selama pelatihan GAN menghasilkan keluaran yang dioptimalkan untuk keterbacaan mesin sambil mempertahankan kualitas visual. Temuan bahwa arsitektur diskriminator \textit{dual-modal} memberikan kontribusi marginal merevisi asumsi bahwa kompleksitas arsitektur adalah faktor kunci, menekankan pentingnya protokol pelatihan dan strategi integrasi HTR.
+
+\paragraph{2. Kontribusi Metodologis} \mbox{}\\[0.1em]
+Studi ablasi sistematis dan validasi GradNorm menyediakan metodologi validasi komprehensif yang dapat direplikasi untuk penelitian restorasi dokumen berbasis GAN. Protokol ablasi inkremental yang mengisolasi kontribusi individual setiap komponen memberikan wawasan mendalam tentang dinamika pelatihan multi-objektif.
+
+\paragraph{3. Kontribusi Praktis} \mbox{}\\[0.1em]
+Kerangka kerja yang dihasilkan memiliki implikasi praktis langsung untuk proyek digitalisasi arsip historis skala besar. Kemampuan mengurangi CER dari 83.4\% ke 34.9\% (mendekati \textit{baseline} citra bersih) memungkinkan transkripsi otomatis dokumen terdegradasi yang sebelumnya tidak dapat dibaca oleh sistem HTR, meningkatkan efisiensi operasional lembaga kearsipan dan aksesibilitas informasi bagi peneliti serta masyarakat.
+
+\vspace{0.8em}
+
+\subsubsection{Ketercapaian Tujuan Penelitian}
+\label{subsubsec:ketercapaian-tujuan}
+
+Evaluasi terhadap pencapaian tujuan penelitian yang dirumuskan pada Bab I menunjukkan ketercapaian penuh untuk tujuan umum dan sebagian besar tujuan khusus:
+
+\paragraph{Tujuan Umum: Mengembangkan Kerangka Kerja Berorientasi HTR} \mbox{}\\[0.1em]
+\textbf{Status: Tercapai Penuh.} Kerangka kerja berhasil dikembangkan dan mencapai target kualitas visual (PSNR 30.74 dB $>$ 30 dB, SSIM 0.987 $>$ 0.95) serta peningkatan signifikan keterbacaan teks (CER 34.9\% vs 83.4\%, pengurangan relatif 58.2\%).
+
+\paragraph{Tujuan Khusus T1: Arsitektur Diskriminator \textit{Dual-Modal}} \mbox{}\\[0.1em]
+\textbf{Status: Tercapai dengan Temuan Revisi.} Arsitektur berhasil dirancang dan dievaluasi, namun evaluasi komparatif mengungkapkan kontribusi marginal yang tidak signifikan. Temuan ini memberikan wawasan penting bahwa kompleksitas arsitektur bukan faktor kunci dalam konteks implementasi saat ini.
+
+\paragraph{Tujuan Khusus T2: Integrasi CTC \textit{Loss} dengan \textit{Frozen Recognizer}} \mbox{}\\[0.1em]
+\textbf{Status: Tercapai Penuh.} Mekanisme integrasi berhasil dibangun dan terbukti menjadi komponen paling kritis untuk stabilitas pelatihan dan pencegahan \textit{catastrophic forgetting}.
+
+\paragraph{Tujuan Khusus T3: Optimasi Fungsi \textit{Loss} Multi-Objektif} \mbox{}\\[0.1em]
+\textbf{Status: Tercapai Penuh.} Fungsi \textit{loss} gabungan berhasil dirancang dengan konfigurasi optimal 4-komponen yang mencapai keseimbangan Pareto. Strategi \textit{curriculum learning} terbukti membantu stabilitas fase awal pelatihan.
+
+\paragraph{Tujuan Khusus T4: Studi Ablasi untuk Validasi Kontribusi} \mbox{}\\[0.1em]
+\textbf{Status: Tercapai Penuh.} Studi ablasi sistematis berhasil mengisolasi dan mengukur kontribusi individual setiap komponen, mengidentifikasi konfigurasi optimal dan memberikan wawasan mendalam tentang dinamika pelatihan multi-objektif.
+
+\vspace{0.8em}
+
+\subsection{Keterbatasan Penelitian}
+\label{subsec:keterbatasan}
+\vspace{0.8em}
+
+Meskipun penelitian ini menunjukkan hasil yang menjanjikan, terdapat beberapa keterbatasan yang perlu diakui dan menjadi pertimbangan untuk interpretasi hasil serta arahan penelitian mendatang:
+
+\paragraph{1. Tantangan pada Degradasi Ekstrem} \mbox{}\\[0.1em]
+Analisis distribusi degradasi \textit{dataset} ANRI menunjukkan bahwa model mengalami kesulitan pada dokumen dengan kontras sangat rendah ($<$30) dan pemudaran sangat berat. Dari 15 kasus ANRI autentik, 3 kasus dengan SNR $<$ 10 menghasilkan CER $>$ 80\%, mengindikasikan keterbatasan fundamental dalam menangani degradasi ekstrem yang melampaui batas kapabilitas rekonstruksi berbasis \textit{deep learning}.
+
+\paragraph{2. Tantangan Ligatur Paleografi Kompleks} \mbox{}\\[0.1em]
+Analisis kegagalan menunjukkan bahwa 62.9\% dari kasus \textit{error} tinggi disebabkan oleh kegagalan mengenali ligatur paleografi kompleks yang khas pada dokumen abad ke-16 hingga ke-18. Hal ini bukan keterbatasan restorasi semata, melainkan refleksi keterbatasan \textit{recognizer} HTR dalam memproses gaya tulisan historis yang tidak terwakili dengan baik dalam data pelatihan HTR.
+
+\paragraph{3. Pembatasan pada Aksara Latin Paleografi} \mbox{}\\[0.1em]
+Penelitian ini dibatasi pada dokumen tulisan tangan berbahasa Belanda dengan aksara Latin paleografi. Generalisasi ke aksara lain (Arab, Jawa, Tionghoa) atau bahasa dengan karakteristik ortografi berbeda memerlukan validasi tambahan. Perbedaan struktur morfologis, arah penulisan, dan kompleksitas karakter dapat mempengaruhi efektivitas pendekatan yang diusulkan.
+
+\paragraph{4. Ketergantungan pada Kualitas \textit{Frozen Recognizer}} \mbox{}\\[0.1em]
+Efektivitas strategi \textit{frozen recognizer} sangat bergantung pada kualitas model HTR pralatih yang digunakan. Jika \textit{recognizer} memiliki bias atau keterbatasan tertentu, bias tersebut akan dipropagasi ke proses restorasi. Dalam penelitian ini, \textit{baseline} CER pada citra bersih (34.1\%) mengindikasikan bahwa \textit{recognizer} sendiri memiliki keterbatasan pada dokumen paleografi kompleks.
+
+\paragraph{5. Validasi Terbatas pada Data Semi-Sintetis} \mbox{}\\[0.1em]
+Meskipun data semi-sintetis dikonstruksi dari dokumen ANRI autentik, terdapat \textit{gap} antara degradasi sintetis dan degradasi historis nyata. Validasi kualitatif pada 15 naskah ANRI autentik menunjukkan generalisasi yang baik, namun evaluasi kuantitatif skala besar pada data historis nyata dengan \textit{ground truth} berpasangan sulit dilakukan karena ketiadaan versi bersih asli dari dokumen historis.
+
+\paragraph{6. Kompleksitas Komputasional untuk Pelatihan} \mbox{}\\[0.1em]
+Pelatihan model lengkap memerlukan waktu signifikan (50 \textit{epoch} dengan \textit{batch size} 32 pada GPU NVIDIA RTX 3090). Untuk aplikasi produksi skala besar, diperlukan optimasi lebih lanjut atau infrastruktur komputasi terdistribusi untuk mempercepat proses pelatihan dan adaptasi domain.
+
+\paragraph{7. Keterbatasan Evaluasi Metrik Visual Konvensional} \mbox{}\\[0.1em]
+Penelitian ini menggunakan metrik visual standar (PSNR, SSIM) yang mengukur kemiripan piksel dan struktural dengan \textit{ground truth}, namun metrik ini tidak sepenuhnya mencerminkan persepsi kualitas manusia atau relevansi untuk tugas HTR. Pengembangan metrik evaluasi yang lebih berorientasi tugas (\textit{task-specific metrics}) dapat memberikan wawasan lebih mendalam tentang kualitas restorasi.
+
+\vspace{0.8em}
+
+\subsection{Saran}
+\label{subsec:saran}
+\vspace{0.8em}
+
+Berdasarkan temuan penelitian dan keterbatasan yang telah diidentifikasi, berikut adalah saran-saran untuk pengembangan penelitian mendatang dan penerapan praktis:
+
+\subsubsection{Saran untuk Penelitian Mendatang}
+\label{subsubsec:saran-penelitian}
+
+\paragraph{1. Pelestarian Ligatur Paleografi melalui Mekanisme Atensi} \mbox{}\\[0.1em]
+Mengembangkan mekanisme atensi spasial yang secara eksplisit mempelajari dan melestarikan pola ligatur paleografi kompleks. Pendekatan berbasis \textit{transformer} dengan \textit{self-attention} dapat diintegrasikan ke dalam generator untuk menangkap dependensi jangka panjang antar karakter yang penting untuk ligatur. Penelitian dapat mengeksplorasi \textit{auxiliary loss} yang secara khusus menghukum distorsi pada region ligatur yang terdeteksi melalui deteksi otomatis atau anotasi manual.
+
+\paragraph{2. Pemodelan Degradasi Kimia Historis untuk Data Sintetis} \mbox{}\\[0.1em]
+Mengembangkan model degradasi berbasis fisika untuk mensimulasikan proses degradasi kimia historis seperti korosi tinta \textit{iron gall}, \textit{foxing} biologis, dan pemudaran foto-oksidatif. Pendekatan berbasis simulasi fisiko-kimia dapat menghasilkan data sintetis yang lebih realistis dibandingkan transformasi geometris sederhana, meningkatkan generalisasi model pada dokumen historis autentik. Kolaborasi dengan konservator dokumen dan ahli kimia dapat memberikan wawasan tentang karakteristik degradasi yang perlu dimodelkan.
+
+\paragraph{3. Pemisahan \textit{Layer} Dokumen Berlapis untuk \textit{Bleed-Through}} \mbox{}\\[0.1em]
+Mengeksplorasi arsitektur berbasis pemisahan sumber (\textit{source separation}) yang terinspirasi dari pemisahan audio untuk menangani \textit{bleed-through} parah. Pendekatan ini dapat memisahkan konten halaman depan dan belakang menjadi dua \textit{layer} independen, memungkinkan restorasi yang lebih bersih untuk setiap halaman. Penelitian dapat mengadopsi teknik dari \textit{blind source separation} atau \textit{multi-task learning} dengan output ganda.
+
+\paragraph{4. Peningkatan \textit{Robustness} Kontras Rendah melalui \textit{Adaptive Preprocessing}} \mbox{}\\[0.1em]
+Mengembangkan modul \textit{preprocessing} adaptif yang secara otomatis mendeteksi tingkat degradasi masukan dan menerapkan transformasi pra-pemrosesan yang sesuai (peregangan kontras, ekualisasi histogram adaptif, \textit{gamma correction}). Modul ini dapat dilatih secara \textit{end-to-end} dengan generator atau dirancang sebagai komponen terpisah berbasis aturan. Penelitian dapat mengeksplorasi \textit{meta-learning} untuk mempelajari strategi \textit{preprocessing} optimal untuk berbagai tingkat degradasi.
+
+\paragraph{5. Validasi \textit{Transfer Learning} Lintas Domain} \mbox{}\\[0.1em]
+Melakukan studi \textit{transfer learning} yang sistematis untuk mengonfirmasi generalisasi metode pada korpus multi-bahasa (bahasa Indonesia, Jawa Kuno, Arab) dan multi-aksara (Latin, Arab, Jawa, Tionghoa). Penelitian dapat mengeksplorasi \textit{domain adaptation} dengan \textit{adversarial training} untuk mengurangi \textit{domain shift} antara data pelatihan (Belanda kolonial) dan data target (bahasa/aksara lain). \textit{Few-shot learning} dapat digunakan untuk adaptasi cepat dengan data anotasi terbatas.
+
+\paragraph{6. Integrasi Mekanisme \textit{Uncertainty Estimation}} \mbox{}\\[0.1em]
+Mengintegrasikan mekanisme estimasi ketidakpastian berbasis Bayesian atau \textit{ensemble} untuk mengidentifikasi region dengan kepercayaan restorasi rendah. Informasi ketidakpastian dapat digunakan untuk: (a) memperingatkan pengguna tentang hasil yang tidak dapat diandalkan, (b) memicu verifikasi manual selektif, atau (c) mengaktifkan strategi restorasi alternatif untuk region dengan ketidakpastian tinggi. Pendekatan ini meningkatkan kepercayaan sistem dalam aplikasi produksi kritis.
+
+\paragraph{7. Eksplorasi Arsitektur \textit{Transformer}-GAN Hibrid} \mbox{}\\[0.1em]
+Mengeksplorasi arsitektur hibrid yang menggabungkan keunggulan \textit{transformer} (kemampuan menangkap dependensi jangka panjang) dengan GAN (pelatihan \textit{adversarial} untuk realisme tekstur). Penelitian dapat mengintegrasikan \textit{vision transformer} (ViT) atau Swin \textit{Transformer} sebagai \textit{backbone} generator, dengan diskriminator GAN untuk pelatihan \textit{adversarial}. Pendekatan ini dapat mengatasi keterbatasan CNN dalam menangkap konteks global untuk ligatur paleografi.
+
+\paragraph{8. Pengembangan \textit{Benchmark Dataset} Standar} \mbox{}\\[0.1em]
+Membangun \textit{benchmark dataset} standar untuk restorasi dokumen paleografi Indonesia yang mencakup dokumen dari berbagai era (pra-kolonial, kolonial, kemerdekaan) dengan degradasi autentik dan \textit{ground truth} berpasangan. \textit{Dataset} ini dapat menjadi standar evaluasi bersama untuk penelitian restorasi dokumen historis Indonesia, memfasilitasi perbandingan yang adil antar metode dan mendorong kemajuan di bidang ini.
+
+\vspace{0.8em}
+
+\subsubsection{Saran untuk Penerapan Praktis}
+\label{subsubsec:saran-praktis}
+
+\paragraph{1. Implementasi Sistem \textit{Production-Ready} untuk Digitalisasi Arsip} \mbox{}\\[0.1em]
+Mengembangkan sistem restorasi yang siap produksi dengan \textit{pipeline} otomatis untuk digitalisasi arsip skala besar. Sistem harus mencakup: (a) deteksi otomatis tingkat degradasi untuk pemilihan model yang sesuai, (b) \textit{batch processing} untuk efisiensi komputasi, (c) kontrol kualitas otomatis berbasis metrik visual dan HTR, (d) antarmuka pengguna untuk verifikasi manual selektif, dan (e) integrasi dengan sistem manajemen arsip digital eksisting.
+
+\paragraph{2. Pengembangan Alat \textit{Explainability} untuk Transparansi} \mbox{}\\[0.1em]
+Mengimplementasikan alat \textit{explainability} seperti peta atensi, \textit{activation maps}, atau visualisasi gradien untuk memberikan transparansi tentang proses restorasi. Alat ini penting untuk membangun kepercayaan pengguna, khususnya konservator dokumen dan arsiparist, yang perlu memahami bagaimana dan mengapa model membuat keputusan restorasi tertentu. Transparansi ini juga memfasilitasi deteksi dan koreksi halusinasi atau artefak restorasi.
+
+\paragraph{3. Protokol Verifikasi Manual Selektif Berbasis \textit{Uncertainty}} \mbox{}\\[0.1em]
+Merancang protokol verifikasi manual yang efisien dengan menggunakan estimasi ketidakpastian untuk memprioritaskan dokumen atau region yang memerlukan tinjauan ahli. Pendekatan ini mengoptimalkan alokasi sumber daya manusia dengan memfokuskan upaya verifikasi pada kasus dengan kepercayaan rendah, sambil mengotomatisasi sepenuhnya kasus dengan kepercayaan tinggi. Protokol harus mendefinisikan ambang batas ketidakpastian dan prosedur eskalasi untuk kasus kompleks.
+
+\paragraph{4. Sistem \textit{Versioning} Model untuk Reproduktibilitas} \mbox{}\\[0.1em]
+Membangun sistem \textit{versioning} komprehensif yang mendokumentasikan: (a) versi model dan \textit{hyperparameter}, (b) data pelatihan dan augmentasi yang digunakan, (c) metrik evaluasi dan hasil validasi, (d) \textit{changelog} untuk setiap pembaruan model. Sistem ini memastikan reproduktibilitas hasil restorasi dan memfasilitasi \textit{audit trail} untuk keperluan akuntabilitas dan sertifikasi kualitas dalam konteks pelestarian arsip resmi.
+
+\paragraph{5. \textit{Audit} Bias Berkala untuk Keadilan dan Akurasi} \mbox{}\\[0.1em]
+Melakukan \textit{audit} bias secara berkala untuk memastikan bahwa model tidak menghasilkan bias sistematis terhadap gaya tulisan, periode historis, atau jenis dokumen tertentu. \textit{Audit} harus mencakup: (a) analisis performa terstratifikasi berdasarkan karakteristik dokumen, (b) deteksi \textit{performance degradation} pada subgrup tertentu, (c) identifikasi dan mitigasi bias melalui \textit{re-sampling} atau \textit{re-weighting} data pelatihan. Keadilan dalam restorasi penting untuk memastikan aksesibilitas setara terhadap arsip historis dari berbagai era dan konteks.
+
+\paragraph{6. Integrasi Mekanisme Deteksi Halusinasi} \mbox{}\\[0.1em]
+Mengembangkan mekanisme deteksi halusinasi yang mengidentifikasi artefak atau karakter yang dihasilkan model tanpa justifikasi dari konten masukan. Pendekatan dapat mencakup: (a) perbandingan dengan referensi kamus ortografi historis, (b) analisis konsistensi kontekstual menggunakan model bahasa, (c) deteksi anomali berbasis \textit{reconstruction error}. Halusinasi yang terdeteksi dapat ditandai untuk verifikasi manual atau ditolak secara otomatis untuk mencegah informasi palsu dalam arsip digital.
+
+\paragraph{7. Pelatihan dan Kapasitasi Arsiparist dan Konservator} \mbox{}\\[0.1em]
+Merancang program pelatihan komprehensif untuk arsiparist dan konservator dokumen tentang penggunaan alat restorasi berbasis AI, interpretasi hasil, dan protokol verifikasi kualitas. Pelatihan harus mencakup: (a) pemahaman dasar tentang cara kerja model (tanpa detail teknis mendalam), (b) interpretasi metrik evaluasi (PSNR, SSIM, CER, WER), (c) identifikasi kasus yang memerlukan intervensi manual, (d) \textit{best practices} untuk integrasi restorasi AI dalam alur kerja pelestarian tradisional.
+
+\paragraph{8. Kolaborasi Interdisipliner untuk Validasi Historis} \mbox{}\\[0.1em]
+Membangun kolaborasi interdisipliner antara ahli AI/ML, konservator dokumen, sejarawan, dan paleografer untuk validasi holistik hasil restorasi. Kolaborasi ini memastikan bahwa restorasi tidak hanya memenuhi metrik teknis, tetapi juga melestarikan autentisitas historis, konteks budaya, dan nilai arkeologis dokumen. \textit{Feedback} dari ahli domain dapat digunakan untuk \textit{fine-tuning} model atau pengembangan fitur spesifik untuk kebutuhan pelestarian.
+
+\paragraph{9. Pengembangan Infrastruktur Komputasi Terdistribusi} \mbox{}\\[0.1em]
+Untuk digitalisasi arsip skala nasional, mengembangkan infrastruktur komputasi terdistribusi berbasis \textit{cloud} atau \textit{on-premise cluster} yang memungkinkan pemrosesan paralel ribuan dokumen secara simultan. Infrastruktur harus mencakup: (a) \textit{load balancing} untuk optimasi utilisasi GPU, (b) \textit{fault tolerance} untuk menangani kegagalan proses, (c) \textit{monitoring dashboard} untuk pelacakan progres real-time, (d) sistem antrian untuk manajemen \textit{batch jobs} berskala besar.
+
+\paragraph{10. Dokumentasi Komprehensif dan \textit{Knowledge Transfer}} \mbox{}\\[0.1em]
+Menyusun dokumentasi teknis dan operasional yang komprehensif meliputi: (a) panduan instalasi dan konfigurasi sistem, (b) \textit{API documentation} untuk integrasi dengan sistem lain, (c) \textit{troubleshooting guide} untuk masalah umum, (d) studi kasus aplikasi praktis dengan hasil nyata. Dokumentasi ini memfasilitasi adopsi oleh lembaga kearsipan lain dan memastikan keberlanjutan sistem setelah fase penelitian.
+
+\vspace{0.8em}
+
+\subsubsection{Rekomendasi Strategis untuk Lembaga Kearsipan}
+\label{subsubsec:rekomendasi-lembaga}
+
+\paragraph{1. Adopsi Bertahap dengan Pilot Project} \mbox{}\\[0.1em]
+Mengimplementasikan sistem restorasi berbasis AI secara bertahap melalui \textit{pilot project} pada koleksi terbatas dengan degradasi terkontrol. Pendekatan ini memungkinkan evaluasi efektivitas, identifikasi tantangan operasional, dan adaptasi alur kerja sebelum \textit{scaling up} ke digitalisasi skala besar. \textit{Pilot project} harus mencakup metrik keberhasilan yang jelas dan \textit{feedback loop} untuk perbaikan berkelanjutan.
+
+\paragraph{2. Investasi dalam Infrastruktur Komputasi dan SDM} \mbox{}\\[0.1em]
+Mengalokasikan investasi untuk infrastruktur komputasi (GPU \textit{workstation} atau \textit{cloud computing}) dan pengembangan kapasitas SDM (pelatihan AI/ML untuk arsiparist, rekrutmen \textit{data scientist}). Investasi ini esensial untuk adopsi jangka panjang dan keberlanjutan program digitalisasi berbasis AI. Analisis \textit{cost-benefit} harus mempertimbangkan penghematan waktu dan peningkatan aksesibilitas arsip.
+
+\paragraph{3. Pembangunan Koleksi Data Pelatihan Institusional} \mbox{}\\[0.1em]
+Membangun koleksi data pelatihan institusional dengan anotasi \textit{ground truth} berkualitas tinggi untuk dokumen spesifik dalam koleksi arsip. Data ini dapat digunakan untuk \textit{fine-tuning} model umum agar lebih sesuai dengan karakteristik degradasi dan gaya tulisan spesifik institusi. Investasi dalam anotasi data berkualitas memberikan \textit{return} jangka panjang melalui peningkatan akurasi restorasi.
+
+\paragraph{4. Standarisasi Protokol Digitalisasi dan Kontrol Kualitas} \mbox{}\\[0.1em]
+Mengembangkan standar operasional prosedur (SOP) untuk digitalisasi dengan restorasi AI yang mencakup: (a) protokol akuisisi citra (resolusi, pencahayaan, format), (b) kriteria seleksi dokumen untuk restorasi otomatis vs manual, (c) ambang batas metrik untuk kontrol kualitas, (d) prosedur eskalasi untuk kasus kompleks. Standarisasi memastikan konsistensi kualitas dan efisiensi operasional.
+
+\paragraph{5. Kolaborasi Antar-Lembaga untuk \textit{Resource Sharing}} \mbox{}\\[0.1em]
+Membangun konsorsium atau kemitraan antar-lembaga kearsipan untuk berbagi sumber daya komputasi, data pelatihan, dan \textit{best practices}. Kolaborasi ini dapat mengurangi biaya investasi individual, mempercepat adopsi teknologi, dan memfasilitasi pengembangan standar nasional untuk restorasi dokumen historis berbasis AI. \textit{Resource sharing} mencakup infrastruktur komputasi terdistribusi dan \textit{knowledge base} bersama.
+
+\vspace{0.8em}
+
+\subsection{Penutup}
+\label{subsec:penutup}
+\vspace{0.8em}
+
+Penelitian ini telah berhasil mengembangkan kerangka kerja restorasi dokumen berbasis GAN yang secara eksplisit mengintegrasikan evaluasi keterbacaan teks melalui strategi \textit{frozen recognizer} dan optimasi fungsi \textit{loss} multikomponen. Validasi empiris menunjukkan pencapaian signifikan dalam mengatasi kesenjangan antara optimasi visual dan keterbacaan teks, dengan pengurangan CER sebesar 58.2\% sambil mempertahankan kualitas visual tinggi.
+
+\vspace{0.8em}
+
+Temuan bahwa arsitektur diskriminator \textit{dual-modal} memberikan kontribusi marginal merevisi asumsi awal penelitian, menekankan bahwa protokol pelatihan dan strategi integrasi HTR lebih dominan daripada kompleksitas arsitektur. Validasi konfigurasi bobot \textit{loss} menggunakan algoritma GradNorm adaptif mengonfirmasi optimalitas desain manual berbasis analisis mendalam, memberikan justifikasi empiris untuk prinsip penskalaan terbalik yang diterapkan.
+
+\vspace{0.8em}
+
+Studi ablasi sistematis dan analisis koherensi visual-tekstual memberikan wawasan mendalam tentang dinamika pelatihan multi-objektif, mengidentifikasi konfigurasi optimal 4-komponen (piksel, \textit{adversarial}, perseptual, CTC) dan memvalidasi bahwa komponen kelima (\textit{recognition feature loss}) bersifat kontraproduktif. Temuan ini memiliki implikasi praktis penting untuk desain sistem restorasi yang efisien dan efektif.
+
+\vspace{0.8em}
+
+Generalisasi efektif pada 15 naskah ANRI autentik mengonfirmasi kemampuan model menangani degradasi historis nyata yang tidak terdapat pada data pelatihan semi-sintetis. Namun, tantangan pada degradasi ekstrem (kontras $<$30) dan ligatur paleografi kompleks (62.9\% dari kasus kegagalan) mengindikasikan area yang memerlukan penelitian lebih lanjut.
+
+\vspace{0.8em}
+
+Kontribusi penelitian ini tidak hanya pada aspek teoretis dan metodologis, tetapi juga implikasi praktis langsung untuk digitalisasi arsip historis skala besar. Kemampuan mengurangi CER mendekati \textit{baseline} citra bersih memungkinkan transkripsi otomatis dokumen terdegradasi yang sebelumnya tidak dapat dibaca, meningkatkan efisiensi operasional lembaga kearsipan dan aksesibilitas informasi bagi peneliti serta masyarakat.
+
+\vspace{0.8em}
+
+Penelitian mendatang diharapkan dapat mengatasi keterbatasan yang teridentifikasi, khususnya dalam penanganan ligatur paleografi, degradasi kimia historis, dan validasi \textit{transfer learning} lintas domain. Pengembangan mekanisme estimasi ketidakpastian, arsitektur \textit{transformer}-GAN hibrid, dan \textit{benchmark dataset} standar akan mempercepat kemajuan di bidang restorasi dokumen historis berbasis AI.
+
+\vspace{0.8em}
+
+Untuk penerapan praktis, implementasi sistem \textit{production-ready} dengan alat \textit{explainability}, protokol verifikasi manual selektif, dan sistem \textit{versioning} model merupakan langkah penting untuk adopsi di lembaga kearsipan. Kolaborasi interdisipliner antara ahli AI/ML, konservator dokumen, dan sejarawan esensial untuk memastikan bahwa restorasi tidak hanya memenuhi metrik teknis, tetapi juga melestarikan autentisitas historis dan nilai arkeologis dokumen.
+
+\vspace{0.8em}
+
+Akhir kata, penelitian ini berkontribusi pada upaya pelestarian warisan budaya Indonesia melalui teknologi kecerdasan buatan, mendukung aksesibilitas arsip historis untuk generasi mendatang, dan membuka jalan bagi penelitian lebih lanjut dalam restorasi dokumen berbasis \textit{deep learning} yang berorientasi tugas spesifik.
+
+\end{document}
