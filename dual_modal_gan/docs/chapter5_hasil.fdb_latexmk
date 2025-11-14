@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1763014821 "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter5_hasil.tex" "chapter5_hasil.pdf" "chapter5_hasil" 1763014821
+["pdflatex"] 1763095561 "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter5_hasil.tex" "chapter5_hasil.pdf" "chapter5_hasil" 1763095570
   "/etc/texmf/web2c/texmf.cnf" 1735821572 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/data_dukung/evaluasi_anri/panel_a_ID-ANRI_K66b_065_119.png" 1762582915 1034595 cd95abe412b72d3137101b950c69581d ""
   "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/data_dukung/evaluasi_anri/panel_b_ID-ANRI_K66b_070_179.png" 1762582915 1121025 b31e7409d5601c0c859f2db63632e649 ""
@@ -11,7 +11,7 @@
   "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/data_dukung/fig_failure_distribution.pdf" 1762583130 32423 50366c8fb501a49c7d407c20a652e839 ""
   "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/data_dukung/fig_validation_metrics_trajectory.pdf" 1762582915 32849 50e33e2ff7c285de7dee32576939fa1e ""
   "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/visualizations/fig_method_comparison_4methods.pdf" 1762583131 156417 93c8ec7f200c06e21393146beee6757e ""
-  "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter5_hasil.tex" 1763014410 166726 3d480370b86bdcb8793df40bd1fcbb9f ""
+  "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter5_hasil.tex" 1763095561 167561 8f4b9a46953e24f16d627b9f73901772 ""
   "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/outputs/gradnorm_vs_baseline_comparison.png" 1762915678 236056 5739d7117c46929af25d6b97c47e0c9a ""
   "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/outputs/gradnorm_weight_evolution.png" 1762915678 178337 504202af7f6017df85854ddb2979dc5f ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
@@ -219,9 +219,9 @@
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1759233803 4379155 98693266ff65f58d9f98aff394de12d2 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1759233835 2798526 797e2e5e8fb6f85d658ad96238072e6c ""
   "advanced_scientific_analysis.png" 1762899415 1580181 6afef2617091006a23b16b1de1e905e6 ""
-  "chapter5_hasil.aux" 1763014821 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
-  "chapter5_hasil.out" 0 -1 0 "pdflatex"
-  "chapter5_hasil.tex" 1763014410 166726 3d480370b86bdcb8793df40bd1fcbb9f ""
+  "chapter5_hasil.aux" 1763095570 47732 c1966d5e9c27c75d0724e1e573678a03 "pdflatex"
+  "chapter5_hasil.out" 1763095570 4354 d0e4eb6908f70de58befac239a2ab8cd "pdflatex"
+  "chapter5_hasil.tex" 1763095561 167561 8f4b9a46953e24f16d627b9f73901772 ""
   "curriculum_phases_analysis.png" 1762903181 562456 0da1107fd6e951c0208765be2bbed139 ""
   "detailed_loss_analysis.png" 1762903180 815750 b7c97f7e746538dc66fcfea14f0d1aea ""
   "frozen_vs_joint_cer_comparison.pdf" 1762874085 37328 e12c39441cde15a4f197a88f58b4616c ""

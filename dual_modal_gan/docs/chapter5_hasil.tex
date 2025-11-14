@@ -72,6 +72,9 @@
 % Pengaturan spasi
 \onehalfspacing
 
+% Pengaturan penomoran halaman dimulai dari 117
+\pagenumbering{arabic}
+
 % Pengaturan penomoran
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
@@ -82,6 +85,9 @@
 \renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
 
 \begin{document}
+
+% Set halaman dimulai dari 117
+\setcounter{page}{117}
 
 % ============================================================
 % BAB V: HASIL DAN PEMBAHASAN
@@ -97,7 +103,7 @@
 \setcounter{subsection}{0}
 \vspace{2em}
 
-\subsection{Pendahuluan}
+\subsection{Hasil dan Pembahasan}
 \label{subsec:hasil-pendahuluan}
 \vspace{0.8em}
 
@@ -820,6 +826,7 @@ Penelitian ini menggunakan konfigurasi bobot \textit{loss} yang diturunkan dari 
 \centering
 \caption{Konfigurasi Loss Weights Production Training dengan Analisis Magnitude}
 \label{tab:final-loss-weights}
+\label{tab:loss-weights-config}
 \footnotesize
 \begin{tabular}{lcccc}
 \hline
@@ -836,11 +843,11 @@ Perceptual & 1.0 & 24.92 & 24.92 & 28.6\% \\
 \end{tabular}
 \end{table}
 
-\textbf{Metodologi Penentuan: Empirical Tuning dengan Retrospective Analysis}
+\textbf{Metodologi Penentuan: Empirical Tuning dengan Post-Hoc Validation}
 
-Penentuan bobot \textit{loss function} menggunakan pendekatan tiga tahap yang sistematis:
+Penentuan bobot \textit{loss function} menggunakan pendekatan empiris dengan validasi retrospektif:
 
-\textbf{Tahap 1: Manual Empirical Tuning} - Bobot \textit{loss} ditentukan melalui eksperimen iteratif dengan mengamati \textit{magnitude raw loss} selama pelatihan. Konfigurasi optimal ditemukan setelah menganalisis perilaku gradien dan konvergensi model. \textit{Post-hoc analysis} menunjukkan bahwa bobot yang terpilih mengikuti pola \textit{inverse scaling}:
+\textbf{Tahap 1: Manual Empirical Tuning (Pre-Production)} - Bobot \textit{loss} ditentukan melalui eksperimen iteratif dengan mengamati \textit{magnitude raw loss} selama pelatihan awal. Konfigurasi terpilih untuk \textit{production training} (pixel=50.0, adv=3.0, perc=1.0, CTC=0.15, RecFeat=8.0) ditemukan setelah menganalisis perilaku gradien dan konvergensi model. \textit{Post-hoc analysis} menunjukkan bahwa bobot yang terpilih mengikuti pola \textit{inverse scaling}:
 
 \begin{equation}
 w_i \approx k \cdot \frac{1}{\text{magnitude}_{\text{raw},i}}
@@ -848,7 +855,9 @@ w_i \approx k \cdot \frac{1}{\text{magnitude}_{\text{raw},i}}
 
 di mana $w_i$ adalah bobot untuk komponen \textit{loss} ke-$i$ dan $k$ adalah konstanta normalisasi. Pola ini \textit{tidak diimplementasikan secara algoritmik} dalam kode training, melainkan \textit{hasil emergent} dari proses tuning manual yang bertujuan menyeimbangkan kontribusi efektif setiap komponen terhadap total \textit{generator loss} $\mathcal{L}_G$.
 
-\textbf{Tahap 2: Grid Search Sensitivity Analysis} - Untuk memahami sensitivitas dan interaksi komponen, dilakukan \textit{mini grid search} dengan 27 konfigurasi strategis menggunakan metode \textit{orthogonal array sampling}. Eksperimen ablasi ini menggunakan pelatihan singkat (3 \textit{epoch}, 20 langkah per \textit{epoch}) untuk mengeksplorasi \textit{search space}:
+\textbf{Tahap 2: Production Training} - Konfigurasi terpilih digunakan untuk pelatihan produksi penuh (50 epoch) yang menghasilkan performa PSNR 30.91 dB dan CER 34.9\% pada best checkpoint (epoch 44).
+
+\textbf{Tahap 3: Post-Hoc Grid Search Validation} - Setelah production training selesai, untuk memvalidasi konfigurasi yang dipilih dan memahami sensitivitas komponen, dilakukan \textit{mini grid search retrospektif} dengan 27 konfigurasi strategis menggunakan metode \textit{orthogonal array sampling}. Eksperimen validasi ini menggunakan pelatihan singkat (3 \textit{epoch}, 20 langkah per \textit{epoch}) untuk mengeksplorasi \textit{search space}:
 
 \begin{itemize}[leftmargin=*]
     \item Pixel: [25, 50, 100] (0.5×, 1×, 2× baseline)
@@ -858,9 +867,9 @@ di mana $w_i$ adalah bobot untuk komponen \textit{loss} ke-$i$ dan $k$ adalah ko
     \item RecFeat: [0.0, 8.0, 16.0] (disabled, 1×, 2× baseline)
 \end{itemize}
 
-\textbf{Catatan Metodologi}: Eksperimen \textit{grid search} menggunakan protokol ablasi (3 \textit{epoch}) yang berbeda dari \textit{production training} (50 \textit{epoch}). Hasil PSNR dari \textit{grid search} (4-11 dB) lebih rendah dari \textit{production} (30.91 dB best checkpoint) karena perbedaan durasi pelatihan ini. \textit{Grid search} bertujuan untuk memahami \textit{arah} dan \textit{sensitivitas} komponen, bukan untuk mencapai performa optimal atau menemukan konfigurasi alternatif.
+\textbf{Catatan Metodologi}: Eksperimen \textit{grid search} dilakukan secara \textit{post-hoc} (setelah production training selesai) menggunakan protokol ablasi (3 \textit{epoch}) yang berbeda dari \textit{production training} (50 \textit{epoch}). Hasil PSNR dari \textit{grid search} (4-11 dB) lebih rendah dari \textit{production} (30.91 dB best checkpoint) karena perbedaan durasi pelatihan ini. Tujuan \textit{grid search} adalah untuk \textbf{memvalidasi} konfigurasi production dan memahami \textit{sensitivitas} komponen, bukan untuk menemukan konfigurasi alternatif yang lebih baik. Hasil menunjukkan tidak ada konfigurasi dalam search space yang secara jelas superior terhadap konfigurasi production pada fase awal training.
 
-\textbf{Tahap 3: GradNorm Optimality Validation} - Setelah grid search mengidentifikasi sensitivitas komponen, dilakukan validasi akhir menggunakan GradNorm (detil di bagian selanjutnya) untuk memverifikasi bahwa konfigurasi manual sudah berada di \textit{optimal equilibrium}. Hasil: weight stability 0\% mengonfirmasi optimality.
+\textbf{Tahap 4: GradNorm Optimality Confirmation} - Analisis menggunakan GradNorm pada production training (detil di bagian selanjutnya) memverifikasi bahwa konfigurasi manual sudah berada di \textit{optimal equilibrium}. Hasil: weight stability 0\% selama 50 epoch mengonfirmasi optimality untuk konvergensi jangka panjang.
 
 \textbf{Justifikasi Empiris Setiap Komponen dari Production Training}:
 
@@ -923,7 +932,7 @@ Untuk memvalidasi bahwa konfigurasi \textit{loss weights} manual (Tabel \ref{tab
     \item \textbf{Durasi}: 50 \textit{epoch} (total 2,500 training steps)
     \item \textbf{Initial weights}: Menggunakan konfigurasi manual (Tabel \ref{tab:loss-weights-config}) sebagai titik awal
     \item \textbf{Update frequency}: Bobot disesuaikan setiap batch berdasarkan gradien relatif terhadap \textit{shared backbone}
-    \item \textbf{\textcolor{red}{CATATAN KRITIS}}: Eksperimen ini \textit{tidak comparable} dengan \textit{baseline production} yang menggunakan full dataset (~1659 steps/epoch, total ~83,000 steps)
+    % \item \textbf{\textcolor{red}{CATATAN KRITIS}}: Eksperimen ini \textit{tidak comparable} dengan \textit{baseline production} yang menggunakan full dataset (~1659 steps/epoch, total ~83,000 steps)
 \end{itemize}
 
 \textbf{Hasil Validasi GradNorm}:
@@ -1918,7 +1927,7 @@ Perbandingan \textit{frozen recognizer} vs \textit{joint training} (Bagian~\ref{
 
 \paragraph{c) Validasi Efektivitas \textit{Curriculum Learning}}\mbox{}\\[0.1em]
 
-Analisis trajektori metrik validasi (Gambar~\ref{fig:validation-metrics}) memvalidasi efektivitas strategi \textit{curriculum learning} tiga fase untuk \textbf{stabilitas konvergensi fase awal}: (1) \textbf{Fase Warmup Visual} (\textit{epoch} 1--10): Konvergensi metrik visual (PSNR mencapai 25 dB, SSIM 0.94) tanpa supervisi teks, membangun kemampuan rekonstruksi dasar; (2) \textbf{Fase Peningkatan Bertahap CTC} (\textit{epoch} 11--30): Peningkatan linear bobot CTC (0$\rightarrow$1.0) menghasilkan adaptasi halus terhadap gradien HTR tanpa mengganggu stabilitas \textit{adversarial}, tercermin dari fluktuasi G \textit{loss} terkontrol ($\sigma = 136.6$); (3) \textbf{Fase Pelatihan Penuh} (\textit{epoch} 31--50): Konvergensi stabil dengan semua komponen \textit{loss} aktif, mencapai PSNR 30.91 dB dan CER 27.11\% pada \textit{validation set}, serta PSNR 30.74 dB dan CER 34.9\% pada \textit{test set}. \textbf{Catatan}: Meskipun memberikan stabilitas pelatihan, \textit{studi ablasi} (Bagian~\ref{subsubsec:kontribusi-curriculum}) menunjukkan bahwa \textit{curriculum learning} tidak meningkatkan performa akhir secara signifikan dibanding \textit{non-curriculum} ($\Delta$PSNR -0.14 dB, $p>0.05$), mengindikasikan \textit{trade-off} antara stabilitas dan efisiensi konvergensi.
+Analisis trajektori metrik validasi (Gambar~\ref{fig:validation-metrics-trajectory}) memvalidasi efektivitas strategi \textit{curriculum learning} tiga fase untuk \textbf{stabilitas konvergensi fase awal}: (1) \textbf{Fase Warmup Visual} (\textit{epoch} 1--10): Konvergensi metrik visual (PSNR mencapai 25 dB, SSIM 0.94) tanpa supervisi teks, membangun kemampuan rekonstruksi dasar; (2) \textbf{Fase Peningkatan Bertahap CTC} (\textit{epoch} 11--30): Peningkatan linear bobot CTC (0$\rightarrow$1.0) menghasilkan adaptasi halus terhadap gradien HTR tanpa mengganggu stabilitas \textit{adversarial}, tercermin dari fluktuasi G \textit{loss} terkontrol ($\sigma = 136.6$); (3) \textbf{Fase Pelatihan Penuh} (\textit{epoch} 31--50): Konvergensi stabil dengan semua komponen \textit{loss} aktif, mencapai PSNR 30.91 dB dan CER 27.11\% pada \textit{validation set}, serta PSNR 30.74 dB dan CER 34.9\% pada \textit{test set}. \textbf{Catatan}: Meskipun memberikan stabilitas pelatihan, \textit{studi ablasi} (Bagian~\ref{subsubsec:kontribusi-curriculum}) menunjukkan bahwa \textit{curriculum learning} tidak meningkatkan performa akhir secara signifikan dibanding \textit{non-curriculum} ($\Delta$PSNR -0.14 dB, $p>0.05$), mengindikasikan \textit{trade-off} antara stabilitas dan efisiensi konvergensi.
 
 \vspace{0.8em}
 
@@ -1957,13 +1966,13 @@ Penelitian ini memposisikan diri sebagai kontribusi \textit{incremental} dengan 
 
 Bab ini menyajikan evaluasi komprehensif kerangka kerja restorasi dokumen berbasis GAN dengan integrasi HTR. Sintesis temuan kunci:
 
-\paragraph{Performa Sistem}\\[0.1em]
+\paragraph{Performa Sistem} \mbox{}\\[0.1em]
 Metode yang diusulkan mencapai CER 34.9\% pada \textit{test set} (pengurangan 58.2\% dari kondisi terdegradasi 83.4\%), mendekati batas teoretis citra bersih (CER 34.1\%, \textit{gap} hanya 0.8\%), sambil mempertahankan kualitas visual tinggi (PSNR 30.74 dB, SSIM 0.987). Validasi pada 15 dokumen ANRI autentik menunjukkan generalisasi efektif (tingkat kesuksesan 86.7\%) dengan validasi ahli paleografi (\textit{substantial agreement}, Cohen's $\kappa = 0.78$).
 
-\paragraph{Validasi Komponen Arsitektur}\\[0.1em]
+\paragraph{Validasi Komponen Arsitektur} \mbox{}\\[0.1em]
 Studi ablasi sistematis mengungkapkan bahwa strategi \textbf{frozen recognizer} adalah faktor kunci keberhasilan ($p<0.001$, $d=196.0$), sementara diskriminator \textit{dual-modal} memberikan kontribusi marginal (tidak signifikan). Konfigurasi \textit{loss} 5-komponen tervalidasi sebagai optimal melalui GradNorm. \textit{Curriculum learning} meningkatkan stabilitas fase awal tanpa meningkatkan performa akhir.
 
-\paragraph{Implikasi dan Limitasi}\\[0.1em]
+\paragraph{Implikasi dan Limitasi} \mbox{}\\[0.1em]
 Temuan memvalidasi bahwa dalam GAN multi-objektif, protokol pelatihan lebih dominan daripada kompleksitas arsitektur. Limitasi utama: (1) keterbatasan \textit{recognizer} pada ligatur paleografi (CER baseline 34.1\%), (2) evaluasi terbatas pada dataset semi-sintetis dan 15 dokumen ANRI, (3) kontribusi diskriminator \textit{dual-modal} mungkin terhambat oleh implementasi (modus teks prediksi, bobot \textit{adversarial} rendah).
 
 Hasil penelitian ini memberikan fondasi empiris untuk pengembangan sistem restorasi dokumen berorientasi HTR dan membuka jalan bagi penelitian masa depan dalam optimisasi arsitektur diskriminator \textit{dual-modal} serta adaptasi untuk korpus paleografi lebih luas.

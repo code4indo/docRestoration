@@ -1,0 +1,241 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[bahasa]{babel}
+\usepackage{mathptmx} % Times New Roman font
+\usepackage{microtype} % Untuk optimasi typography dan spacing
+\usepackage[none]{hyphenat} % Menonaktifkan hyphenation
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{setspace}
+\usepackage{geometry}
+\usepackage{tikz}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{hyperref}
+\hypersetup{
+    pdfencoding=auto,
+    pdftitle={Tesis - Restorasi Dokumen Terdegradasi},
+    pdfauthor={},
+    pdfsubject={Tesis},
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=blue,
+    pdfstartview=FitH,
+    bookmarksopen=true,
+    bookmarksnumbered=true
+}
+\usepackage{tocloft}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{textcomp}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{tabularx}
+
+% Aktifkan hyphenation Bahasa Indonesia dan optimasi spasi
+\lefthyphenmin=2
+\righthyphenmin=2
+\pretolerance=1000
+\tolerance=2000
+\emergencystretch=3em
+\hbadness=10000
+\vbadness=10000
+\hyphenpenalty=500
+\exhyphenpenalty=500
+\sloppy
+
+% Aktifkan microtype untuk Bahasa Indonesia
+\microtypesetup{activate=true,protrusion=true,expansion=true,tracking=true,kerning=true}
+\microtypecontext{spacing=nonfrench}
+
+% Pengaturan paragraf
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+% Pengaturan jarak untuk subsection
+\usepackage{titlesec}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{0pt}{0pt}
+
+% Pengaturan margin: kiri 4cm, lainnya 3cm
+\geometry{
+    a4paper,
+    left=4cm,
+    right=3cm,
+    top=3cm,
+    bottom=3cm
+}
+
+% Pengaturan spasi
+\onehalfspacing
+
+% Pengaturan penomoran
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+% Pengaturan heading
+\renewcommand{\thesection}{\Roman{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+
+% Konfigurasi Daftar Isi
+\renewcommand{\cftsecfont}{\normalfont\bfseries}
+\renewcommand{\cftsecpagefont}{\normalfont\bfseries}
+\renewcommand{\cftsubsecfont}{\normalfont}
+\renewcommand{\cftsubsubsecfont}{\normalfont}
+\setlength{\cftsecindent}{0em}
+\setlength{\cftsubsecindent}{1.5em}
+\setlength{\cftsubsubsecindent}{3em}
+
+% Konfigurasi Daftar Gambar
+\renewcommand{\listfigurename}{DAFTAR GAMBAR}
+\renewcommand{\figurename}{Gambar}
+
+% Konfigurasi Daftar Tabel
+\renewcommand{\listtablename}{DAFTAR TABEL}
+\renewcommand{\tablename}{Tabel}
+
+\begin{document}
+
+% ============================================================
+% HALAMAN JUDUL
+% ============================================================
+\begin{titlepage}
+\centering
+\vspace*{2cm}
+
+{\fontsize{14}{16.8}\selectfont\textbf{RESTORASI DOKUMEN TERDEGRADASI MENGGUNAKAN}}\\[0.5em]
+{\fontsize{14}{16.8}\selectfont\textbf{GENERATIVE ADVERSARIAL NETWORK DENGAN}}\\[0.5em]
+{\fontsize{14}{16.8}\selectfont\textbf{DISKRIMINATOR DUAL-MODAL DAN OPTIMASI}}\\[0.5em]
+{\fontsize{14}{16.8}\selectfont\textbf{LOSS FUNCTION BERORIENTASI HTR}}\\[3cm]
+
+{\fontsize{12}{14.4}\selectfont\textbf{TESIS}}\\[2cm]
+
+{\fontsize{12}{14.4}\selectfont
+Oleh:\\[0.5cm]
+\textbf{[NAMA MAHASISWA]}\\
+\textbf{[NIM]}
+}
+
+\vfill
+
+{\fontsize{12}{14.4}\selectfont\textbf{PROGRAM PASCASARJANA}}\\
+{\fontsize{12}{14.4}\selectfont\textbf{[NAMA UNIVERSITAS]}}\\
+{\fontsize{12}{14.4}\selectfont\textbf{[TAHUN]}}
+
+\end{titlepage}
+
+% ============================================================
+% PENOMORAN HALAMAN ROMAWI KECIL UNTUK BAGIAN AWAL
+% ============================================================
+\pagenumbering{roman}
+\setcounter{page}{1}
+
+% ============================================================
+% DAFTAR ISI
+% ============================================================
+\newpage
+\vspace{2cm}
+\begin{center}
+{\fontsize{14}{16.8}\selectfont\textbf{DAFTAR ISI}}\\[1em]
+\end{center}
+\vspace{1em}
+
+\tableofcontents
+
+% ============================================================
+% DAFTAR GAMBAR
+% ============================================================
+\newpage
+\vspace{2cm}
+\begin{center}
+{\fontsize{14}{16.8}\selectfont\textbf{DAFTAR GAMBAR}}\\[1em]
+\end{center}
+\vspace{1em}
+
+\listoffigures
+
+% ============================================================
+% DAFTAR TABEL
+% ============================================================
+\newpage
+\vspace{2cm}
+\begin{center}
+{\fontsize{14}{16.8}\selectfont\textbf{DAFTAR TABEL}}\\[1em]
+\end{center}
+\vspace{1em}
+
+\listoftables
+
+% ============================================================
+% DAFTAR LAMBANG DAN SINGKATAN
+% ============================================================
+\newpage
+\input{Chapter_Lambang.tex}
+
+% ============================================================
+% PENOMORAN HALAMAN ARABIC UNTUK ISI UTAMA
+% ============================================================
+\newpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+% ============================================================
+% BAB I - PENDAHULUAN
+% ============================================================
+\input{chapter1_pendahuluan.tex}
+
+% ============================================================
+% BAB II - TINJAUAN PUSTAKA
+% ============================================================
+\newpage
+\input{chapter2_tinjauan_pustaka.tex}
+
+% ============================================================
+% BAB III - METODOLOGI PENELITIAN
+% ============================================================
+\newpage
+\input{chapter3_metodologi.tex}
+
+% ============================================================
+% BAB IV - PERANCANGAN DAN IMPLEMENTASI SISTEM
+% ============================================================
+\newpage
+\input{chapter4_analysis_design.tex}
+
+% ============================================================
+% BAB V - HASIL DAN PEMBAHASAN
+% ============================================================
+\newpage
+\input{chapter5_hasil.tex}
+
+% ============================================================
+% BAB VI - KESIMPULAN DAN SARAN
+% ============================================================
+\newpage
+\input{chapter6_kesimpulan.tex}
+
+% ============================================================
+% DAFTAR PUSTAKA
+% ============================================================
+\newpage
+\vspace{2cm}
+\begin{center}
+{\fontsize{14}{16.8}\selectfont\textbf{DAFTAR PUSTAKA}}\\[1em]
+\end{center}
+\addcontentsline{toc}{section}{DAFTAR PUSTAKA}
+\vspace{1em}
+
+% Gunakan BibTeX atau input manual
+% \bibliographystyle{IEEEtran}
+% \bibliography{references}
+
+% Atau manual:
+% \input{references.tex}
+
+\end{document}

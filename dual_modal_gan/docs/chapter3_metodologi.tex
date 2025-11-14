@@ -78,14 +78,14 @@
 
 Bab ini menguraikan pendekatan penelitian yang mengadopsi Design Science Research Methodology (DSRM) sebagai kerangka kerja sistematis untuk pengembangan dan evaluasi artefak teknologi informasi. Metodologi DSRM dipilih karena tiga alasan fundamental: (1) kesesuaiannya untuk merancang artefak inovatif yang menyelesaikan masalah praktis (\textit{solution-oriented}), (2) pendekatan evaluasi berbasis bukti empiris yang mengutamakan validasi kuantitatif, dan (3) siklus iteratif yang mengakomodasi penyempurnaan berkelanjutan berdasarkan \textit{feedback} evaluasi---karakteristik yang sangat sesuai dengan pengembangan sistem \textit{deep learning}.
 
-Artefak yang dikembangkan dalam penelitian ini adalah \textit{framework} restorasi dokumen berbasis GAN dengan tiga komponen inovatif: (1) HTR \textit{recognizer} terbekukan sebagai evaluator objektif keterbacaan teks, (2) optimasi \textit{multi-component loss function} yang menyeimbangkan kualitas visual dan performa HTR, dan (3) eksplorasi diskriminator dual-modal untuk evaluasi bilateral visual-tekstual. Implementasi teknis mengikuti siklus \textit{deep learning} yang iteratif, di mana setiap iterasi eksperimen didasarkan pada bukti empiris dari iterasi sebelumnya dan didokumentasikan secara sistematis menggunakan MLflow untuk mencapai tujuan penelitian dengan transparansi dan reproduktifitas.
+Artefak yang dikembangkan dalam penelitian ini adalah framework restorasi dokumen berbasis GAN dengan tiga komponen inovatif: (1) HTR recognizer terbekukan sebagai evaluator objektif keterbacaan teks, (2) optimasi multi-component loss function yang menyeimbangkan kualitas visual dan performa HTR, dan (3) eksplorasi diskriminator dual-modal untuk evaluasi bilateral visual-tekstual. Implementasi teknis mengikuti siklus deep learning yang iteratif, di mana setiap iterasi eksperimen didasarkan pada bukti empiris dari iterasi sebelumnya dan didokumentasikan secara sistematis menggunakan MLflow untuk mencapai tujuan penelitian dengan transparansi dan reproduktifitas.
 \vspace{1em}
 
 \subsection{Kerangka Teori Metodologi Penelitian}
 \label{subsec:kerangka-teori}
 \vspace{0.8em}
 
-\subsubsection{\textit{Design Science Research Methodology} (DSRM)}
+\subsubsection{Design Science Research Methodology (DSRM)}
 
 \begin{figure}[htbp]
 \centering
@@ -94,33 +94,33 @@ Artefak yang dikembangkan dalam penelitian ini adalah \textit{framework} restora
 \label{fig:dsrm-framework}
 \end{figure}
 
-\textit{Design Science Research Methodology} (DSRM), yang diperkenalkan oleh Peffers dkk. (2007), merupakan kerangka penelitian yang dirancang khusus untuk pengembangan dan evaluasi artefak teknologi informasi. DSRM terdiri dari enam tahapan fundamental yang saling terkait dan bersifat iteratif: (1) identifikasi masalah dan motivasi, (2) definisi tujuan solusi, (3) desain dan pengembangan, (4) demonstrasi, (5) evaluasi, dan (6) komunikasi (Peffers dkk., 2007). Dalam setiap tahapan, hasil evaluasi memberikan umpan balik untuk penyempurnaan pada tahap desain dan pengembangan, menciptakan siklus perbaikan berkelanjutan.
+Design Science Research Methodology (DSRM), yang diperkenalkan oleh Peffers dkk. (2007), merupakan kerangka penelitian yang dirancang khusus untuk pengembangan dan evaluasi artefak teknologi informasi. DSRM terdiri dari enam tahapan fundamental yang saling terkait dan bersifat iteratif: (1) identifikasi masalah dan motivasi, (2) definisi tujuan solusi, (3) desain dan pengembangan, (4) demonstrasi, (5) evaluasi, dan (6) komunikasi (Peffers dkk., 2007). Dalam setiap tahapan, hasil evaluasi memberikan umpan balik untuk penyempurnaan pada tahap desain dan pengembangan, menciptakan siklus perbaikan berkelanjutan.
 
-\subsubsection{Adaptasi DSRM untuk Pengembangan \textit{Framework} GAN-HTR}
+\subsubsection{Adaptasi DSRM untuk Pengembangan Framework GAN-HTR}
 Karakteristik utama DSRM yang relevan dengan penelitian ini adalah:
 
 \begin{enumerate}[label=\arabic*., leftmargin=*, nosep]
-\item \textit{Orientasi Solusi (Solution-Oriented):} DSRM berfokus pada penciptaan artefak inovatif untuk menyelesaikan masalah praktis yang teridentifikasi. Dalam konteks penelitian ini, artefak yang dikembangkan adalah \textit{framework} restorasi dokumen berbasis GAN dengan integrasi HTR \textit{recognizer} terbekukan dan optimasi \textit{multi-component loss function}. \textit{Framework} ini secara eksplisit dioptimalkan untuk meningkatkan keterbacaan dokumen oleh sistem HTR (bukan hanya kualitas visual), dan merupakan kontribusi konkret yang dapat diimplementasikan pada sistem digitalisasi arsip historis.
+\item Orientasi Solusi (Solution-Oriented): DSRM berfokus pada penciptaan artefak inovatif untuk menyelesaikan masalah praktis yang teridentifikasi. Dalam konteks penelitian ini, artefak yang dikembangkan adalah framework restorasi dokumen berbasis GAN dengan integrasi HTR recognizer terbekukan dan optimasi multi-component loss function. Framework ini secara eksplisit dioptimalkan untuk meningkatkan keterbacaan dokumen oleh sistem HTR (bukan hanya kualitas visual), dan merupakan kontribusi konkret yang dapat diimplementasikan pada sistem digitalisasi arsip historis.
 
-\item \textit{Evaluasi Berbasis Bukti (Evidence-Based Evaluation):} Setiap iterasi desain dievaluasi secara kuantitatif menggunakan metrik yang terukur---kualitas visual (PSNR, SSIM) untuk validasi pelestarian struktur dokumen, dan metrik keterbacaan HTR (CER, WER) untuk validasi peningkatan performa pengenalan teks. Pendekatan evaluasi ganda ini memastikan bahwa penyempurnaan dilakukan berdasarkan data empiris dari dua dimensi objektif (visual dan tekstual), bukan asumsi subjektif atau observasi visual semata.
+\item Evaluasi Berbasis Bukti (Evidence-Based Evaluation): Setiap iterasi desain dievaluasi secara kuantitatif menggunakan metrik yang terukur---kualitas visual (PSNR, SSIM) untuk validasi pelestarian struktur dokumen, dan metrik keterbacaan HTR (CER, WER) untuk validasi peningkatan performa pengenalan teks. Pendekatan evaluasi ganda ini memastikan bahwa penyempurnaan dilakukan berdasarkan data empiris dari dua dimensi objektif (visual dan tekstual), bukan asumsi subjektif atau observasi visual semata.
 
-\item \textit{Siklus Iteratif (Iterative Refinement):} Kerangka kerja DSRM memfasilitasi perbaikan berkelanjutan melalui putaran umpan balik (\textit{feedback loop}) antara tahap evaluasi dan desain. Karakteristik ini sangat sesuai dengan pengembangan model \textit{deep learning} yang memerlukan eksperimen terkontrol, analisis konvergensi, \textit{hyperparameter tuning}, dan studi ablasi berulang. Setiap siklus iterasi menghasilkan wawasan yang menginformasikan penyempurnaan arsitektur atau konfigurasi pelatihan pada iterasi berikutnya.
+\item Siklus Iteratif (Iterative Refinement): Kerangka kerja DSRM memfasilitasi perbaikan berkelanjutan melalui putaran umpan balik (feedback loop) antara tahap evaluasi dan desain. Karakteristik ini sangat sesuai dengan pengembangan model deep learning yang memerlukan eksperimen terkontrol, analisis konvergensi, hyperparameter tuning, dan studi ablasi berulang. Setiap siklus iterasi menghasilkan wawasan yang menginformasikan penyempurnaan arsitektur atau konfigurasi pelatihan pada iterasi berikutnya.
 
-\item \textit{Komunikasi dan Diseminasi (Communication \& Dissemination):} DSRM menekankan pentingnya mendokumentasikan dan mengkomunikasikan hasil penelitian kepada komunitas ilmiah untuk validasi eksternal dan kemajuan kolektif. Penelitian ini mengadopsi prinsip transparansi melalui: (a) publikasi akademis dengan detail arsitektur dan hasil eksperimen, (b) dokumentasi metodologi pelatihan dan evaluasi yang komprehensif, (c) rencana berbagi kode sumber untuk reproduktifitas dan verifikasi independen oleh peneliti lain.
+\item Komunikasi dan Diseminasi (Communication \& Dissemination): DSRM menekankan pentingnya mendokumentasikan dan mengkomunikasikan hasil penelitian kepada komunitas ilmiah untuk validasi eksternal dan kemajuan kolektif. Penelitian ini mengadopsi prinsip transparansi melalui: (a) publikasi akademis dengan detail arsitektur dan hasil eksperimen, (b) dokumentasi metodologi pelatihan dan evaluasi yang komprehensif, (c) rencana berbagi kode sumber untuk reproduktifitas dan verifikasi independen oleh peneliti lain.
 \end{enumerate}
 
 \subsubsection{Siklus Iteratif Berbasis Bukti Empiris}
 Untuk mengimplementasikan prinsip siklus iteratif DSRM (karakteristik ke-3, Bagian III.1.2), penelitian ini mengadopsi siklus iteratif yang berbasis bukti empiris (\textit{evidence-based iterative cycle}) untuk memastikan setiap keputusan desain didukung oleh data kuantitatif yang valid dan dapat diverifikasi. Implementasi siklus ini berjalan sebagai berikut:
 
-\textit{Fase Eksperimen $\rightarrow$ Evaluasi $\rightarrow$ Analisis $\rightarrow$ Penyempurnaan:}
+Fase Eksperimen → Evaluasi → Analisis → Penyempurnaan:
 \begin{itemize}[nosep]
-    \item Setiap eksperimen (misalnya, modifikasi arsitektur, perubahan bobot \textit{loss function}) didokumentasikan dengan konfigurasi lengkap dan \textit{run ID} unik di MLflow
-    \item Evaluasi menghasilkan metrik kuantitatif (PSNR, SSIM, CER, WER) pada \textit{validation set} yang konsisten
+    \item Setiap eksperimen (misalnya, modifikasi arsitektur, perubahan bobot loss function) didokumentasikan dengan konfigurasi lengkap dan run ID unik di MLflow
+    \item Evaluasi menghasilkan metrik kuantitatif (PSNR, SSIM, CER, WER) pada validation set yang konsisten
     \item Analisis komparatif mengidentifikasi perbaikan atau degradasi performa relatif terhadap eksperimen sebelumnya
     \item Penyempurnaan diimplementasikan hanya jika didukung oleh peningkatan metrik yang signifikan secara statistik atau wawasan teoretis yang solid
 \end{itemize}
 
-\textit{Prinsip \textit{Evidence-Based Decision Making:}} Pendekatan ini meminimalkan subjektivitas dan bias konfirmasi (\textit{confirmation bias}) dengan memaksa setiap perubahan desain untuk divalidasi secara objektif melalui metrik kuantitatif. Temuan negatif (misalnya, kontribusi marginal diskriminator dual-modal, $p>0.05$) didokumentasikan secara transparan untuk meningkatkan validitas ilmiah dan memberikan panduan kepada peneliti lain yang mengeksplorasi arah serupa. Siklus ini dijalankan secara berulang terutama pada Tahap 3 (Desain dan Pengembangan) dan Tahap 5 (Evaluasi) dari kerangka DSRM untuk penyempurnaan artefak berkelanjutan.
+Prinsip Evidence-Based Decision Making: Pendekatan ini meminimalkan subjektivitas dan bias konfirmasi (confirmation bias) dengan memaksa setiap perubahan desain untuk divalidasi secara objektif melalui metrik kuantitatif. Temuan negatif (misalnya, kontribusi marginal diskriminator dual-modal, $p>0.05$) didokumentasikan secara transparan untuk meningkatkan validitas ilmiah dan memberikan panduan kepada peneliti lain yang mengeksplorasi arah serupa. Siklus ini dijalankan secara berulang terutama pada Tahap 3 (Desain dan Pengembangan) dan Tahap 5 (Evaluasi) dari kerangka DSRM untuk penyempurnaan artefak berkelanjutan.
 
 \subsection{Tahapan Penelitian}
 \label{subsec:tahapan-penelitian}
@@ -207,16 +207,16 @@ Artefak yang dikembangkan adalah \textit{framework} restorasi dokumen berbasis G
 
 Setelah mengidentifikasi masalah dan mendefinisikan tujuan solusi pada tahap sebelumnya, langkah selanjutnya dalam kerangka DSRM adalah menerjemahkan tujuan tersebut menjadi spesifikasi kebutuhan sistem yang konkret dan terukur. Analisis kebutuhan ini menjadi jembatan antara tujuan penelitian (Stage 2) dan perancangan arsitektur (Stage 3 di Bab IV), serta tolok ukur evaluasi akhir (Stage 5 di Bab V).
 
-Kebutuhan sistem diklasifikasikan menjadi dua kategori utama: (1) \textbf{Kebutuhan Fungsional} yang mendefinisikan fungsi spesifik yang harus dimiliki sistem, dan (2) \textbf{Kebutuhan Non-Fungsional} yang mendefinisikan kriteria kualitas dan batasan performa sistem. Spesifikasi kebutuhan ini disusun untuk memastikan bahwa solusi yang dikembangkan tidak hanya secara teknis mampu mengatasi masalah restorasi dokumen, tetapi juga praktis untuk digunakan dalam lingkungan produksi dan dapat diintegrasikan dengan sistem lain.
+Kebutuhan sistem diklasifikasikan menjadi dua kategori utama: (1) Kebutuhan Fungsional yang mendefinisikan fungsi spesifik yang harus dimiliki sistem, dan (2) Kebutuhan Non-Fungsional yang mendefinisikan kriteria kualitas dan batasan performa sistem. Spesifikasi kebutuhan ini disusun untuk memastikan bahwa solusi yang dikembangkan tidak hanya secara teknis mampu mengatasi masalah restorasi dokumen, tetapi juga praktis untuk digunakan dalam lingkungan produksi dan dapat diintegrasikan dengan sistem lain.
 
 \paragraph{Kebutuhan Fungsional}
 
 Kebutuhan fungsional mendefinisikan fungsi spesifik yang harus dimiliki oleh sistem GAN-HTR untuk restorasi dokumen terdegradasi secara efektif. Delapan kebutuhan fungsional yang diidentifikasi mencakup tiga kategori utama:
 
 \begin{enumerate}[nosep]
-    \item \textbf{Kemampuan inti pembelajaran mesin} untuk restorasi visual dan pengenalan teks (FR-1, FR-2, FR-3),
-    \item \textbf{Kemampuan pemrosesan} untuk menangani batch inference dan dataset sintetis (FR-4, FR-5),
-    \item \textbf{Kemampuan integrasi sistem} untuk input/output terstandar dan antarmuka fleksibel (FR-6, FR-7, FR-8).
+    \item Kemampuan inti pembelajaran mesin untuk restorasi visual dan pengenalan teks (FR-1, FR-2, FR-3),
+    \item Kemampuan pemrosesan untuk menangani batch inference dan dataset sintetis (FR-4, FR-5),
+    \item Kemampuan integrasi sistem untuk input/output terstandar dan antarmuka fleksibel (FR-6, FR-7, FR-8).
 \end{enumerate}
 
 Setiap kebutuhan dirancang untuk memastikan sistem tidak hanya secara teknis mampu melakukan restorasi, tetapi juga praktis untuk digunakan dalam lingkungan produksi dan dapat diintegrasikan dengan sistem lain. Spesifikasi lengkap kebutuhan fungsional disajikan pada Tabel~\ref{tab:functional_requirements}.
@@ -240,11 +240,11 @@ FR-4 & Inferensi Batch Processing & Sistem harus mampu memproses dokumen terdegr
 \midrule
 FR-5 & Dukungan Dataset Sintetis & Sistem harus menyertakan pipeline otomatis untuk pembuatan dataset sintetis terdegradasi dari gambar bersih, memungkinkan augmentasi data untuk training dengan kontrol parameter degradasi. \\
 \midrule
-FR-6 & Output Terdefinisi & Format output harus konsisten dan terstruktur: (1) \textbf{Visual}: PNG/TIFF dengan resolusi 300 DPI, (2) \textbf{Text}: UTF-8 encoding dengan confidence score 0.0--1.0 per karakter, (3) \textbf{Quality Metrics}: PSNR/SSIM untuk evaluasi visual, (4) \textbf{Error Handling}: Pesan error terstruktur untuk debugging. \\
+FR-6 & Output Terdefinisi & Format output harus konsisten dan terstruktur: (1) Visual: PNG/TIFF dengan resolusi 300 DPI, (2) Text: UTF-8 encoding dengan confidence score 0.0--1.0 per karakter, (3) Quality Metrics: PSNR/SSIM untuk evaluasi visual, (4) Error Handling: Pesan error terstruktur untuk debugging. \\
 \midrule
-FR-7 & Input Data Fleksibel & Sistem harus menangani berbagai format input: (1) \textbf{Format}: JPG, PNG, TIFF, PDF (single-page), (2) \textbf{Validasi}: Resolusi minimum 128×1024 piksel, (3) \textbf{Recovery}: Skip corrupted files dengan logging, (4) \textbf{Preprocessing}: Konversi otomatis ke grayscale dan noise reduction awal. \\
+FR-7 & Input Data Fleksibel & Sistem harus menangani berbagai format input: (1) Format: JPG, PNG, TIFF, PDF (single-page), (2) Validasi: Resolusi minimum 128×1024 piksel, (3) Recovery: Skip corrupted files dengan logging, (4) Preprocessing: Konversi otomatis ke grayscale dan noise reduction awal. \\
 \midrule
-FR-8 & Integrasi Sistem & Sistem harus menyediakan multiple interface untuk fleksibilitas deployment: (1) \textbf{CLI}: Command-line interface dengan parameter konfigurasi, (2) \textbf{Python API}: Programmatic access untuk integrasi, (3) \textbf{Configuration}: YAML/JSON untuk batch experiments, (4) \textbf{Logging}: Structured logging untuk monitoring dan debugging. \\
+FR-8 & Integrasi Sistem & Sistem harus menyediakan multiple interface untuk fleksibilitas deployment: (1) CLI: Command-line interface dengan parameter konfigurasi, (2) Python API: Programmatic access untuk integrasi, (3) Configuration: YAML/JSON untuk batch experiments, (4) Logging: Structured logging untuk monitoring dan debugging. \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -256,10 +256,10 @@ FR-8 & Integrasi Sistem & Sistem harus menyediakan multiple interface untuk flek
 Kebutuhan non-fungsional mendefinisikan kriteria kualitas dan batasan performa sistem GAN-HTR. Empat kebutuhan non-fungsional yang ditetapkan mengukur aspek kualitatif dan kuantitatif performa sistem:
 
 \begin{enumerate}[nosep]
-    \item \textbf{NFR-1: Kualitas Visual} mengukur kesamaan gambar hasil restorasi dengan ground truth menggunakan metrik PSNR dan SSIM,
-    \item \textbf{NFR-2: Keterbacaan Teks} sebagai metrik utama keberhasilan sistem melalui penurunan Character Error Rate (CER),
-    \item \textbf{NFR-3: Efisiensi Waktu} untuk memastikan kepraktisan penggunaan dalam skenario produksi,
-    \item \textbf{NFR-4: Reproduktifitas} untuk menjamin konsistensi dan keandalan hasil eksperimen.
+    \item NFR-1: Kualitas Visual mengukur kesamaan gambar hasil restorasi dengan ground truth menggunakan metrik PSNR dan SSIM,
+    \item NFR-2: Keterbacaan Teks sebagai metrik utama keberhasilan sistem melalui penurunan Character Error Rate (CER),
+    \item NFR-3: Efisiensi Waktu untuk memastikan kepraktisan penggunaan dalam skenario produksi,
+    \item NFR-4: Reproduktifitas untuk menjamin konsistensi dan keandalan hasil eksperimen.
 \end{enumerate}
 
 Target performa ditetapkan berdasarkan studi literatur (Bab II) dan kebutuhan praktis implementasi. Spesifikasi lengkap kebutuhan non-fungsional disajikan pada Tabel~\ref{tab:non_functional_requirements}.
@@ -273,18 +273,18 @@ Target performa ditetapkan berdasarkan studi literatur (Bab II) dan kebutuhan pr
 \toprule
 \textbf{Kode} & \textbf{Nama Requirement} & \textbf{Deskripsi dan Target Performa} \\
 \midrule
-NFR-1 & Kualitas Visual Restorasi & Kualitas visual gambar hasil restorasi versus ground truth harus mencapai: (1) \textbf{PSNR rata-rata $>$ 30 dB}, (2) \textbf{SSIM rata-rata $\geq$ 0.90} pada dataset validasi. Target PSNR disesuaikan berdasarkan kompleksitas degradasi dokumen paleografi historis dan keterbatasan dataset semi-sintetis. Target SSIM 0.90 menunjukkan kesamaan struktural yang tinggi dengan ground truth. \\
+NFR-1 & Kualitas Visual Restorasi & Kualitas visual gambar hasil restorasi versus ground truth harus mencapai: (1) PSNR rata-rata $>$ 30 dB, (2) SSIM rata-rata $\geq$ 0.90 pada dataset validasi. Target PSNR disesuaikan berdasarkan kompleksitas degradasi dokumen paleografi historis dan keterbatasan dataset semi-sintetis. Target SSIM 0.90 menunjukkan kesamaan struktural yang tinggi dengan ground truth. \\
 \midrule
-NFR-2 & Peningkatan Keterbacaan Teks & Sistem harus meningkatkan akurasi transkripsi HTR secara signifikan: \textbf{CER menunjukkan penurunan minimal 25\%} dibandingkan CER pada gambar terdegradasi asli. Formula: CER\_reduction = $\frac{\text{CER}_{\text{degraded}} - \text{CER}_{\text{restored}}}{\text{CER}_{\text{degraded}}} \times 100\%$. Penurunan 25\% menunjukkan peningkatan keterbacaan yang substansial dan praktis signifikan untuk aplikasi transkripsi dokumen historis. \\
+NFR-2 & Peningkatan Keterbacaan Teks & Sistem harus meningkatkan akurasi transkripsi HTR secara signifikan: CER menunjukkan penurunan minimal 25\% dibandingkan CER pada gambar terdegradasi asli. Formula: CER\_reduction = $\frac{\text{CER}_{\text{degraded}} - \text{CER}_{\text{restored}}}{\text{CER}_{\text{degraded}}} \times 100\%$. Penurunan 25\% menunjukkan peningkatan keterbacaan yang substansial dan praktis signifikan untuk aplikasi transkripsi dokumen historis. \\
 \midrule
-NFR-3 & Performa Waktu Inferensi & Waktu inferensi untuk satu gambar dokumen tunggal pada NVIDIA RTX A4000 tidak boleh melebihi \textbf{15 detik} untuk memastikan kepraktisan penggunaan dalam workflow arsiparis. Threshold 15 detik memungkinkan pemrosesan sekitar 240 halaman per jam, yang praktis untuk digitalisasi arsip skala besar. \\
+NFR-3 & Performa Waktu Inferensi & Waktu inferensi untuk satu gambar dokumen tunggal pada NVIDIA RTX A4000 tidak boleh melebihi 15 detik untuk memastikan kepraktisan penggunaan dalam workflow arsiparis. Threshold 15 detik memungkinkan pemrosesan sekitar 240 halaman per jam, yang praktis untuk digitalisasi arsip skala besar. \\
 \midrule
 NFR-4 & Reproduktifitas & Proses training dan evaluasi harus dapat direproduksi dengan lingkungan perangkat lunak dan dependensi yang didefinisikan secara jelas melalui file \texttt{pyproject.toml} dan Docker configuration. Reproduktifitas adalah prinsip fundamental penelitian ilmiah dan memfasilitasi validasi independen oleh peneliti lain. \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\textit{Justifikasi Target Performa:} Target performa pada kebutuhan non-fungsional ditetapkan berdasarkan pertimbangan: (1) \textbf{NFR-1 (PSNR $>$ 30 dB, SSIM $\geq$ 0.90)}: Berdasarkan tinjauan pustaka (Bab II), metode state-of-the-art seperti DE-GAN mencapai PSNR 30--32 dB pada dataset dokumen. Target ini realistis untuk dataset semi-sintetis dengan degradasi terkontrol. (2) \textbf{NFR-2 (CER reduction $\geq$ 25\%)}: Penurunan CER 25\% menunjukkan peningkatan keterbacaan yang substansial. Sebagai ilustrasi, jika CER degraded baseline adalah 40\%, maka target CER setelah restorasi adalah 30\%, yang merupakan peningkatan signifikan untuk aplikasi praktis. (3) \textbf{NFR-3 (Inference time $<$ 15 detik)}: Target ini mempertimbangkan trade-off antara kualitas restorasi dan throughput pemrosesan, praktis untuk workflow digitalisasi arsip. (4) \textbf{NFR-4 (Reproduktifitas)}: Sesuai dengan prinsip DSRM dan standar penelitian ilmiah, semua eksperimen harus dapat direproduksi oleh peneliti independen.
+Justifikasi Target Performa: Target performa pada kebutuhan non-fungsional ditetapkan berdasarkan pertimbangan: (1) NFR-1 (PSNR $>$ 30 dB, SSIM $\geq$ 0.90): Berdasarkan tinjauan pustaka (Bab II), metode state-of-the-art seperti DE-GAN mencapai PSNR 30--32 dB pada dataset dokumen. Target ini realistis untuk dataset semi-sintetis dengan degradasi terkontrol. (2) NFR-2 (CER reduction $\geq$ 25\%): Penurunan CER 25\% menunjukkan peningkatan keterbacaan yang substansial. Sebagai ilustrasi, jika CER degraded baseline adalah 40\%, maka target CER setelah restorasi adalah 30\%, yang merupakan peningkatan signifikan untuk aplikasi praktis. (3) NFR-3 (Inference time $<$ 15 detik): Target ini mempertimbangkan trade-off antara kualitas restorasi dan throughput pemrosesan, praktis untuk workflow digitalisasi arsip. (4) NFR-4 (Reproduktifitas): Sesuai dengan prinsip DSRM dan standar penelitian ilmiah, semua eksperimen harus dapat direproduksi oleh peneliti independen.
 
 \paragraph{Traceability Matrix}
 
@@ -322,7 +322,7 @@ NFR-4 & Reproduktifitas & Metodologi DSRM & Appendix (Reproducibility) \\
 \end{tabular}
 \end{table}
 
-\textit{Kesimpulan Analisis Kebutuhan:} Berdasarkan analisis di atas, sistem GAN-HTR yang akan dikembangkan harus memenuhi total \textbf{12 kebutuhan} (8 fungsional dan 4 non-fungsional) yang mencakup aspek visual, tekstual, performa, dan integrasi sistem. Spesifikasi kebutuhan ini menjadi acuan untuk: (1) \textbf{Perancangan Arsitektur} (Bab IV): Setiap komponen arsitektur (Generator, Recognizer, Discriminator, Loss Function) dirancang untuk memenuhi kebutuhan spesifik yang telah ditetapkan, (2) \textbf{Implementasi Sistem} (Bab IV): Detail implementasi seperti pipeline data, training loop, dan inference workflow didesain untuk memenuhi kebutuhan fungsional FR-4 hingga FR-8, (3) \textbf{Evaluasi dan Validasi} (Bab V): Metrik evaluasi dan protokol eksperimen dirancang untuk mengukur pencapaian kebutuhan non-fungsional NFR-1 hingga NFR-4. Dengan demikian, analisis kebutuhan ini memberikan fondasi yang kuat untuk tahapan selanjutnya dalam kerangka DSRM, yaitu perancangan dan pengembangan solusi (DSRM Stage 3: Design \& Development) yang akan diuraikan pada tahap berikutnya.
+Kesimpulan Analisis Kebutuhan: Berdasarkan analisis di atas, sistem GAN-HTR yang akan dikembangkan harus memenuhi total 12 kebutuhan (8 fungsional dan 4 non-fungsional) yang mencakup aspek visual, tekstual, performa, dan integrasi sistem. Spesifikasi kebutuhan ini menjadi acuan untuk: (1) Perancangan Arsitektur (Bab IV): Setiap komponen arsitektur (Generator, Recognizer, Discriminator, Loss Function) dirancang untuk memenuhi kebutuhan spesifik yang telah ditetapkan, (2) Implementasi Sistem (Bab IV): Detail implementasi seperti pipeline data, training loop, dan inference workflow didesain untuk memenuhi kebutuhan fungsional FR-4 hingga FR-8, (3) Evaluasi dan Validasi (Bab V): Metrik evaluasi dan protokol eksperimen dirancang untuk mengukur pencapaian kebutuhan non-fungsional NFR-1 hingga NFR-4. Dengan demikian, analisis kebutuhan ini memberikan fondasi yang kuat untuk tahapan selanjutnya dalam kerangka DSRM, yaitu perancangan dan pengembangan solusi (DSRM Stage 3: Design dan Development) yang akan diuraikan pada tahap berikutnya.
 
 \subsubsection{Desain dan Pengembangan Artefak (Tahap 3)}
 Tahap ini merupakan inti penelitian di mana artefak (framework GAN-HTR) dirancang, diimplementasikan, dan disempurnakan melalui siklus iteratif berbasis eksperimen. Tahap ini mengikuti metodologi pengembangan deep learning yang terdokumentasi dan mencakup tiga aspek fundamental: penyiapan lingkungan komputasi, manajemen data dan eksperimen, serta pengembangan framework modular.
@@ -665,13 +665,13 @@ Kolaborasi dengan Arsip Nasional Republik Indonesia (ANRI) difasilitasi melalui 
 % ============================================================
 % DAFTAR PUSTAKA
 % ============================================================
-\newpage
-\bibliographystyle{IEEEtran}
-\begin{thebibliography}{99}
+% \newpage
+% \bibliographystyle{IEEEtran}
+% \begin{thebibliography}{99}
 
-\bibitem{peffers2007design}
-K. Peffers, T. Tuunanen, M. A. Rothenberger, and S. Chatterjee, ``A design science research methodology for information systems research,'' \textit{Journal of Management Information Systems}, vol. 24, no. 3, pp. 45--77, Dec. 2007. DOI: 10.2753/MIS0742-1222240302.
+% \bibitem{peffers2007design}
+% K. Peffers, T. Tuunanen, M. A. Rothenberger, and S. Chatterjee, ``A design science research methodology for information systems research,'' \textit{Journal of Management Information Systems}, vol. 24, no. 3, pp. 45--77, Dec. 2007. DOI: 10.2753/MIS0742-1222240302.
 
-\end{thebibliography}
+% \end{thebibliography}
 
 \end{document}
