@@ -1,0 +1,1 @@
+Patch note: Mengubah spasi dokumen menjadi onehalfspacing (1,5 spasi) dengan menambahkan \usepackage{setspace} dan \onehalfspacing setelah \begin{document}. \parskip 6pt tetap dipertahankan untuk jarak antar paragraf.

@@ -1,0 +1,263 @@
+\babel@toc {bahasa}{}\relax 
+\contentsline {section}{DAFTAR LAMBANG DAN SINGKATAN}{xii}{Doc-Start}%
+\contentsline {section}{BAB I PENDAHULUAN}{1}{table.0.2}%
+\contentsline {subsection}{\numberline {I.1}Latar Belakang}{1}{subsection.1.1}%
+\contentsline {subsection}{\numberline {I.2}Rumusan Masalah}{4}{subsection.1.2}%
+\contentsline {subsection}{\numberline {I.3}Pertanyaan Penelitian}{5}{subsection.1.3}%
+\contentsline {subsection}{\numberline {I.4}Tujuan Penelitian}{6}{subsection.1.4}%
+\contentsline {subsection}{\numberline {I.5}Ruang Lingkup}{6}{subsection.1.5}%
+\contentsline {subsection}{\numberline {I.6}Hipotesis Penelitian}{7}{subsection.1.6}%
+\contentsline {subsection}{\numberline {I.7}Kebaruan Penelitian}{7}{subsection.1.7}%
+\contentsline {subsection}{\numberline {I.8}Sistematika Penulisan}{8}{subsection.1.8}%
+\contentsline {section}{BAB II TINJAUAN PUSTAKA}{11}{subsection.1.8}%
+\contentsline {subsection}{\numberline {II.1}Degradasi Dokumen Historis: Karakteristik dan Tantangan}{11}{subsection.2.1}%
+\contentsline {subsubsection}{\numberline {II.1.1}Taksonomi Degradasi Dokumen}{11}{subsubsection.2.1.1}%
+\contentsline {subsubsection}{\numberline {II.1.2}Interaksi dan Kombinasi Degradasi}{15}{subsubsection.2.1.2}%
+\contentsline {subsection}{\numberline {II.2}Evolusi Metode Restorasi Dokumen: Dari Tradisional hingga Deep Learning}{16}{subsection.2.2}%
+\contentsline {subsubsection}{\numberline {II.2.1}Pendekatan Tradisional: Evaluasi Komprehensif Keterbatasan}{17}{subsubsection.2.2.1}%
+\contentsline {subsubsection}{\numberline {II.2.2}Transisi ke Pembelajaran Mendalam: Perubahan Paradigma}{18}{subsubsection.2.2.2}%
+\contentsline {subsubsection}{\numberline {II.2.3}Autoencoder untuk Terjemahan Citra-ke-Citra}{18}{subsubsection.2.2.3}%
+\contentsline {subsection}{\numberline {II.3}Generative Adversarial Networks: Teori dan Aplikasi untuk Restorasi Dokumen}{20}{subsection.2.3}%
+\contentsline {subsubsection}{\numberline {II.3.1}Arsitektur dan Mekanisme GAN}{20}{subsubsection.2.3.1}%
+\contentsline {subsubsection}{\numberline {II.3.2}Pix2Pix dan Evolusi untuk Keluaran Terstruktur}{21}{subsubsection.2.3.2}%
+\contentsline {subsection}{\numberline {II.4}Kajian Terkini dalam Restorasi Dokumen}{22}{subsection.2.4}%
+\contentsline {subsubsection}{\numberline {II.4.1}ERB-MultiTask: Integrasi Pionir GAN dan HTR Pengenal}{23}{subsubsection.2.4.1}%
+\contentsline {subsubsection}{\numberline {II.4.2}DE-GAN: Peningkatan Dokumen dengan Pendekatan Adversarial}{27}{subsubsection.2.4.2}%
+\contentsline {subsubsection}{\numberline {II.4.3}Analisis Komparatif: ERB-MultiTask vs DE-GAN}{28}{subsubsection.2.4.3}%
+\contentsline {subsubsection}{\numberline {II.4.4}Text-DIAE: Autoenkoder Invarian Degradasi Mandiri}{30}{subsubsection.2.4.4}%
+\contentsline {subsubsection}{\numberline {II.4.5}DocEnTr: Pendekatan Berbasis Transformer Saja untuk Peningkatan Dokumen}{32}{subsubsection.2.4.5}%
+\contentsline {subsubsection}{\numberline {II.4.6}Debat Metodologis: Pendekatan Berbasis Transformer Saja vs Berbasis GAN}{34}{subsubsection.2.4.6}%
+\contentsline {subsubsection}{\numberline {II.4.7}CycleGAN dan Pembelajaran Tak Berpasangan untuk Peningkatan Dokumen}{36}{subsubsection.2.4.7}%
+\contentsline {subsubsection}{\numberline {II.4.8}Refleksi Komprehensif terhadap Bias Metodologis dalam Literatur}{37}{subsubsection.2.4.8}%
+\contentsline {subsection}{\numberline {II.5}Pengenalan Teks Tulisan Tangan: Arsitektur dan Tantangan}{39}{subsection.2.5}%
+\contentsline {subsubsection}{\numberline {II.5.1}Evolusi Arsitektur HTR}{39}{subsubsection.2.5.1}%
+\contentsline {subsubsection}{\numberline {II.5.2}Loss CTC: Mekanisme dan Implikasi untuk Restorasi}{41}{subsubsection.2.5.2}%
+\contentsline {subsubsection}{\numberline {II.5.3}HTR Berbasis Transformer dan Pembelajaran Mandiri: Perkembangan Terkini}{42}{subsubsection.2.5.3}%
+\contentsline {subsubsection}{\numberline {II.5.4}Transformer dalam Peningkatan Dokumen}{42}{subsubsection.2.5.4}%
+\contentsline {subsubsection}{\numberline {II.5.5}Pembelajaran Mandiri: Revolusi dalam Pemrosesan Dokumen}{43}{subsubsection.2.5.5}%
+\contentsline {subsubsection}{\numberline {II.5.6}Kompromi antara Pembelajaran Terawasi dan Mandiri}{43}{subsubsection.2.5.6}%
+\contentsline {subsubsection}{\numberline {II.5.7}Arsitektur dan Keunggulan}{44}{subsubsection.2.5.7}%
+\contentsline {subsubsection}{\numberline {II.5.8}Justifikasi Arsitektur untuk Kasus Paleografi}{44}{subsubsection.2.5.8}%
+\contentsline {subsubsection}{\numberline {II.5.9}Perbandingan dengan HTR Konvensional}{45}{subsubsection.2.5.9}%
+\contentsline {subsubsection}{\numberline {II.5.10}Keunggulan Komparatif Arsitektur CNN+Transformer}{45}{subsubsection.2.5.10}%
+\contentsline {subsection}{\numberline {II.6}Pembelajaran Multi-Modal dan Diskriminator Dual-Modal}{47}{subsection.2.6}%
+\contentsline {subsubsection}{\numberline {II.6.1}Landasan Teoretis Pembelajaran Multi-Modal}{47}{subsubsection.2.6.1}%
+\contentsline {subsubsection}{\numberline {II.6.2}Hipotesis Informasi Komplementer}{47}{subsubsection.2.6.2}%
+\contentsline {subsubsection}{\numberline {II.6.3}Kemajuan Terkini dalam Arsitektur Multi-Modal}{48}{subsubsection.2.6.3}%
+\contentsline {subsubsection}{\numberline {II.6.4}Strategi Fusi}{48}{subsubsection.2.6.4}%
+\contentsline {subsubsection}{\numberline {II.6.5}Aplikasi Multi-Modal untuk Restorasi Dokumen}{48}{subsubsection.2.6.5}%
+\contentsline {subsubsection}{\numberline {II.6.6}Konsep Diskriminator Multi-Modal}{49}{subsubsection.2.6.6}%
+\contentsline {subsection}{\numberline {II.7}Sintesis Fungsi Loss dan Optimasi Multi-Objektif}{50}{subsection.2.7}%
+\contentsline {subsubsection}{\numberline {II.7.1}Keterbatasan Pelatihan Loss Tunggal}{50}{subsubsection.2.7.1}%
+\contentsline {subsubsection}{\numberline {II.7.2}Kerangka Konseptual Fungsi Loss Multi-Komponen}{51}{subsubsection.2.7.2}%
+\contentsline {subsubsection}{\numberline {II.7.3}Tantangan Penyeimbangan Multi-Objektif}{52}{subsubsection.2.7.3}%
+\contentsline {subsection}{\numberline {II.8}Kesenjangan Penelitian dan Positioning}{53}{subsection.2.8}%
+\contentsline {subsubsection}{\numberline {II.8.1}Sintesis Keterbatasan Metode yang Ada}{53}{subsubsection.2.8.1}%
+\contentsline {subsubsection}{\numberline {II.8.2}Posisi dan Kontribusi Penelitian Ini}{55}{subsubsection.2.8.2}%
+\contentsline {subsection}{\numberline {II.9}Ringkasan dan Transisi ke Metodologi}{56}{subsection.2.9}%
+\contentsline {section}{BAB III METODOLOGI PENELITIAN}{61}{subsection.2.9}%
+\contentsline {subsection}{\numberline {III.1}Kerangka Teori Metodologi Penelitian}{61}{subsection.3.1}%
+\contentsline {subsubsection}{\numberline {III.1.1}Design Science Research Methodology (DSRM)}{61}{subsubsection.3.1.1}%
+\contentsline {subsubsection}{\numberline {III.1.2}Adaptasi DSRM untuk Pengembangan Framework GAN-HTR}{61}{subsubsection.3.1.2}%
+\contentsline {subsubsection}{\numberline {III.1.3}Siklus Iteratif Berbasis Bukti Empiris}{63}{subsubsection.3.1.3}%
+\contentsline {subsection}{\numberline {III.2}Tahapan Penelitian}{63}{subsection.3.2}%
+\contentsline {subsubsection}{\numberline {III.2.1}Identifikasi Masalah dan Motivasi (Tahap 1)}{64}{subsubsection.3.2.1}%
+\contentsline {paragraph}{Aktivitas Utama:}{64}{subsubsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {III.2.2}Definisi Tujuan Solusi (Tahap 2)}{65}{subsubsection.3.2.2}%
+\contentsline {paragraph}{Tujuan Kuantitatif:}{65}{subsubsection.3.2.2}%
+\contentsline {paragraph}{Tujuan Kualitatif:}{66}{table.caption.14}%
+\contentsline {subsubsection}{\numberline {III.2.3}Analisis dan Spesifikasi Kebutuhan Sistem (Tahap 1-2 Extended)}{66}{subsubsection.3.2.3}%
+\contentsline {paragraph}{Kebutuhan Fungsional}{67}{subsubsection.3.2.3}%
+\contentsline {paragraph}{Kebutuhan Non-Fungsional}{67}{table.caption.15}%
+\contentsline {paragraph}{Traceability Matrix}{70}{table.caption.16}%
+\contentsline {subsubsection}{\numberline {III.2.4}Desain dan Pengembangan Artefak (Tahap 3)}{71}{subsubsection.3.2.4}%
+\contentsline {subparagraph}{Lingkungan Komputasi dan Infrastruktur}{71}{figure.caption.18}%
+\contentsline {paragraph}{Fase 1: Persiapan Dataset HTR}{72}{figure.caption.18}%
+\contentsline {paragraph}{Fase 2: Pelatihan dan Pembekuan Recognizer}{72}{figure.caption.18}%
+\contentsline {paragraph}{Fase 3: Synthetic Degradation Pipeline}{72}{figure.caption.18}%
+\contentsline {paragraph}{Fase 4: Implementasi dan Training GAN}{72}{figure.caption.18}%
+\contentsline {subparagraph}{Mekanisme Optimasi Lanjut}{73}{figure.caption.18}%
+\contentsline {paragraph}{Fase 5: Studi Ablasi dan Optimasi Konfigurasi}{73}{figure.caption.18}%
+\contentsline {subsubsection}{\numberline {III.2.5}Demonstrasi (Tahap 4)}{74}{subsubsection.3.2.5}%
+\contentsline {paragraph}{Protokol Demonstrasi:}{74}{subsubsection.3.2.5}%
+\contentsline {subsubsection}{\numberline {III.2.6}Evaluasi (Tahap 5)}{74}{subsubsection.3.2.6}%
+\contentsline {paragraph}{Evaluasi Kuantitatif:}{74}{subsubsection.3.2.6}%
+\contentsline {paragraph}{Studi Ablasi Sistematis:}{75}{subsubsection.3.2.6}%
+\contentsline {paragraph}{Evaluasi Komparatif dengan Metode \textit {Baseline}:}{75}{subsubsection.3.2.6}%
+\contentsline {paragraph}{Validasi Hipotesis:}{76}{subsubsection.3.2.6}%
+\contentsline {subsubsection}{\numberline {III.2.7}Komunikasi (Tahap 6)}{76}{subsubsection.3.2.7}%
+\contentsline {paragraph}{Diseminasi Akademik:}{76}{subsubsection.3.2.7}%
+\contentsline {paragraph}{Reproduktibilitas dan \textit {Open Science}:}{76}{subsubsection.3.2.7}%
+\contentsline {paragraph}{Transfer Pengetahuan kepada Praktisi:}{76}{subsubsection.3.2.7}%
+\contentsline {section}{BAB IV PERANCANGAN DAN IMPLEMENTASI SISTEM}{78}{subsubsection.3.2.7}%
+\contentsline {subsection}{\numberline {IV.3}Rancangan Arsitektur}{78}{subsection.4.3}%
+\contentsline {subsubsection}{\numberline {IV.3.1}Pemilihan Arsitektur Baseline dan Hipotesis Inovasi}{79}{subsubsection.4.3.1}%
+\contentsline {subsubsection}{\numberline {IV.3.2}Komponen Utama dan Interaksi Arsitektur}{79}{subsubsection.4.3.2}%
+\contentsline {subsubsection}{\numberline {IV.3.3}Arsitektur Generator: U-Net Enhanced dengan Blok Residual}{81}{subsubsection.4.3.3}%
+\contentsline {paragraph}{Spesifikasi Arsitektur Generator}{82}{subsubsection.4.3.3}%
+\contentsline {paragraph}{Rasional Desain dan Keunggulan Teknis}{85}{figure.caption.22}%
+\contentsline {subsubsection}{\numberline {IV.3.4}Integrasi Frozen Recognizer HTR}{85}{subsubsection.4.3.4}%
+\contentsline {paragraph}{Mekanisme Pembekuan dan Pencegahan Kompetisi Gradien}{86}{subsubsection.4.3.4}%
+\contentsline {paragraph}{Analisis Komparatif Strategi Integrasi Pengenal HTR}{86}{subsubsection.4.3.4}%
+\contentsline {paragraph}{Justifikasi Pemilihan Strategi Pengenal Beku}{86}{subsubsection.4.3.4}%
+\contentsline {subsubsection}{\numberline {IV.3.5}Ekstraksi Fitur dan Perhitungan Loss}{88}{subsubsection.4.3.5}%
+\contentsline {subsubsection}{\numberline {IV.3.6}Diskriminator Dual-Modal Enhanced}{89}{subsubsection.4.3.6}%
+\contentsline {paragraph}{Spesifikasi Arsitektur Diskriminator}{90}{subsubsection.4.3.6}%
+\contentsline {paragraph}{Cabang Citra (CNN dengan Atensi Spasial)}{91}{figure.caption.25}%
+\contentsline {paragraph}{Cabang Teks (BiLSTM dengan Atensi-Mandiri)}{92}{equation.4.11}%
+\contentsline {paragraph}{Fusi Cross-Modal}{92}{equation.4.13}%
+\contentsline {paragraph}{Konfigurasi Hyperparameter}{93}{equation.4.17}%
+\contentsline {paragraph}{Motivasi dan Rasional Desain}{93}{equation.4.17}%
+\contentsline {subsubsection}{\numberline {IV.3.7}Fungsi Loss Multikomponen}{95}{subsubsection.4.3.7}%
+\contentsline {paragraph}{Adversarial Loss}{95}{equation.4.18}%
+\contentsline {paragraph}{Pixel Reconstruction Loss}{96}{equation.4.20}%
+\contentsline {paragraph}{Perceptual Loss}{96}{equation.4.21}%
+\contentsline {paragraph}{CTC Loss}{96}{equation.4.22}%
+\contentsline {paragraph}{Recognition Feature Loss}{97}{equation.4.22}%
+\contentsline {subsection}{\numberline {IV.4}Lingkungan Eksperimen dan Spesifikasi Komputasi}{100}{subsection.4.4}%
+\contentsline {paragraph}{Infrastruktur Software dan Protokol Reproduktibilitas}{100}{table.caption.27}%
+\contentsline {subsection}{\numberline {IV.5}Pengaturan Eksperimental}{101}{subsection.4.5}%
+\contentsline {subsubsection}{\numberline {IV.5.1}Dataset Semi-Sintetis Realistis untuk Evaluasi Kuantitatif}{102}{subsubsection.4.5.1}%
+\contentsline {subsubsection}{\numberline {IV.5.2}Dataset Dokumen Historis Nyata (ANRI)}{105}{subsubsection.4.5.2}%
+\contentsline {subsection}{\numberline {IV.6}Implementasi Pipeline Data dan Training Framework}{106}{subsection.4.6}%
+\contentsline {subsubsection}{\numberline {IV.6.1}Pipeline Pemrosesan Data}{106}{subsubsection.4.6.1}%
+\contentsline {subsection}{\numberline {IV.7}Strategi dan Protokol Training}{107}{subsection.4.7}%
+\contentsline {subsubsection}{\numberline {IV.7.1}Curriculum Learning dan Protokol Optimisasi}{107}{subsubsection.4.7.1}%
+\contentsline {paragraph}{Prosedur Pelatihan \textit {Adversarial} Bergantian}{107}{Item.57}%
+\contentsline {paragraph}{Konfigurasi Pelatihan}{108}{Item.59}%
+\contentsline {subsubsection}{\numberline {IV.7.2}Analisis Stabilitas dan Regularisasi}{109}{subsubsection.4.7.2}%
+\contentsline {paragraph}{Implementasi dan Validasi Mode Diskriminator}{112}{figure.caption.30}%
+\contentsline {paragraph}{Kebijakan Presisi Numerik}{112}{figure.caption.30}%
+\contentsline {subsection}{\numberline {IV.8}Metode Baseline dan Strategi Evaluasi}{113}{subsection.4.8}%
+\contentsline {subsubsection}{\numberline {IV.8.1}Metode Klasik untuk Perbandingan Kuantitatif}{113}{subsubsection.4.8.1}%
+\contentsline {paragraph}{Justifikasi Pemilihan \textit {Baseline} Klasik}{114}{Item.65}%
+\contentsline {subsubsection}{\numberline {IV.8.2}Metode Deep Learning Terkini (Konteks Penelitian)}{115}{subsubsection.4.8.2}%
+\contentsline {subsubsection}{\numberline {IV.8.3}Studi Ablasi sebagai Validasi Komponen}{115}{subsubsection.4.8.3}%
+\contentsline {subsection}{\numberline {IV.9}Konfigurasi Metrik Evaluasi dan Protokol Eksperimen}{116}{subsection.4.9}%
+\contentsline {subsubsection}{\numberline {IV.9.1}Metrik Kualitas Visual}{116}{subsubsection.4.9.1}%
+\contentsline {subsubsection}{\numberline {IV.9.2}Metrik Keterbacaan Teks}{117}{subsubsection.4.9.2}%
+\contentsline {subsubsection}{\numberline {IV.9.3}Klarifikasi Baseline CER Recognizer}{117}{subsubsection.4.9.3}%
+\contentsline {subsubsection}{\numberline {IV.9.4}Protokol Pelaporan Statistik dan Evaluasi}{118}{subsubsection.4.9.4}%
+\contentsline {subsubsection}{\numberline {IV.9.5}Metrik Diagnostik (Training Monitoring)}{119}{subsubsection.4.9.5}%
+\contentsline {subsubsection}{\numberline {IV.9.6}Spesifikasi Eksperimen Ablasi}{119}{subsubsection.4.9.6}%
+\contentsline {section}{BAB V HASIL DAN PEMBAHASAN}{117}{table.caption.33}%
+\contentsline {subsection}{\numberline {V.1}Hasil dan Pembahasan}{117}{subsection.5.1}%
+\contentsline {subsection}{\numberline {V.2}Hasil Kuantitatif pada Set Uji Semi-Sintetis Realistis}{117}{subsection.5.2}%
+\contentsline {subsubsection}{\numberline {V.2.1}Performa Model pada Set Uji}{118}{subsubsection.5.2.1}%
+\contentsline {paragraph}{1. Perbandingan dengan Metode Klasik}{118}{table.caption.34}%
+\contentsline {paragraph}{2. Peningkatan Substansial pada Metrik HTR}{118}{table.caption.34}%
+\contentsline {paragraph}{3. Mendekati Batas Atas Teoretis}{119}{table.caption.34}%
+\contentsline {paragraph}{4. Peningkatan Kuantitatif Substansial pada Metrik Visual}{119}{table.caption.34}%
+\contentsline {paragraph}{5. Keterbatasan Metode Klasik pada Degradasi Kompleks}{119}{table.caption.34}%
+\contentsline {paragraph}{6. Varians dan Stabilitas Performa}{119}{table.caption.34}%
+\contentsline {subsubsection}{\numberline {V.2.2}Trajektori Pelatihan dan Konvergensi}{119}{subsubsection.5.2.2}%
+\contentsline {paragraph}{1. Konvergensi Bertahap pada Metrik Visual}{120}{figure.caption.35}%
+\contentsline {paragraph}{2. Stabilitas Interval Kepercayaan}{120}{figure.caption.35}%
+\contentsline {paragraph}{3. Pemilihan Model Berbasis Kriteria Gabungan}{121}{figure.caption.35}%
+\contentsline {paragraph}{4. Generalisasi dari Validasi ke Uji}{121}{figure.caption.35}%
+\contentsline {subsubsection}{\numberline {V.2.3}Perbandingan Visual dengan Metode Baseline}{121}{subsubsection.5.2.3}%
+\contentsline {paragraph}{1. Kualitas Restorasi}{122}{figure.caption.36}%
+\contentsline {paragraph}{2. Korelasi Visual-HTR}{122}{figure.caption.36}%
+\contentsline {paragraph}{3. Konsistensi Performa}{122}{figure.caption.36}%
+\contentsline {paragraph}{4. Pelestarian Autentisitas}{122}{figure.caption.36}%
+\contentsline {subsection}{\numberline {V.3}Hasil Analisis Kualitatif}{122}{subsection.5.3}%
+\contentsline {subsubsection}{\numberline {V.3.1}Analisis Koherensi Visual-Tekstual}{122}{subsubsection.5.3.1}%
+\contentsline {paragraph}{1. Analisis Korelasi PSNR vs CER Pascarestaorasi}{122}{subsubsection.5.3.1}%
+\contentsline {paragraph}{2. Korelasi SNR terhadap Peningkatan CER}{123}{subsubsection.5.3.1}%
+\contentsline {paragraph}{3. Korelasi SSIM vs CER}{123}{subsubsection.5.3.1}%
+\contentsline {paragraph}{4. Peran Diskriminator \textit {Dual-Modal} dalam Koherensi}{123}{subsubsection.5.3.1}%
+\contentsline {subsection}{\numberline {V.4}Analisis Komparatif dengan Metode State-of-the-Art}{124}{subsection.5.4}%
+\contentsline {subsubsection}{\numberline {V.4.1}Perbandingan Berdasarkan Publikasi}{124}{subsubsection.5.4.1}%
+\contentsline {subsubsection}{\numberline {V.4.2}Perbandingan Visual dengan Metode Baseline Klasik}{125}{subsubsection.5.4.2}%
+\contentsline {subsection}{\numberline {V.5}Studi Ablasi Sistematis}{125}{subsection.5.5}%
+\contentsline {subsubsection}{\numberline {V.5.1}Desain Eksperimen Ablasi}{125}{subsubsection.5.5.1}%
+\contentsline {subsubsection}{\numberline {V.5.2}Konfigurasi Training}{126}{subsubsection.5.5.2}%
+\contentsline {subsubsection}{\numberline {V.5.3}Hasil Ablasi Komponen Loss Function}{126}{subsubsection.5.5.3}%
+\contentsline {paragraph}{Adversarial Loss (Eksperimen 02)}{127}{table.caption.38}%
+\contentsline {paragraph}{Perceptual Loss (Eksperimen 03)}{127}{table.caption.38}%
+\contentsline {paragraph}{CTC Loss (Eksperimen 04)}{127}{table.caption.38}%
+\contentsline {paragraph}{Recognition Feature Loss (Eksperimen 05)}{127}{table.caption.38}%
+\contentsline {subsubsection}{\numberline {V.5.4}Kontribusi Diskriminator Dual-Modal}{128}{subsubsection.5.5.4}%
+\contentsline {paragraph}{1. Protokol Studi Ablasi}{128}{subsubsection.5.5.4}%
+\contentsline {paragraph}{2. Hasil Perbandingan Kuantitatif}{129}{subsubsection.5.5.4}%
+\contentsline {paragraph}{3. Analisis Akar Permasalahan: \textit {Limitation} Implementasi vs \textit {Limitation} Inherent}{129}{table.caption.39}%
+\contentsline {paragraph}{4. Interpretasi Ilmiah dan Wawasan Protokol Pelatihan}{130}{table.caption.39}%
+\contentsline {paragraph}{5. Implikasi untuk Desain Sistem GAN-HTR}{130}{table.caption.39}%
+\contentsline {subsubsection}{\numberline {V.5.5}Kontribusi Frozen Recognizer dengan Integrasi CTC Loss}{131}{subsubsection.5.5.5}%
+\contentsline {paragraph}{1. Analisis Stabilitas Gradien Selama Pelatihan}{131}{subsubsection.5.5.5}%
+\contentsline {paragraph}{2. Performa Keterbacaan Teks yang Dihasilkan}{133}{figure.caption.41}%
+\contentsline {paragraph}{3. Efisiensi Komputasi dalam Proses Optimisasi}{136}{figure.caption.44}%
+\contentsline {paragraph}{4. Ringkasan Temuan Kontribusi Frozen Recognizer}{137}{figure.caption.46}%
+\contentsline {subsubsection}{\numberline {V.5.6}Kontribusi Curriculum Learning}{140}{subsubsection.5.5.6}%
+\contentsline {paragraph}{1. Temuan Kuantitatif yang Tidak Terduga}{141}{table.caption.48}%
+\contentsline {paragraph}{2. Implikasi untuk Desain Sistem}{141}{Item.84}%
+\contentsline {paragraph}{3. Analisis Komponen Loss yang Mendalam}{142}{Item.87}%
+\contentsline {paragraph}{4. Analisis Statististik dan Signifikansi}{144}{Item.91}%
+\contentsline {paragraph}{5. Analisis Fasa Curriculum Learning yang Mendalam}{145}{Item.95}%
+\contentsline {paragraph}{6. Analisis Scientific Lanjutan}{146}{Item.98}%
+\contentsline {paragraph}{7. Rekomendasi Implementasi Berbasis Evidence}{147}{Item.102}%
+\contentsline {subsubsection}{\numberline {V.5.7}Konfigurasi Loss Weights dan Metode Penentuan}{148}{subsubsection.5.5.7}%
+\contentsline {subsubsection}{\numberline {V.5.8}Analisis Pengaruh Komponen Loss}{154}{subsubsection.5.5.8}%
+\contentsline {subsubsection}{\numberline {V.5.9}Analisis Sensitivitas Per Komponen}{155}{subsubsection.5.5.9}%
+\contentsline {paragraph}{V.4.6.1 Pixel Loss Weight - Dampak Signifikan Terhadap PSNR}{155}{subsubsection.5.5.9}%
+\contentsline {paragraph}{V.4.6.2 CTC Loss Weight - Menjawab Pertanyaan Penelitian Kritis}{155}{table.caption.58}%
+\contentsline {paragraph}{V.4.6.3 Recognition Feature Loss - Resolusi Kontradiksi dengan Paper Baseline}{156}{table.caption.59}%
+\contentsline {paragraph}{V.4.6.4 Adversarial dan Perceptual Loss - Stabilitas Konfigurasi}{156}{table.caption.60}%
+\contentsline {subsection}{\numberline {V.6}Evaluasi Kualitatif pada Dokumen Historis Nyata}{159}{subsection.5.6}%
+\contentsline {subsubsection}{\numberline {V.6.1}Dataset dan Metodologi Evaluasi}{159}{subsubsection.5.6.1}%
+\contentsline {subsubsection}{\numberline {V.6.2}Hasil Kualitatif dan Observasi Sistematis}{160}{subsubsection.5.6.2}%
+\contentsline {subsubsection}{\numberline {V.6.3}Analisis Performa Berdasarkan Kontras Masukan}{161}{subsubsection.5.6.3}%
+\contentsline {subsubsection}{\numberline {V.6.4}Validasi Ahli Paleografi}{163}{subsubsection.5.6.4}%
+\contentsline {subsubsection}{\numberline {V.6.5}Analisis Korelasi Tingkat Degradasi}{165}{subsubsection.5.6.5}%
+\contentsline {paragraph}{SNR terhadap Peningkatan CER (Panel a)}{165}{figure.caption.65}%
+\contentsline {paragraph}{PSNR terhadap CER Terestorasi (Panel b)}{166}{figure.caption.65}%
+\contentsline {paragraph}{SSIM terhadap CER (Panel c)}{167}{figure.caption.65}%
+\contentsline {paragraph}{CER Sebelum vs Sesudah (Panel d)}{167}{figure.caption.65}%
+\contentsline {subsubsection}{\numberline {V.6.6}Analisis \textit {Domain Shift}: Semi-Sintetis terhadap Nyata}{168}{subsubsection.5.6.6}%
+\contentsline {subsubsection}{\numberline {V.6.7}Keterbatasan dan Pekerjaan Mendatang}{169}{subsubsection.5.6.7}%
+\contentsline {subsection}{\numberline {V.7}Pengujian Hipotesis Penelitian}{170}{subsection.5.7}%
+\contentsline {subsubsection}{\numberline {V.7.1}Perumusan Ulang Hipotesis}{170}{subsubsection.5.7.1}%
+\contentsline {subsubsection}{\numberline {V.7.2}Evaluasi Empiris Terhadap Komponen Hipotesis}{171}{subsubsection.5.7.2}%
+\contentsline {paragraph}{Komponen 1: Kontribusi Diskriminator Dual-Modal}{171}{subsubsection.5.7.2}%
+\contentsline {paragraph}{Komponen 2: Efektivitas Strategi Frozen Recognizer}{171}{subsubsection.5.7.2}%
+\contentsline {paragraph}{Komponen 3: Kontribusi Curriculum Learning dan Optimasi Multi-Objektif}{172}{subsubsection.5.7.2}%
+\contentsline {paragraph}{Komponen 4: Peningkatan Signifikan Keterbacaan sambil Mempertahankan Kualitas Visual}{172}{subsubsection.5.7.2}%
+\contentsline {subsubsection}{\numberline {V.7.3}Uji Statistik untuk Validasi Hipotesis}{173}{subsubsection.5.7.3}%
+\contentsline {subsubsection}{\numberline {V.7.4}Kesimpulan Pengujian Hipotesis}{174}{subsubsection.5.7.4}%
+\contentsline {paragraph}{a) Interpretasi Keseluruhan}{175}{table.caption.67}%
+\contentsline {paragraph}{b) Batasan Interpretasi}{175}{Item.172}%
+\contentsline {paragraph}{c) Implikasi untuk Pertanyaan Penelitian}{176}{Item.175}%
+\contentsline {subsection}{\numberline {V.8}Pembahasan Mendalam}{176}{subsection.5.8}%
+\contentsline {subsubsection}{\numberline {V.8.1}Interpretasi Temuan Utama}{176}{subsubsection.5.8.1}%
+\contentsline {paragraph}{a) Sintesis Temuan Utama}{176}{subsubsection.5.8.1}%
+\contentsline {paragraph}{b) Mekanisme \textit {Frozen Recognizer} dalam Mengatasi Kesenjangan Visual-HTR}{177}{subsubsection.5.8.1}%
+\contentsline {paragraph}{c) Temuan Diskriminator \textit {Dual-Modal}: \textit {Limitation} Implementasi vs Konseptual}{177}{subsubsection.5.8.1}%
+\contentsline {paragraph}{d) Kesesuaian dengan Teori dan Literatur}{177}{subsubsection.5.8.1}%
+\contentsline {paragraph}{e) Implikasi Teoretis: \textit {Multi-Objective} GAN Optimization}{178}{subsubsection.5.8.1}%
+\contentsline {subsubsection}{\numberline {V.8.2}Analisis Kegagalan dan Limitasi}{178}{subsubsection.5.8.2}%
+\contentsline {paragraph}{1. Distribusi Kuantitatif Pola Kegagalan}{178}{subsubsection.5.8.2}%
+\contentsline {paragraph}{2. Analisis Kategori Kegagalan Dominan: Ligatur Paleografi}{179}{figure.caption.69}%
+\contentsline {paragraph}{3. Kegagalan Ekstrem: Kasus Jarang dengan CER $\approx $ 100\%}{180}{Item.178}%
+\contentsline {paragraph}{4. Korelasi dengan \textit {Baseline} Citra Bersih}{181}{Item.178}%
+\contentsline {paragraph}{5. Implikasi untuk Limitasi Metodologi}{181}{Item.178}%
+\contentsline {paragraph}{6. Kesimpulan Analisis Kegagalan}{182}{Item.178}%
+\contentsline {paragraph}{7. Implikasi untuk Preservasi Digital Arsip}{182}{Item.182}%
+\contentsline {subsubsection}{\numberline {V.8.3}Komparasi dengan Baseline Penelitian}{182}{subsubsection.5.8.3}%
+\contentsline {subsubsection}{\numberline {V.8.4}Kontribusi Teoritis yang Tervalidasi}{182}{subsubsection.5.8.4}%
+\contentsline {paragraph}{a) Validasi Kontribusi Diskriminator \textit {Dual-Modal}}{182}{subsubsection.5.8.4}%
+\contentsline {paragraph}{b) Validasi Strategi \textit {Frozen Recognizer}}{183}{subsubsection.5.8.4}%
+\contentsline {paragraph}{c) Validasi Efektivitas \textit {Curriculum Learning}}{183}{subsubsection.5.8.4}%
+\contentsline {subsubsection}{\numberline {V.8.5}Kontribusi Praktis dan Posisi dalam \textit {State-of-the-Art}}{184}{subsubsection.5.8.5}%
+\contentsline {paragraph}{a) Kontribusi Praktis yang Tervalidasi}{184}{subsubsection.5.8.5}%
+\contentsline {paragraph}{b) Posisi dalam \textit {Landscape State-of-the-Art}}{184}{Item.185}%
+\contentsline {subsection}{\numberline {V.9}Ringkasan Temuan}{185}{subsection.5.9}%
+\contentsline {paragraph}{Performa Sistem}{185}{subsection.5.9}%
+\contentsline {paragraph}{Validasi Komponen Arsitektur}{185}{subsection.5.9}%
+\contentsline {paragraph}{Implikasi dan Limitasi}{185}{subsection.5.9}%
+\contentsline {section}{BAB VI KESIMPULAN DAN SARAN}{187}{subsection.5.9}%
+\contentsline {subsection}{\numberline {VI.1}Kesimpulan}{187}{subsection.6.1}%
+\contentsline {subsection}{\numberline {VI.2}Keterbatasan}{187}{subsection.6.2}%
+\contentsline {subsection}{\numberline {VI.3}Arah Penelitian Mendatang}{188}{subsection.6.3}%
+\contentsline {subsubsection}{\numberline {VI.3.1}Rekomendasi Lembaga Kearsipan}{188}{subsubsection.6.3.1}%
+\contentsline {subsection}{\numberline {VI.4}Penutup}{189}{subsection.6.4}%
+\contentsline {section}{DAFTAR PUSTAKA}{191}{subsection.6.4}%

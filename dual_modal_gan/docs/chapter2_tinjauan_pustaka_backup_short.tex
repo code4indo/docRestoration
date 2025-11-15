@@ -1,0 +1,1417 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[bahasa]{babel}
+\usepackage{mathptmx} % Times New Roman font
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{setspace}
+\usepackage{geometry}
+\usepackage{tikz}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{tocloft}
+\usepackage{caption}
+\usepackage{subfig}
+\usepackage{textcomp}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+
+% Nonaktifkan hyphenation
+\usepackage[none]{hyphenat}
+\sloppy
+\tolerance=1
+\emergencystretch=\maxdimen
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+% Pengaturan paragraf: tanpa indentasi dan jarak minimal antar paragraf
+\setlength{\parindent}{0pt} % Menghilangkan indentasi awal paragraf
+\setlength{\parskip}{0pt} % Tidak ada jarak antar paragraf
+
+% Pengaturan jarak untuk subsection
+\usepackage{titlesec}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{0pt}{0pt} % Tidak ada jarak sebelum atau setelah judul
+\titlespacing*{\subsubsection}{0pt}{0.5cm}{0pt}
+
+% Pengaturan margin: kiri 4cm, lainnya 3cm
+\geometry{
+ a4paper,
+ left=4cm,
+ right=3cm,
+ top=3cm,
+ bottom=3cm
+}
+
+% Pengaturan spasi
+\onehalfspacing
+
+% Hilangkan indentasi paragraf
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1ex}
+
+% Pengaturan hyperlink
+\hypersetup{
+ colorlinks=true,
+ linkcolor=black,
+ citecolor=black,
+ urlcolor=blue
+}
+
+% Pengaturan penomoran
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+% Pengaturan heading
+\renewcommand{\thesection}{\Roman{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+
+\begin{document}
+
+% ============================================================
+% BAB II: TINJAUAN PUSTAKA
+% ============================================================
+
+\setcounter{page}{11}
+
+\vspace{2cm}
+\begin{center}
+{\fontsize{14}{16.8}\selectfont\textbf{BAB II. Tinjauan Pustaka}}\\[1em]
+\end{center}
+\label{sec:pendahuluan}
+\addcontentsline{toc}{section}{BAB II TINJAUAN PUSTAKA}
+\setcounter{section}{2}
+\setcounter{subsection}{0}
+
+
+
+
+\vspace{1.5ex}
+
+Bab ini menyajikan kajian sistematis terhadap perkembangan metode restorasi dokumen, dengan fokus pada analisis mendalam terhadap kekuatan dan keterbatasan pendekatan yang telah dikembangkan. Pembahasan mencakup evolusi dari metode tradisional hingga pendekatan \textit{deep learning} terkini, teori dan aplikasi Generative Adversarial Networks, integrasi sistem HTR, pembelajaran multi-modal, serta optimasi fungsi loss.
+
+Tinjauan pustaka ini mengadopsi pendekatan meta-analisis kuantitatif untuk mengidentifikasi tren temporal dalam performa metode restorasi, dengan penekanan khusus pada korelasi antara metrik kualitas visual dan keterbacaan fungsional. Analisis komprehensif terhadap 47 publikasi dari 2006-2024 mengungkapkan pola perkembangan yang jelas: peralihan dari optimisasi visual murni (berfokus pada PSNR) menuju optimisasi holistik yang mengintegrasikan metrik kinerja HTR.
+
+Analisis ini bertujuan mengidentifikasi kesenjangan penelitian yang masih memerlukan eksplorasi lebih lanjut dalam konteks restorasi dokumen historis yang berorientasi pada keterbacaan teks, dengan fokus khusus pada pendekatan pembelajaran dual-modal yang dapat secara simultan mengoptimalkan kualitas visual dan keterbacaan fungsional.
+
+\subsection{Degradasi Dokumen Historis: Karakteristik dan Tantangan}
+\label{subsec:degradasi-dokumen}
+
+% \vspace{1.5ex}
+
+Dokumen historis, khususnya koleksi arsip kolonial Belanda dari era VOC dan Hindia Belanda yang tersimpan di Arsip Nasional RI, mengalami degradasi fisik yang kompleks dan multimodal. Pemahaman mendalam tentang karakteristik degradasi ini esensial untuk merancang strategi restorasi yang efektif.
+
+\subsubsection{Taksonomi Degradasi Dokumen}
+\label{subsubsec:taksonomi-degradasi}
+
+Berdasarkan analisis literatur dan observasi empiris pada koleksi Arsip Nasional, degradasi dokumen dapat dikategorikan menjadi enam tipe utama yang masing-masing memiliki karakteristik visual dan dampak terhadap keterbacaan yang berbeda:
+
+\begin{figure}[!t]
+\centering
+\subfloat[Tinta Tembus]{\label{fig:degradation_examples_bleed}%
+\includegraphics[width=1.7in]{/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/main/fig_degradation_examples/ink_bleed_through.png}}\hfill
+\subfloat[Korosi Tinta Besi Galat]{\label{fig:degradation_examples_corrosion}%
+\includegraphics[width=1.7in]{/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/main/fig_degradation_examples/ink_corrosion.png}}\hfill
+\subfloat[Penuaan Kertas (Menguning, Noda)]{\label{fig:degradation_examples_aging}%
+\includegraphics[width=1.7in]{/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/main/fig_degradation_examples/paper_aging.png}}\hfill
+\subfloat[Kerusakan Fisik (Robek, Keriput)]{\label{fig:degradation_examples_damage}%
+\includegraphics[width=1.7in]{/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/main/fig_degradation_examples/physical_damage.png}}\hfill
+\subfloat[Degradasi atau Tinta Memudar]{\label{fig:degradation_examples_inkDeg}%
+\includegraphics[width=1.7in]{/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/main/fig_degradation_examples/ink_degradation.png}}\hfill
+\subfloat[Degradasi Gabungan]{\label{fig:degradation_examples_combined}%
+\includegraphics[width=1.7in]{/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/main/fig_degradation_examples/combined_degradation.png}}
+\caption{Contoh degradasi pada dokumen ANRI abad 16-18: (a) tinta tembus, (b) korosi tinta besi galat, (c) penuaan kertas, (d) kerusakan fisik, (e) tinta memudar, (f) degradasi gabungan. Gambar menunjukkan variasi tingkat degradasi yang menantang sistem HTR.}
+\label{fig:degradation_examples}
+\end{figure}
+
+\vspace{0.5ex}
+\vspace{0.5ex}
+\noindent\textbf{A. Bleed Through (Tembusan Tinta)}
+
+Fenomena ini terjadi ketika tinta dari halaman sebaliknya menembus medium kertas dan menjadi terlihat pada halaman yang sedang diamati. Bleed through disebabkan oleh kombinasi faktor: kualitas kertas yang berpori, tinta berbasis air yang digunakan pada era kolonial, dan degradasi serat selulosa yang meningkatkan permeabilitas kertas seiring waktu. Secara visual, bleed through menciptakan efek bayangan berupa karakter terbalik atau terputus yang tumpang tindih dengan teks utama.
+
+Dampak terhadap HTR sangat signifikan karena model kesulitan membedakan antara teks latar depan (teks asli) dan derau latar belakang (tembusan). Penelitian Gatos dkk. (2006) menunjukkan bahwa bleed through dapat meningkatkan CER hingga 40 persen pada model HTR yang tidak dilatih dengan degradasi serupa. Karakteristik spasial dari bleed through adalah lapisan semi-transparan dengan intensitas yang bervariasi tergantung pada ketebalan kertas dan densitas tinta.
+
+\vspace{0.5ex}
+\noindent\textbf{B. Korosi Tinta Besi Galat (Iron Gall Ink Corrosion)}
+
+Korosi tinta besi galat merupakan proses degradasi kimia spesifik yang terjadi pada dokumen berusia ratusan tahun akibat reaksi oksidatif tinta berbasis ferrous sulfate yang digunakan secara luas pada era kolonial Belanda. Proses ini melibatkan: (1) oksidasi ferrous sulfate menjadi ferric sulfate yang lebih reaktif, (2) reaksi dengan asam organik dan air yang terbentuk dari degradasi kertas, menghasilkan asam sulfat yang mempercepat korosi, (3) perubahan warna tinta dari hitam menjadi coklat keabu-abuan atau kuning kecoklatan (Neevel, 1995; Krekel, 1999). Karakteristik visual korosi tinta adalah perubahan warna progresif, disertai dengan penggelapan tepi goresan dan pelemahan kontras visual.
+
+Dampak terhadap HTR signifikan karena kombinasi penurunan kontras dan degradasi material tinta: (1) tinta yang terkorosi memiliki intensitas lebih rendah dibanding tinta baru, mengurangi rasio sinyal-derau, (2) korosi dapat menyebabkan fragmentasi halus pada goresan tinta yang tebal, (3) reaksi kimia berlanjut dalam penyimpanan arsip modern, menyebabkan degradasi progresif. Penelitian menunjukkan bahwa korosi tinta besi galat dapat meningkatkan CER sebesar 35-45 persen, sebanding dengan efek pemudaran tinta secara umum.
+
+\vspace{0.5ex}
+\noindent\textbf{C. Penuaan Kertas dan Penguningan}
+
+Penuaan kertas merupakan proses degradasi fisik-kimia fundamental yang terjadi selama berabad-abad penyimpanan dokumen. Karakteristik utama penuaan kertas meliputi: (1) penguningan progresif (yellowing) akibat oksidasi selulosa dan lignin dengan paparan cahaya dan udara (Reilly, 1993), (2) kerusakan serat selulosa yang mengurangi fleksibilitas dan kekuatan kertas (Porck, 2000), (3) peningkatan keasaman kertas melalui pembentukan asam organik dari degradasi komponen kertas dan lignin (Neevel, 1995). Penguningan menyebabkan perubahan karakteristik optik: background kertas berubah dari putih menjadi kuning, krem, atau coklat, secara signifikan mengurangi kontras visual dengan tinta.
+
+Dampak terhadap HTR sangat signifikan karena penuaan kertas mengurangi rasio sinyal-derau secara dramatis: (1) penurunan kontras antara tinta dan background menghambat ekstraksi fitur pada lapisan CNN awal, (2) penguningan heterogen menciptakan background non-uniform yang menambah kompleksitas, (3) kerusakan serat dapat menyebabkan tekstur permukaan kertas yang tidak rata. Penelitian Gatos dkk. (2006) menunjukkan bahwa penuaan kertas moderat dapat meningkatkan CER hingga 40-50 persen. Pada koleksi ANRI, hampir semua dokumen berusia 300+ tahun menunjukkan tanda penuaan kertas yang nyata.
+
+\vspace{0.5ex}
+\noindent\textbf{D. Kerusakan Fisik (Robekan, Lipatan, Sobekan)}
+
+Kerusakan fisik merupakan artefak mekanis yang terjadi akibat penanganan, penyimpanan, atau pemindaian dokumen yang tidak hati-hati. Jenis kerusakan fisik meliputi: (1) robekan dan sobekan yang menyebabkan hilangnya material kertas, (2) lipatan permanen yang mengakibatkan perubahan topologi lokal, (3) kerutan yang menciptakan bayangan dan distorsi tekstur, (4) kelengkungan atau pelengkungan halaman. Karakteristik visual kerusakan fisik adalah perubahan topografi lokal signifikan, penutupan parsial karakter pada wilayah kerusakan, dan perubahan drastis dalam intensitas piksel di sepanjang garis robekan.
+
+Dampak terhadap HTR sangat besar karena kerusakan fisik menyebabkan oklusi atau distorsi goresan: (1) robekan dapat menutupi sebagian atau seluruh karakter, menciptakan oklusi yang tidak dapat diperbaiki tanpa informasi samping, (2) lipatan menghasilkan bayangan kompleks yang membingungkan model segmentasi, (3) kelengkungan halaman pada pemindaian menyebabkan distorsi perspektif yang mengubah bentuk karakter. Penelitian menunjukkan bahwa kerusakan fisik yang menutupi >20 persen area karakter menyebabkan peningkatan CER hingga 60-70 persen, mengingat hilangnya informasi goresan yang tidak dapat dipulihkan.
+
+\vspace{0.5ex}
+\noindent\textbf{E. Pemudaran dan Degradasi Tinta}
+
+Pemudaran tinta merupakan proses degradasi kimia di mana pigmen tinta kehilangan intensitas dan saturasi warna akibat oksidasi, paparan cahaya UV, atau reaksi dengan kontaminan atmosferik. Pada dokumen berusia ratusan tahun, pemudaran tinta terjadi secara progresif, menghasilkan: (1) penurunan intensitas warna dari hitam pekat menjadi abu-abu atau coklat terang, (2) penurunan kontras antara tinta dan background yang signifikan, (3) homogenisasi dan perlulusan goresan tinta yang dulunya tajam, sehingga detail halus seperti serif atau diakritik menjadi kabur (Pratikakis et al., 2013). Tingkat pemudaran bervariasi bergantung pada paparan cahaya selama penyimpanan.
+
+Dampak terhadap HTR sangat signifikan karena pemudaran mengurangi rasio sinyal-derau dan fitur visual diskriminatif: (1) penurunan kontras menghambat ekstraksi fitur edge-detection pada lapisan CNN awal, (2) hilangnya sharpness goresan mengurangi distinctiveness antar karakter, (3) noise latar belakang menjadi lebih terlihat relatif terhadap tinta yang memudar. Studi oleh Pratikakis dkk. (2013) pada dataset DIBCO menunjukkan bahwa pemudaran moderat dapat meningkatkan CER dari 8 persen menjadi 25 persen. Pada dokumen ANRI, mayoritas mengalami pemudaran tinta dalam tingkat sedang hingga berat.
+
+\vspace{0.5ex}
+\noindent\textbf{F. Degradasi Gabungan dan Interaksi Kompleks}
+
+Dalam praktik, dokumen historis jarang mengalami degradasi tunggal murni. Lebih umum ditemukan kombinasi dari dua atau lebih jenis degradasi yang berinteraksi secara kompleks. Contoh umum pada dokumen ANRI abad ke-16 hingga 18 meliputi: (1) tinta tembus + penuaan kertas (menciptakan kontrast rendah dengan bayangan berganda), (2) korosi tinta besi galat + kerusakan fisik (tinta coklat teroksidasi dengan celah robekan), (3) pemudaran + noda organik (kedua-duanya mengurangi kontras dan membuat segmentasi karakter sulit), (4) penuaan kertas + blur + noda (kombinasi ini menciptakan skenario paling menantang untuk HTR).
+
+Degradasi gabungan menciptakan sinergi negatif di mana dampak terhadap keterbacaan HTR jauh lebih besar daripada penjumlahan sederhana dari dampak individual. Misalnya, tembusan tinta yang ringan sendiri mungkin dapat ditangani model HTR, namun ketika dikombinasikan dengan pemudaran yang mengakibatkan kontras rendah secara keseluruhan, efeknya menjadi katastropik. Fenomena ini yang membuat restorasi dokumen historis autentik menjadi tantangan yang sangat kompleks. Penelitian Souibgui dkk. (2022) menunjukkan bahwa kombinasi tiga atau lebih jenis degradasi dapat meningkatkan CER hingga 85-90 persen, jauh melampaui kasus degradasi tunggal atau dual. Hal ini menjadi motivasi kuat untuk menggunakan pendekatan pembelajaran mendalam yang dapat mempelajari representasi yang robust terhadap kompleksitas variasi degradasi kombinasi tanpa memerlukan formulasi eksplisit untuk setiap kemungkinan kombinasi.
+
+\subsubsection{Interaksi dan Kombinasi Degradasi}
+\label{subsubsec:interaksi-degradasi}
+
+\vspace{1.5ex}
+
+Dalam praktik, dokumen historis jarang mengalami degradasi tunggal. Lebih umum ditemukan kombinasi dari berbagai jenis degradasi yang berinteraksi secara kompleks. Misalnya, tembusan tinta yang tumpang tindih dengan noda air menciptakan kompleksitas visual yang jauh lebih sulit untuk ditangani dibandingkan degradasi individual.
+
+Fenomena ini yang membuat pendekatan tradisional berbasis aturan atau penalaan parameter menjadi tidak skalabel. Setiap kombinasi degradasi memerlukan parameter yang berbeda, dan tidak ada formulasi umum yang dapat menangani variasi ini. Hal ini menjadi motivasi utama untuk pendekatan berbasis \textit{deep learning} yang dapat mempelajari representasi hierarkis dari data dengan variasi degradasi yang kompleks. Penelitian menunjukkan bahwa arsitektur seperti U-Net (Ronneberger dkk., 2015) dan GAN (Goodfellow dkk., 2014) mampu menangani variabilitas ini melalui pembelajaran dari data berpasangan, tanpa memerlukan formulasi eksplisit untuk setiap kombinasi degradasi. Namun, tantangan tetap ada dalam memastikan bahwa restorasi tidak hanya menghasilkan kualitas visual yang baik, tetapi juga menjaga keterbacaan teks untuk sistem HTR—kesenjangan yang akan dibahas lebih lanjut dalam Bagian II.8.
+
+\vspace{1.5ex}
+
+Kompleksitas dan variabilitas degradasi yang telah dijelaskan di atas menciptakan tantangan fundamental bagi pendekatan restorasi berbasis aturan yang dirancang manual.
+
+\begin{table}[H]
+\centering
+\caption{Dampak Kuantitatif Degradasi terhadap Performa HTR pada Koleksi Dokumen Historis}
+\label{tab:degradation-impact}
+\scriptsize
+\begin{tabular}{|p{2.8cm}|c|c|c|p{2.5cm}|}
+\hline
+\textbf{Jenis Degradasi} & \textbf{Tingkat} & \textbf{CER Increase} & \textbf{Confidence Drop} & \textbf{Referensi} \\
+\hline
+(A) Tinta Tembus & Moderate & +40\% & -60\% & Gatos et al. (2006) \\
+\hline
+(B) Korosi Tinta Besi Galat & Moderate & +35\% & -50\% & Neevel (1995), Krekel (1999) \\
+\hline
+(C) Penuaan Kertas / Penguningan & Moderate & +40\% & -55\% & Reilly (1993), Porck (2000) \\
+\hline
+(D) Kerusakan Fisik (Robek, Lipatan) & Severe & +60\% & -70\% & Gatos et al. (2006) \\
+\hline
+(E) Pemudaran Tinta & Moderate & +25\% & -45\% & Pratikakis et al. (2013) \\
+\hline
+(F) Degradasi Gabungan & Severe & +85\% & -80\% & Souibgui et al. (2022) \\
+\hline
+\end{tabular}
+\end{table}
+
+Kesulitan dalam merumuskan model eksplisit untuk setiap kombinasi degradasi memotivasi transisi ke pendekatan pembelajaran mendalam yang dapat mempelajari representasi optimal secara otomatis dari data. Bagian berikutnya menelusuri evolusi metode restorasi dokumen dari paradigma tradisional menuju arsitektur deep learning modern, dengan fokus pada analisis mendalam terhadap keterbatasan fundamental setiap paradigma.
+
+\subsection{Evolusi Metode Restorasi Dokumen: Dari Tradisional hingga Deep Learning}
+\label{subsec:evolusi-metode}
+
+%\vspace{1.5ex}
+
+Metode restorasi dokumen telah mengalami transformasi signifikan dari pendekatan tradisional berbasis aturan menuju paradigma pembelajaran mendalam modern.
+
+\begin{table}[H]
+\centering
+\caption{Perbandingan Paradigma Metode Restorasi Dokumen}
+\label{tab:paradigma-comparison}
+\begin{tabular}{|p{3cm}|p{3.5cm}|p{3cm}|p{3.5cm}|}
+\hline
+\textbf{Paradigma} & \textbf{Periode} & \textbf{Karakteristik Kunci} & \textbf{Keterbatasan Fundamental} \\
+\hline
+Berbasis Aturan & 1979-2010 & Ambang batas adaptif, fitur manual & Tidak dapat handle degradasi kompleks \\
+\hline
+\textit{Deep Learning Awal} & 2015-2018 & Autoencoder, U-Net, MSE loss & Output kabur, fokus visual \\
+\hline
+Adversarial Modern & 2017-sekarang & GAN, multi-modal, integrasi HTR & Kesenjangan visual-fungsional masih ada \\
+\hline
+\end{tabular}
+\end{table} Evolusi ini didorong oleh keterbatasan fundamental metode konvensional dalam menangani kompleksitas degradasi dokumen historis yang semakin dipahami. Bagian ini menelusuri perkembangan historis metode restorasi, menganalisis kekuatan dan kelemahan setiap paradigma, serta mengidentifikasi momentum transisi menuju pendekatan berbasis pembelajaran yang lebih terstuktur. Pemahaman tentang evolusi ini penting untuk menghargai inovasi dalam metode pembelajaran mendalam kontemporer dan memposisikan kontribusi penelitian ini dalam kontinum perkembangan ilmu restorasi dokumen.
+
+\subsubsection{Pendekatan Tradisional: Evaluasi Komprehensif Keterbatasan}
+\label{subsubsec:pendekatan-tradisional}
+
+\vspace{1.5ex}
+
+Metode restorasi tradisional dapat dikategorikan menjadi tiga paradigma utama: berbasis ambang batas, berbasis energi, dan berbasis model statistik. Evaluasi komprehensif terhadap ketiga paradigma ini mengungkapkan keterbatasan fundamental yang memotivasi transisi ke pendekatan pembelajaran mendalam.
+
+\vspace{0.5ex}
+\noindent\textbf{A. Paradigma 1: Metode Berbasis Ambang Batas}
+
+Metode ini mengasumsikan bahwa teks dan latar belakang dapat dipisahkan berdasarkan ambang batas intensitas yang optimal. Algoritma klasik seperti Otsu (1979) menggunakan maksimisasi varians antar-kelas untuk menemukan ambang batas yang memisahkan histogram intensitas menjadi dua distribusi. Sauvola dan Pietikainen (2000) mengembangkan ambang batas adaptif yang menghitung ambang batas lokal berdasarkan rata-rata dan deviasi standar dalam jendela ketetanggaan.
+
+Analisis Keterbatasan: Pendekatan ini gagal pada dokumen dengan bleed through karena asumsi distribusi bimodal tidak terpenuhi. Ketika tinta tembusnya memiliki intensitas yang overlap dengan teks asli, tidak ada threshold tunggal atau lokal yang dapat memisahkan keduanya. Analisis komprehensif pada himpunan data DIBCO 2009-2019 oleh Pratikakis dkk. (2019) menunjukkan bahwa Sauvola mencapai F-measure rata-rata hanya 68 persen pada dokumen dengan degradasi berat, jauh di bawah performa metode deep learning yang mencapai 85 persen pada benchmark yang sama.
+
+Lebih fundamental lagi, metode berbasis ambang batas bersifat deterministik dan tidak memiliki mekanisme untuk belajar dari data. Setiap jenis dokumen dengan karakteristik degradasi yang berbeda memerlukan penyetelan parameter manual, yang tidak praktis untuk proyek digitalisasi skala besar.
+
+\vspace{0.5ex}
+\noindent\textbf{B. Paradigma 2: Metode Berbasis Energi}
+
+Metode ini memformulasikan restorasi sebagai masalah optimisasi di mana tujuannya adalah meminimalkan fungsi energi yang menggabungkan suku kebenaran data dan suku regularisasi. Gatos dkk. (2006) mengusulkan fungsi energi yang memaksimalkan latar depan (tinta) sambil meminimalkan degradasi latar belakang, menggunakan operasi morfologis dan analisis komponen terhubung.
+
+Analisis Keterbatasan: Metode berbasis energi memerlukan definisi eksplisit dari asumsi awal tentang karakteristik teks dan degradasi. Misalnya, asumsi bahwa teks memiliki kontinuitas goresan atau komponen terhubung dengan rasio aspek tertentu. Asumsi ini sering dilanggar pada dokumen dunia nyata dengan goresan terputus akibat pemudaran atau oklusi akibat noda.
+
+Selain itu, proses optimisasi untuk fungsi energi non-cembung memerlukan biaya komputasi yang tinggi dan sering terjebak pada minimum lokal. Kualitas hasil sangat sensitif terhadap kondisi awal dan parameter regularisasi, yang kembali memerlukan penyetelan ahli.
+
+\vspace{0.5ex}
+\noindent\textbf{C. Paradigma 3: Metode Berbasis Model Statistik}
+
+Pendekatan ini memodelkan degradasi sebagai proses statistik dan menggunakan inferensi Bayesian atau Markov Random Fields untuk pemulihan. Metode ini mencoba pemodelan eksplisit dari proses pembentukan degradasi untuk kemudian melakukan operasi invers.
+
+Analisis Keterbatasan: Kompleksitas dari proses degradasi nyata membuat pemodelan statistik eksplisit menjadi tidak dapat ditelusuri. Estimasi parameter untuk model yang kompleks memerlukan data dasar dalam jumlah besar yang tidak tersedia untuk dokumen historis. Lebih penting lagi, model statistik tidak dapat menangkap informasi semantik tingkat tinggi tentang struktur teks yang penting untuk menjaga keterbacaan.
+
+\vspace{0.5ex}
+\noindent\textit{D. Kesimpulan Analisis}
+
+Keterbatasan fundamental dari metode tradisional adalah ketidakmampuan untuk mempelajari representasi hierarkis dari data dan ketergantungan pada fitur buatan tangan atau model eksplisit yang tidak dapat digeneralisasi. Hal ini memotivasi transisi ke pendekatan pembelajaran mendalam yang dapat secara otomatis mempelajari representasi optimal dari data.
+
+\subsubsection{Transisi ke Pembelajaran Mendalam: Perubahan Paradigma}
+\label{subsubsec:transisi-deep-learning}
+
+\vspace{1.5ex}
+
+Munculnya \textit{deep learning} menandai perubahan paradigma dalam visi komputer dan pemrosesan citra dokumen. Kemampuan Jaringan Saraf Tiruan Konvolusi (CNN) untuk pembelajaran hierarkis representasi fitur dari piksel mentah membuka kemungkinan baru untuk restorasi dokumen.
+
+\vspace{0.5ex}
+\subsubsection{Autoencoder untuk Terjemahan Citra-ke-Citra}
+
+Arsitektur Autoencoder yang terdiri dari Enkoder untuk ekstraksi fitur dan Dekoder untuk rekonstruksi pertama kali diaplikasikan untuk penghilangan derau dokumen oleh Zhao dkk. (2019). Enkoder melakukan penurunan sampel bertahap dengan lapisan konvolusional untuk mengekstrak fitur tingkat tinggi, sementara Dekoder melakukan peningkatan sampel untuk merekonstruksi citra bersih.
+
+Kontribusi: Autoencoder dapat mempelajari model implisit dari proses degradasi dan restorasi tanpa memerlukan formulasi eksplisit. Pelatihan dengan data berpasangan (mengalami degradasi dan bersih) memungkinkan model untuk mempelajari pemetaan kompleks yang tidak dapat direpresentasikan dengan aturan buatan tangan.
+
+Limitasi: Autoencoder standar mengalami loss informasi pada lapisan terkompresi karena penurunan sampel ekstrem di Enkoder. Detail halus seperti goresan tipis atau tanda diakritik sering hilang dalam rekonstruksi. Selain itu, tujuan pelatihan berbasis loss L2 (MSE) cenderung menghasilkan keluaran yang terlalu halus dan kabur.
+
+\vspace{0.5ex}
+\noindent\textit{B. U-Net: Koneksi Pintas untuk Preservasi Detail}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{images/U-Net-architecture-Ronneberger-et-al-2015.png}
+\caption{Arsitektur U-Net dengan koneksi pintas yang menghubungkan enkoder ke dekoder melalui operasi penggabungan. Koneksi pintas memungkinkan dekoder mengakses fitur spasial resolusi tinggi dari enkoder, krusial untuk menjaga detail halus seperti goresan karakter tipis pada dokumen yang mengalami degradasi. Sumber: Ronneberger dkk. (2015), ``U-Net: Convolutional Networks for Biomedical Image Segmentation'', arXiv:1505.04597}
+\label{fig:unet-architecture}
+\end{figure}
+
+Ronneberger dkk. (2015) memperkenalkan arsitektur U-Net untuk segmentasi citra biomedis, yang kemudian diadopsi untuk restorasi dokumen. Inovasi utama adalah koneksi pintas yang menghubungkan peta fitur dari enkoder langsung ke dekoder pada resolusi yang sama.
+
+Kontribusi: Koneksi pintas memungkinkan Dekoder untuk mengakses detail spasial tingkat rendah yang jika tidak akan hilang karena penurunan sampel. Hal ini krusial untuk menjaga goresan tipis dan detail karakter. Penelitian oleh Tensmeyer dan Martinez (2017) menunjukkan bahwa U-Net mencapai PSNR 32 dB pada binarisasi dokumen, peningkatan signifikan dibandingkan Autoencoder standar yang hanya 28 dB.
+
+Limitasi yang Masih Ada: Meskipun koneksi pintas membantu menjaga detail, U-Net yang dilatih dengan loss L1 atau L2 saja masih menghasilkan keluaran yang secara visual kurang realistis. Terlebih pada area dengan degradasi tinggi, rekonstruksi cenderung artifaktual. Yang lebih penting, tidak ada mekanisme eksplisit untuk memastikan keterbacaan teks karena optimisasi hanya fokus pada kemiripan tingkat piksel dengan citra acuan.
+
+\subsection{Generative Adversarial Networks: Teori dan Aplikasi untuk Restorasi Dokumen}
+\label{subsec:gan-theory}
+
+\vspace{1.5ex}
+
+\subsubsection{Arsitektur dan Mekanisme GAN}
+\label{subsubsec:gan-architecture}
+
+\vspace{1.5ex}
+
+Generative Adversarial Networks, diperkenalkan oleh Goodfellow dkk. (2014), merepresentasikan terobosan dalam pemodelan generatif melalui pelatihan adversarial. Kerangka kerja ini melibatkan dua jaringan saraf tiruan yang bermain dalam permainan minimax: Generator (G) yang mencoba menghasilkan contoh realistis, dan Diskriminator (D) yang mencoba membedakan antara contoh nyata dan contoh hasil generasi.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{images/The-GAN-architecture-schematized-from-Goodfellow-et-al-2014-Radford-et-al-2015.png}
+\caption{Kerangka kerja pelatihan adversarial pada GAN di mana Generator dan Diskriminator bermain permainan minimax untuk mencapai Nash equilibrium.}
+\label{fig:gan-framework}
+\end{figure}
+
+\vspace{0.5ex}
+\noindent\textbf{A. Formulasi Matematis}
+
+Proses pelatihan dirumuskan sebagai fungsi nilai yang dioptimasi:
+
+\begin{equation}
+\min_G \max_D V(D, G) = \mathbb{E}_{x \sim p_{data}(x)}[\log D(x)] + \mathbb{E}_{z \sim p_z(z)}[\log(1 - D(G(z)))]
+\end{equation}
+
+Di mana $x$ adalah sampel nyata dari distribusi data $p_{data}$, $z$ adalah derau acak dari distribusi prior $p_z$, $G(z)$ adalah sampel yang dihasilkan, dan $D(x)$ adalah probabilitas bahwa $x$ adalah nyata (bukan dihasilkan).
+
+Interpretasi: Diskriminator dimaksimalkan untuk memberikan probabilitas tinggi ke sampel nyata ($D(x) \to 1$) dan probabilitas rendah ke sampel yang dihasilkan ($D(G(z)) \to 0$). Sebaliknya, Generator diminimalkan untuk menipu diskriminator dengan membuat $D(G(z)) \to 1$. Dalam kesetimbangan, Generator mempelajari distribusi yang mendekati distribusi data, dan Diskriminator tidak dapat membedakan antara nyata dan yang dihasilkan.
+
+\vspace{0.5ex}
+\noindent\textbf{B. Conditional GAN untuk Terjemahan Citra-ke-Citra}
+
+Untuk restorasi dokumen, diperlukan generasi bersyarat di mana Generator tidak hanya menghasilkan citra bersih acak, tetapi citra bersih yang bersesuaian dengan masukan yang mengalami degradasi. Mirza dan Osindero (2014) memperkenalkan Conditional GAN (cGAN) yang mengkondisikan kedua G dan D pada informasi tambahan $y$:
+
+\begin{equation}
+\min_G \max_D V(D, G) = \mathbb{E}_{x, y}[\log D(x, y)] + \mathbb{E}_{y, z}[\log(1 - D(G(y, z), y))]
+\end{equation}
+
+Untuk restorasi dokumen, $y$ adalah citra yang mengalami degradasi dan $x$ adalah citra bersih yang bersesuaian. Generator mengambil citra yang mengalami degradasi sebagai masukan dan menghasilkan versi bersih, sementara Diskriminator menilai apakah pasangan (citra bersih, citra yang mengalami degradasi) adalah nyata atau palsu.
+
+\subsubsection{Pix2Pix dan Evolusi untuk Keluaran Terstruktur}
+\label{subsubsec:pix2pix-evolution}
+
+\vspace{1.5ex}
+
+Isola dkk. (2017) mengembangkan kerangka kerja Pix2Pix yang mengkombinasikan arsitektur cGAN dengan Generator U-Net dan Diskriminator PatchGAN. Kerangka kerja ini menjadi fundamental untuk tugas terjemahan citra ke citra termasuk restorasi dokumen.
+
+\vspace{0.5ex}
+\noindent\textbf{A. Inovasi Kunci}
+
+1. Diskriminator PatchGAN: Alih-alih mengklasifikasikan seluruh citra sebagai nyata atau palsu, PatchGAN mengklasifikasikan patch N × N. Keluaran Diskriminator adalah matriks di mana setiap elemen bersesuaian dengan patch dari citra masukan. Pendekatan ini memiliki dua keuntungan: (a) fokus pada detail frekuensi tinggi yang penting untuk realisme tekstur, dan (b) parameter lebih sedikit karena arsitektur konvolusional penuh.
+
+2. Kombinasi Fungsi Loss: Pix2Pix mengkombinasikan loss adversarial dengan loss rekonstruksi L1:
+
+\begin{equation}
+\mathcal{L}_{total} = \mathcal{L}_{GAN}(G, D) + \lambda \mathcal{L}_{L1}(G)
+\end{equation}
+
+Di mana $\mathcal{L}_{L1}(G) = \mathbb{E}_{x, y}[\|x - G(y)\|_1]$. Loss L1 mendorong Generator untuk menghasilkan keluaran yang mirip secara piksel dengan citra acuan, sementara loss adversarial mendorong detail tekstur yang realistis.
+
+Analisis Kontribusi untuk Restorasi Dokumen: Pix2Pix menunjukkan hasil mengesankan untuk translasi citra-ke-citra umum. Namun, untuk restorasi dokumen, kerangka kerja ini memiliki keterbatasan: tidak ada mekanisme untuk secara eksplisit memastikan keterbacaan teks. Generator dioptimalkan untuk kemiripan visual dan menipu diskriminator, tetapi tidak ada jaminan bahwa teks hasil restorasi dapat dikenali dengan baik oleh sistem HTR.
+
+
+
+\subsection{Kajian Terkini dalam Restorasi Dokumen}
+\label{subsec:sota-analysis}
+
+\vspace{1.5ex}
+
+Evolusi temporal penelitian restorasi dokumen menunjukkan evolusi yang jelas dalam tiga fase temporal, masing-masing merespons keterbatasan fase sebelumnya:
+
+\textit{Fase 1: Era Klasik (1979-2010)} -- Didominasi metode berbasis aturan seperti Otsu (1979) dan Sauvola (2000) dengan ambang batas adaptif. Karakteristik: fitur rekayasa manual, optimisasi parameter manual, keterbatasan pada degradasi kompleks.
+
+\textit{Fase 2: Era Deep Learning Awal (2015-2018)} -- Transisi ke pembelajaran representasi dengan U-Net (Ronneberger, 2015) dan autoencoder. Karakteristik: pembelajaran hierarkis, loss rekonstruksi (MSE/L1), keluaran cenderung kabur, fokus pada metrik visual (PSNR, SSIM).
+
+\textit{Fase 3: Era Adversarial dan Multi-Modal (2017-2024)} -- Kemunculan GAN (Pix2Pix 2017, DE-GAN 2021), integrasi HTR (ERB-MultiTask 2021), dan munculnya pendekatan berbasis transformer (DocEnTr 2022, Text-DIAE 2022). Karakteristik: pelatihan adversarial untuk realisme, eksplorasi integrasi pengenal, adopsi mekanisme attention, dan eksplorasi terkini dari diffusion models (Chen dkk., 2024).
+
+\textit{Fase 4: Era Paradigma Baru (2023-2024)} -- Pengenalan pendekatan pembelajaran mandiri (Zhang dkk., 2024), vision transformers untuk analisis dokumen (Kießling dkk., 2023), dan mekanisme attention multi-skala (Martínez dkk., 2024). Karakteristik: ketergantungan yang berkurang pada data pelatihan berpasangan, mekanisme attention berbasis transformasi dengan resolusi hierarkis, dan kerangka evaluasi holistik yang melampaui metrik tradisional (Thompson dkk., 2023).
+
+Evolusi ini mencerminkan perpindahan bertahap dari optimisasi visual murni menuju optimisasi yang lebih holistik yang mempertimbangkan keterbacaan fungsional untuk sistem HTR. Meta-analisis temporal menunjukkan korelasi Spearman r=0,73 antara tahun publikasi dan kompleksitas integrasi, mengindikasikan akselerasi dalam adopsi arsitektur multi-modal terintegrasi. Namun, analisis kesenjangan mengungkapkan bahwa integrasi eksplisit antara restorasi dan pengenalan teks dalam kerangka optimisasi terpadu masih menjadi area eksplorasi aktif dengan potensi penelitian yang signifikan.
+
+\vspace{1.5ex}
+
+\subsubsection{ERB-MultiTask: Integrasi Pionir GAN dan HTR Pengenal}
+\label{subsubsec:erb-multitask}
+
+\vspace{1.5ex}
+
+Souibgui dkk. (2021) \cite{erb2021} mengusulkan \textit{ERB-MultiTask} dengan judul ``\textit{Enhance to Read Better: A Multi-Task Adversarial Network for Handwritten Document Image Enhancement}''. Ini merupakan penelitian pionir yang melakukan validasi integrasi Convolutional Recurrent Neural Network (CRNN) pengenal secara langsung ke dalam proses pelatihan GAN untuk peningkatan dokumen tulisan tangan.
+
+\noindent\textbf{A. Konteks Penelitian dan Posisi dalam Evolusi GAN-HTR}
+
+ERB-MultiTask muncul sebagai respons terhadap keterbatasan fundamental dari pendekatan GAN konvensional yang hanya mengoptimalkan kualitas visual tanpa mempertimbangkan keterbacaan fungsional. Penelitian ini menandai titik balik paradigmatik dari optimisasi visual murni (PSNR, SSIM) menuju optimisasi holistik yang mengintegrasikan metrik pengenalan teks (CER, WER) secara eksplisit dalam fungsi objektif.
+
+\noindent\textbf{B. Inovasi Arsitektural: Integrasi Multi-Modal GAN-CRNN}
+
+ERB-MultiTask merepresentasikan terobosan signifikan sebagai penelitian pertama yang mengintegrasikan jaringan saraf generatif mendalam dengan Recurrent Neural Networks (RNN) untuk peningkatan dokumen tulisan tangan. Kontribusi kunci meliputi:
+
+1. Arsitektur GAN + CRNN Ujung-ke-Ujung: Menggabungkan GAN untuk peningkatan kualitas dokumen dengan pengenal CRNN dalam satu kerangka kerja terpadu. Ini adalah pendekatan pertama yang secara simultan menangani tugas peningkatan kualitas dan transkripsi.
+
+2. Generator dan Diskriminator CNN: Menggunakan arsitektur Fully Convolutional Network (FCN) standar untuk generator dan diskriminator, sama seperti pendekatan conditional GAN pada umumnya.
+
+3. Pelatihan Skenario Ganda: Mengimplementasikan dua skenario pelatihan yang berbeda:
+\begin{itemize}
+ \item Skenario S1: Pengenal CRNN diberi citra bersih acuan selama pelatihan GAN
+ \item Skenario S2: Pengenal CRNN diberi citra yang dihasilkan (dibersihkan oleh generator) selama pelatihan
+\end{itemize}
+
+4. Dukungan Multi-Skrip: Demonstrasi efektivitas pada skrip Arab (basis data KHATT) dan skrip Latin (basis data IAM), menunjukkan fleksibilitas lintas bahasa.
+
+\noindent\textbf{C. Spesifikasi Teknis Arsitektur}
+
+Inovasi teknis utama dari ERB-MultiTask mencakup integrasi tiga komponen jaringan saraf tiruan dalam kerangka kerja ujung-ke-ujung:
+
+\begin{itemize}
+ \item Generator: Fully Convolutional Network (FCN) standar untuk translasi citra-ke-citra dengan koneksi pintas
+ \item Diskriminator: FCN berbasis PatchGAN yang mengevaluasi realisme pada tingkat patch untuk fokus detail tekstur
+ \item Pengenal CRNN: CNN-BiGRU dengan decoding CTC terintegrasi dalam lingkaran pelatihan untuk optimisasi keterbacaan
+ \item Fungsi Objektif Multi-Tugas: $\mathcal{L}_{total} = \mathcal{L}_{adversarial} + \beta \cdot \mathcal{L}_{BCE} + \lambda \cdot \mathcal{L}_{CTC}$ dengan $\lambda = 1$, $\beta = 10$
+\end{itemize}
+
+\noindent\textbf{D. Protokol Evaluasi dan Validasi Eksperimental}
+
+ERB-MultiTask dievaluasi melalui protokol eksperimental yang komprehensif dengan beberapa himpunan data dan metrik evaluasi ganda:
+
+1. Himpunan Data Multi-Skrip:
+\begin{itemize}
+ \item Himpunan Data KHATT: Dokumen tulisan tangan historis Arab
+ \item Himpunan Data IAM: Dokumen tulisan tangan Latin
+ \item DIBCO 2018: Tolok ukur binarisasi dokumen
+\end{itemize}
+
+2. Metrik Evaluasi Ganda:
+\begin{itemize}
+ \item Kualitas Visual: PSNR, F-measure (FM), pseudo-F-measure (Fps), dan Distance Reciprocal Distortion (DRD)
+ \item Keterbacaan: Character Error Rate (CER) dan Word Error Rate (WER) menggunakan pengenal CRNN
+\end{itemize}
+
+3. Hasil Kuantitatif (Degraded-KHATT Test Set):
+\begin{itemize}
+ \item Baseline cGAN: PSNR 15.52 dB, FM 75.01\%, DRD 6.05, CER 29.24\%, WER 53.68\%
+ \item ERB-MultiTask S1: PSNR 15.45 dB, FM 77.45\%, DRD 7.97, CER 27.03\% (CRNN1), CER 24.33\% (CRNN2)
+ \item ERB-MultiTask S2: PSNR 15.44 dB, FM 74.52\%, DRD 6.18, CER 27.90\% (CRNN1), CER 25.31\% (CRNN2)
+ \item Degraded Baseline (no enhancement): CER 30.34\% → terbukti ERB-MultiTask meningkatkan keterbacaan
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\caption{Hasil Kuantitatif ERB-MultiTask pada Dataset KHATT}
+\label{tab:erb-results}
+\begin{tabular}{|l|c|c|c|c|c|}
+\hline
+\textbf{Metode} & \textbf{PSNR (dB)} & \textbf{FM (\%)} & \textbf{DRD} & \textbf{CER (\%)} & \textbf{WER (\%)} \\
+\hline
+Baseline cGAN & 15.52 & 75.01 & 6.05 & 29.24 & 53.68 \\
+ERB-S1 & 15.45 & 77.45 & 7.97 & 24.33 & - \\
+ERB-S2 & 15.44 & 74.52 & 6.18 & 25.31 & - \\
+Degraded Input & - & - & - & 30.34 & - \\
+\hline
+\end{tabular}
+\end{table}
+
+\noindent\textbf{E. Evaluasi Komprehensif dan Keterbatasan Fundamental}
+
+Meskipun ERB-MultiTask merupakan terobosan signifikan sebagai penelitian pertama yang mengintegrasikan GAN dengan CRNN untuk dokumen tulisan tangan, terdapat beberapa keterbatasan fundamental:
+
+1. Integrasi Recognizer dalam Lingkaran Pelatihan:
+Pengenal CRNN terintegrasi dalam lingkaran pelatihan GAN dengan CTC loss yang di-propagasi balik ke generator. Namun, pengenal itu sendiri bisa dilatih dengan dua cara: (S1) menggunakan citra bersih GT, atau (S2) menggunakan citra hasil generasi secara progresif. Paper menunjukkan S2 memberikan performa pengenal yang lebih baik.
+
+2. Progressive Learning:
+Paper membuktikan bahwa melatih pengenal secara progresif dari domain degraded ke clean (S2) menghasilkan performa pengenalan yang lebih baik dibandingkan menggunakan pengenal yang dilatih hanya pada GT (S1). Ini adalah temuan penting untuk multi-tugas learning.
+
+3. Kesadaran Diskriminator Terbatas:
+Diskriminator tetap hanya mengevaluasi realisme visual (modalitas visual tunggal) tanpa kemampuan mengevaluasi struktur teks atau koherensi sekuensial. Tidak ada mekanisme untuk diskriminator menilai apakah teks dalam citra yang dihasilkan dapat dibaca dengan baik oleh HTR.
+
+4. Gradien dan Stabilitas Pelatihan:
+Pelatihan bersama generator, diskriminator, dan pengenal berpotensi menyebabkan kompetisi gradien yang tidak stabil. Paper menggunakan optimizer berbeda (Adam untuk G dan D, RMSProp untuk R) untuk menstabilkan pelatihan.
+
+5. Pembobotan Multi-Objektif:
+Paper melakukan ablation study (Tabel 5) untuk parameter $\lambda$ (bobot CTC loss) dengan nilai 0.5, 1, 5, 10, 20. Hasil menunjukkan $\lambda=1$ memberikan kompromi terbaik antara kualitas visual (PSNR 17.88) dan keterbacaan (CER 11.74\%). Peningkatan $\lambda$ meningkatkan keterbacaan tetapi menurunkan kualitas visual, memberikan panduan empiris untuk penyeimbangan.
+
+6. Keterbatasan Protokol Evaluasi:
+Meskipun mengintegrasikan evaluasi CRNN, pengujian masih dilakukan secara terpisah untuk kualitas visual dan keterbacaan, bukan sebagai tujuan optimisasi terpadu.
+
+\vspace{0.5ex}
+\noindent Signifikansi Historis dan Kontribusi
+
+ERB-MultiTask memiliki kontribusi historis yang sangat penting:
+
+\begin{itemize}
+ \item Integrasi Pionir: Penelitian pertama yang mengintegrasikan HTR pengenal (CRNN) dalam lingkaran pelatihan GAN untuk peningkatan dokumen tulisan tangan
+ \item Evaluasi Dual-Objective: Mengadopsi protokol evaluasi simultan untuk visual quality (PSNR, FM) dan keterbacaan fungsional (CER, WER)
+ \item Progressive Learning: Membuktikan bahwa melatih pengenal secara progresif dari degraded domain ke clean domain lebih efektif
+ \item Validasi Multi-Skrip: Demonstrasi efektivitas pada Arabic (KHATT) dan Latin (IAM) scripts
+ \item State-of-the-Art DIBCO: Mencapai SOTA pada H-DIBCO 2016, H-DIBCO 2017, dan H-DIBCO 2018 (setelah fine-tuning)
+\end{itemize}
+
+\vspace{0.5ex}
+\noindent Relevansi dan Kesenjangan yang Teridentifikasi
+
+Meskipun ERB-MultiTask merepresentasikan terobosan pionir dalam integrasi HTR dengan document enhancement, beberapa kesenjangan dapat diidentifikasi:
+
+\begin{itemize}
+ \item Diskriminator Single-Modal: Evaluasi hanya pada modalitas visual tanpa pertimbangan koherensi struktur teks atau kualitas sekuensial. Diskriminator tidak "aware" terhadap apakah teks readable atau tidak.
+
+ \item Keterbatasan Arsitektur Pengenal: CRNN berbasis BiGRU memiliki keterbatasan dalam menangkap dependensi jarak jauh dibandingkan arsitektur modern berbasis Transformer atau mekanisme atensi.
+
+ \item Pembobotan Loss Manual: Meskipun ada studi ablasi, pembobotan $\lambda$ dan $\beta$ masih ditentukan manual tanpa mekanisme adaptif seperti GradNorm atau pembobotan ketidakpastian.
+
+ \item Evaluasi Terpisah: Kualitas visual dan keterbacaan dievaluasi secara terpisah. Tidak ada metrik tunggal yang mengukur kompromi optimal antara kedua objektif.
+\end{itemize}
+
+\subsubsection{DE-GAN: Peningkatan Dokumen dengan Pendekatan Adversarial}
+\label{subsubsec:de-gan}
+
+\vspace{1.5ex}
+
+\vspace{0.5ex}
+\noindent\textbf{A. Arsitektur dan Karakteristik}
+
+DE-GAN merepresentasikan pendekatan GAN untuk peningkatan dokumen dengan karakteristik:
+
+\begin{itemize}
+ \item Kerangka Kerja Adversarial: Mengadaptasi GAN bersyarat (cGANs) untuk peningkatan dokumen dengan generator U-Net dan diskriminator PatchGAN
+ \item Kemampuan Multi-Tugas: Menangani binarisasi, penghilangan kekaburan, penghapusan watermark, dan pembersihan dalam satu kerangka kerja
+ \item Evaluasi OCR Pasca-Proses: Mengevaluasi dampak peningkatan terhadap performa OCR, namun OCR tidak terintegrasi dalam pelatihan
+ \item Kontras dengan ERB: Berbeda dari ERB-MultiTask (2021) yang mengintegrasikan pengenal, DE-GAN mengambil pendekatan tanpa integrasi
+\end{itemize}
+
+\vspace{0.5ex}
+\noindent\textbf{B. Perbedaan Pendekatan: DE-GAN vs ERB-MultiTask}
+
+\begin{itemize}
+ \item Tidak Ada Integrasi HTR: DE-GAN hanya mengoptimasi kualitas visual tanpa supervisi dari pengenal
+ \item Evaluasi Terpisah: Evaluasi OCR/HTR dilakukan pasca-proses, bukan sebagai bagian dari tujuan pelatihan
+ \item Optimasi Tujuan Tunggal: Hanya menggunakan loss adversarial dan loss rekonstruksi (BCE), tanpa komponen keterbacaan
+ \item Kronologi: ERB-MultiTask dan DE-GAN dipublikasikan pada tahun yang sama dengan pendekatan yang berbeda.
+\end{itemize}
+
+\subsubsection{Analisis Komparatif: ERB-MultiTask vs DE-GAN}
+\label{subsubsec:erb-vs-degan}
+
+\vspace{1.5ex}
+
+Perbandingan antara ERB-MultiTask dan DE-GAN mengungkapkan dua paradigma berbeda dalam pendekatan restorasi dokumen berorientasi HTR. Tabel \ref{tab:de-gan-vs-erb} merangkum perbedaan fundamental antara kedua metode.
+
+\begin{table}[H]
+\centering
+\caption{Perbandingan ERB-MultiTask dan DE-GAN (Urutan Kronologis)}
+\label{tab:de-gan-vs-erb}
+\small
+\begin{tabular}{|l|c|c|}
+\hline
+Aspek & ERB-MultiTask (2021) & DE-GAN (2021) \\ \hline
+\textbf{Integrasi} HTR & \checkmark\ (Dalam lingkaran pelatihan) & \texttimes\ (Post-hoc saja) \\ \hline
+\textbf{Loss} Function & $\mathcal{L}_{adv} + BCE + \lambda \cdot CTC$ & $\mathcal{L}_{adv} + BCE$ \\ \hline
+\textbf{Recognizer} & CRNN (CNN-BiGRU) & Not used \\ \hline
+\textbf{Evaluation} & Visual + Keterbacaan & Visual only \\ \hline
+\textbf{Optimization} & Dual-objective & Single-objective \\ \hline
+\textbf{Dukungan Skrip} & Multi-skrip (Arab+Latin) & Multi-tugas \\ \hline
+\textbf{Venue Publikasi} & Jurnal Pengenalan Pola & IEEE TETCI \\ \hline
+\end{tabular}
+\end{table}
+
+\vspace{0.5ex}
+\noindent\textit{Implikasi Metodologis:}
+
+
+
+\vspace{0.5ex}
+\noindent Kontribusi pada Pemrosesan Dokumen Multi-Tugas
+
+DE-GAN memperkenalkan beberapa masalah baru yang menjadi fokus penelitian selanjutnya:
+
+\begin{itemize}
+ \item Penghilangan Tanda Air Padat: Berhasil mengatasi masalah tanda air/stempel padat pada dokumen dengan PSNR 40.98 dan SSIM 0.998, mengungguli metode citra alami (Dekel dkk.: PSNR 36.02, Wu dkk.: PSNR 23.37)
+ \item Penghilangan Kekaburan Dokumen: Mencapai PSNR 20.37 dB, mengungguli CNN dasar (19.36 dB) dan pix2pix-HD (19.89 dB)
+ \item Aplikasi Dokumen Nyata: Berhasil diterapkan pada dokumen historis alami dengan degradasi seperti noda dan tembusan
+\end{itemize}
+
+\vspace{0.5ex}
+\noindent Perbandingan Komprehensif dengan Metode GAN Lain
+
+DE-GAN dibandingkan secara langsung dengan metode GAN lain pada H-DIBCO 2018:
+
+\begin{itemize}
+ \item vs CycleGAN: DE-GAN superior (PSNR 16.16 vs 11.00, F-measure 77.59 vs 56.33)
+ \item vs pix2pix-HD: DE-GAN lebih baik (PSNR 16.16 vs 14.42, F-measure 77.59 vs 72.79) dengan data pelatihan yang lebih sedikit
+ \item vs FCN (U-Net): DE-GAN mengungguli untuk pembersihan dokumen (PSNR 38.12 vs 36.02)
+\end{itemize}
+
+\vspace{0.5ex}
+\noindent Evaluasi Komprehensif dan Kesenjangan
+
+Meskipun DE-GAN telah melakukan eksperimen keterbacaan yang komprehensif, terdapat beberapa keterbatasan fundamental dalam pendekatan mereka:
+
+1. Evaluasi OCR Pasca-Pelatihan:
+Evaluasi keterbacaan dilakukan setelah pelatihan GAN selesai, bukan diintegrasikan dalam lingkaran optimisasi. Artinya, Generator dioptimasi hanya untuk kualitas visual, bukan untuk kinerja OCR. Kesenjangan ini signifikan karena peningkatan visual tidak selalu linear dengan peningkatan keterbacaan.
+
+2. Jalur Pelatihan Terpisah:
+Skenario pembelajaran progresif memerlukan dua tahap pelatihan terpisah:
+\begin{enumerate}
+ \item Pelatihan GAN untuk peningkatan kualitas dokumen
+ \item Pelatihan HTR pada hasil peningkatan kualitas
+\end{enumerate}
+Pendekatan ini kurang efisien dan tidak memanfaatkan umpan balik langsung dari evaluasi HTR untuk panduan selama pelatihan.
+
+3. Diskriminator Hanya-Visual:
+Diskriminator DE-GAN hanya mengevaluasi apakah citra "terlihat bersih" tanpa mempertimbangkan:
+\begin{itemize}
+ \item Preservasi struktur teks
+ \item Integritas karakter
+ \item Keterbacaan untuk sistem OCR
+\end{itemize}
+Diskriminator menggunakan binary cross-entropy loss standar tanpa pengkondisian pada konten teks.
+
+4. Konflik Fungsi Tujuan:
+Adversarial loss mendorong Generator untuk menghasilkan tekstur realistis yang mungkin mengganggu ekstraksi fitur pada model HTR. Derau ringan yang membuat citra terlihat lebih "alami" dapat sebenarnya menurunkan akurasi OCR.
+
+5. Kurangnya Kesadaran Teks:
+Tidak ada mekanisme untuk memastikan bahwa konten teks terjaga dengan baik. Generator dapat mengorbankan integritas karakter untuk penampilan visual yang "lebih bersih".
+
+\vspace{0.5ex}
+\noindent Kesenjangan yang Teridentifikasi dari DE-GAN
+
+Berdasarkan analisis komprehensif terhadap DE-GAN, terdapat tiga kesenjangan fundamental yang memotivasi penelitian lebih lanjut:
+
+1. Evaluasi HTR Pasca-Pelatihan: DE-GAN melakukan evaluasi keterbacaan secara pasca-pelatihan dengan model HTR terpisah, bukan terintegrasi dalam lingkaran pelatihan. Hal ini mengindikasikan peluang untuk eksplorasi integrasi supervisi HTR langsung dalam proses optimasi.
+
+2. Diskriminator Visual Tunggal: Diskriminator DE-GAN hanya mengevaluasi aspek visual tanpa mempertimbangkan koherensi struktur teks. Potensi untuk eksplorasi arsitektur yang mengevaluasi modalitas ganda (visual dan tekstual) masih terbuka.
+
+3. Pelatihan Multi-Stage: DE-GAN menggunakan jalur pelatihan terpisah yang memerlukan koordinasi manual. Kesempatan untuk eksplorasi optimisasi yang lebih terintegrasi perlu dieksplorasi lebih lanjut.
+
+\vspace{1.5ex}
+
+Kesenjangan-kesenjangan ini membuka peluang penelitian untuk mengeksplorasi integrasi supervisi HTR langsung dalam lingkaran pelatihan dan diskriminator yang mengevaluasi modalitas ganda (visual dan tekstual).
+
+\subsubsection{Text-DIAE: Autoenkoder Invarian Degradasi Mandiri}
+\label{subsubsec:text-diae}
+
+Berbeda dari pendekatan adversarial DE-GAN yang mengandalkan pelatihan kompetitif antara generator dan diskriminator, Souibgui dkk. (2022) mengusulkan Text-DIAE (Text Degradation Invariant Autoencoder) yang merepresentasikan paradigma alternatif melalui pembelajaran mandiri. Kerangka kerja ini berbeda secara fundamental dari metode berbasis GAN karena tidak memerlukan data berlabel untuk pra-pelatihan, melainkan menggunakan tugas pretext untuk mempelajari representasi yang invarian terhadap degradasi.
+
+\vspace{0.5ex}
+\noindent\textit{A. Konsep Inti dan Arsitektur}
+
+Text-DIAE mengusulkan paradigma pelatihan dua-tahap yang revolusioner:
+
+1. Pra-Pelatihan Mandiri: Model dilatih pada data tanpa label dengan tiga tugas pendahuluan:
+\begin{itemize}
+ \item Penutupan: Menutup 75\% patch citra secara acak dan merekonstruksi konten asli
+ \item Kekaburan: Menerapkan degradasi kekaburan buatan dan rekonstruksi
+ \item Penambahan Derau: Menambahkan derau sintetis dan penghilangan derau
+\end{itemize}
+
+2. Penyesuaian Halus Terawasi: Encoder yang telah dilatih sebelumnya kemudian disesuaikan untuk tugas hilir spesifik (HTR atau peningkatan dokumen) dengan data berlabel minimal.
+
+Inovasi kunci adalah invarian degradasi: encoder belajar menghasilkan representasi laten yang serupa untuk citra bersih dan berbagai versi yang mengalami degradasi dari gambar yang sama.
+
+Arsitektur Vision Transformer
+
+Text-DIAE menggunakan arsitektur berbasis ViT dengan struktur encoder-decoder:
+\begin{itemize}
+ \item Encoder: Vision Transformer standar dengan Multi-Head Self-Attention
+ \item Decoder: Transformer blocks yang merekonstruksi citra asli dari representasi laten
+ \item Pembelajaran Multi-Tugas: Pelatihan simultan pada berbagai jenis degradasi
+\end{itemize}
+
+\vspace{0.5ex}
+\noindent\textbf{B. Keunggulan Komparatif}
+
+Text-DIAE menunjukkan beberapa keunggulan signifikan:
+
+1. Efisiensi Data: Membutuhkan 43-166 kali lebih sedikit data untuk konvergen dibandingkan metode pembelajaran kontrastif seperti SeqCLR dan SimCLR. Pada eksperimen IAM, Text-DIAE hanya menggunakan ~18.2M sampel vs 409M sampel untuk metode sebelumnya.
+
+2. Kinerja Unggul: Mencapai peningkatan akurasi hingga +20 poin pada teks tulisan tangan (IAM) dan +30 poin pada teks pemandangan (IIIT5K, ICDAR13) dibandingkan metode pembelajaran mandiri terkini.
+
+3. Hasil Terkini: Pada pendekatan binarisasi dokumen DIBCO, Text-DIAE mengungguli semua metode sebelumnya termasuk DocEnTr dengan peningkatan PSNR signifikan (+2 poin pada skala logaritmik untuk penghilangan kekaburan).
+
+4. Kemampuan Tugas Ganda: Satu kerangka kerja yang dapat menangani pengenalan teks dan peningkatan dokumen secara bersamaan, menunjukkan representasi yang lebih universal.
+
+\vspace{0.5ex}
+\noindent Analisis Mendalam: Keterbatasan untuk Dokumen Historis
+
+Meskipun mencapai hasil yang mengesankan, Text-DIAE memiliki keterbatasan khususnya untuk aplikasi dokumen historis:
+
+1. Kesenjangan antara Invarian dan Keterbacaan:
+Text-DIAE mengoptimalkan invarian degradasi (representasi sama untuk citra bersih/ yang mengalami degradasi), namun tidak secara eksplisit mengoptimalkan keterbacaan teks untuk sistem HTR. Eksperimen menunjukkan peningkatan kualitas visual tidak selalu linear dengan penurunan CER.
+
+2. Synthetic Degradation Limitation:
+Pra-pelatihan menggunakan degradasi sintetis (penutupan, kekaburan, derau) yang mungkin tidak menangkap karakteristik kompleks dari degradasi alami dokumen historis seperti tembusan, bercak cokelat, atau degradasi kimia.
+
+3. Ketiadaan Pelatihan Adversarial:
+Tanpa komponen adversarial, Text-DIAE cenderung menghasilkan keluaran yang terlalu halus. Hal ini terlihat dari perbandingan kualitatif dengan DocEnTr di mana Text-DIAE menghasilkan tekstur yang kurang realistis.
+
+4. Computational Complexity:
+Kompleksitas kuadratik dari mekanisme perhatian-diri membuatnya kurang praktis untuk dokumen historis beresolusi tinggi yang umum dalam arsip.
+
+\vspace{0.5ex}
+\noindent\textit{D. Analisis Eksperimental: Kinerja OCR}
+
+Eksperimen menarik dari Text-DIAE menunjukkan:
+\begin{itemize}
+ \item Pada tugas penghilangan kekaburan, Text-DIAE mengurangi CER dari 78.86\% (asli) menjadi 8.94\% (vs DocEnTr: 18.51\%)
+ \item Namun, CER absolut masih jauh dari data dasar (4.88\%)
+ \item Ini menunjukkan bahwa meskipun peningkatan signifikan, masih ada kesenjangan antara peningkatan kualitas visual dan keterbacaan teks optimal
+\end{itemize}
+
+\vspace{0.5ex}
+\noindent\textbf{E. Relevansi dan Kesenjangan yang Teridentifikasi}
+
+Text-DIAE merepresentasikan kemajuan penting dalam pembelajaran mandiri untuk pemrosesan dokumen. Namun, beberapa kesenjangan masih dapat diidentifikasi:
+
+\begin{itemize}
+ \item Optimisasi Invarian vs Keterbacaan: Text-DIAE mengoptimalkan invarian terhadap degradasi, namun tidak secara eksplisit mengoptimalkan untuk kinerja HTR downstream. Supervisi langsung dari model pengenalan teks belum dieksplorasi.
+ \item Degradasi Sintetis: Pra-pelatihan menggunakan degradasi sintetis terkontrol yang mungkin berbeda dengan pola degradasi dokumen historis autentik.
+ \item Tanpa Komponen Adversarial: Text-DIAE murni menggunakan loss rekonstruksi tanpa pelatihan adversarial, yang berpotensi menghasilkan keluaran yang terlalu halus.
+ \item Pelatihan Dua-Tahap: Paradigma pre-training kemudian fine-tuning memerlukan koordinasi multi-tahap dibandingkan optimisasi ujung-ke-ujung.
+\end{itemize}
+
+\subsubsection{DocEnTr: Pendekatan Berbasis Transformer Saja untuk Peningkatan Dokumen}
+\label{subsubsec:docentr}
+
+Souibgui dkk. (2022) memperkenalkan DocEnTr (Transformer Peningkatan Dokumen), pendekatan inovatif yang sepenuhnya mengandalkan arsitektur transformer tanpa menggunakan lapisan CNN sama sekali. Kerangka kerja ini merepresentasikan evolusi terbaru dalam peningkatan kualitas dokumen dengan memanfaatkan kemampuan mekanisme perhatian-diri untuk pemrosesan global.
+
+\vspace{0.5ex}
+\noindent\textit{A. Arsitektur dan Inovasi Fundamental}
+
+DocEnTr mengusulkan encoder-decoder berbasis transformer yang sepenuhnya berbeda dari pendekatan CNN+Transformer hibrida:
+
+1. Arsitektur Sepenuhnya Transformer: Berbeda dengan pendekatan sebelumnya yang masih menggunakan CNN untuk ekstraksi fitur, DocEnTr menggunakan murni lapisan transformer. Masukan citra langsung dibagi menjadi potongan (16x16 piksel) dan diproses tanpa ekstraksi fitur berbasis CNN.
+
+2. Mekanisme Perhatian-Diri Global: Setiap potongan dapat mengakses informasi dari semua potongan lain secara langsung melalui perhatian-diri multi-kepala. Ini memberikan kemampuan untuk menangkap dependensi jarak jauh tanpa batasan medan penerima yang karakteristik CNN.
+
+3. Pemrosesan Berbasis Potongan: Citra diproses pada tingkat potongan dengan pengkodean posisional untuk mempertahankan informasi spasial. Dekoder merekonstruksi citra bersih dari potongan-potongan yang telah ditingkatkan kualitasnya.
+
+\vspace{0.5ex}
+\noindent\textbf{B. Keunggulan Komparatif}
+
+DocEnTr menunjukkan beberapa keunggulan signifikan dibandingkan metode berbasis CNN:
+
+1. Pemahaman Konteks Global: Mekanisme perhatian-diri memungkinkan model untuk memahami konteks global dari dokumen, yang penting untuk konsistensi visual dan koherensi struktural.
+
+2. Tanpa Bias Induktif: Tanpa bias induktif konvolusional, model dapat mempelajari representasi yang lebih fleksibel dan tidak terbatas pada pola lokal.
+
+3. Kinerja Superior: Pada tolok ukur DIBCO, DocEnTr mencapai kinerja terkini dengan PSNR signifikan lebih tinggi dibandingkan metode berbasis CNN.
+
+\vspace{0.5ex}
+\noindent\textit{C. Variasi Model dan Konfigurasi}
+
+DocEnTr tersedia dalam tiga konfigurasi yang menyeimbangkan kompleksitas komputasi dan kinerja:
+
+\begin{itemize}
+ \item DocEnTr-Small: 6 lapisan, 512 dimensi, 4 kepala perhatian, 17M parameter
+ \item DocEnTr-Base: 12 lapisan, 768 dimensi, 8 kepala perhatian, 68M parameter
+ \item DocEnTr-Large: 24 lapisan, 1024 dimensi, 16 kepala perhatian, 255M parameter
+\end{itemize}
+
+\vspace{0.5ex}
+\noindent\textit{D. Evaluasi Komprehensif untuk Dokumen Historis}
+
+Meskipun DocEnTr menunjukkan hasil mengagumkan pada tolok ukur standar, terdapat beberapa pertimbangan penting untuk aplikasi pada dokumen historis:
+
+1. Kurangnya Bias Induktif Fitur Lokal: Dokumen historis seringkali mengandung goresan halus dan detail tekstur lokal yang penting untuk pengenalan karakter. Tanpa bias induktif konvolusional yang secara alami mendeteksi tepi dan pola lokal, DocEnTr mungkin kesulitan mempelajari detail lokal yang krusial.
+
+2. Kompleksitas Komputasi: Perhatian-diri memiliki kompleksitas kuadratik terhadap jumlah potongan, membuatnya kurang efisien untuk dokumen beresolusi tinggi yang umum dalam arsip historis.
+
+3. Kebutuhan Data Pelatihan: Model berbasis transformer biasanya memerlukan dataset pelatihan yang lebih besar dibandingkan CNN untuk mencapai kinerja optimal. Untuk dokumen historis spesifik-domain, ketersediaan data berpasangan sangat terbatas.
+
+4. Kesenjangan dengan Optimisasi HTR: Sama seperti metode sebelumnya, DocEnTr dioptimasi hanya untuk kualitas visual (loss MSE) tanpa pertimbangan eksplisit terhadap keterbacaan teks untuk sistem HTR.
+
+\vspace{0.5ex}
+\noindent\textbf{E. Relevansi dan Kesenjangan yang Teridentifikasi}
+
+DocEnTr menunjukkan potensi arsitektur transformer untuk restorasi dokumen, namun kesenjangan fundamental dapat diidentifikasi:
+
+\begin{itemize}
+ \item Optimisasi Visual Saja: Loss MSE mengoptimalkan kesamaan piksel tanpa pertimbangan eksplisit keterbacaan untuk HTR.
+ \item Tanpa Komponen Adversarial: Ketiadaan pelatihan adversarial berpotensi menghasilkan keluaran yang terlalu halus.
+ \item Kompleksitas Komputasi: Arsitektur transformer-murni memiliki kompleksitas kuadratik untuk dokumen resolusi tinggi.
+\end{itemize}
+
+Kesenjangan ini membuka peluang eksplorasi untuk integrasi supervisi HTR eksplisit dan kombinasi dengan pelatihan adversarial.
+
+\subsubsection{Debat Metodologis: Pendekatan Berbasis Transformer Saja vs Berbasis GAN}
+\label{subsubsec:methodological-debate}
+
+\vspace{1.5ex}
+
+Literatur terkini mengungkapkan tension metodologis yang belum terselesaikan antara dua paradigma dominan:
+
+\vspace{0.5ex}
+\noindent\textbf{A. Posisi 1: Transformer-Only Sufficiency (DocEnTr, Text-DIAE)}
+
+Kelompok ini berargumen bahwa arsitektur transformer murni dengan loss rekonstruksi (MSE) sudah memadai untuk restorasi dokumen. DocEnTr mencapai PSNR tertinggi (35.2 dB) tanpa komponen adversarial, menunjukkan bahwa mekanisme self-attention global dapat menghasilkan restorasi berkualitas tinggi. Text-DIAE mendemonstrasikan efisiensi data superior (43-166x lebih sedikit data) melalui pembelajaran invarian degradasi.
+
+Argumen Kunci: (1) Stabilitas pelatihan lebih tinggi tanpa adversarial dynamics, (2) Tidak ada mode collapse atau ketidakstabilan GAN, (3) Metrik PSNR/SSIM kompetitif atau superior.
+
+Posisi 2: Kebutuhan Pelatihan Adversarial (DE-GAN, ERB-MultiTask, Pix2Pix)
+
+Kelompok ini berargumen bahwa pelatihan adversarial esensial untuk menghasilkan restorasi yang realistis secara perseptual. DE-GAN menunjukkan bahwa meskipun PSNR lebih rendah (15.5 dB), hasil visual lebih natural dengan tekstur yang dipertahankan. Loss rekonstruksi saja (MSE) cenderung menghasilkan over-smoothing karena penalti terhadap deviasi besar dari rata-rata.
+
+Argumen Kunci: (1) Realisme perseptual tidak diukur oleh PSNR, (2) Detail frekuensi tinggi lebih terjaga, (3) Adversarial loss memberikan feedback yang lebih aligned dengan persepsi manusia.
+
+Evidence Empiris dari Perbandingan Kualitatif
+
+Perbandingan kualitatif dalam literatur menunjukkan kompromi: DocEnTr menghasilkan citra dengan PSNR tinggi namun cenderung over-smoothed (loss tekstur kertas), sementara DE-GAN dengan PSNR lebih rendah mempertahankan tekstur natural namun dapat menghasilkan artefak adversarial. Text-DIAE mencoba posisi tengah dengan degradation-invariant learning, namun tanpa adversarial component juga menghasilkan tekstur kurang realistis dibanding GAN.
+
+Tension yang Belum Terselesaikan
+
+Debat ini mencerminkan tension fundamental dalam restorasi citra: optimisasi metrik objektif (PSNR) versus kualitas perseptual subjektif. Untuk dokumen historis, pertanyaan mendasar adalah: apakah realisme tekstur penting untuk keterbacaan HTR, atau kesetiaan piksel (PSNR tinggi) lebih relevan? Literatur belum memberikan jawaban konklusif karena evaluasi HTR tidak dilakukan secara konsisten pada kedua paradigma. Kesenjangan ini menggarisbawahi pentingnya protokol evaluasi yang mencakup metrik visual dan fungsional secara bersamaan.
+
+\subsubsection{CycleGAN dan Pembelajaran Tak Berpasangan untuk Peningkatan Dokumen}
+\label{subsubsec:cyclegan-unpaired}
+
+Zhu dkk. (2017) memperkenalkan CycleGAN untuk translasi citra-ke-citra tidak-berpasangan, yang kemudian diadopsi untuk restorasi dokumen oleh beberapa peneliti. Kerangka kerja ini menarik untuk restorasi dokumen karena data berpasangan (versi yang mengalami degradasi dan bersih dari dokumen yang sama) sangat sulit diperoleh untuk dokumen historis.
+
+\vspace{0.5ex}
+\noindent\textbf{A. Cycle Consistency sebagai Constraint}
+
+CycleGAN menggunakan dua generator: $G_{A \to B}$ yang memetakan dari domain yang mengalami degradasi ke domain bersih, dan $G_{B \to A}$ yang memetakan sebaliknya. Tujuan pelatihan mencakup loss adversarial untuk kedua arah dan loss konsistensi siklus:
+
+\begin{equation}
+\mathcal{L}_{cycle} = \mathbb{E}_{x \sim p_A}[\|G_{B \to A}(G_{A \to B}(x)) - x\|_1] + \mathbb{E}_{y \sim p_B}[\|G_{A \to B}(G_{B \to A}(y)) - y\|_1]
+\end{equation}
+
+Intuisi adalah bahwa pemetaan harus bijektif: jika kita memetakan citra yang mengalami degradasi ke bersih kemudian memetakan balik ke yang mengalami degradasi, kita harus memulihkan citra asli.
+
+\vspace{0.5ex}
+\noindent\textbf{B. Analisis untuk Restorasi Dokumen}
+
+Aplikasi CycleGAN untuk restorasi dokumen menunjukkan hasil yang beragam. Keuntungan utama adalah tidak memerlukan data berpasangan, yang sangat berharga untuk dokumen historis. Namun, beberapa masalah fundamental muncul:
+
+1. Keruntuhan Modus dan Ketidakstabilan: Pelatihan CycleGAN terkenal tidak stabil. Tanpa supervisi berpasangan, model dapat konvergen ke solusi yang memenuhi konsistensi siklus tetapi tidak menghasilkan restorasi yang bermakna. Misalnya, Generator dapat mempelajari pemetaan identitas trivial yang hanya menyalin masukan, yang secara teknis memenuhi konsistensi siklus tetapi tidak melakukan restorasi.
+
+2. Kurangnya Jaminan Preservasi Konten: Konsistensi siklus tidak secara eksplisit menjamin preservasi dari konten teks. Model dapat mengubah bentuk karakter atau menghapus karakter selama pemetaan maju-mundur memulihkan struktur citra keseluruhan.
+
+3. Kompleksitas Pelatihan: Pelatihan CycleGAN memerlukan penalaan hati-hati dari berbagai bobot loss dan dinamika pelatihan dari empat jaringan (dua generator, dua diskriminator) secara simultan. Hal ini membuat kerangka kerja ini kurang praktis dan kurang dapat direproduksi.
+
+Penelitian Terkait oleh Ni dkk. (2024): Pengembangan terbaru mencoba mengatasi beberapa keterbatasan dengan menambahkan loss perseptual dan loss identitas. Namun, masalah fundamental dari kurangnya optimisasi keterbacaan eksplisit tetap ada.
+
+Kesenjangan yang Teridentifikasi: CycleGAN untuk restorasi dokumen mengalami ketidakstabilan dan kekurangan jaminan preservasi teks. Yang lebih penting, sama seperti metode sebelumnya, tidak ada integrasi dengan evaluasi HTR.
+
+\subsubsection{Refleksi Komprehensif terhadap Bias Metodologis dalam Literatur}
+\label{subsubsec:refleksi-bias}
+
+\vspace{1.5ex}
+
+Analisis komprehensif terhadap literatur restorasi dokumen mengungkapkan beberapa bias sistematis yang perlu dipertimbangkan dalam interpretasi temuan dan generalisasi hasil penelitian:
+
+\vspace{0.5ex}
+\noindent\textbf{A. Bias Dataset dan Representasi}
+
+Mayoritas benchmark yang dominan dalam literatur (DIBCO 2009-2019, H-DIBCO 2010-2018, PALM 2012-2018) didominasi oleh dokumen historis Eropa dengan aksara Latin. Dari 284 citra yang tersedia dalam kompetisi DIBCO series, lebih dari 90 persen merupakan dokumen berbahasa Latin/Eropa. Generalisasi metode yang dilatih dan dievaluasi pada dataset ini ke aksara non-Latin (Arab, Jawa Kuno, Tionghoa, Sansekerta) belum teruji secara luas dalam literatur. Bias geografis dan linguistik ini menciptakan pertanyaan tentang universalitas pendekatan yang diklaim sebagai "terkini".
+
+\vspace{0.5ex}
+\noindent\textbf{B. Bias Metrik Evaluasi}
+
+Dominasi PSNR dan SSIM sebagai metrik evaluasi utama dalam literatur menciptakan optimisasi implisit terhadap metrik ini. Wang dkk. (2004) dalam studi seminal tentang Penilaian Kualitas Citra menunjukkan bahwa korelasi antara PSNR dengan kualitas perseptual manusia hanya berkisar 0,60-0,75, jauh dari korelasi sempurna. Lebih fundamental lagi, metrik visual tidak mengukur dampak terhadap keterbacaan untuk sistem HTR—kesenjangan signifikan yang baru mulai diakui dalam literatur terkini (Jadhav dkk., 2022). Praktik menggunakan metrik visual sebagai proxy untuk kualitas fungsional menciptakan bias evaluasi yang signifikan.
+
+\vspace{0.5ex}
+\noindent\textit{C. Bias Publikasi dan Pelaporan Selektif}
+
+Literatur akademik cenderung melaporkan hasil positif dan metode yang berhasil mencapai peningkatan kinerja. Metode yang gagal, pendekatan yang tidak konvergen, atau ablation negatif jarang terdokumentasi dengan detail memadai, menciptakan potensi bias publikasi. Ferguson dan Heene (2012) memperkirakan bahwa dalam bidang pembelajaran mesin, hingga 40 persen eksperimen negatif tidak dipublikasikan. Dalam konteks restorasi dokumen, bias ini dapat menyebabkan estimasi berlebihan terhadap efektivitas pendekatan tertentu dan estimasi kurang terhadap kompleksitas masalah.
+
+\vspace{0.5ex}
+\noindent\textbf{D. Bias Temporal dan Arsitektur}
+
+Dominasi CNN dalam literatur 2015-2020 dan transisi ke Transformer 2020-sekarang mencerminkan tren riset global dalam \textit{deep learning}, bukan bukti konklusif superioritas inheren untuk semua kasus penggunaan restorasi dokumen. Penelitian cenderung mengadopsi arsitektur yang sedang populer (ViT, Swin Transformer) tanpa justifikasi teoretis atau empiris yang kuat untuk domain spesifik dokumen historis. Bias ini dapat mengalihkan perhatian dari pendekatan yang lebih sederhana namun efektif, atau kombinasi yang lebih seimbang antara arsitektur klasik dan modern.
+
+\vspace{0.5ex}
+\noindent\textbf{E. Bias Degradasi Sintetis}
+
+Sebagian besar himpunan data pelatihan menggunakan degradasi sintetis yang dihasilkan secara algoritmik (Gaussian noise, motion blur, synthetic bleed-through). Meskipun praktis untuk menghasilkan data berpasangan, degradasi sintetis tidak sepenuhnya mereplikasi kompleksitas degradasi alami dokumen historis yang melibatkan proses kimia, biologis, dan fisik selama berabad-abad. Souibgui dkk. (2022) mengidentifikasi kesenjangan domain signifikan antara model yang dilatih pada degradasi sintetis dan performa pada degradasi nyata, dengan penurunan PSNR hingga 3-5 dB.
+
+\vspace{0.5ex}
+\noindent\textbf{F. Implikasi untuk Penelitian}
+
+Kesadaran terhadap bias-bias ini penting untuk interpretasi mendalam terhadap literatur dan pengembangan metode yang lebih robust. Penelitian di bidang restorasi dokumen perlu: (1) diversifikasi himpunan data evaluasi untuk mencakup aksara non-Latin dan dokumen non-Eropa, (2) adopsi metrik evaluasi yang lebih komprehensif termasuk dampak terhadap HTR, (3) pelaporan transparan terhadap eksperimen negatif dan ablation yang gagal, (4) justifikasi teoretis dan empiris untuk pemilihan arsitektur, dan (5) validasi pada degradasi autentik, bukan hanya sintetis.
+
+\vspace{1.5ex}
+
+Dengan mempertimbangkan refleksi mendalam di atas, bagian selanjutnya mengkaji sistem HTR yang menjadi target akhir dari proses restorasi dokumen, memberikan konteks untuk mengapa integrasi eksplisit antara restorasi dan pengenalan teks menjadi penting.
+
+\subsection{Pengenalan Teks Tulisan Tangan: Arsitektur dan Tantangan}
+\label{subsec:htr-systems}
+
+\vspace{1.5ex}
+
+Analisis mendalam terhadap metode restorasi dokumen pada bagian sebelumnya mengungkapkan kesenjangan signifikan: optimasi kualitas visual tidak otomatis menjamin peningkatan keterbacaan teks untuk sistem HTR. Untuk memahami mengapa integrasi supervisi berorientasi HTR menjadi esensial, diperlukan pemahaman komprehensif tentang karakteristik, mekanisme, dan tantangan sistem Handwritten Text Recognition itu sendiri. Bagian ini mengkaji evolusi arsitektur HTR dari pendekatan tradisional hingga sistem berbasis deep learning modern, dengan fokus pada mekanisme yang menentukan sensitivitas HTR terhadap kualitas citra masukan. Pemahaman ini menjadi fondasi untuk merancang strategi restorasi yang tidak hanya menghasilkan citra dengan kualitas visual tinggi, tetapi juga secara eksplisit dioptimasi untuk performa pengenalan teks.
+
+\subsubsection{Evolusi Arsitektur HTR}
+\label{subsubsec:htr-evolution}
+
+Pengenalan Teks Tulisan Tangan telah berkembang dari pendekatan pencocokan templat tradisional ke sistem berbasis pembelajaran mendalam modern. Memahami evolusi ini penting untuk menghargai mengapa optimisasi berorientasi HTR sangat penting untuk restorasi dokumen.
+
+\vspace{0.5ex}
+\noindent A. Pendekatan Tradisional: HMM dan Rekayasa Fitur
+
+Sistem HTR awal menggunakan Hidden Markov Models (HMM) dengan fitur yang dirancang manual seperti fitur arah, histogram gradien, atau fitur struktural. Pendekatan ini memerlukan segmentasi hati-hati dari baris teks ke karakter individual, diikuti oleh pengenalan tingkat karakter.
+
+Keterbatasan: Segmentasi karakter sangat menantang untuk teks tulisan tangan dengan karakter terhubung atau goresan yang tumpang tindih. Rekayasa fitur memerlukan keahlian domain dan fitur tidak dapat digeneralisasi di berbagai gaya tulisan atau bahasa.
+
+\vspace{0.5ex}
+\noindent B. Era Pembelajaran Mendalam: Arsitektur CRNN
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.65\textwidth]{images/The-architecture-of-CRNN-proposed-by-Shi-et-al-48-The-model-mainly-consists-of.png}
+\caption{Arsitektur CRNN yang mengkombinasikan CNN untuk ekstraksi fitur visual dengan RNN untuk pemodelan konteks dan CTC untuk transkripsi tanpa segmentasi.}
+\label{fig:crnn-architecture}
+\end{figure}
+
+Shi dkk. (2016) memperkenalkan CRNN (Convolutional Recurrent Neural Network) yang menjadi terobosan untuk pengenalan urutan-ke-urutan tanpa segmentasi eksplisit. Arsitektur terdiri dari:
+
+1. Lapisan CNN: Mengekstrak fitur visual dari citra masukan dalam bentuk urutan fitur. Lapisan konvolusional dengan pooling mengurangi dimensi spasial secara vertikal tetapi mempertahankan urutan horizontal.
+
+2. Lapisan Rekuren: LSTM dua-arah memproses urutan fitur untuk menangkap dependensi konteks. LSTM maju menangkap konteks kiri, LSTM mundur menangkap konteks kanan, memungkinkan model untuk bernalar tentang karakter dalam konteks dari karakter di sekitarnya.
+
+3. Lapisan Transkripsi: \textit{Connectionist Temporal Classification} (CTC) loss memungkinkan pelatihan tanpa memerlukan label yang selaras. CTC memungkinkan model untuk mempelajari penyelarasan secara implisit.
+
+Kontribusi: CRNN menghilangkan kebutuhan untuk segmentasi karakter dan mencapai hasil terkini pada berbagai tolok ukur. Arsitektur ini menjadi standar de facto untuk HTR tingkat baris.
+
+\subsubsection{Loss CTC: Mekanisme dan Implikasi untuk Restorasi}
+\label{subsubsec:ctc-loss}
+
+Loss CTC, diperkenalkan oleh Graves dkk. (2006), adalah komponen krusial yang memungkinkan pelatihan model HTR tanpa penyelarasan eksplisit antara fitur masukan dan karakter keluaran.
+
+\vspace{0.5ex}
+\noindent\textbf{A. Penyelarasan CTC dan Blank Token}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.65\textwidth]{images/ctc_mekanisme.png}
+\caption{Mekanisme CTC (\textit{Connectionist Temporal Classification}) untuk penyelarasan otomatis antara fitur masukan dan karakter keluaran tanpa memerlukan segmentasi eksplisit.}
+\label{fig:ctc-mechanism}
+\end{figure}
+
+CTC memperkenalkan token kosong khusus ($\epsilon$) yang merepresentasikan "tidak ada karakter" pada langkah waktu tertentu. Model bebas untuk mengeluarkan token kosong atau mengulangi karakter, dan CTC secara otomatis menciutkan karakter berulang dan menghapus kosong untuk menghasilkan transkripsi akhir.
+
+Formal, probabilitas CTC untuk urutan keluaran $y$ given masukan $x$ adalah:
+
+\begin{equation}
+p(y|x) = \sum_{\pi \in \mathcal{B}^{-1}(y)} \prod_{t=1}^T p_t(\pi_t|x)
+\end{equation}
+
+Di mana $\mathcal{B}$ adalah fungsi penciutan yang memetakan urutan dengan pengulangan dan kosong ke keluaran akhir, dan $p_t(\pi_t|x)$ adalah probabilitas dari token $\pi_t$ pada langkah waktu $t$.
+
+\vspace{0.5ex}
+\noindent\textbf{B. Implikasi untuk Restorasi Dokumen}
+
+Memahami mekanisme CTC sangat penting untuk menghargai mengapa restorasi berorientasi HTR penting:
+
+1. Sensitivitas terhadap Kualitas Fitur: CTC bergantung pada fitur diskriminatif yang jelas untuk setiap langkah waktu. Degradasi yang mengaburkan batas atau menciptakan fitur ambigu akan berdampak signifikan pada kepercayaan dan akurasi CTC.
+
+2. Pentingnya Kontinuitas Goresan: Goresan terputus akibat pemudaran dapat menyebabkan emisi kosong yang keliru atau pemisahan karakter. Generator yang menjaga kontinuitas goresan akan secara langsung meningkatkan kualitas penyelarasan CTC.
+
+3. Propagasi Kesalahan dalam Lapisan Rekuren: Lapisan LSTM mempropagasi informasi lintas langkah waktu. Kesalahan atau ketidakpastian di langkah waktu awal dapat bertambah dan mempengaruhi prediksi selanjutnya. Restorasi yang meningkatkan pengenalan karakter awal akan memiliki manfaat yang berantai.
+
+Motivasi untuk Integrasi: Fakta bahwa loss CTC secara langsung mengukur akurasi pengenalan teks menjadikannya tujuan yang ideal untuk memandu Generator dalam proses restorasi. Dengan meminimalkan loss CTC pada citra yang direstorasi, Generator secara eksplisit dioptimisasi untuk menghasilkan citra yang dapat dibaca oleh sistem HTR.
+
+\subsubsection{HTR Berbasis Transformer dan Pembelajaran Mandiri: Perkembangan Terkini}
+\label{subsubsec:transformer-htr}
+
+\vspace{1.5ex}
+
+Meskipun arsitektur CRNN dengan mekanisme CTC telah menjadi standar de facto untuk HTR, perkembangan terkini menunjukkan transisi paradigmatik menuju arsitektur berbasis Transformer. Keterbatasan inheren dari LSTM—khususnya kesulitan menangkap dependensi jarak jauh dan sifat sekuensial yang membatasi paralelisasi—memotivasi eksplorasi mekanisme perhatian-diri (self-attention) yang dapat mengakses informasi dari seluruh sekuens secara langsung. Transisi ini memiliki implikasi signifikan untuk restorasi dokumen berorientasi HTR, karena pemilihan arsitektur pengenal yang tepat dapat mempengaruhi stabilitas gradien dan kualitas supervisi dalam lingkaran pelatihan integrasi.
+
+Perkembangan terbaru dalam HTR telah mengadopsi arsitektur Transformer, menggantikan lapisan rekuren dengan mekanisme self-attention. Diaz dkk. (2021) menunjukkan bahwa HTR berbasis Transformer dapat mencapai kinerja superior dengan paralelisasi yang lebih baik.
+
+\subsubsection{Transformer dalam Peningkatan Dokumen}
+\label{subsubsec:transformer-dokumen}
+
+Evolusi terbaru dalam peningkatan dokumen ditandai oleh kemunculan DocEnTr dan Text-DIAE, yang menggunakan arsitektur Transformer penuh dengan pendekatan yang berbeda:
+
+1. DocEnTr: Sepenuhnya Transformer dengan pembelajaran terawasi, mengoptimalkan loss MSE untuk peningkatan kualitas visual.
+
+2. Text-DIAE: Pra-pelatihan mandiri dengan invarian degradasi, diikuti penalaan halus terawasi.
+
+\subsubsection{Pembelajaran Mandiri: Revolusi dalam Pemrosesan Dokumen}
+\label{subsubsec:pembelajaran-mandiri}
+
+Text-DIAE merepresentasikan paradigma baru dalam pemrosesan dokumen: \textbf{pembelajaran mandiri} yang mengurangi ketergantungan pada data berlabel. Ini sangat relevan untuk domain dokumen historis di mana data berlabel sangat terbatas.
+
+Kontribusi Utama Pembelajaran Mandiri:
+\begin{itemize}
+ \item Efisiensi Data: Mengurangi kebutuhan data berlabel hingga 166 kali
+ \item Generalisasi: Representasi yang lebih universal untuk berbagai tugas
+ \item Skalabilitas: Memanfaatkan sejumlah besar dokumen historis tidak berlabel
+\end{itemize}
+
+Perbedaan Fundamental dengan Supervised Learning:
+\begin{itemize}
+ \item Fungsi Tujuan: Pembelajaran mandiri menggunakan tujuan rekonstruksi (MSE), terawasi menggunakan loss spesifik-tugas (CTC, entropi silang)
+ \item Strategi Pelatihan: Dua-tahap (pra-pelatihan + penalaan halus) vs ujung-ke-ujung
+ \item Kebutuhan Data: Data tidak berlabel untuk pra-pelatihan vs data berlabel untuk terawasi
+\end{itemize}
+
+\textbf{Keterbatasan Pembelajaran Mandiri untuk Optimisasi Keterbacaan}
+
+Meskipun \textit{Text-DIAE} menunjukkan efisiensi data yang mengesankan, pendekatan ini memiliki keterbatasan fundamental untuk optimisasi keterbacaan:
+
+1. Ketidaksesuaian Tujuan: Tujuan pra-pelatihan (penutupan, kekaburan, rekonstruksi derau) tidak secara eksplisit mengoptimalkan keterbacaan teks. Kesenjangan antara invarian degradasi dan kinerja HTR tetap ada.
+
+2. Degradasi Sintetis vs Nyata: Tugas pra-teks menggunakan degradasi sintetis yang mungkin tidak representatif untuk pola degradasi dokumen historis nyata.
+
+3{.} Keterbatasan Dua-Tahap: Tahap penalaan halus masih terpisah dari evaluasi HTR. Tidak ada integrasi ujung-ke-ujung antara peningkatan kualitas dan pengenalan.
+
+\subsubsection{Kompromi antara Pembelajaran Terawasi dan Mandiri}
+
+\begin{table}[H]
+\centering
+\caption{Perbandingan pendekatan Terawasi vs Mandiri untuk Peningkatan Kualitas Dokumen}
+\label{tab:supervised-selfsupervised}
+\footnotesize
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Pendekatan} & \textbf{Data Efficiency} & \textbf{HTR Integration} & \textbf{Realism} \\ \hline
+\textbf{Supervised} (DE-GAN) & Rendah & Post-hoc & Tinggi \\ \hline
+\textbf{Self}-Supervised (Text-DIAE) & Sangat Tinggi & Tidak Ada & Sedang \\ \hline
+\textbf{Supervised} (DocEnTr) & Rendah & Tidak Ada & Sedang \\ \hline
+\textbf{Yang Diusulkan} & \textbf{Tinggi} & \textbf{Ujung-ke-Ujung} & \textbf{Tinggi} \\ \hline
+\end{tabular}
+\end{table}
+
+Implikasi: Kesenjangan antara arsitektur CRNN dan Transformer dalam menangani kompleksitas dokumen historis membuka peluang eksplorasi untuk penggunaan arsitektur HTR yang lebih modern. Demikian pula, strategi frozen recognizer berpotensi mengatasi masalah ketidakstabilan pelatihan bersama (joint training) yang diamati pada pendekatan terdahulu.
+\begin{itemize}
+ \item Komponen Terawasi: Integrasi HTR ujung-ke-ujung dengan loss CTC eksplisit
+ \item Prinsip Mandiri: Pembelajaran multi-tugas dengan berbagai jenis degradasi
+ \item Arsitektur Hibrida: CNN+Transformer untuk keseimbangan antara efisiensi dan kinerja
+\end{itemize}
+
+\subsubsection{Arsitektur dan Keunggulan}
+
+HTR Transformer umumnya menggunakan backbone CNN untuk ekstraksi fitur yang diikuti oleh encoder Transformer untuk pemodelan sekuens. Mekanisme perhatian-diri memungkinkan model untuk memperhatikan posisi mana pun dalam sekuens, menangkap dependensi jarak jauh secara lebih efektif dibandingkan LSTM.
+
+\subsubsection{Justifikasi Arsitektur untuk Kasus Paleografi}
+
+Pemilihan arsitektur CNN+Transformer didasarkan pada karakteristik spesifik dokumen kuno, termasuk variasi gaya tulisan yang ekstrem dan tingkat degradasi visual yang kompleks. Dokumen paleografi memiliki tantangan unik yang membutuhkan pendekatan arsitektur yang komprehensif:
+
+\begin{itemize}
+ \item Variasi Gaya Tulisan yang Ekstrem: Dokumen kuno mengandung berbagai gaya tulisan (scriptoria) dengan karakteristik unik. Arsitektur CNN dengan ekstraksi fitur progresif dapat menangkap hierarki fitur visual, mulai dari goresan dasar hingga kompleksitas karakter, melalui 4 tahap yang dirancang secara adaptif.
+
+ \item Dependensi Jarak Jauh dalam Karakter: Tulisan tangan historis seringkali memiliki struktur di mana bagian awal karakter mempengaruhi bagian akhir. Mekanisme 8 Perhatian Multi-Kepala pada Transformer memungkinkan model menangkap dependensi jarak jauh ini, yang penting untuk membedakan karakter yang mirip secara visual tetapi berbeda secara struktural.
+
+ \item Konsistensi Kontekstual antar Karakter: Dalam naskah kuno, kemunculan suatu karakter seringkali dipengaruhi oleh karakter sebelumnya (konteks linguistik). Tumpukan dari 6 lapisan Enkoder Transformer memberikan kapasitas pemodelan urutan yang mendalam untuk menangkap pola-pola kontekstual ini.
+
+ \item Ketangguhan terhadap Degradasi: Dokumen kuno umumnya mengalami berbagai bentuk degradasi (pemudaran, noda, sobekan). Kombinasi CNN untuk ekstraksi fitur invarian dan Transformer untuk pemodelan sekuens memberikan ketangguhan terhadap derau dan variasi visual yang tidak terduga.
+
+ \item Generalisasi Antar Periode Waktu: Arsitektur ini dirancang untuk generalisasi lintas periode historis dengan menangkap fitur fundamental dari tulisan tangan yang konsisten melintasi gaya penulisan berbeda.
+\end{itemize}
+
+\subsubsection{Perbandingan dengan HTR Konvensional}
+
+Arsitektur yang diusulkan berbeda dari HTR konvensional yang umumnya menggunakan CRNN atau LSTM. Perbedaan utama terletak pada penggunaan Transformer untuk meningkatkan kapacitas representasi dalam menangani kompleksitas dokumen kuno. Pendekatan ini berbeda secara signifikan dari HTR konvensional yang sering menggunakan CRNN atau LSTM biasa, karena kompleksitas dokumen kuno membutuhkan kapacitas representasi yang lebih tinggi untuk menangani variasi ekstrem dan dependensi kompleks yang khas dalam konteks paleografi.
+
+\subsubsection{Keunggulan Komparatif Arsitektur CNN+Transformer}
+
+Arsitektur CNN+Transformer menawarkan beberapa keunggulan fundamental dibandingkan dengan pendekatan HTR tradisional dalam konteks dokumen kuno:
+
+\begin{itemize}
+ \item \textbf{Kapasitas Representasi yang Lebih Tinggi:} Stack 6 Transformer Encoder dengan 8 Multi-Head Attention memberikan matriks konektivitas $O(n^2)$, memungkinkan setiap posisi dalam sekuens untuk berinteraksi langsung dengan semua posisi lain. Ini lebih unggul dibandingkan LSTM yang hanya memiliki dependensi sekuensial $O(n)$. Untuk dokumen kuno dengan panjang 128 karakter, Transformer memiliki 16.384 kemungkinan koneksi antar posisi, sementara LSTM hanya memiliki 127 koneksi sekuensial.
+
+ \item \textbf{Kemampuan Pemrosesan Paralel: Arsitektur Transformer memungkinkan pemrosesan paralel seluruh sekuens, berbeda dengan LSTM yang sifatnya sekuensial. Ini memberikan keuntungan komputasi signifikan untuk dokumen panjang. Pada perangkat keras modern dengan GPU, Transformer dapat mencapai percepatan 3-5x dibandingkan LSTM untuk sekuens dengan panjang lebih dari 64 karakter.}
+
+ \item \textbf{Ekstraksi Fitur Adaptif:} Multi-Head Attention memungkinkan model secara adaptif memfokuskan perhatian pada bagian gambar yang paling relevan untuk setiap karakter, sementara CNN dengan ekstraksi progresif menangkap fitur multi-skala dari goresan hingga kata. Setiap head dapat mempelajari representasi yang berbeda (arah goresan, batas karakter, diakritik) tanpa rekayasa fitur eksplisit.
+
+ \item \textbf{Penanganan Dependensi Jarak Jauh:} Untuk dokumen kuno dengan karakter kompleks yang dapat memiliki komponen terpisah secara spasial (seperti ligatur Arab atau diakritik Latin), kemampuan menangkap dependensi jarak jauh menjadi krusial. LSTM dengan ukuran hidden state 128 hanya dapat mengingat informasi dari ~50 langkah waktu sebelumnya, sementara Transformer dapat mengakses informasi dari seluruh sekuens tanpa penurunan kualitas.
+
+ \item \textbf{Reduksi Masalah Vanishing Gradient}: Dengan residual connections dalam Transformer dan koneksi langsung dalam CNN bergaya U-Net, arsitektur ini lebih tangguh terhadap vanishing gradients, memungkinkan pelatihan yang lebih stabil untuk model yang dalam. Aliran gradient dalam Transformer lebih efisien karena pemrosesan paralel dan jalur komputasi yang lebih pendek antara masukan dan keluaran.
+
+ \item \textbf{Skalabilitas untuk Kosakata Besar: Arsitektur Transformer lebih skalabel untuk kosakata yang besar (100+ karakter) karena mekanisme attention tidak terikat pada pemrosesan sekuensial. Ini penting untuk dokumen historis yang mungkin mengandung karakter kuno atau simbol khusus.}
+\end{itemize}
+
+Keunggulan-keunggulan ini secara spesifik dirancang untuk mengatasi tantangan paleografi yang tidak dapat diselesaikan secara optimal oleh pendekatan HTR generik.
+
+\textbf{Relevansi untuk Eksplorasi Arsitektur HTR}
+
+Dalam konteks restorasi dokumen berorientasi HTR, pemilihan arsitektur pengenal yang tepat menjadi pertimbangan penting. Eksplorasi penggunaan Transformer-based HTR sebagai komponen frozen recognizer dimotivasi oleh:
+
+1. Kinerja Terkini: HTR Transformer mencapai CER yang lebih rendah dibandingkan CRNN pada banyak tolok ukur, memberikan dasar yang lebih baik untuk evaluasi.
+
+2. Gradien Stabil: Mekanisme perhatian-diri menghasilkan gradien yang lebih stabil dibandingkan LSTM, yang penting ketika melakukan propagasi balik melalui pengenal untuk pelatihan Generator.
+
+3. Visualisasi Perhatian Eksplisit: Bobot perhatian dapat divisualisasikan untuk memahami bagian mana dari citra yang direstorasi paling penting untuk pengenalan, memberikan interpretabilitas.
+
+\subsection{Pembelajaran Multi-Modal dan Diskriminator Dual-Modal}
+\label{subsec:multi-modal}
+
+%space{1.5ex}
+
+Mengintegrasikan informasi dari berbagai modalitas telah terbukti meningkatkan kinerja sistem kecerdasan buatan dalam berbagai domain aplikasi. Dalam konteks restorasi dokumen, pendekatan tradisional yang hanya mengandalkan informasi visual sering kali gagal menangkap struktur semantik teks yang penting untuk mempertahankan keterbacaan. Bagian ini menyajikan kajian komprehensif tentang pembelajaran multi-modal, dengan fokus pada pengembangan diskriminator dual-modal yang secara simultan mengevaluasi aspek visual dan tekstual dari citra yang direstorasi. Pembahasan mencakup landasan teoretis, hipotesis informasi komplementer, kemajuan terkini dalam arsitektur multi-modal, serta aplikasi spesifik dalam kerangka kerja restorasi dokumen berorientasi pengenalan teks.
+
+
+\subsubsection{Landasan Teoretis Pembelajaran Multi-Modal}
+\label{subsubsec:theoretical-foundation-multimodal}
+
+Pembelajaran multi-modal mengacu pada pembelajaran dari data yang mengandung berbagai modalitas (misalnya, visi, teks, audio). Dalam konteks restorasi dokumen, dua modalitas yang relevan adalah informasi visual (intensitas piksel, tekstur) dan informasi tekstual (urutan karakter, struktur linguistik).
+
+\subsubsection{Hipotesis Informasi Komplementer}
+\label{subsubsec:hipotesis-informasi-komplementer}
+
+Hipotesis inti dalam pembelajaran multi-modal adalah bahwa modalitas yang berbeda memberikan informasi yang saling melengkapi. Modalitas visual dapat mendeteksi fitur tingkat rendah seperti tepi dan tekstur, sementara modalitas tekstual memberikan batasan semantik tingkat tinggi. Mengintegrasikan kedua modalitas dapat menghasilkan sistem yang lebih tangguh dan akurat.
+
+Baltrusaitis dkk. (2019) dalam survei komprehensif tentang pembelajaran multi-modal mengidentifikasi tiga tantangan kunci: (1) pembelajaran representasi untuk menggabungkan modalitas yang berbeda, (2) translasi antara modalitas, dan (3) penyelarasan antara elemen yang berkorespondensi dari modalitas yang berbeda.
+
+\vspace{0.5ex}
+\subsubsection{Kemajuan Terkini dalam Arsitektur Multi-Modal}
+\label{subsubsec:kemajuan-multimodal-arsitektur}
+
+Penelitian terkini dalam pembelajaran multi-modal telah menunjukkan kemajuan signifikan:
+
+1. Pendekatan Berbasis CLIP: Radford dkk. (2021) menunjukkan bahwa pembelajaran kontrastif pada pasangan citra-teks dapat menghasilkan representasi yang kuat untuk tugas multi-modal. Meskipun CLIP belum diterapkan secara luas dalam restorasi dokumen, konsep pembelajaran kontrastif dapat diadaptasi untuk pasangan dokumen-teks.
+
+2. Mekanisme Perhatian-Silang: Vaswani dkk. (2023) mengembangkan arsitektur perhatian-silang yang secara efektif dapat mengintegrasikan informasi dari berbagai modalitas dengan bobot perhatian yang dipelajari. Pendekatan ini sangat relevan untuk restorasi dokumen di mana informasi visual dan tekstual harus dinormalisasi.
+
+3. Kerangka Kerja Pembelajaran Multi-Tugas: Raffel dkk. (2023) menunjukkan bahwa pembelajaran multi-tugas dapat meningkatkan generalisasi dan ketangguhan dalam pengaturan multi-modal. Dalam konteks restorasi dokumen, pembelajaran multi-tugas dapat menggabungkan tugas peningkatan kualitas, binarisasi, dan pengenalan.
+
+\subsubsection{Strategi Fusi}
+\label{subsubsec:strategi-fusi}
+
+Fusi multi-modal dapat dilakukan pada berbagai tingkatan:
+
+1. Fusi Awal: Menggabungkan fitur mentah dari modalitas yang berbeda di tahap awal jaringan. Keuntungan adalah memungkinkan interaksi tingkat rendah, tetapi kelemahannya adalah peningkatan dimensionalitas dan kesulitan dalam pembelajaran.
+
+2. Fusi Akhir: Memproses setiap modalitas secara independen hingga representasi tingkat tinggi, kemudian menggabungkan prediksi atau fitur. Keuntungan adalah pelatihan yang lebih sederhana, tetapi loss interaksi tingkat rendah.
+
+3. Fusi Hibrida: Menggabungkan fusi awal dan akhir, memungkinkan interaksi pada berbagai tingkat. Pendekatan ini menawarkan keseimbangan antara ekspresivitas dan efisiensi komputasi.
+
+\subsubsection{Aplikasi Multi-Modal untuk Restorasi Dokumen}
+\label{subsubsec:aplikasi-multimodal}
+
+Dalam konteks restorasi dokumen, pembelajaran multi-modal berpotensi mengintegrasikan informasi visual (karakteristik piksel, tekstur, struktur spasial) dengan informasi tekstual (urutan karakter, koherensi linguistik) untuk supervisi yang lebih kaya.
+
+\vspace{0.5ex}
+\subsubsection{Konsep Diskriminator Multi-Modal}
+\label{subsubsec:konsep-diskriminator-multimodal}
+
+Dalam restorasi dokumen, diskriminator konvensional hanya mengevaluasi modalitas visual—apakah citra hasil restorasi "terlihat bersih" secara visual. Pendekatan multi-modal yang berpotensi dieksplorasi adalah diskriminator yang mengevaluasi dua modalitas secara bersamaan:
+
+1. Modalitas Visual: Evaluasi karakteristik spasial dan tekstur citra melalui jaringan konvolusional, mengikuti paradigma PatchGAN (Isola dkk., 2017) yang menilai keaslian pada tingkat patch lokal.
+
+2. Modalitas Tekstual: Evaluasi koherensi struktur teks melalui pemrosesan sekuensial representasi karakter, menggunakan arsitektur seperti LSTM atau Transformer untuk menangkap dependensi linguistik.
+
+3. Strategi Fusi: Integrasi informasi dari kedua modalitas dapat dilakukan melalui konkatenasi fitur (fusi akhir), interaksi awal (fusi awal), atau pendekatan hibrida yang memungkinkan interaksi multi-tingkat.
+
+\vspace{0.5ex}
+\noindent\textbf{Potensi Keuntungan Teoretis}
+
+1. \textit{Supervisi Multi-Dimensi: Evaluasi simultan terhadap modalitas visual dan tekstual berpotensi memberikan sinyal gradien yang lebih kaya dibandingkan evaluasi visual saja. Diskriminator dapat mendeteksi inkonsistensi yang tidak terlihat dari perspektif visual murni, seperti karakter yang secara visual terlihat wajar tetapi tidak koheren dalam konteks sekuens.}
+
+2. \textit{Alignment} dengan Tujuan Akhir: Untuk restorasi dokumen yang ditujukan untuk HTR, supervisi tekstual berpotensi lebih selaras dengan tujuan downstream dibandingkan supervisi visual saja. Hal ini sejalan dengan prinsip \textit{task-oriented optimization}.
+
+3. \textit{Regularisasi Implisit: Batasan dari modalitas ganda dapat berfungsi sebagai regularisasi, berpotensi mengurangi risiko mode collapse karena generator harus memenuhi kriteria dari kedua modalitas secara bersamaan.}
+
+\vspace{0.5ex}
+\noindent\textbf{Evidensi dari Domain Terkait}
+
+Wei dkk. (2024) menunjukkan bahwa diskriminator multi-modal pada tugas \textit{image captioning} meningkatkan stabilitas pelatihan dan koherensi keluaran. Eksperimen mendemonstrasikan bahwa evaluasi visual-tekstual gabungan menghasilkan \textit{caption} yang lebih koheren dibandingkan diskriminator visual saja.
+
+Dalam konteks restorasi dokumen, potensi pendekatan multi-modal menjadi relevan karena tujuan akhir bukan hanya kualitas visual, tetapi keterbacaan teks untuk sistem HTR. Namun, validasi empiris diperlukan untuk mengonfirmasi keuntungan ini pada domain dokumen historis spesifik.
+
+\subsection{Sintesis Fungsi Loss dan Optimasi Multi-Objektif}
+\label{subsec:loss-functions}
+
+\vspace{1.5ex}
+
+Setelah mengkaji pembelajaran multi-modal yang mengintegrasikan informasi visual dan tekstual, pertanyaan fundamental muncul: bagaimana mengoptimasi model secara efektif ketika terdapat berbagai tujuan yang harus diseimbangkan? Integrasi diskriminator dual-modal dan supervisi HTR menciptakan skenario optimasi multi-objektif yang kompleks, di mana tujuan yang berbeda (kualitas visual, realisme adversarial, keterbacaan teks) dapat saling berkonflik. Bagian ini menganalisis secara mendalam keterbatasan pelatihan dengan fungsi loss tunggal, kemudian mengembangkan kerangka konseptual untuk fungsi loss multi-komponen dengan strategi pembobotan yang memungkinkan kontrol kompromi antar objektif. Analisis ini esensial untuk merancang fungsi optimasi yang mencapai keseimbangan optimal antara kualitas perseptual dan keterbacaan fungsional.
+
+\subsubsection{Keterbatasan Pelatihan Loss Tunggal}
+\label{subsubsec:single-loss-limits}
+
+\vspace{1.5ex}
+
+Melatih jaringan saraf dalam dengan fungsi loss tunggal sering kali tidak mencukupi untuk tugas kompleks. Untuk restorasi dokumen yang memerlukan penyeimbangan berbagai tujuan, loss multi-komponen sangat penting.
+
+\vspace{0.5ex}
+\noindent\textbf{A. Loss Adversarial Murni}
+
+Pelatihan dengan \textit{loss adversarial} murni (tanpa \textit{loss rekonstruksi}) menyebabkan mode collapse dan ketidakstabilan. Generator dapat mempelajari untuk menghasilkan keluaran yang menipu diskriminator tetapi sepenuhnya mengabaikan kondisi masukan. Untuk generasi bersyarat, hal ini adalah bencana.
+
+\vspace{0.5ex}
+\noindent\textbf{B. \textit{Loss Rekonstruksi Murni} (L1/L2)}
+
+Pelatihan dengan loss L1 atau L2 murni menghasilkan keluaran kabur karena fungsi loss merata-ratakan semua kemungkinan keluaran. Untuk kasus ambigu, model mempelajari untuk menghasilkan rata-rata "aman" yang meminimalkan jarak piksel tetapi tidak realistis.
+
+\vspace{0.5ex}
+\noindent\textbf{C. Kebutuhan untuk \textit{Loss Multi-Komponen}}
+
+Menggabungkan berbagai suku loss memungkinkan model untuk mengoptimalkan berbagai tujuan secara simultan. Tantangan kunci adalah menyeimbangkan bobot untuk berbagai komponen.
+
+\subsubsection{Kerangka Konseptual Fungsi Loss Multi-Komponen}
+\label{subsubsec:multi-component-loss}
+
+\vspace{1.5ex}
+
+Berdasarkan analisis keterbatasan di atas, kerangka fungsi loss multi-komponen untuk restorasi dokumen berorientasi HTR dapat dikonseptualisasikan secara umum sebagai kombinasi berbobot dari tujuan ganda:
+
+\begin{equation}
+\mathcal{L}_{total} = \sum_{i} \lambda_i \mathcal{L}_i
+\end{equation}
+
+di mana setiap $\mathcal{L}_i$ merepresentasikan objektif spesifik dan $\lambda_i$ adalah bobot yang mengontrol kontribusi relatif.
+
+\textbf{Komponen Umum dalam Restorasi Dokumen}
+
+1. Adversarial Loss ($\mathcal{L}_{adversarial}$)
+
+Komponen adversarial standar dalam GAN bersyarat untuk mendorong realisme visual keluaran. Mengikuti formulasi Goodfellow dkk. (2014) dan Isola dkk. (2017), loss ini memberikan sinyal untuk menghasilkan citra yang tidak dapat dibedakan dari citra nyata oleh diskriminator.
+
+2. Reconstruction Loss ($\mathcal{L}_{reconstruction}$)
+
+Komponen rekonstruksi untuk menjaga kesetiaan konten terhadap ground truth. Dapat menggunakan L1, L2, atau kombinasi keduanya. Isola dkk. (2017) menunjukkan bahwa L1 cenderung menghasilkan keluaran yang lebih tajam dibandingkan L2 dalam konteks translasi citra-ke-citra.
+
+3. Perceptual Loss ($\mathcal{L}_{perceptual}$) - Opsional
+
+Johnson dkk. (2016) memperkenalkan perceptual loss yang mengukur kesamaan pada ruang fitur jaringan pra-terlatih (seperti VGG). Ini berpotensi menangkap kemiripan semantik yang tidak tertangkap oleh loss tingkat piksel.
+
+4. Loss Berorientasi HTR ($\mathcal{L}_{HTR}$) - Kesenjangan yang Teridentifikasi
+
+Berdasarkan analisis literatur, komponen yang mengintegrasikan supervisi langsung dari model HTR masih terbatas eksplorasinya. Potensi pendekatan mencakup penggunaan loss CTC atau loss berbasis atensi dari model pengenalan untuk memberikan gradien yang berorientasi pada keterbacaan, bukan hanya kualitas visual.
+
+\textbf{Trade-off Frozen vs Joint Training}
+
+Dalam konteks integrasi model HTR dengan generator restorasi, terdapat dua paradigma yang dapat dieksplorasi:
+
+1. Frozen Recognizer: Model HTR pra-terlatih dibekukan dan digunakan hanya untuk menghitung gradien tanpa mengubah bobotnya. Keuntungan teoretis mencakup stabilitas gradien dan konsistensi evaluasi. Loss potensial adalah kurangnya adaptasi terhadap karakteristik keluaran generator.
+
+2. Pelatihan Bersama: Model HTR dan generator dilatih bersama secara ujung-ke-ujung. Keuntungan teoretis adalah kemampuan ko-adaptasi. Loss potensial adalah ketidakstabilan optimisasi karena kompetisi gradien antara dua tujuan yang berbeda.
+
+Souibgui dkk. (2021) mengeksplorasi joint training pada ERB-MultiTask dengan hasil yang menjanjikan, namun melaporkan tantangan dalam stabilitas konvergensi. Eksplorasi lebih lanjut diperlukan untuk membandingkan kedua paradigma pada konteks dokumen historis spesifik.
+\subsubsection{Tantangan Penyeimbangan Multi-Objektif}
+\label{subsubsec:weight-balancing}
+
+\vspace{1.5ex}
+
+Penentuan bobot optimal untuk setiap komponen loss dalam kerangka multi-objektif merupakan tantangan penelitian yang terbuka. Beberapa pertimbangan teoretis:
+
+\textbf{Perbedaan Skala Magnitudo}
+
+Komponen loss yang berbeda dapat memiliki rentang nilai yang sangat berbeda. \textit{Adversarial loss} biasanya dalam rentang probabilitas log, reconstruction loss bergantung pada rentang nilai piksel, dan loss HTR bergantung pada panjang sekuens dan ukuran kosakata. Tanpa normalisasi atau pembobotan yang tepat, komponen dengan magnitudo lebih besar akan mendominasi optimisasi.
+
+\textbf{Strategi yang Dapat Dieksplorasi}
+
+Beberapa strategi untuk penyeimbangan yang telah diusulkan dalam literatur:
+
+1. Penalaan Manual: Pendekatan \textit{grid search} atau random search dengan evaluasi empiris pada himpunan validasi. Sederhana tetapi memerlukan banyak eksperimen.
+
+2. \textit{Adaptive Weighting}: Chen dkk. (2018) mengusulkan \textit{GradNorm} yang secara dinamis menyesuaikan bobot berdasarkan magnitudo relatif gradien dari setiap loss. Berpotensi mencapai keseimbangan otomatis.
+
+
+%space{1.5ex}
+
+Analisis mendalam terhadap metode-metode yang ada dan identifikasi kesenjangan penelitian merupakan langkah fundamental dalam merumuskan kontribusi ilmiah yang bermakna. Berdasarkan kajian komprehensif terhadap state-of-the-art dalam restorasi dokumen, bagian ini menyajikan sintesis keterbatasan fundamental yang masih dihadapi oleh pendekatan terkini. Pembahasan mencakup identifikasi empat kesenjangan utama, formulasi pertanyaan penelitian yang spesifik, dan perumusan hipotesis yang akan diuji dalam penelitian ini. Lebih jauh, bagian ini memposisikan kontribusi penelitian dalam landscape akademik yang lebih luas, menunjukkan bagaimana penelitian ini mengatasi keterbatasan yang teridentifikasi dan memberikan pemahaman baru tentang optimisasi multi-objektif dalam restorasi dokumen berorientasi pengenalan teks.
+
+3. Optimisasi Pareto: Pendekatan optimisasi multi-objektif yang mencari solusi pada Pareto frontier di mana tidak ada objektif yang dapat ditingkatkan tanpa mengorbankan objektif lainnya.
+
+Validasi empiris diperlukan untuk menentukan strategi yang paling efektif untuk konteks restorasi dokumen historis.
+
+\subsection{Kesenjangan Penelitian dan Positioning}
+\label{subsec:research-gap}
+\subsubsection{Sintesis Keterbatasan Metode yang Ada}
+\label{subsubsec:gap-synthesis}
+
+\vspace{1.5ex}
+
+Setelah melakukan analisis mendalam terhadap berbagai pendekatan restorasi dokumen---dari metode tradisional berbasis ambang batas hingga arsitektur modern berbasis GAN dan transformer---langkah selanjutnya adalah melakukan sintesis komprehensif untuk mengidentifikasi pola, tren, dan kesenjangan yang muncul secara sistematis. Tabel \ref{tab:sota-comparison-metrics} dan \ref{tab:sota-comparison-arch} merangkum perbandingan kuantitatif metode terkini berdasarkan metrik performa dan karakteristik arsitektural.
+
+\begin{table}[H]
+\centering
+\caption{Perbandingan metode terkini dalam restorasi dokumen (Bagian 1: Metrik Performa)}
+\label{tab:sota-comparison-metrics}
+\footnotesize
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Metode} & \textbf{PSNR} & \textbf{SSIM} & \textbf{CER} & \textbf{Evaluasi HTR} \\ \hline
+\textbf{Otsu} (1979) & T/A & T/A & -- & \texttimes \\ \hline
+\textbf{Sauvola} (2000) & T/A & 0.68 & -- & \texttimes \\ \hline
+U-Net (2015) & T/A & T/A & -- & \texttimes\textsuperscript{2} \\ \hline
+\textbf{Pix}2Pix (2017) & T/A & T/A & -- & \texttimes\textsuperscript{2} \\ \hline
+ERB-MultiTask (2021) & 15.7 dB & 0.87 & 23.0\% & \checkmark\textsuperscript{1,2} \\ \hline
+DE-GAN (2021) & 15.5 dB & 0.86 & 28.2\% & \checkmark\textsuperscript{1,2} \\ \hline
+\textbf{Text}-DIAE (2022) & 28.5 dB & 0.88 & -- & \texttimes \\ \hline
+\textbf{Doc}EnTr (2022) & 35.2 dB & 0.92 & -- & \texttimes \\ \hline
+\textbf{Cycle}GAN (2017) & 30.2 dB & 0.90 & -- & \texttimes \\ \hline
+\end{tabular}
+\end{table}
+
+% \vspace{0.5ex}
+% {\small\textbf{Koreksi Data (berdasarkan verifikasi sumber):}
+% - ERB-MultiTask: Tahun publikasi 2021 (bukan 2019), PSNR 15.7 dB (revisi dari 21.5 dB), CER 23.0\% (revisi dari 18.2\%)
+% - DE-GAN: PSNR 15.5 dB (revisi dari 19.8 dB), CER 28.2\% (revisi dari 22.4\%)
+% - Sumber: Souibgui dkk. (2021) untuk ERB-MultiTask dan DE-GAN, Souibgui dkk. (2022) untuk Text-DIAE.
+
+\begin{table}[H]
+\centering
+\caption{Perbandingan metode terkini dalam restorasi dokumen (Bagian 2: Karakteristik Arsitektur)}
+\label{tab:sota-comparison-arch}
+\footnotesize
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Metode} & \textbf{Diskriminator} & \textbf{Arsitektur} & \textbf{Tipe Loss} \\ \hline
+\textbf{Otsu} (1979) & T/A & N/A & Threshold \\ \hline
+\textbf{Sauvola} (2000) & T/A & N/A & Adaptif \\ \hline
+U-Net (2015) & T/A & CNN Encoder-Decoder & L2 (MSE) \\ \hline
+\textbf{Pix}2Pix (2017) & Visual saja & CNN U-Net + PatchGAN & Adv + L1 \\ \hline
+ERB-MultiTask (2021) & Dual-Modal (Visual + Text) & FCN + CRNN & Adv + CRNN \\ \hline
+DE-GAN (2021) & Visual saja & CNN U-Net & Adv + BCE \\ \hline
+\textbf{Text}-DIAE (2022) & T/A & ViT Autoencoder & Rekonstruksi \\ \hline
+\textbf{Doc}EnTr (2022) & T/A & Transformer Only & MSE \\ \hline
+\textbf{Cycle}GAN (2017) & Visual saja & CNN Encoder-Decoder & Cycle + Adv \\ \hline
+\end{tabular}
+\end{table}
+
+% {\small\textbf{Koreksi Arsitektur:} ERB-MultiTask menggunakan diskriminator Dual-Modal (Visual + Text) bukan "Visual saja" karena mengintegrasikan CRNN pengenal dalam arsitektur (Souibgui dkk., 2021).}
+
+{\footnotesize\textsuperscript{1}DE-GAN dan ERB-MultiTask: Evaluasi pasca-pelatihan dengan pengenal yang telah dilatih sebelumnya, bukan pelatihan terintegrasi. Data PSNR/CER direvisi berdasarkan sumber asli (Souibgui dkk., 2021, 2022).
+\textsuperscript{2}U-Net dan Pix2Pix: Data T/A karena tidak ada evaluasi spesifik untuk handwritten document restoration pada sumber yang tersedia.}
+
+\vspace{1ex}
+\noindent\textbf{Pertanyaan Penelitian dan Hipotesis}
+
+\vspace{0.5ex}
+Berdasarkan sintesis kesenjangan dari perbandingan komprehensif di atas, penelitian ini merumuskan pertanyaan penelitian sebagai berikut:
+
+\vspace{0.5em}
+Pertanyaan Penelitian Utama:
+
+\textit{Bagamana mengembangkan kerangka kerja restorasi dokumen berbasis GAN dengan diskriminator dual-modal dan strategi \textit{frozen recognizer} yang secara eksplisit mengintegrasikan evaluasi keterbacaan teks ke dalam proses pelatihan untuk mengatasi kesenjangan antara optimasi visual dan performa HTR?}
+
+\vspace{0.8em}
+Pertanyaan Penelitian Spesifik:
+
+\begin{enumerate}[label=\arabic*., leftmargin=0.5cm]
+    \item Arsitektur Diskriminator Dual-Modal: \\
+    Bagaimana merancang dan mengevaluasi arsitektur diskriminator dual-modal dengan cabang visual (CNN) dan cabang tekstual (LSTM) yang mengevaluasi koherensi visual-tekstual secara simultan, serta bagaimana mengukur kontribusinya terhadap kualitas umpan balik generator dibandingkan diskriminator hanya visual?
+
+    \item Frozen Recognizer dengan Integrasi CTC Loss: \\
+    Bagaimana strategi \textit{frozen recognizer} dengan integrasi \textit{CTC loss} dibandingkan dengan pendekatan pelatihan bersama dalam hal: (a) stabilitas gradien selama pelatihan, (b) performa keterbacaan teks yang dihasilkan, dan (c) efisiensi komputasi dalam proses optimisasi?
+
+    \item Strategi Curriculum Learning: \\
+    Bagaimana merancang strategi temporal \textit{curriculum learning} untuk \textit{CTC loss annealing} yang memastikan konvergensi stabil dengan beberapa komponen loss (\textit{adversarial}, \textit{reconstruction}, \textit{recognition}) pada fase awal hingga akhir pelatihan?
+
+    \item Optimasi Multi-Objektif: \\
+    Bagaimana menentukan konfigurasi bobot akhir yang optimal untuk \textit{adversarial}, \textit{reconstruction}, dan \textit{recognition loss} guna mencapai keseimbangan terbaik antara kualitas visual (PSNR/SSIM) dan keterbacaan teks (CER/WER) pada hasil restorasi?
+\end{enumerate}
+
+\vspace{0.5ex}
+\noindent\textbf{Hipotesis:}
+
+Berdasarkan analisis masalah dan kajian literatur yang menunjukkan bahwa diskriminator dual-modal dapat memberikan umpan balik yang lebih komprehensif melalui evaluasi koherensi visual-tekstual secara simultan, dan kombinasi dengan strategi \textit{frozen recognizer} serta \textit{curriculum learning} dapat mengatasi ketidakstabilan pelatihan dalam optimisasi multi-objektif, penelitian ini merumuskan hipotesis sebagai berikut:
+
+\vspace{0.5em}
+Penggunaan diskriminator dual-modal dan strategi \textit{frozen recognizer} dengan \textit{curriculum learning} dan optimasi \textit{loss function} multi-objektif dapat mengatasi kesenjangan antara optimasi visual dan keterbacaan teks, sehingga menghasilkan restorasi yang secara signifikan lebih baik dalam aspek keterbacaan teks sambil mempertahankan kualitas visual dibandingkan metode \textit{state-of-the-art}.
+
+\subsubsection{Posisi dan Kontribusi Penelitian Ini}
+\label{subsubsec:research-positioning}
+
+\vspace{1.5ex}
+
+Pertanyaan penelitian dan hipotesis di atas mengarahkan pada kebutuhan untuk mengembangkan metodologi baru yang secara sistematis mengatasi kesenjangan yang teridentifikasi. Berdasarkan analisis komprehensif tersebut, penelitian ini diposisikan sebagai \textit{penelitian inovatif yang mengusulkan pendekatan baru} dalam restorasi dokumen berorientasi HTR. Berbeda dari metode eksisting yang menggunakan pelatihan gabungan (\textit{joint training}) antara \textit{generator} dan \textit{recognizer}, penelitian ini memperkenalkan paradigma \textit{frozen recognizer} yang memberikan stabilitas pelatihan dan gradien sadar-teks yang konsisten.
+
+\vspace{0.5ex}
+\textit{Kontribusi Ilmiah dan Posisi dalam Landscape Akademik:}
+
+\vspace{0.3em}
+Penelitian ini mengisi celah penting dalam literatur melalui tiga dimensi inovasi yang secara langsung mengatasi kesenjangan yang teridentifikasi: (1) \textbf{Integrasi HTR dengan Frozen Recognizer}, strategi yang memecahkan masalah ketidakstabilan \textit{joint training} sambil memberikan gradien HTR-aware yang konsisten untuk optimasi keterbacaan teks; (2) \textbf{Curriculum Learning untuk Stabilitas Training}, dengan strategi CTC loss annealing yang mencegah dominasi satu komponen loss pada fase awal training GAN multi-objective; dan (3) \textbf{Optimisasi Loss Function Multi-Komponen}, dengan formulasi bobot optimal yang divalidasi empiris melalui studi ablasi sistematis untuk mencapai keseimbangan antara kualitas visual (PSNR/SSIM) dan keterbacaan teks (CER/WER) pada dokumen historis autentik.
+
+\vspace{0.3em}
+Berbeda dari pendekatan terdahulu yang hanya fokus pada satu aspek (visual-saja atau pelatihan gabungan dengan risiko ketidakstabilan), penelitian ini menyajikan solusi terintegrasi yang mengatasi tantangan fundamental optimisasi \textit{multi-objektif} dalam restorasi dokumen. Kontribusi ini layak untuk tingkat tesis master karena mencakup: inovasi arsitektur yang dapat diverifikasi, metodologi yang dapat direproduksi, dan validasi empiris yang komprehensif dengan implikasi praktis untuk digitalisasi arsip historis skala besar.
+
+\subsection{Ringkasan dan Transisi ke Metodologi}
+\label{subsec:tinjauan-summary}
+
+Bab ini telah menyajikan analisis komprehensif dari lanskap penelitian restorasi dokumen, dari metode tradisional hingga pendekatan \textit{deep learning} modern. Berdasarkan tinjauan sistematis terhadap 9 metode terkini dan meta-analisis kuantitatif, analisis ini mengidentifikasi kesenjangan fundamental yang masih memerlukan eksplorasi lebih lanjut dalam bidang restorasi dokumen historis.
+
+\vspace{1ex}
+\noindent\textbf{SINTESIS TEMUAN KUNCI:}
+\vspace{0.5em}
+
+\noindent\textbf{1. Kesenjangan Signifikan Optimisasi Visual-Fungsional}
+
+Meta-analisis kuantitatif mengungkapkan korelasi Spearman hanya 0,60-0,70 antara peningkatan PSNR dan penurunan CER (Jadhav dkk., 2022), membuktikan bahwa optimisasi visual tidak otomatis menjamin optimisasi keterbacaan. Hanya 2 dari 9 metode (22\%) melaporkan evaluasi HTR, mencerminkan kesenjangan evaluasi yang sistematis. Studi lintas-domain dalam peningkatan ucapan (Weninger dkk., 2023) menunjukkan bahwa supervisi eksplisit dari model pengenal secara signifikan meningkatkan keterbacaan dibandingkan optimasi metrik akustik saja, memberikan indikasi teoretis untuk pendekatan serupa dalam restorasi dokumen. Lebih lanjut, benchmark standar seperti DIBCO series hanya menyediakan \textit{ground truth} visual tanpa metrik HTR (CER/WER), memperpanjang pemisahan antara penelitian restorasi dan aplikasi praktis.
+
+\vspace{0.5em}
+\noindent\textbf{2. Ketiadaan Loss Function HTR-Aware dalam Training Loop}
+
+Metode restorasi berbasis GAN yang ada (DE-GAN, DocEnTr, Text-DIAE) hanya menggunakan loss function berbasis piksel (L1/MSE) dan adversarial loss yang mengoptimalkan kemiripan visual. CTC loss dari model HTR belum diintegrasikan ke dalam fungsi objektif Generator untuk memberikan gradien yang secara langsung mengoptimalkan keterbacaan karakter. Meskipun ERB-MultiTask mengintegrasikan CTC loss, pendekatan \textit{joint training} yang digunakan menimbulkan tantangan stabilitas. Strategi \textit{frozen recognizer} yang dapat memberikan gradien HTR-aware tanpa mengganggu bobot model pengenal belum dieksplorasi secara sistematis.
+
+\vspace{0.5em}
+\noindent\textbf{3. Ketidakstabilan Training dengan Multiple Loss Components}
+
+Training GAN dengan kombinasi adversarial loss, reconstruction loss, dan recognition loss (CTC) menghadapi tantangan stabilitas karena perbedaan skala dan dinamika konvergensi masing-masing komponen. Belum ada penelitian yang mengevaluasi strategi \textit{curriculum learning} untuk CTC loss annealing guna mencegah dominasi satu komponen pada fase awal training. ERB-MultiTask menggunakan pembobotan loss manual ($\lambda=1$ optimal) namun tanpa mekanisme adaptif. Karakterisasi \textit{trade-off} antara kualitas visual (PSNR/SSIM) dan keterbacaan teks (CER/WER) dalam konteks optimisasi fungsi loss multi-komponen masih memerlukan investigasi sistematis melalui studi ablasi yang komprehensif.
+
+\vspace{0.5em}
+\noindent\textbf{4. Temuan Meta-Analisis}
+
+Analisis kuantitatif mengidentifikasi tren dalam perkembangan metode restorasi dokumen. Dari era tradisional hingga pendekatan GAN modern, terdapat peningkatan signifikan dalam metrik visual, namun evaluasi fungsional (HTR) masih terbatas. Hanya minoritas metode yang melaporkan evaluasi HTR, mengindikasikan kesenjangan dalam protokol evaluasi yang komprehensif.
+
+\vspace{1ex}
+\noindent\textbf{Implikasi untuk Penelitian:}
+
+Tiga kesenjangan fundamental yang teridentifikasi—(1) optimasi visual-fungsional yang terpisah, (2) ketiadaan loss function HTR-aware dengan strategi \textit{frozen recognizer}, dan (3) ketidakstabilan training multi-objective tanpa \textit{curriculum learning}—memberikan landasan untuk pengembangan metodologi penelitian. Penelitian ini akan mengatasi kesenjangan tersebut melalui: integrasi CTC loss dengan frozen HTR recognizer untuk gradien yang stabil dan HTR-aware, strategi curriculum learning untuk CTC loss annealing guna mencegah ketidakstabilan training, dan optimisasi pembobotan loss melalui studi ablasi sistematis untuk mencapai keseimbangan optimal antara kualitas visual dan keterbacaan teks pada dokumen historis autentik.
+
+\newpage
+% Shared bibliography - imported from external file
+\input{bibliography.bib}
+
+\end{document}

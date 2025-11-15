@@ -1,0 +1,9 @@
+[0] Config.pm:307> INFO - This is Biber 2.17
+[0] Config.pm:310> INFO - Logfile is 'chapter4_analysis_design.blg'
+[58] biber:340> INFO - === Sat Nov 15, 2025, 03:06:00
+[68] Biber.pm:418> INFO - Reading 'chapter4_analysis_design.bcf'
+[123] Biber.pm:972> INFO - Found 13 citekeys in bib section 0
+[133] Biber.pm:4383> INFO - Processing section 0
+[139] Biber.pm:4574> INFO - Looking for bibtex file 'bibliography.bib' for section 0
+[213] Utils.pm:398> ERROR - Cannot find 'bibliography.bib'!
+[213] Biber.pm:135> INFO - ERRORS: 1

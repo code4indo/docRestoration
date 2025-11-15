@@ -9,7 +9,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{setspace}
-\usepackage{geometry}
+\usepackage[a4paper,left=4cm,right=3cm,top=3cm,bottom=3cm]{geometry}
 \usepackage{tikz}
 \usepackage{float}
 \usepackage{enumitem}
@@ -29,6 +29,24 @@
 }
 \usepackage{tocloft}
 \usepackage{caption}
+
+% Caption configuration for consistent alignment
+\captionsetup{justification=centering}
+\captionsetup[table]{
+  format=hang,
+  labelsep=space,
+  justification=justified,
+  singlelinecheck=false
+}
+\captionsetup[figure]{
+  format=hang,
+  labelsep=space,
+  justification=justified,
+  singlelinecheck=false
+}
+\renewcommand{\figurename}{Gambar}
+\renewcommand{\tablename}{Tabel}
+
 \usepackage{textcomp} % For special symbols
 
 
@@ -40,9 +58,8 @@
 \emergencystretch=3em
 \hbadness=10000
 \vbadness=10000
-\hyphenpenalty=500
-\exhyphenpenalty=500
-\sloppy
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
 % Aktifkan microtype untuk Bahasa Indonesia
 \microtypesetup{activate=true,protrusion=true,expansion=true,tracking=true,kerning=true}
 \microtypecontext{spacing=nonfrench}
@@ -56,15 +73,6 @@
 \titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
 \titlespacing*{\subsection}{0pt}{0pt}{0pt} % Tidak ada jarak sebelum atau setelah judul
 
-% Pengaturan margin: kiri 4cm, lainnya 3cm
-\geometry{
-    a4paper,
-    left=4cm,
-    right=3cm,
-    top=3cm,
-    bottom=3cm
-}
-
 % Pengaturan spasi
 \onehalfspacing
 
@@ -76,6 +84,18 @@
 \renewcommand{\thesection}{\Roman{section}}
 \renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
 \renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+
+% Pengaturan format penomoran tabel mengikuti section
+\counterwithin{table}{section}
+\renewcommand{\thetable}{\thesection.\arabic{table}}
+
+% Pengaturan format penomoran gambar mengikuti section
+\counterwithin{figure}{section}
+\renewcommand{\thefigure}{\thesection.\arabic{figure}}
+
+% Pengaturan format penomoran persamaan mengikuti section
+\counterwithin{equation}{section}
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
 
 \begin{document}
 

@@ -1,8 +1,10 @@
 \documentclass[12pt,a4paper]{article}
-\usepackage[left=4cm,right=3cm,top=3cm,bottom=3cm]{geometry}
-\usepackage{mathptmx} % Times New Roman
+\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage[bahasa]{babel}
+\usepackage{mathptmx} % Times New Roman
 \usepackage{textcomp}
+\usepackage[a4paper,left=4cm,right=3cm,top=3cm,bottom=3cm]{geometry}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{graphicx}
@@ -54,11 +56,36 @@
 \renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
 \renewcommand{\thesubparagraph}{\thesubsubsection.\arabic{subparagraph}}
 
+% Pengaturan format penomoran tabel mengikuti section
+\counterwithin{table}{section}
+\renewcommand{\thetable}{\thesection.\arabic{table}}
+
+% Pengaturan format penomoran gambar mengikuti section
+\counterwithin{figure}{section}
+\renewcommand{\thefigure}{\thesection.\arabic{figure}}
+
+% Pengaturan format penomoran persamaan mengikuti section
+\counterwithin{equation}{section}
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
+
+% Caption configuration for consistent alignment
+\captionsetup{justification=centering}
+\captionsetup[table]{
+  format=hang,
+  labelsep=space,
+  justification=justified,
+  singlelinecheck=false
+}
+\captionsetup[figure]{
+  format=hang,
+  labelsep=space,
+  justification=justified,
+  singlelinecheck=false
+}
+
 % Pengaturan label dan caption
 \renewcommand{\figurename}{Gambar}
 \renewcommand{\tablename}{Tabel}
-\captionsetup[figure]{justification=centering}
-\captionsetup[table]{justification=centering}
 
 \begin{document}
 
@@ -90,7 +117,7 @@ Artefak yang dikembangkan dalam penelitian ini adalah framework restorasi dokume
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.3\textwidth]{images/DRSM.png}
-\caption{Framework Design Science Research Methodology dengan siklus iteratif antara evaluasi dan desain untuk penyempurnaan artefak.}
+\caption[Kerangka DSRM dengan Siklus Iteratif]{Framework Design Science Research Methodology dengan siklus iteratif antara evaluasi dan desain untuk penyempurnaan artefak.}
 \label{fig:dsrm-framework}
 \end{figure}
 
@@ -179,7 +206,7 @@ Penelitian ini menetapkan target performa yang dapat diukur dan diverifikasi:
 
 \begin{table}[H]
 \centering
-\caption{Target metrik kuantitatif penelitian (direvisi berdasarkan karakteristik dataset historis)}
+\caption[Target Metrik Kuantitatif Penelitian (Revisi)]{Target metrik kuantitatif penelitian (direvisi berdasarkan karakteristik dataset historis)}
 \label{tab:target-metrik}
 \small
 \begin{tabular}{|l|l|l|}
@@ -330,7 +357,7 @@ Tahap ini merupakan inti penelitian di mana artefak (framework GAN-HTR) dirancan
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.35\textwidth]{images/PengembanganArtefak.png}
-\caption{\textit{Pipeline} pengembangan \textit{framework} GAN-HTR dengan lima fase utama yang dilakukan secara sekuensial dengan iterasi pada fase 4 dan 5.}
+\caption[Pipeline Pengembangan Framework GAN-HTR]{\textit{Pipeline} pengembangan \textit{framework} GAN-HTR dengan lima fase utama yang dilakukan secara sekuensial dengan iterasi pada fase 4 dan 5.}
 \label{fig:development-pipeline}
 \end{figure}
 

@@ -1,0 +1,147 @@
+% ============================================================
+% STANDARD PREAMBLE FOR ALL CHAPTERS - SYNCHRONIZED
+% Last updated: 2025-11-15
+% Based on: main_tesis.tex configuration
+% ============================================================
+
+\documentclass[12pt,a4paper]{article}
+
+% Encoding and fonts
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[bahasa]{babel}
+\usepackage{mathptmx} % Times New Roman font
+\usepackage{textcomp}
+
+% Typography optimization
+\usepackage{microtype}
+\usepackage[none]{hyphenat}
+
+% Graphics and figures
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\captionsetup{justification=centering}
+\captionsetup[table]{
+  format=hang,
+  labelsep=space,
+  justification=justified,
+  singlelinecheck=false
+}
+\captionsetup[figure]{
+  format=hang,
+  labelsep=space,
+  justification=justified,
+  singlelinecheck=false
+}
+\renewcommand{\figurename}{Gambar}
+\renewcommand{\tablename}{Tabel}
+
+% Math packages
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% Spacing and layout
+\usepackage{setspace}
+\usepackage{geometry}
+
+% Tables
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+
+% Lists
+\usepackage{enumitem}
+
+% Diagrams
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning, fit, calc, matrix}
+
+% Algorithms (if needed)
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+% Hyperlinks
+\usepackage{hyperref}
+\hypersetup{
+    pdfencoding=auto,
+    pdftitle={Chapter},
+    pdfauthor={},
+    pdfsubject={Tesis},
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=blue,
+    pdfstartview=FitH,
+    bookmarksopen=true,
+    bookmarksnumbered=true
+}
+
+% Table of contents
+\usepackage{tocloft}
+
+% Bibliography (for standalone compile)
+\usepackage[style=apa,backend=biber]{biblatex}
+\usepackage{csquotes}
+\addbibresource{bibliography.bib}
+
+% Custom Indonesian citation labels
+\DefineBibliographyStrings{english}{
+  andothers       = {dkk.},
+  mathesis        = {Tesis Master},
+  phdthesis       = {Disertasi},
+  and             = {dan},
+}
+
+% Hyphenation and spacing optimization for Bahasa Indonesia
+\lefthyphenmin=2
+\righthyphenmin=2
+\pretolerance=1000
+\tolerance=2000
+\emergencystretch=3em
+\hbadness=10000
+\vbadness=10000
+\hyphenpenalty=500
+\exhyphenpenalty=500
+\sloppy
+
+% Microtype configuration
+\microtypesetup{activate=true,protrusion=true,expansion=true,tracking=true,kerning=true}
+\microtypecontext{spacing=nonfrench}
+
+% Paragraph settings
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+% Section formatting
+\usepackage{titlesec}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{0pt}{0pt}
+
+% Page geometry: left 4cm, others 3cm
+\geometry{
+    a4paper,
+    left=4cm,
+    right=3cm,
+    top=3cm,
+    bottom=3cm
+}
+
+% Line spacing: 1.5 (onehalfspacing)
+\onehalfspacing
+
+% Numbering depth
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+% Equation numbering per section
+\usepackage{chngcntr}
+\counterwithin{equation}{section}
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
+
+% ============================================================
+% END OF STANDARD PREAMBLE
+% ============================================================

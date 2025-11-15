@@ -9,8 +9,27 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{setspace}
-\usepackage{geometry}
+\usepackage[a4paper,left=4cm,right=3cm,top=3cm,bottom=3cm]{geometry}
 \usepackage{enumitem}
+\usepackage{caption}
+
+% Caption configuration for consistent alignment
+\captionsetup{justification=centering}
+\captionsetup[table]{
+  format=hang,
+  labelsep=space,
+  justification=justified,
+  singlelinecheck=false
+}
+\captionsetup[figure]{
+  format=hang,
+  labelsep=space,
+  justification=justified,
+  singlelinecheck=false
+}
+\renewcommand{\figurename}{Gambar}
+\renewcommand{\tablename}{Tabel}
+
 \usepackage{hyperref}
 \hypersetup{
     colorlinks=true,
@@ -34,7 +53,6 @@
 \titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
 \titlespacing*{\subsection}{0pt}{0pt}{0pt}
 
-\geometry{a4paper,left=4cm,right=3cm,top=3cm,bottom=3cm}
 \onehalfspacing
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}

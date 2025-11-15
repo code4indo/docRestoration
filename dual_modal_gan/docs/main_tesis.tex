@@ -30,12 +30,41 @@
 }
 \usepackage{tocloft}
 \usepackage{caption}
+
+% Caption configuration for consistent alignment
+\captionsetup{justification=centering}
+\captionsetup[table]{
+  format=hang,
+  labelsep=space,
+  justification=justified,
+  singlelinecheck=false
+}
+\captionsetup[figure]{
+  format=hang,
+  labelsep=space,
+  justification=justified,
+  singlelinecheck=false
+}
+
 \usepackage{subcaption}
 \usepackage{textcomp}
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{array}
 \usepackage{tabularx}
+
+% APA Style Bibliography - KONFIGURASI TERPUSAT
+\usepackage[style=apa,backend=biber]{biblatex}
+\usepackage{csquotes}
+\addbibresource{bibliography.bib}
+
+% Custom Indonesian citation labels
+\DefineBibliographyStrings{english}{
+  andothers       = {dkk.},
+  mathesis        = {Tesis Master},
+  phdthesis       = {Disertasi},
+  and             = {dan},
+}
 
 % Aktifkan hyphenation Bahasa Indonesia dan optimasi spasi
 \lefthyphenmin=2
@@ -83,6 +112,12 @@
 \renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
 \renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
 
+% Pengaturan penomoran tabel dan gambar mengikuti section
+\counterwithin{table}{section}
+\renewcommand{\thetable}{\thesection.\arabic{table}}
+\counterwithin{figure}{section}
+\renewcommand{\thefigure}{\thesection.\arabic{figure}}
+
 % Konfigurasi Daftar Isi
 \renewcommand{\cftsecfont}{\normalfont\bfseries}
 \renewcommand{\cftsecpagefont}{\normalfont\bfseries}
@@ -91,19 +126,38 @@
 \setlength{\cftsecindent}{0em}
 \setlength{\cftsubsecindent}{1.5em}
 \setlength{\cftsubsubsecindent}{3em}
+\setlength{\cftbeforesecskip}{0pt} % 1 spasi untuk section
+\setlength{\cftbeforesubsecskip}{0pt} % 1 spasi untuk subsection
+\setlength{\cftbeforesubsubsecskip}{0pt} % 1 spasi untuk subsubsection
 
 % Konfigurasi Daftar Gambar
 \renewcommand{\listfigurename}{DAFTAR GAMBAR}
 \renewcommand{\figurename}{Gambar}
+\renewcommand{\cftfigpresnum}{Gambar~}
+\renewcommand{\cftfigaftersnum}{.~~}
+\setlength{\cftfignumwidth}{6em}
+\setlength{\cftfigindent}{0em}
+\renewcommand{\cftfigfont}{\normalfont}
+\renewcommand{\cftfigpagefont}{\normalfont}
+\renewcommand{\cftfigafterpnum}{\vskip0pt}
+\setlength{\cftbeforefigskip}{0pt}
 
 % Konfigurasi Daftar Tabel
 \renewcommand{\listtablename}{DAFTAR TABEL}
 \renewcommand{\tablename}{Tabel}
+\renewcommand{\cfttabpresnum}{Tabel~}
+\renewcommand{\cfttabaftersnum}{.~~}
+\setlength{\cfttabnumwidth}{6em}
+\setlength{\cfttabindent}{0em}
+\renewcommand{\cfttabfont}{\normalfont}
+\renewcommand{\cfttabpagefont}{\normalfont}
+\renewcommand{\cfttabafterpnum}{\vskip0pt}
+\setlength{\cftbeforetabskip}{0pt}
 
 \begin{document}
 
 % ============================================================
-% HALAMAN JUDUL
+% HALAMAN COVER/JUDUL
 % ============================================================
 \begin{titlepage}
 \centering
@@ -116,11 +170,10 @@
 
 {\fontsize{12}{14.4}\selectfont\textbf{TESIS}}\\[2cm]
 
-{\fontsize{12}{14.4}\selectfont
+\fontsize{12}{14.4}\selectfont
 Oleh:\\[0.5cm]
 \textbf{[NAMA MAHASISWA]}\\
 \textbf{[NIM]}
-}
 
 \vfill
 
@@ -134,7 +187,153 @@ Oleh:\\[0.5cm]
 % PENOMORAN HALAMAN ROMAWI KECIL UNTUK BAGIAN AWAL
 % ============================================================
 \pagenumbering{roman}
-\setcounter{page}{1}
+\setcounter{page}{2}
+
+% ============================================================
+% ABSTRAK (BAHASA INDONESIA)
+% ============================================================
+\newpage
+\vspace{2cm}
+\begin{center}
+{\fontsize{14}{16.8}\selectfont\textbf{ABSTRAK}}\\[1em]
+\end{center}
+\vspace{1em}
+
+\noindent\textbf{Judul:} Restorasi Dokumen Terdegradasi Menggunakan Generative Adversarial Network dengan Diskriminator Dual-Modal dan Optimasi Loss Function Berorientasi HTR
+
+\noindent\textbf{Nama:} [NAMA MAHASISWA]
+
+\noindent\textbf{NIM:} [NIM]
+
+\vspace{1em}
+
+[ISI ABSTRAK BAHASA INDONESIA - maksimal 250 kata]
+
+\vspace{1em}
+
+\noindent\textbf{Kata Kunci:} Restorasi Dokumen, GAN, HTR, Diskriminator Dual-Modal, Optimasi Loss Function
+
+% ============================================================
+% ABSTRACT (BAHASA INGGRIS)
+% ============================================================
+\newpage
+\vspace{2cm}
+\begin{center}
+{\fontsize{14}{16.8}\selectfont\textbf{ABSTRACT}}\\[1em]
+\end{center}
+\vspace{1em}
+
+\noindent\textbf{Title:} Degraded Document Restoration Using Generative Adversarial Network with Dual-Modal Discriminator and HTR-Oriented Loss Function Optimization
+
+\noindent\textbf{Name:} [STUDENT NAME]
+
+\noindent\textbf{Student ID:} [STUDENT ID]
+
+\vspace{1em}
+
+[ABSTRACT CONTENT IN ENGLISH - maximum 250 words]
+
+\vspace{1em}
+
+\noindent\textbf{Keywords:} Document Restoration, GAN, HTR, Dual-Modal Discriminator, Loss Function Optimization
+
+% ============================================================
+% HALAMAN PENGESAHAN
+% ============================================================
+\newpage
+\vspace{2cm}
+\begin{center}
+{\fontsize{14}{16.8}\selectfont\textbf{HALAMAN PENGESAHAN}}\\[1em]
+\end{center}
+\vspace{2em}
+
+\noindent Tesis ini telah diuji dan dipertahankan di hadapan Tim Penguji\\pada tanggal [TANGGAL SIDANG]
+
+\vspace{2em}
+
+\noindent\textbf{Tim Penguji:}
+
+\vspace{3em}
+
+\noindent\begin{tabular}{@{}ll}
+\textbf{Ketua} & : [NAMA KETUA PENGUJI]\\
+ & NIP. [NIP]\\
+ & \\
+ & \\
+ & Tanda tangan: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\\
+\\[2em]
+\textbf{Sekretaris} & : [NAMA SEKRETARIS PENGUJI]\\
+ & NIP. [NIP]\\
+ & \\
+ & \\
+ & Tanda tangan: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\\
+\\[2em]
+\textbf{Anggota} & : [NAMA ANGGOTA PENGUJI 1]\\
+ & NIP. [NIP]\\
+ & \\
+ & \\
+& Tanda tangan: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\\
+\end{tabular}
+
+\vspace{3em}
+
+\noindent Mengetahui,
+
+\vspace{3em}
+
+\noindent\begin{tabular}{@{}ll}
+\textbf{Direktur Program Pascasarjana} & \textbf{Ketua Program Studi}\\
+\\\\
+\\\\
+\\\\
+[NAMA DIREKTUR] dan [NAMA KETUA PRODI]\\
+NIP. [NIP] & NIP. [NIP]
+\end{tabular}
+
+% ============================================================
+% HALAMAN DEDIKASI
+% ============================================================
+\newpage
+\vspace{5cm}
+\begin{center}
+\textit{Halaman ini dipersembahkan untuk:}
+
+\vspace{2em}
+
+[ISI DEDIKASI]
+
+\vspace{1em}
+
+[Contoh: Keluarga tercinta, guru-guru yang telah membimbing,\\dan semua pihak yang telah mendukung penelitian ini]
+\end{center}
+
+% ============================================================
+% KATA PENGANTAR
+% ============================================================
+\newpage
+\vspace{2cm}
+\begin{center}
+{\fontsize{14}{16.8}\selectfont\textbf{KATA PENGANTAR}}\\[1em]
+\end{center}
+\vspace{1em}
+
+Puji syukur penulis panjatkan ke hadirat Tuhan Yang Maha Esa atas segala rahmat dan karunia-Nya sehingga penulis dapat menyelesaikan tesis yang berjudul ``Restorasi Dokumen Terdegradasi Menggunakan Generative Adversarial Network dengan Diskriminator Dual-Modal dan Optimasi Loss Function Berorientasi HTR''.
+
+\vspace{1em}
+
+[ISI KATA PENGANTAR - ucapan terima kasih kepada pembimbing, keluarga, dan pihak-pihak yang membantu]
+
+\vspace{2em}
+
+\noindent [KOTA], [BULAN TAHUN]
+
+\vspace{2em}
+
+\noindent Penulis,
+
+\vspace{3em}
+
+\noindent [NAMA MAHASISWA]
 
 % ============================================================
 % DAFTAR ISI
@@ -146,7 +345,26 @@ Oleh:\\[0.5cm]
 \end{center}
 \vspace{1em}
 
+{\singlespacing
 \tableofcontents
+}
+
+% ============================================================
+% DAFTAR LAMPIRAN
+% ============================================================
+\newpage
+\vspace{2cm}
+\begin{center}
+{\fontsize{14}{16.8}\selectfont\textbf{DAFTAR LAMPIRAN}}\\[1em]
+\end{center}
+\vspace{1em}
+
+[Daftar lampiran akan ditambahkan di sini]
+
+% Contoh format:
+% Lampiran 1. Kode Program Generator ........................... XXX
+% Lampiran 2. Kode Program Discriminator ....................... XXX
+% Lampiran 3. Dataset dan Preprocessing ........................ XXX
 
 % ============================================================
 % DAFTAR GAMBAR
@@ -158,7 +376,9 @@ Oleh:\\[0.5cm]
 \end{center}
 \vspace{1em}
 
+{\singlespacing
 \listoffigures
+}
 
 % ============================================================
 % DAFTAR TABEL
@@ -170,13 +390,15 @@ Oleh:\\[0.5cm]
 \end{center}
 \vspace{1em}
 
+{\singlespacing
 \listoftables
+}
 
 % ============================================================
 % DAFTAR LAMBANG DAN SINGKATAN
 % ============================================================
 \newpage
-\input{Chapter_Lambang.tex}
+\input{Chapter_Lambang_content_only.tex}
 
 % ============================================================
 % PENOMORAN HALAMAN ARABIC UNTUK ISI UTAMA
@@ -188,37 +410,37 @@ Oleh:\\[0.5cm]
 % ============================================================
 % BAB I - PENDAHULUAN
 % ============================================================
-\input{chapter1_pendahuluan.tex}
+\input{chapter1_pendahuluan_content_only.tex}
 
 % ============================================================
 % BAB II - TINJAUAN PUSTAKA
 % ============================================================
 \newpage
-\input{chapter2_tinjauan_pustaka.tex}
+\input{chapter2_tinjauan_pustaka_content_only.tex}
 
 % ============================================================
 % BAB III - METODOLOGI PENELITIAN
 % ============================================================
 \newpage
-\input{chapter3_metodologi.tex}
+\input{chapter3_metodologi_content_only.tex}
 
 % ============================================================
 % BAB IV - PERANCANGAN DAN IMPLEMENTASI SISTEM
 % ============================================================
 \newpage
-\input{chapter4_analysis_design.tex}
+\input{chapter4_analysis_design_content_only.tex}
 
 % ============================================================
 % BAB V - HASIL DAN PEMBAHASAN
 % ============================================================
 \newpage
-\input{chapter5_hasil.tex}
+\input{chapter5_hasil_content_only.tex}
 
 % ============================================================
 % BAB VI - KESIMPULAN DAN SARAN
 % ============================================================
 \newpage
-\input{chapter6_kesimpulan.tex}
+\input{chapter6_kesimpulan_content_only.tex}
 
 % ============================================================
 % DAFTAR PUSTAKA
@@ -231,11 +453,7 @@ Oleh:\\[0.5cm]
 \addcontentsline{toc}{section}{DAFTAR PUSTAKA}
 \vspace{1em}
 
-% Gunakan BibTeX atau input manual
-% \bibliographystyle{IEEEtran}
-% \bibliography{references}
-
-% Atau manual:
-% \input{references.tex}
+% Daftar Pustaka menggunakan biblatex dengan style APA
+\printbibliography[heading=none]
 
 \end{document}
