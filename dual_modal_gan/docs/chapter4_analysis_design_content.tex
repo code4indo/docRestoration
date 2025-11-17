@@ -54,7 +54,7 @@ DE-GAN & U-Net & CNN (visual-only) & Post-training eval & Single-modal, no HTR l
 \hline
 DocEnTr & Transformer & - (no adversarial) & Post-training eval & Over-smoothing, no texture \\
 \hline
-Text-DIAE & CNN-based & - (no adversarial) & Post-training eval & No adversarial training \\
+Text-DIAE & CNN-based & - (no pelatihan adversarial) & Post-training eval & No pelatihan adversarial \\
 \hline
 ERB-MultiTask & U-Net & CNN (visual-only) & Joint training & Unstable, catastrophic forgetting \\
 \hline
@@ -70,7 +70,7 @@ GAN-HTR & U-Net Enhanced & Dual-Modal & \textit{Frozen recognizer} & Kontribusi 
 \subsubsection{Komponen Utama dan Interaksi Arsitektur} % This will be numbered as IV.1.2 
 \label{subsubsec:komponen-arsitektur}
 
-Arsitektur yang diusulkan terdiri dari tiga komponen utama yang berinteraksi dalam sebuah kerangka \textit{adversarial training}, seperti yang diilustrasikan pada Gambar \ref{fig:arch_overview}:
+Arsitektur yang diusulkan terdiri dari tiga komponen utama yang berinteraksi dalam sebuah kerangka \textnormal{pelatihan adversarial}, seperti yang diilustrasikan pada Gambar \ref{fig:arch_overview}:
 \begin{enumerate}[nosep]
     \item \textbf{Generator} (G): Model U-Net Enhanced yang menerima gambar terdegradasi dan menghasilkan versi restorasi. Memenuhi FR-1 (Restorasi Gambar) dan FR-2 (Penanganan Degradasi).
     
@@ -86,7 +86,7 @@ Arsitektur yang diusulkan terdiri dari tiga komponen utama yang berinteraksi dal
 \label{fig:arch_overview}
 \end{figure}
 
-Ketiga komponen berinteraksi dalam siklus \textit{adversarial training}: Generator menghasilkan gambar restorasi dari \textit{input} terdegradasi, \textit{Frozen Recognizer} mengevaluasi keterbacaan melalui prediksi karakter dan CTC \textit{loss}, sementara \textit{Discriminator} menilai koherensi visual-tekstual dari pasangan gambar dan representasi teks. Generator dioptimalkan dengan fungsi \textit{loss} multi-komponen yang menyeimbangkan kualitas visual (\textit{pixel}, \textit{perceptual}, \textit{adversarial}) dan keterbacaan tekstual (CTC), memastikan hasil restorasi tidak hanya realistis secara visual tetapi juga dapat dibaca oleh model HTR (detail optimasi pada Subbab IV.1.6).
+Ketiga komponen berinteraksi dalam siklus \textnormal{pelatihan adversarial}: Generator menghasilkan gambar restorasi dari \textit{input} terdegradasi, \textit{Frozen Recognizer} mengevaluasi keterbacaan melalui prediksi karakter dan CTC \textit{loss}, sementara \textit{Discriminator} menilai koherensi visual-tekstual dari pasangan gambar dan representasi teks. Generator dioptimalkan dengan fungsi \textit{loss} multi-komponen yang menyeimbangkan kualitas visual (\textit{pixel}, \textit{perceptual}, \textit{adversarial}) dan keterbacaan tekstual (CTC), memastikan hasil restorasi tidak hanya realistis secara visual tetapi juga dapat dibaca oleh model HTR (detail optimasi pada Subbab IV.1.6).
 
 \subsubsection{Arsitektur Generator: U-Net Enhanced dengan Blok Residual} % This will be numbered as IV.1.3
 

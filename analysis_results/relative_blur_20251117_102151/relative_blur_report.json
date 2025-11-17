@@ -1,0 +1,27 @@
+{
+  "methodology": {
+    "description": "Relative blur analysis comparing iron gall regions vs normal regions",
+    "blur_ratio_threshold": 0.85,
+    "sample_size": 256,
+    "interpretation": "Blur ratio < threshold indicates iron gall regions are blurrier than normal"
+  },
+  "summary": {
+    "total_analyzed": 1,
+    "no_blur": 1,
+    "slight_blur": 0,
+    "moderate_blur": 0
+  },
+  "cases": [
+    {
+      "filename": "ID-ANRI_K66b_082_0064.jpg",
+      "iron_gall_blur_score": 246.1102043063688,
+      "normal_region_blur_score": 247.56007766442684,
+      "blur_ratio": 0.9941433474583757,
+      "has_relative_blur": false,
+      "severity": "none",
+      "iron_gall_coverage": 0.10143323048356097,
+      "sample_regions": [
+        {
+          "type": "iron_gall",
+          "bbox": [
+            

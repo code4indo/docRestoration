@@ -91,7 +91,7 @@
 - **Raw magnitude**: 0.8882 (kecil-sedang)
 - **Weighted contribution**: 2.66 (2.9%)
 - **Justifikasi**: Weight=3.0 untuk texture realism tanpa dominasi berlebihan
-- **Peran**: Realistic texture generation, adversarial training signal
+- **Peran**: Realistic texture generation, sinyal pelatihan adversarial
 
 ---
 

@@ -1,0 +1,127 @@
+{
+  "methodology": {
+    "description": "Relative blur analysis comparing iron gall regions vs normal regions",
+    "blur_ratio_threshold": 0.85,
+    "sample_size": 256,
+    "interpretation": "Blur ratio < threshold indicates iron gall regions are blurrier than normal"
+  },
+  "summary": {
+    "total_analyzed": 1,
+    "no_blur": 1,
+    "slight_blur": 0,
+    "moderate_blur": 0
+  },
+  "cases": [
+    {
+      "filename": "ID-ANRI_K66b_082_0064.jpg",
+      "iron_gall_blur_score": 202.124752370458,
+      "normal_region_blur_score": 212.65670259465637,
+      "blur_ratio": 0.9504744026607369,
+      "has_relative_blur": false,
+      "severity": "none",
+      "iron_gall_coverage": 0.10143323048356097,
+      "sample_regions": [
+        {
+          "type": "iron_gall",
+          "bbox": [
+            0,
+            2853,
+            256,
+            256
+          ],
+          "blur_score": 271.9037479159888
+        },
+        {
+          "type": "iron_gall",
+          "bbox": [
+            492,
+            0,
+            256,
+            256
+          ],
+          "blur_score": 15.938533163629472
+        },
+        {
+          "type": "iron_gall",
+          "bbox": [
+            0,
+            2043,
+            256,
+            256
+          ],
+          "blur_score": 180.6564163826406
+        },
+        {
+          "type": "iron_gall",
+          "bbox": [
+            514,
+            3824,
+            256,
+            189
+          ],
+          "blur_score": 202.83190665727352
+        },
+        {
+          "type": "iron_gall",
+          "bbox": [
+            1239,
+            0,
+            256,
+            256
+          ],
+          "blur_score": 0.436583936214447
+        },
+        {
+          "type": "normal",
+          "bbox": [
+            2334,
+            3234,
+            256,
+            256
+          ],
+          "blur_score": 122.7414092735853
+        },
+        {
+          "type": "normal",
+          "bbox": [
+            1230,
+            3062,
+            256,
+            256
+          ],
+          "blur_score": 425.478879686445
+        },
+        {
+          "type": "normal",
+          "bbox": [
+            2310,
+            1741,
+            256,
+            256
+          ],
+          "blur_score": 88.87809412530623
+        },
+        {
+          "type": "normal",
+          "bbox": [
+            2485,
+            1935,
+            250,
+            256
+          ],
+          "blur_score": 81.45485198339844
+        },
+        {
+          "type": "normal",
+          "bbox": [
+            1090,
+            1082,
+            256,
+            256
+          ],
+          "blur_score": 274.5641390522942
+        }
+      ]
+    }
+  ]
+}
