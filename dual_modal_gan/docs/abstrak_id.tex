@@ -1,0 +1,19 @@
+\vspace{2cm}
+\begin{center}
+{\fontsize{14}{16.8}\selectfont\textbf{ABSTRAK}}\\[1em]
+\end{center}
+\vspace{1em}
+
+\noindent\textbf{Judul:} Restorasi Dokumen Terdegradasi Menggunakan Generative Adversarial Network dengan Diskriminator Dual-Modal dan Optimasi Loss Function Berorientasi HTR
+
+\noindent\textbf{Nama:} [NAMA MAHASISWA]
+
+\noindent\textbf{NIM:} [NIM]
+
+\vspace{1em}
+
+Restorasi dokumen historis terdegradasi sering kali berfokus pada perbaikan visual semata, yang tidak selalu berbanding lurus dengan peningkatan keterbacaan mesin (\textit{machine legibility}). Penelitian ini mengusulkan kerangka kerja \textit{Generative Adversarial Network} (GAN) yang mengintegrasikan umpan balik semantik secara eksplisit untuk meningkatkan kinerja \textit{Handwritten Text Recognition} (HTR) pada dokumen paleografi abad ke-16 hingga ke-18. Kami mengevaluasi arsitektur Diskriminator Dual-Modal (Visual-Tekstual) dan strategi pelatihan \textit{Frozen Recognizer} menggunakan fungsi \textit{loss} multi-objektif 5-komponen. Evaluasi pada 712 citra uji semi-sintetis menunjukkan bahwa model yang diusulkan berhasil menurunkan \textit{Character Error Rate} (CER) secara signifikan dari 83,4\% menjadi 34,9\% ($p<0,001$), mendekati batas kinerja teoretis citra bersih (34,1\%), sambil mempertahankan kualitas visual tinggi (PSNR 30,74 dB; SSIM 0,987). Melalui studi ablasi sistematis, penelitian ini mengungkap temuan kritis bahwa arsitektur Diskriminator Dual-Modal memberikan kontribusi marginal yang tidak signifikan. Sebaliknya, strategi \textit{Frozen Recognizer} terbukti menjadi faktor determinan dalam menjaga stabilitas gradien dan mencegah keruntuhan modus (\textit{mode collapse}). Temuan ini menantang tren kompleksitas arsitektur dalam literatur terkini, menyimpulkan bahwa protokol pelatihan yang tepat dan penyeimbangan fungsi \textit{loss} jauh lebih vital daripada kompleksitas diskriminator. Berdasarkan prinsip parsimoni, kami merekomendasikan penggunaan arsitektur diskriminator visual tunggal dengan strategi \textit{frozen} sebagai standar efisiensi untuk restorasi dokumen berorientasi teks.
+
+\vspace{1em}
+
+\noindent\textbf{Kata Kunci:} Restorasi Dokumen, \textit{Generative Adversarial Networks} (GAN), \textit{Handwritten Text Recognition} (HTR), \textit{Frozen Recognizer}, Dokumen Paleografi

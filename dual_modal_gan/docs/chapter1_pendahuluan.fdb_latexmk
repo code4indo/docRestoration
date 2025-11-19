@@ -1,7 +1,7 @@
 # Fdb version 3
-["pdflatex"] 1763119005 "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter1_pendahuluan.tex" "chapter1_pendahuluan.pdf" "chapter1_pendahuluan" 1763119006
+["pdflatex"] 1763526963 "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter1_pendahuluan.tex" "chapter1_pendahuluan.pdf" "chapter1_pendahuluan" 1763526964
   "/etc/texmf/web2c/texmf.cnf" 1735821572 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter1_pendahuluan.tex" 1763119004 30876 3c594c88bc756c6503142bb0de66e264 ""
+  "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter1_pendahuluan.tex" 1763175809 31605 af8f66d1a88fed0d20c108f67a7185bf ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb8r.tfm" 1136768653 4524 6bce29db5bc272ba5f332261583fee9c ""
@@ -163,9 +163,9 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1759233803 4379155 98693266ff65f58d9f98aff394de12d2 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1759233835 2798526 797e2e5e8fb6f85d658ad96238072e6c ""
-  "chapter1_pendahuluan.aux" 1763119005 2550 b86e229b5b1513cd5614d6ca6dee7cc4 "pdflatex"
-  "chapter1_pendahuluan.out" 1763119005 661 029968a5a52d5ae44a82006e5aa6adba "pdflatex"
-  "chapter1_pendahuluan.tex" 1763119004 30876 3c594c88bc756c6503142bb0de66e264 ""
+  "chapter1_pendahuluan.aux" 1763526964 2550 b86e229b5b1513cd5614d6ca6dee7cc4 "pdflatex"
+  "chapter1_pendahuluan.out" 1763526964 661 029968a5a52d5ae44a82006e5aa6adba "pdflatex"
+  "chapter1_pendahuluan.tex" 1763175809 31605 af8f66d1a88fed0d20c108f67a7185bf ""
   (generated)
   "chapter1_pendahuluan.aux"
   "chapter1_pendahuluan.log"

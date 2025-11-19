@@ -1,0 +1,19 @@
+\vspace{2cm}
+\begin{center}
+{\fontsize{14}{16.8}\selectfont\textbf{ABSTRACT}}\\[1em]
+\end{center}
+\vspace{1em}
+
+\noindent\textbf{Title:} Degraded Document Restoration Using Generative Adversarial Network with Dual-Modal Discriminator and HTR-Oriented Loss Function Optimization
+
+\noindent\textbf{Name:} [STUDENT NAME]
+
+\noindent\textbf{Student ID:} [STUDENT ID]
+
+\vspace{1em}
+
+Restoring degraded historical documents often focuses on visual enhancement, which does not necessarily correlate with machine legibility improvement. This study proposes a \textit{Generative Adversarial Network} (GAN) framework that explicitly integrates semantic feedback to enhance \textit{Handwritten Text Recognition} (HTR) performance on 16th--18th-century paleographic documents. We evaluated a Dual-Modal Discriminator (Visual-Textual) architecture and a \textit{Frozen Recognizer} training strategy employing a 5-component multi-objective loss function. Evaluation on 712 semi-synthetic test images demonstrated that the proposed model significantly reduced the \textit{Character Error Rate} (CER) from 83.4\% to 34.9\% ($p<0.001$)---approaching the theoretical clean baseline of 34.1\%---while maintaining high visual quality (PSNR 30.74 dB; SSIM 0.987). Through systematic ablation studies, this research reveals a critical finding: the Dual-Modal Discriminator architecture yields only marginal, statistically insignificant contributions. Conversely, the \textit{Frozen Recognizer} strategy proved to be the determinant factor in maintaining gradient stability and preventing mode collapse. These findings challenge the prevailing trend of architectural complexity in recent literature, concluding that precise training protocols and loss balancing are far more vital than discriminator complexity. Adhering to the principle of parsimony, we recommend the single visual discriminator architecture combined with the \textit{frozen} strategy as an efficiency standard for text-oriented document restoration.
+
+\vspace{1em}
+
+\noindent\textbf{Keywords:} Document Restoration, \textit{Generative Adversarial Networks} (GAN), \textit{Handwritten Text Recognition} (HTR), \textit{Frozen Recognizer}, Paleographic Documents

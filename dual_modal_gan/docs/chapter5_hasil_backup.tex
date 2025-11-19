@@ -1906,7 +1906,7 @@ Temuan ini memberikan transparansi ilmiah tentang limitasi pendekatan dan memval
 
 \paragraph{7. Implikasi untuk Preservasi Digital Arsip}\mbox{}\\[0.1em]
 
-Dalam konteks aplikasi praktis, kerangka kerja yang diusulkan menunjukkan kelayakan untuk integrasi dalam alur kerja digitalisasi Arsip Nasional RI: (1) \textbf{Skalabilitas}: Pipeline semi-otomatis dapat memproses 712 dokumen dalam waktu inferensi rata-rata 0.8 detik per citra (GPU RTX 3090), setara dengan 4.500 dokumen per jam; (2) \textbf{Kualitas restorasi}: Peningkatan CER dari 78.3\% (citra terdegradasi) menjadi 34.9\% (terestorasi) mengurangi beban koreksi manual transkripsi hingga 55.4\%; (3) \textbf{Preservasi autentisitas}: Pendekatan konservatif dalam pembersihan latar belakang (terlihat dari 0.4\% kasus \textit{over-suppression}) mempertahankan integritas visual dokumen arsip. Limitasi utama untuk adopsi operasional adalah kebutuhan \textit{fine-tuning recognizer} pada korpus paleografi Belanda untuk mengatasi keterbatasan ligatur (CER baseline 34.1\%).
+Dalam konteks aplikasi praktis, kerangka kerja yang diusulkan menunjukkan kelayakan untuk integrasi dalam alur kerja digitalisasi Arsip Nasional RI: (1) \textbf{Skalabilitas}: Pipeline semi-otomatis dapat memproses 712 dokumen dalam waktu inferensi rata-rata 0.8 detik per citra (GPU NVIDIA RTX A4000), setara dengan 4.500 dokumen per jam; (2) \textbf{Kualitas restorasi}: Peningkatan CER dari 78.3\% (citra terdegradasi) menjadi 34.9\% (terestorasi) mengurangi beban koreksi manual transkripsi hingga 55.4\%; (3) \textbf{Preservasi autentisitas}: Pendekatan konservatif dalam pembersihan latar belakang (terlihat dari 0.4\% kasus \textit{over-suppression}) mempertahankan integritas visual dokumen arsip. Limitasi utama untuk adopsi operasional adalah kebutuhan \textit{fine-tuning recognizer} pada korpus paleografi Belanda untuk mengatasi keterbatasan ligatur (CER baseline 34.1\%).
 
 \vspace{0.8em}
 
@@ -1939,7 +1939,7 @@ Analisis trajektori metrik validasi (Gambar~\ref{fig:validation-metrics-trajecto
 Penelitian ini menghasilkan tiga kontribusi praktis yang tervalidasi secara empiris:
 
 \begin{enumerate}[nosep]
-    \item \textbf{Pipeline semi-otomatis} untuk restorasi dokumen paleografi dengan \textit{throughput} 4.500 dokumen/jam (inferensi GPU RTX 3090, waktu inferensi rata-rata 0.8 detik per citra), layak untuk digitalisasi skala operasional Arsip Nasional RI
+    \item \textbf{Pipeline semi-otomatis} untuk restorasi dokumen paleografi dengan \textit{throughput} 4.500 dokumen/jam (inferensi GPU NVIDIA RTX A4000, waktu inferensi rata-rata 0.8 detik per citra), layak untuk digitalisasi skala operasional Arsip Nasional RI
     \item \textbf{Dataset semi-sintetis} 4.747 pasangan citra terdegradasi-bersih dengan degradasi parametrik yang dapat disesuaikan untuk domain arsip lain, mempercepat penelitian restorasi dokumen berbasis \textit{deep learning}
     \item \textbf{Protokol pelatihan stabil} dengan strategi \textit{frozen recognizer} yang mengeliminasi \textit{mode collapse}, memungkinkan replikasi untuk arsitektur GAN-HTR serupa dengan jaminan konvergensi
 \end{enumerate}

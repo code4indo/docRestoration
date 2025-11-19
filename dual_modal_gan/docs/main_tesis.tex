@@ -100,23 +100,47 @@
     bottom=3cm
 }
 
+% Reset paragraph counter at each subsubsection
+\makeatletter
+\@addtoreset{paragraph}{subsubsection}
+\makeatother
+
 % Pengaturan spasi
 \onehalfspacing
 
 % Pengaturan penomoran
-\setcounter{secnumdepth}{3}
-\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
 
 % Pengaturan heading
 \renewcommand{\thesection}{\Roman{section}}
 \renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
 \renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+% Paragraph level 4: gunakan nomor urut saja tanpa prefix
+\renewcommand{\theparagraph}{\arabic{paragraph}}
+
+% Format untuk paragraph (subsubsubsection level)
+\titleformat{\paragraph}[hang]
+{\normalfont\normalsize\bfseries}
+{\theparagraph.}
+{0.5em}
+{}
+\titlespacing*{\paragraph}
+{0pt}{1.5ex plus 0.5ex minus .1ex}{0.8ex plus .1ex}
+
+% Alias subsubsubsection ke paragraph
+\let\subsubsubsection\paragraph
+\let\thesubsubsubsection\theparagraph
 
 % Pengaturan penomoran tabel dan gambar mengikuti section
 \counterwithin{table}{section}
 \renewcommand{\thetable}{\thesection.\arabic{table}}
 \counterwithin{figure}{section}
 \renewcommand{\thefigure}{\thesection.\arabic{figure}}
+
+% Pengaturan format penomoran persamaan mengikuti section
+\counterwithin{equation}{section}
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
 
 % Konfigurasi Daftar Isi
 \renewcommand{\cftsecfont}{\normalfont\bfseries}
@@ -193,49 +217,13 @@ Oleh:\\[0.5cm]
 % ABSTRAK (BAHASA INDONESIA)
 % ============================================================
 \newpage
-\vspace{2cm}
-\begin{center}
-{\fontsize{14}{16.8}\selectfont\textbf{ABSTRAK}}\\[1em]
-\end{center}
-\vspace{1em}
-
-\noindent\textbf{Judul:} Restorasi Dokumen Terdegradasi Menggunakan Generative Adversarial Network dengan Diskriminator Dual-Modal dan Optimasi Loss Function Berorientasi HTR
-
-\noindent\textbf{Nama:} [NAMA MAHASISWA]
-
-\noindent\textbf{NIM:} [NIM]
-
-\vspace{1em}
-
-[ISI ABSTRAK BAHASA INDONESIA - maksimal 250 kata]
-
-\vspace{1em}
-
-\noindent\textbf{Kata Kunci:} Restorasi Dokumen, GAN, HTR, Diskriminator Dual-Modal, Optimasi Loss Function
+\input{abstrak_id.tex}
 
 % ============================================================
 % ABSTRACT (BAHASA INGGRIS)
 % ============================================================
 \newpage
-\vspace{2cm}
-\begin{center}
-{\fontsize{14}{16.8}\selectfont\textbf{ABSTRACT}}\\[1em]
-\end{center}
-\vspace{1em}
-
-\noindent\textbf{Title:} Degraded Document Restoration Using Generative Adversarial Network with Dual-Modal Discriminator and HTR-Oriented Loss Function Optimization
-
-\noindent\textbf{Name:} [STUDENT NAME]
-
-\noindent\textbf{Student ID:} [STUDENT ID]
-
-\vspace{1em}
-
-[ABSTRACT CONTENT IN ENGLISH - maximum 250 words]
-
-\vspace{1em}
-
-\noindent\textbf{Keywords:} Document Restoration, GAN, HTR, Dual-Modal Discriminator, Loss Function Optimization
+\input{abstrak_en.tex}
 
 % ============================================================
 % HALAMAN PENGESAHAN
@@ -286,7 +274,7 @@ Oleh:\\[0.5cm]
 \\\\
 \\\\
 \\\\
-[NAMA DIREKTUR] dan [NAMA KETUA PRODI]\\
+[NAMA DIREKTUR] & [NAMA KETUA PRODI]\\
 NIP. [NIP] & NIP. [NIP]
 \end{tabular}
 
