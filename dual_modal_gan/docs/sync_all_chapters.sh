@@ -67,6 +67,7 @@ if [ $# -eq 0 ]; then
         "4:chapter4_analysis_design"
         "5:chapter5_hasil"
         "6:chapter6_kesimpulan"
+        "L:Chapter_Lambang"
     )
 else
     # Sync specific chapter
@@ -77,9 +78,10 @@ else
         4) CHAPTERS=("4:chapter4_analysis_design") ;;
         5) CHAPTERS=("5:chapter5_hasil") ;;
         6) CHAPTERS=("6:chapter6_kesimpulan") ;;
+        L|l) CHAPTERS=("L:Chapter_Lambang") ;;
         *)
             echo "❌ ERROR: Invalid chapter number: $1"
-            echo "Usage: $0 [1|2|3|4|5|6]"
+            echo "Usage: $0 [1|2|3|4|5|6|L]"
             exit 1
             ;;
     esac
@@ -105,3 +107,5 @@ echo "  2. Biber:   biber main_tesis"
 echo "  3. Compile: pdflatex main_tesis.tex (2x)"
 echo "  4. View:    evince main_tesis.pdf"
 echo ""
+echo "💡 Tip: Sync specific file only:"
+echo "   ./sync_all_chapters.sh L    # sync Chapter_Lambang only"

@@ -1,7 +1,7 @@
 # Fdb version 3
-["pdflatex"] 1763093701 "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/Chapter_Lambang.tex" "Chapter_Lambang.pdf" "Chapter_Lambang" 1763093702
+["pdflatex"] 1763640927 "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/Chapter_Lambang.tex" "Chapter_Lambang.pdf" "Chapter_Lambang" 1763640928
   "/etc/texmf/web2c/texmf.cnf" 1735821572 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/Chapter_Lambang.tex" 1763093700 11162 f9204a7d699025119d7b5b3f6422fb8a ""
+  "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/Chapter_Lambang.tex" 1763640926 11387 3f81e6cce8c87de2e1aaac1e10488319 ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/symbol/psyr.tfm" 1136768653 1408 5937f58aa508ea2cea4901c07d10f5fe ""
@@ -9,8 +9,6 @@
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb7t.tfm" 1136768653 2172 fd0c924230362ff848a33632ed45dc23 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb8r.tfm" 1136768653 4524 6bce29db5bc272ba5f332261583fee9c ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb8t.tfm" 1136768653 6880 f19b8995b61c334d78fc734065f6b4d4 ""
-  "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmbi8r.tfm" 1136768653 4480 10409ed8bab5aea9ec9a78028b763919 ""
-  "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmbi8t.tfm" 1136768653 6784 37b32cc10800b5afa030d935c393695a ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmr8r.tfm" 1136768653 4408 25b74d011a4c66b7f212c0cc3c90061b ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmr8t.tfm" 1136768653 6672 e3ab9e37e925f3045c9005e6d1473d56 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmri7t.tfm" 1136768653 2288 f478fc8fed18759effb59f3dad7f3084 ""
@@ -37,11 +35,9 @@
   "/usr/share/texlive/texmf-dist/fonts/type1/public/rsfs/rsfs10.pfb" 1229303445 16077 4737ac34f0fb5608550f3780a0202c22 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/urw/symbol/usyr.pfb" 1136849748 33709 b09d2e140b7e807d3a97058263ab6693 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb" 1136849748 44729 811d6c62865936705a31c797a1d5dada ""
-  "/usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb" 1136849748 44656 0cbca70e0534538582128f6b54593cca ""
   "/usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb" 1136849748 46026 6dab18b61c907687b520c72847215a68 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb" 1136849748 45458 a3faba884469519614ca56ba5f6b1de1 ""
   "/usr/share/texlive/texmf-dist/fonts/vf/adobe/times/ptmb8t.vf" 1136768653 2340 df9c920cc5688ebbf16a93f45ce7bdd3 ""
-  "/usr/share/texlive/texmf-dist/fonts/vf/adobe/times/ptmbi8t.vf" 1136768653 2324 51908dae6e03953a90119973962f0e4d ""
   "/usr/share/texlive/texmf-dist/fonts/vf/adobe/times/ptmr8t.vf" 1136768653 2348 91706c542228501c410c266421fbe30c ""
   "/usr/share/texlive/texmf-dist/fonts/vf/adobe/times/ptmri8t.vf" 1136768653 2328 6cd7df782b09b29cfc4d93e55b6b9a59 ""
   "/usr/share/texlive/texmf-dist/fonts/vf/adobe/times/zptmcm7m.vf" 1136768653 1132 27520247d3fe18d4266a226b461885c2 ""
@@ -202,9 +198,9 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1759233803 4379155 98693266ff65f58d9f98aff394de12d2 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1759233835 2798526 797e2e5e8fb6f85d658ad96238072e6c ""
-  "Chapter_Lambang.aux" 1763093702 1195 1b29c4e8098c8e02960dd1827bb10db7 "pdflatex"
-  "Chapter_Lambang.out" 1763093702 71 b866d825811904897b9a7144217147c6 "pdflatex"
-  "Chapter_Lambang.tex" 1763093700 11162 f9204a7d699025119d7b5b3f6422fb8a ""
+  "Chapter_Lambang.aux" 1763640928 1257 19106c3e21c4294ae6ba252f61349039 "pdflatex"
+  "Chapter_Lambang.out" 1763640928 71 b866d825811904897b9a7144217147c6 "pdflatex"
+  "Chapter_Lambang.tex" 1763640926 11387 3f81e6cce8c87de2e1aaac1e10488319 ""
   (generated)
   "Chapter_Lambang.aux"
   "Chapter_Lambang.log"

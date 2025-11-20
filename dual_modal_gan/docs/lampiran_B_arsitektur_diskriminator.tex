@@ -1,0 +1,50 @@
+\setcounter{table}{0}
+\setcounter{figure}{0}
+
+\vspace{2cm}
+\begin{center}
+{\fontsize{14}{16.8}\selectfont\textbf{Lampiran B \quad Arsitektur Diskriminator Dual-Modal Enhanced}}\\[1em]
+\end{center}
+\addcontentsline{toc}{section}{LAMPIRAN B ARSITEKTUR DISKRIMINATOR DUAL-MODAL ENHANCED}
+
+\vspace{2em}
+
+\begin{table}[H]
+\caption{Arsitektur Diskriminator Dual-Modal Enhanced. Spesifikasi detail tiga cabang (Citra CNN, Teks BiLSTM, Fusi \textit{Cross-Modal}). Cabang citra memproses fitur visual melalui 4 \textit{DownBlocks} dengan \textit{spatial attention}, cabang teks memproses sekuens karakter melalui embedding + BiLSTM + \textit{self-attention}. \textit{Cross-modal fusion} menghasilkan klasifikasi \textit{real}/\textit{fake}. Total: 17.4M parameter.}
+\label{tab:B_discriminator_arch}
+\scriptsize
+\centering
+\begin{tabular}{|l|l|p{4cm}|r|}
+\hline
+\textbf{Cabang} & \textbf{Lapisan} & \textbf{Keluaran} & \textbf{Param.} \\
+\hline
+\multirow{9}{*}{\rotatebox{90}{\tiny CNN}}
+& \textit{Input} & $128{\times}1024{\times}1$ & - \\
+& Conv2D+BN & $128{\times}1024{\times}64$ & 0.6K \\
+& DownBlk-1 & $64{\times}512{\times}64$ & 37K \\
+& DownBlk-2 & $32{\times}256{\times}128$ & 148K \\
+& DownBlk-3 & $16{\times}128{\times}256$ & 590K \\
+& DownBlk-4 & $8{\times}64{\times}512$ & 2.4M \\
+& SpatialAttn & $8{\times}64{\times}512$ & 4.7K \\
+& ResBlk-512 & $8{\times}64{\times}512$ & 2.4M \\
+& AvgPool & $512$ & - \\
+\hline
+\multirow{5}{*}{\rotatebox{90}{\tiny LSTM}}
+& \textit{Input} & $128$ (seq.) & - \\
+& Embed & $128{\times}128$ & 12.8K \\
+& BiLSTM & $128{\times}512$ & 1.3M \\
+& SelfAttn & $128{\times}512$ & 262K \\
+& AvgPool & $512$ & - \\
+\hline
+\multirow{6}{*}{\rotatebox{90}{\tiny Fusi}}
+& Proj-CNN & $128$ & 65.7K \\
+& Proj-LSTM & $128$ & 65.7K \\
+& CrossAttn & $256$ & 33K \\
+& Dense-1+Drop & $512$ & 131K \\
+& Dense-2+Drop & $256$ & 131K \\
+& Sigmoid & $1$ & 257 \\
+\hline
+\multicolumn{3}{|r|}{\textbf{Total:}} & \textbf{17.4M} \\
+\hline
+\end{tabular}
+\end{table}

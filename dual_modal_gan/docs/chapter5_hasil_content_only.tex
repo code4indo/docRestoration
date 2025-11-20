@@ -8,12 +8,14 @@
 
 \vspace{1cm}
 \begin{center}
-{\fontsize{14}{16.8}\selectfont BAB V. Hasil dan Pembahasan}\\[1em]
+{\fontsize{14}{16.8}\selectfont Bab V \quad Hasil dan Pembahasan}\\[1em]
 \end{center}
 \label{sec:hasil-dan-pembahasan}
 \addcontentsline{toc}{section}{BAB V HASIL DAN PEMBAHASAN}
 \setcounter{section}{5}
 \setcounter{subsection}{0}
+\setcounter{table}{0}
+\setcounter{figure}{0}
 
 \vspace{0.8em}
 \subsection{Pendahuluan}
@@ -295,7 +297,7 @@ Evaluasi performa keterbacaan teks dilakukan menggunakan metrik CER dan WER pada
 
 \begin{table}[H]
 \centering
-\caption[Metrik keterbacaan frozen vs joint]{Perbandingan Metrik Keterbacaan Teks antara \textit{Frozen Recognizer} dan \textit{Joint Training}}
+\caption[Metrik Keterbacaan Frozen vs Joint]{Perbandingan Metrik Keterbacaan Teks antara \textit{Frozen Recognizer} dan \textit{Joint Training}}
 \label{tab:frozen-vs-joint-cer}
 \begin{tabular}{lcccc}
 \toprule
@@ -342,7 +344,7 @@ Perbandingan efisiensi komputasi dilakukan dengan mengukur waktu pelatihan, peng
 
 \begin{table}[H]
 \centering
-\caption[Efisiensi komputasi frozen vs joint]{Perbandingan Efisiensi Komputasi antara \textit{Frozen Recognizer} dan \textit{Joint Training}}
+\caption[Efisiensi Komputasi Frozen vs Joint]{Perbandingan Efisiensi Komputasi antara \textit{Frozen Recognizer} dan \textit{Joint Training}}
 \label{tab:frozen-vs-joint-efficiency}
 \begin{tabular}{lcc}
 \toprule
@@ -380,7 +382,7 @@ Penelitian ini membandingkan dua strategi integrasi HTR dalam sistem restorasi d
 
 \begin{table}[H]
 \centering
-\caption[Kunci temuan frozen vs joint]{Ringkasan Kuantitatif Perbandingan Frozen vs Joint Training}
+\caption[Temuan Kunci Frozen vs Joint]{Ringkasan Kuantitatif Perbandingan Frozen vs Joint Training}
 \label{tab:frozen-vs-joint-summary}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{lccc}
@@ -438,7 +440,7 @@ Setelah memvalidasi strategi \textit{frozen recognizer} sebagai fondasi sistem (
     \item Hasil Perbandingan Kuantitatif
     \begin{table}[H]
     \centering
-    \caption[Studi Ablasi Arsitektur Diskriminator: Perbandingan CNN]{Studi Ablasi Arsitektur Diskriminator: Perbandingan CNN Tunggal vs Dual-Modal pada Set Validasi}
+    \caption[Ablasi Diskriminator Dual-Modal vs CNN]{Studi Ablasi Arsitektur Diskriminator: Perbandingan CNN Tunggal vs Dual-Modal pada Set Validasi}
     \label{tab:diskriminator-ablasi}
     \begin{tabular}{lccc}
     	Diskriminator & PSNR (dB) & SSIM & CER (\%) \\
@@ -492,7 +494,7 @@ Eksperimen komparatif evaluasi strategi \textit{curriculum learning} tiga fase (
 
 \begin{table}[H]
 \centering
-\caption[Performa curriculum vs non-curriculum]{Perbandingan Performa Curriculum Learning vs Non-Curriculum Learning}
+\caption[Performa Curriculum vs Non-Curriculum]{Perbandingan Performa Curriculum Learning vs Non-Curriculum Learning}
 \label{tab:curriculum-comparison}
 \begin{tabular}{lccc}
 \toprule
@@ -575,7 +577,7 @@ Konfigurasi bobot \textit{loss} ditentukan secara empiris dan menunjukkan pola \
 
 \begin{table}[H]
 \centering
-\caption[Konfigurasi bobot loss produksi]{Konfigurasi Loss Weights Pelatihan Produksi dengan Analisis Magnitude}
+\caption[Konfigurasi Bobot Loss Produksi]{Konfigurasi Loss Weights Pelatihan Produksi dengan Analisis Magnitude}
 \label{tab:loss-weights-config}
 \footnotesize
 \begin{tabular}{lcccc}
@@ -641,7 +643,7 @@ Metodologi Mini Grid Search untuk Analisis Sensitivitas: Untuk memahami sensitiv
 
 Catatan Penting: Hasil PSNR dari grid search (rentang 0.58--11.39 dB) tidak dapat dibandingkan langsung dengan pelatihan produksi (30.91 dB best checkpoint) karena perbedaan durasi pelatihan yang signifikan (3 vs 50 epoch). Fokus analisis adalah pada tren relatif dan sensitivitas komponen, bukan nilai absolut.\begin{table}[H]
 \centering
-\caption[Hasil mini grid search top 5]{Hasil Mini Grid Search: Top 5 Konfigurasi (3 Epoch Ablation)}
+\caption[Hasil Mini Grid Search Top 5]{Hasil Mini Grid Search: Top 5 Konfigurasi (3 Epoch Ablation)}
 \label{tab:grid-search-top5}
 \footnotesize
 \resizebox{\textwidth}{!}{
@@ -671,7 +673,7 @@ Pixel loss (L1) berfungsi sebagai anchor utama untuk mempertahankan kualitas vis
 
 \begin{table}[H]
 \centering
-\caption[Sensitivitas pixel weight]{Analisis Sensitivitas Pixel Weight (Mini Grid Search)}
+\caption[Analisis Sensitivitas Pixel Weight]{Analisis Sensitivitas Pixel Weight (Mini Grid Search)}
 \label{tab:pixel-sensitivity}
 \footnotesize
 \begin{tabular}{lcccc}
@@ -696,7 +698,7 @@ Salah satu pertanyaan kunci penelitian ini adalah: "Apakah bobot CTC loss mempen
 
 \begin{table}[H]
 \centering
-\caption[Dampak CTC weight pada kualitas visual]{Analisis Dampak CTC Weight Terhadap Kualitas Visual}
+\caption[Dampak CTC Weight pada Kualitas Visual]{Analisis Dampak CTC Weight Terhadap Kualitas Visual}
 \label{tab:ctc-sensitivity}
 \footnotesize
 \begin{tabular}{lcccc}
@@ -715,7 +717,7 @@ Konfigurasi produksi penelitian ini menggunakan RecFeat=8.0, namun studi ablasi 
 
 \begin{table}[H]
 \centering
-\caption[Analisis RecFeat weight]{Analisis RecFeat Weight: Ablation vs Pelatihan Produksi}
+\caption[Analisis RecFeat Weight]{Analisis RecFeat Weight: Ablation vs Pelatihan Produksi}
 \label{tab:recfeat-sensitivity}
 \footnotesize
 \begin{tabular}{lcccc}
@@ -738,7 +740,7 @@ Validasi Konfigurasi Production: Pelatihan produksi (50 epoch) dengan baseline w
 % Tambahkan tabel hyperparameter yang direferensikan
 \begin{table}[H]
 \centering
-\caption{Hyperparameter Training Konfigurasi (Digunakan untuk Model Produksi Utama)}
+\caption[Konfigurasi Hyperparameter Training]{Hyperparameter Training Konfigurasi (Digunakan untuk Model Produksi Utama)}
 \label{tab:hyperparameter-training}
 \scriptsize
 \begin{tabular}{lcc}
@@ -850,7 +852,7 @@ Observasi Berdasarkan Kategori Degradasi. Analisis visual 15 dokumen ANRI menunj
 
 \begin{table}[!t]
 \renewcommand{\arraystretch}{1.3}
-\caption[Performa restorasi dokumen ANRI]{Performa Restorasi pada Dokumen ANRI Berdasarkan Tingkat Kontras Masukan (n=15)}
+\caption[Performa Restorasi Dokumen ANRI]{Performa Restorasi pada Dokumen ANRI Berdasarkan Tingkat Kontras Masukan (n=15)}
 \label{table:anri_contrast_analysis}
 \centering
 \small
@@ -905,7 +907,7 @@ Metodologi Validasi:
 
 \begin{table}[!t]
 \renewcommand{\arraystretch}{1.3}
-\caption[Evaluasi awal ahli paleografi]{Hasil Evaluasi Awal Ahli Paleografi pada Dokumen ANRI (n=15)}
+\caption[Hasil Evaluasi Awal Ahli Paleografi]{Hasil Evaluasi Awal Ahli Paleografi pada Dokumen ANRI (n=15)}
 \label{table:anri_expert_validation}
 \centering
 \small
@@ -1010,7 +1012,7 @@ Performa yang konsisten pada dokumen ANRI nyata (meskipun hanya dilatih pada deg
 
 \begin{table}[!t]
 \renewcommand{\arraystretch}{1.15}
-\caption[Perbandingan karakteristik data pelatihan semi-sintetis]{Perbandingan karakteristik data pelatihan semi-sintetis terhadap dokumen ANRI nyata: analisis kesenjangan domain antara degradasi semi-sintetis dan autentik.}
+\caption[Perbandingan Karakteristik Data Pelatihan]{Perbandingan karakteristik data pelatihan semi-sintetis terhadap dokumen ANRI nyata: analisis kesenjangan domain antara degradasi semi-sintetis dan autentik.}
 \label{table:synthetic_vs_real_comparison}
 \centering
 \begin{tabular}{|p{2.5cm}|p{2.8cm}|p{2.8cm}|}
@@ -1267,7 +1269,7 @@ Berdasarkan evaluasi empiris dan pengujian statistik terhadap empat komponen hip
 
 \begin{table}[H]
 \centering
-\caption[Evaluasi komponen hipotesis]{Ringkasan Evaluasi Komponen Hipotesis Penelitian}
+\caption[Ringkasan Evaluasi Hipotesis]{Ringkasan Evaluasi Komponen Hipotesis Penelitian}
 \label{tab:ringkasan-hipotesis}
 \resizebox{\textwidth}{!}{
 \begin{tabular}{|p{6cm}|p{3cm}|p{5cm}|}
@@ -1364,7 +1366,7 @@ Analisis terhadap 712 sampel set uji mengidentifikasi kategori kegagalan berdasa
 
 \begin{table}[H]
 \renewcommand{\arraystretch}{1.15}
-\caption[Distribusi pola kegagalan]{Distribusi Pola Kegagalan pada \textit{Test Set} ($n$=712)}
+\caption[Distribusi Pola Kegagalan]{Distribusi Pola Kegagalan pada \textit{Test Set} ($n$=712)}
 \label{table:failure-distribution}
 \centering
 \small

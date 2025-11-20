@@ -4,7 +4,7 @@
   (generated)
   "chapter2_tinjauan_pustaka.bbl"
   "chapter2_tinjauan_pustaka.blg"
-["pdflatex"] 1763555659 "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter2_tinjauan_pustaka.tex" "chapter2_tinjauan_pustaka.pdf" "chapter2_tinjauan_pustaka" 1763555659
+["pdflatex"] 1763646007 "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter2_tinjauan_pustaka.tex" "chapter2_tinjauan_pustaka.pdf" "chapter2_tinjauan_pustaka" 1763646007
   "/etc/texmf/web2c/texmf.cnf" 1735821572 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/main/fig_degradation_examples/combined_degradation.png" 1762582915 290146 d8ba5d5ad876df04d3e079cc502fd1b7 ""
   "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/main/fig_degradation_examples/ink_bleed_through.png" 1762582915 2098093 68bf3fd7ece2a17459c6079ecd8f1126 ""
@@ -12,7 +12,7 @@
   "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/main/fig_degradation_examples/ink_degradation.png" 1762582915 1427243 b79d361c9afe8cb466097f62b2fb1b4e ""
   "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/main/fig_degradation_examples/paper_aging.png" 1762582915 1283977 3a0fe3e51f11ddfdc768d2b23d002ba9 ""
   "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/main/fig_degradation_examples/physical_damage.png" 1762582915 2845486 4ec38a6ace5fd51744b623ed531cb99f ""
-  "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter2_tinjauan_pustaka.tex" 1763555623 123574 d9491e8714295f648b7ddc3bebaae33a ""
+  "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter2_tinjauan_pustaka.tex" 1763632935 123624 d3aaf52cefb262e7214eba8e6fc38926 ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/symbol/psyr.tfm" 1136768653 1408 5937f58aa508ea2cea4901c07d10f5fe ""
@@ -235,11 +235,11 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1759233803 4379155 98693266ff65f58d9f98aff394de12d2 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1759233835 2798526 797e2e5e8fb6f85d658ad96238072e6c ""
-  "chapter2_tinjauan_pustaka.aux" 1763555659 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
-  "chapter2_tinjauan_pustaka.bbl" 1763555656 70442 e932a69ffcf3d47c4421bba34eccad88 "biber chapter2_tinjauan_pustaka"
+  "chapter2_tinjauan_pustaka.aux" 1763646007 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
+  "chapter2_tinjauan_pustaka.bbl" 1763646004 70442 e932a69ffcf3d47c4421bba34eccad88 "biber chapter2_tinjauan_pustaka"
   "chapter2_tinjauan_pustaka.out" 0 -1 0 "pdflatex"
   "chapter2_tinjauan_pustaka.run.xml" 0 -1 0 "pdflatex"
-  "chapter2_tinjauan_pustaka.tex" 1763555623 123574 d9491e8714295f648b7ddc3bebaae33a ""
+  "chapter2_tinjauan_pustaka.tex" 1763632935 123624 d3aaf52cefb262e7214eba8e6fc38926 ""
   "drawio/roadmap_chapter2.png" 1763196098 384386 e97bee60b84999395c855dde34e3b03a ""
   "images/The-GAN-architecture-schematized-from-Goodfellow-et-al-2014-Radford-et-al-2015.png" 1762597026 35974 519a5e6f08689e4d6c5524ebb3807515 ""
   "images/The-architecture-of-CRNN-proposed-by-Shi-et-al-48-The-model-mainly-consists-of.png" 1762598564 265471 420672bf85d5f00e33c863e78fad8647 ""

@@ -1,7 +1,7 @@
 # Fdb version 3
-["pdflatex"] 1763148119 "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter3_metodologi.tex" "chapter3_metodologi.pdf" "chapter3_metodologi" 1763148120
+["pdflatex"] 1763618228 "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter3_metodologi.tex" "chapter3_metodologi.pdf" "chapter3_metodologi" 1763618228
   "/etc/texmf/web2c/texmf.cnf" 1735821572 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter3_metodologi.tex" 1763110907 55092 5786925a9f34fe55e9a2967b37249d6d ""
+  "/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/chapter3_metodologi.tex" 1763618227 55814 bce78d9f6263b6a90913749f7d2f38a2 ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/symbol/psyr.tfm" 1136768653 1408 5937f58aa508ea2cea4901c07d10f5fe ""
@@ -50,6 +50,10 @@
   "/usr/share/texlive/texmf-dist/fonts/vf/adobe/times/zptmcm7y.vf" 1136768653 964 5673178ff30617b900214de28ab32b38 ""
   "/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii" 1461363279 71627 94eb9990bed73c364d7f53f960cc8c5b ""
   "/usr/share/texlive/texmf-dist/tex/generic/atbegshi/atbegshi.sty" 1575674566 24708 5584a51a7101caf7e6bbf1fc27d8f7b1 ""
+  "/usr/share/texlive/texmf-dist/tex/generic/babel-indonesian/bahasa.ldf" 1487196713 2903 2e47c488ae93dae3824291e40e61df35 ""
+  "/usr/share/texlive/texmf-dist/tex/generic/babel-indonesian/indonesian.ldf" 1487196713 4814 bc90f6c96cffebc2efe652744059e6e7 ""
+  "/usr/share/texlive/texmf-dist/tex/generic/babel/babel.sty" 1643231327 147419 2058c0f5e6893b19c8f3ce95d177646c ""
+  "/usr/share/texlive/texmf-dist/tex/generic/babel/txtbabel.def" 1643231327 5233 d5e383ed66bf272b71b1a90b596e21c6 ""
   "/usr/share/texlive/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty" 1576625341 40635 c40361e206be584d448876bba8a64a3b ""
   "/usr/share/texlive/texmf-dist/tex/generic/bitset/bitset.sty" 1576016050 33961 6b5c75130e435b2bfdb9f480a09a39f9 ""
   "/usr/share/texlive/texmf-dist/tex/generic/etexcmds/etexcmds.sty" 1576625273 7734 b98cbb34c81f667027c1e3ebdbfce34b ""
@@ -133,6 +137,7 @@
   "/usr/share/texlive/texmf-dist/tex/latex/base/atveryend-ltx.sty" 1636758526 2462 754d6b31b2ab5a09bb72c348ace2ec75 ""
   "/usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty" 1622581934 4946 461cc78f6f26901410d9f1d725079cc6 ""
   "/usr/share/texlive/texmf-dist/tex/latex/base/ifthen.sty" 1622581934 5157 f308c7c04889e16c588e78aa42599fae ""
+  "/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty" 1622581934 5049 969aec05d5f39c43f8005910498fcf90 ""
   "/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo" 1636758526 8449 bc7344e882df4d7e51c046514dee83e4 ""
   "/usr/share/texlive/texmf-dist/tex/latex/base/t1cmtt.fd" 1622581934 2443 6dd9a5deeddddfcceb01d1932590ebad ""
   "/usr/share/texlive/texmf-dist/tex/latex/base/textcomp.sty" 1622581934 2894 55431114fc0e491ecee275edafd6c881 ""
@@ -197,9 +202,9 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1759233803 4379155 98693266ff65f58d9f98aff394de12d2 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1759233835 2798526 797e2e5e8fb6f85d658ad96238072e6c ""
-  "chapter3_metodologi.aux" 1763148120 7390 16265a9e2f89b7be7bd770aa01d32aa6 "pdflatex"
-  "chapter3_metodologi.out" 1763148120 3270 4db198795865f88b6387a72b53ac41d8 "pdflatex"
-  "chapter3_metodologi.tex" 1763110907 55092 5786925a9f34fe55e9a2967b37249d6d ""
+  "chapter3_metodologi.aux" 1763618228 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
+  "chapter3_metodologi.out" 0 -1 0 "pdflatex"
+  "chapter3_metodologi.tex" 1763618229 55818 eb8c173e9ddcbdae860c4aa872dbc554 ""
   "images/DRSM.png" 1760320908 68671 b96e838ef46038d5b5b96233cf00e33d ""
   "images/PengembanganArtefak.png" 1760320908 92909 679b8388191c0c18a88fe518f829c9bd ""
   (generated)

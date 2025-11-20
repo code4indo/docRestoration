@@ -1,0 +1,91 @@
+Berikut adalah usulan judul/caption singkat untuk seluruh tabel dalam dokumen tesis Anda, dengan panjang di bawah 80 karakter sesuai permintaan:
+
+Bab II (Tinjauan Pustaka)
+
+Tabel II.3: Dampak Kuantitatif Degradasi pada HTR 
+
+Tabel II.4: Perbandingan Paradigma Metode Restorasi
+
+Tabel II.5: Hasil Kuantitatif ERB-MultiTask
+
+Tabel II.6: Perbandingan ERB-MultiTask vs DE-GAN
+
+Tabel II.7: Perbandingan Pendekatan Terawasi vs Mandiri
+
+Tabel II.8: Perbandingan Metode Restorasi: Metrik Performa
+
+Tabel II.9: Perbandingan Metode Restorasi: Arsitektur
+
+Bab III (Metodologi)
+
+Tabel III.10: Target Metrik Kuantitatif Penelitian 
+
+Tabel III.11: Spesifikasi Kebutuhan Fungsional Sistem
+
+Tabel III.12: Spesifikasi Kebutuhan Non-Fungsional Sistem
+
+Tabel III.13: Traceability Matrix Kebutuhan Sistem
+
+Bab IV (Perancangan)
+
+Tabel IV.14: Komparasi Arsitektur Framework vs SOTA 
+
+Tabel IV.15: Spesifikasi Arsitektur Generator U-Net Enhanced
+
+Tabel IV.16: Analisis Strategi Integrasi Pengenal HTR
+
+Tabel IV.17: Spesifikasi Arsitektur Diskriminator Dual-Modal
+
+Tabel IV.18: Konfigurasi Bobot Loss Optimal
+
+Tabel IV.19: Spesifikasi Lingkungan Eksperimen
+
+Tabel IV.20: Protokol Curriculum Learning Tiga Fase
+
+Tabel IV.21: Pemetaan Metrik Evaluasi dan Komponen
+
+Tabel IV.22: Ringkasan CER Berbagai Dataset
+
+Tabel IV.23: Konfigurasi Eksperimen Ablasi Loss
+
+Bab V (Hasil dan Pembahasan)
+
+Tabel V.24: Hasil Kuantitatif Set Uji Semi-Sintetis 
+
+Tabel V.25: Perbandingan Metrik dengan Pustaka
+
+Tabel V.26: Studi Eliminasi Komponen Loss
+
+Tabel V.27: Perbandingan Loss: Frozen vs Joint Training
+
+Tabel V.28: Metrik Keterbacaan: Frozen vs Joint
+
+Tabel V.29: Efisiensi Komputasi: Frozen vs Joint
+
+Tabel V.30: Temuan Kunci: Frozen vs Joint
+
+Tabel V.31: Ablasi Diskriminator: Dual-Modal vs CNN
+
+Tabel V.32: Performa Curriculum vs Non-Curriculum
+
+Tabel V.33: Konfigurasi Bobot Loss Produksi
+
+Tabel V.34: Hasil Mini Grid Search Top 5
+
+Tabel V.35: Analisis Sensitivitas Pixel Weight
+
+Tabel V.36: Dampak CTC Weight pada Kualitas Visual
+
+Tabel V.37: Analisis RecFeat Weight
+
+Tabel V.38: Konfigurasi Hyperparameter Training
+
+Tabel V.39: Performa Restorasi Dokumen ANRI
+
+Tabel V.40: Hasil Evaluasi Awal Ahli Paleografi
+
+Tabel V.41: Perbandingan Karakteristik Data Pelatihan
+
+Tabel V.42: Ringkasan Evaluasi Hipotesis
+
+Tabel V.43: Distribusi Pola Kegagalan
