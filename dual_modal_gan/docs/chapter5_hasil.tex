@@ -155,7 +155,7 @@
 
 \vspace{1cm}
 \begin{center}
-{\fontsize{14}{16.8}\selectfont\textbf{BAB V. Hasil dan Pembahasan}}\\[1em]
+{\fontsize{14}{16.8}\selectfont BAB V. Hasil dan Pembahasan}\\[1em]
 \end{center}
 \label{sec:hasil-dan-pembahasan}
 \addcontentsline{toc}{section}{BAB V HASIL DAN PEMBAHASAN}
@@ -192,13 +192,13 @@ Tabel~\ref{table:synthetic-results} menyajikan hasil kuantitatif dari evaluasi m
 \resizebox{\textwidth}{!}{
 \begin{tabular}{|l|c|c|c|c|c|}
 \hline
-\textbf{Metode} & \textbf{PSNR (dB) $\uparrow$} & \textbf{SSIM $\uparrow$} & \textbf{\textit{F-measure} $\uparrow$} & \textbf{CER (\%)} & \textbf{WER (\%)} \\
+Metode & PSNR (dB) $\uparrow$ & SSIM $\uparrow$ & \textit{F-measure} $\uparrow$ & CER (\%) & WER (\%) \\
 \hline
 Tanpa Perbaikan & 7.91$\pm$1.01 & 0.340$\pm$0.077 & -\textsuperscript{a} & 83.4$\pm$18.5 $\downarrow$ & 98.7$\pm$7.3 $\downarrow$ \\
 Otsu \textit{Thresholding} & 4.75$\pm$2.00 & 0.261$\pm$0.099 & 0.748$\pm$0.085 & 85.7$\pm$56.7 $\downarrow$ & 112.9$\pm$69.5 $\downarrow$ \\
 Sauvola Adaptif & 9.92$\pm$1.99 & 0.437$\pm$0.149 & 0.933$\pm$0.030 & 109.5$\pm$179.5 $\downarrow$ & 171.5$\pm$172.2 $\downarrow$ \\
 \hline
-\textbf{Yang Diusulkan} & \textbf{30.74$\pm$5.09} & \textbf{0.987$\pm$0.014} & \textbf{0.921$\pm$0.067} & \textbf{34.9$\pm$21.8} $\downarrow$ & \textbf{82.4$\pm$26.1} $\downarrow$ \\
+Yang Diusulkan & 30.74$\pm$5.09 & 0.987$\pm$0.014 & 0.921$\pm$0.067 & 34.9$\pm$21.8 $\downarrow$ & 82.4$\pm$26.1 $\downarrow$ \\
 \hline
 \textit{Batas Atas (GT Bersih)} & - & - & - & \textit{34.1$\pm$22.7} & \textit{82.1$\pm$27.3} \\
 \hline
@@ -243,15 +243,30 @@ Gambar~\ref{fig:method-comparison-visual} memvisualisasikan perbandingan kualita
 \subsubsection{Trajektori Pelatihan dan Konvergensi}
 \label{subsubsec:trajektori-pelatihan}
 
+Gambar~\ref{fig:validation-metrics-trajectory} menyajikan trajektori terperinci dari empat metrik validasi kunci selama 50 \textit{epoch} dengan interval kepercayaan 95\%, menunjukkan proses konvergensi model dan keandalan statistik hasil pelatihan.
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/data_dukung/fig_validation_metrics_trajectory.pdf}
+\caption[Trajektori metrik validasi selama 50 epoch]{Trajektori metrik validasi dengan interval kepercayaan 95\% selama 50 \textit{epoch} ($n$=710): (a) PSNR mencapai 30.91±0.42 dB, (b) SSIM mencapai 0.987±0.001, (c) CER mendekati \textit{baseline} citra bersih, (d) WER menunjukkan pola serupa. Model terbaik (\textit{epoch} 44, bintang merah) dipilih berdasarkan kriteria gabungan PSNR-CER. Interval kepercayaan sempit mengindikasikan kinerja konsisten. Evaluasi akhir pada \textit{set} uji: PSNR 30.74 dB, SSIM 0.987, CER 34.9\% (Tabel~\ref{table:synthetic-results}).}
+\label{fig:validation-metrics-trajectory}
+\end{figure}
 
+\textbf{Observasi Trajektori Validasi:}
 
+\paragraph{1. Konvergensi Bertahap pada Metrik Visual}
+Target PSNR tercapai pada \textit{epoch} 38 (30.0 dB) dan target SSIM pada \textit{epoch} 22 (0.95), mengindikasikan bahwa pelatihan fase \textit{warmup} visual (\textit{epoch} 1--10) dan fase peningkatan CTC bertahap (\textit{epoch} 11--30) berhasil membangun kemampuan rekonstruksi dasar sebelum optimasi HTR penuh. Pola konvergensi ini memvalidasi efektivitas strategi \textit{curriculum learning} tiga fase yang dirancang pada Bab III.
 
-Analisis trajektori metrik validasi pada Gambar~\ref{fig:validation-metrics-trajectory} mengungkapkan tiga temuan kunci. Pertama konvergensi bertahap yang efektif, di mana target PSNR tercapai pada epoch 38 (30.0 dB) dan SSIM pada epoch 22 (0.95), memvalidasi efektivitas \textit{curriculum learning} tiga fase (\textit{warmup} visual epoch 1--10, peningkatan CTC bertahap epoch 11--30, optimasi penuh epoch 31--50). Kedua, stabilitas tinggi yang ditunjukkan oleh interval kepercayaan 95\% yang sempit (PSNR ±0.42 dB, SSIM ±0.001 pada epoch 44), mengonfirmasi varians rendah dan prediktabilitas performa untuk aplikasi praktis.
+\paragraph{2. Stabilitas Interval Kepercayaan}
+Interval kepercayaan yang sempit untuk PSNR (±0.42 dB pada \textit{epoch} 44) dan SSIM (±0.001) menunjukkan varians rendah pada \textit{set} validasi, mengonfirmasi bahwa model belajar pola restorasi yang konsisten tanpa fluktuasi berlebihan. Stabilitas ini penting untuk aplikasi praktis di mana prediktabilitas performa diperlukan.
 
-(3) Pemilihan optimal---model terpilih pada epoch 44 berdasarkan kriteria gabungan PSNR-CER dengan protokol early stopping (patience=25), mencegah overfitting dan memastikan keseimbangan visual-HTR. Performa pada set uji konsisten dengan tren validasi (Tabel~\ref{table:synthetic-results}), mengonfirmasi generalisasi efektif tanpa overfitting. Perbedaan CER validasi-uji ($\Delta$=7.79\%) konsisten dengan delta performa rujukan citra bersih ($\Delta$=7.53\%), mengindikasikan bahwa kesenjangan disebabkan kompleksitas intrinsik teks, bukan degradasi performa model.
+\paragraph{3. Pemilihan Model Berbasis Kriteria Gabungan}
+Model terbaik dipilih pada \textit{epoch} 44 (bukan \textit{epoch} terakhir) berdasarkan optimasi kriteria gabungan PSNR-CER pada \textit{set} validasi, mengikuti protokol \textit{early stopping} dengan \textit{patience}=25. Pemilihan ini mencegah \textit{overfitting} pada fase pelatihan akhir dan memastikan keseimbangan optimal antara kualitas visual dan keterbacaan teks.
 
-\vspace{0.5em}
+\paragraph{4. Generalisasi dari Validasi ke Uji}
+Performa pada \textit{set} uji (PSNR 30.74 dB, SSIM 0.987, CER 34.9\%) konsisten dengan tren validasi, memvalidasi bahwa model tidak mengalami \textit{overfitting}. Perbedaan CER antara validasi dan uji (27.11\% vs 34.9\%, $\Delta$=7.79\%) konsisten dengan perbedaan \textit{recognizer} beku pada citra bersih (26.57\% vs 34.1\%, $\Delta$=7.53\%), mengonfirmasi bahwa \textit{gap} disebabkan kompleksitas intrinsik teks \textit{set} uji yang lebih tinggi, bukan degradasi performa model. Rasio peningkatan CER konsisten: validasi 67.5\% (83.4\%$\rightarrow$27.11\%), uji 58.2\% (83.4\%$\rightarrow$34.9\%).
+
+\vspace{0.8em}
 
 \vspace{0.8em}
 
@@ -273,26 +288,26 @@ Tabel~\ref{table:sota-comparison-literature} menunjukkan \textit{state-of-the-ar
 \footnotesize
 \begin{tabularx}{\textwidth}{|l|c|c|c|c|X|}
 \hline
-\textbf{Metode} & \textbf{PSNR} & \textbf{SSIM} & \textbf{CER} & \textbf{HTR} & \textbf{Dataset} \\
+Metode & PSNR & SSIM & CER & HTR & Dataset \\
 \hline
-\multicolumn{6}{|c|}{\textit{\textbf{Literatur (Domain: Dokumen Modern, Benchmark DIBCO)}}} \\
+\multicolumn{6}{|c|}{\textit{Literatur (Domain: Dokumen Modern, Benchmark DIBCO)}} \\
 \hline
 DE-GAN~\cite{souibgui2021}\textsuperscript{a} & $\sim$28 & $\sim$0.95 & N/A & -- & DIBCO, Palm Leaf \\
 DocEnTr~\cite{souibgui2022docentr}\textsuperscript{b} & $\sim$29 & $\sim$0.96 & N/A & -- & DocEng \\
 Text-DIAE~\cite{textdiae2022}\textsuperscript{c} & $\sim$26 & $\sim$0.93 & $\sim$45\% & Bersama & IAM-Synth \\
 ERB~\cite{erb2021}\textsuperscript{d} & $\sim$16 & $\sim$0.82 & $\sim$26\% & Bersama & IAM, KHATT \\
 \hline
-\multicolumn{6}{|c|}{\textit{\textbf{Untuk Referensi: Penelitian Ini}}} \\
+\multicolumn{6}{|c|}{\textit{Untuk Referensi: Penelitian Ini}} \\
 \hline
 Penelitian Ini & 30.74 & 0.987 & 34.9\% & Beku & ANRI Semi-Synth \\
 \hline
 \multicolumn{6}{l}{\scriptsize \textsuperscript{a,b,c,d}Nilai estimasi dari grafik publikasi (kondisi eksperimental berbeda).} \\
-\multicolumn{6}{l}{\scriptsize \textbf{HTR}: (--) tanpa integrasi; (Bersama) \textit{joint training}; (Beku) \textit{frozen recognizer} (kontribusi penelitian ini).} \\
+\multicolumn{6}{l}{\scriptsize HTR: (--) tanpa integrasi; (Bersama) \textit{joint training}; (Beku) \textit{frozen recognizer} (kontribusi penelitian ini).} \\
 \multicolumn{6}{l}{\scriptsize Domain berbeda (DIBCO modern vs paleografi ANRI)---nilai sebagai rentang acuan, bukan tolak ukur langsung.} \\
 \end{tabularx}
 \end{table}
 
-Penelitian ini memiliki tiga perbedaan:: (1) Arsitektur \textit{frozen recognizer}---berbeda dari pendekatan \textit{joint training} Text-DIAE~\cite{textdiae2022} dan ERB~\cite{erb2021}, strategi ini mengisolasi optimasi visual dari variabilitas gradien HTR, menghasilkan konvergensi 23\% lebih cepat (Bagian~\ref{subsubsec:frozen-recognizer-contribution}); (2) Optimasi \textit{multi-objective} 5-komponen---integrasi perceptual, adversarial, CTC, pixel, dan SSIM loss dengan penyeimbangan GradNorm adaptif, melampaui formulasi single-task DE-GAN~\cite{souibgui2021} dan DocEnTr~\cite{souibgui2022docentr}; (3) Domain paleografi historis---pengujian pada degradasi autentik abad 16--18 (noda tinta besi-empedu, kelembaban tropis) yang tidak tercakup dalam benchmark DIBCO modern, menjadikan ini kajian pertama yang mengintegrasikan frozen HTR untuk dokumen paleografi dengan degradasi kompleks multifaktorial.
+Penelitian ini memiliki tiga perbedaan:: (1) Arsitektur \textit{frozen recognizer}---berbeda dari pendekatan \textit{joint training} Text-DIAE~\cite{textdiae2022} dan ERB~\cite{erb2021}, strategi ini mengisolasi optimasi visual dari variabilitas gradien HTR, menghasilkan konvergensi 23\% lebih cepat (Bagian~\ref{subsubsec:kontribusi-frozen-recognizer}); (2) Optimasi \textit{multi-objective} 5-komponen---integrasi perceptual, adversarial, CTC, pixel, dan SSIM loss dengan penyeimbangan GradNorm adaptif, melampaui formulasi single-task DE-GAN~\cite{souibgui2021} dan DocEnTr~\cite{souibgui2022docentr}; (3) Domain paleografi historis---pengujian pada degradasi autentik abad 16--18 (noda tinta besi-empedu, kelembaban tropis) yang tidak tercakup dalam benchmark DIBCO modern, menjadikan ini kajian pertama yang mengintegrasikan frozen HTR untuk dokumen paleografi dengan degradasi kompleks multifaktorial.
 
 \vspace{0.5em}
 
@@ -309,15 +324,15 @@ Untuk memvalidasi kontribusi spesifik dari ketiga inovasi di atas dan mengidenti
 
 Untuk memvalidasi kontribusi setiap komponen arsitektur secara ilmiah, penelitian ini merancang serangkaian eksperimen ablasi terkontrol mengikuti konfigurasi dasar Bab IV dan Tabel~\ref{tab:hyperparameter-training}.
 
-\textbf{Prinsip desain ablasi:}
+Prinsip desain ablasi:
 \begin{enumerate}[nosep,label=\alph*)]
-    \item \textbf{Isolasi komponen} \\
+    \item Isolasi komponen \\
     Setiap eksperimen mengisolasi \emph{satu} komponen (contoh: diskriminator dual-modal vs tunggal), sementara komponen lain tetap pada konfigurasi baseline
-    \item \textbf{Konsistensi eksperimental} \\
+    \item Konsistensi eksperimental \\
     Dataset split identik (70\%/15\%/15\%), \textit{fixed seed} (42) untuk \textit{reproducibility}, durasi 15--20 epoch untuk efisiensi komputasi
-    \item \textbf{Evaluasi himpunan validasi} \\
+    \item Evaluasi himpunan validasi \\
     Menghindari \textit{overfitting} pada himpunan uji yang direservasi untuk evaluasi final
-    \item \textbf{Signifikansi statistik} \\
+    \item Signifikansi statistik \\
     Uji-t berpasangan dengan $\alpha = 0.05$, Cohen's \textit{d} untuk \textit{effect size}
 \end{enumerate}
 
@@ -334,7 +349,7 @@ Tabel~\ref{tab:ablasi-loss-results} menyajikan hasil dari studi ablasi inkrement
 \small
 \begin{tabular}{|c|l|c|c|c|c|}
 \hline
-\textbf{Eks} & \textbf{Komponen Loss} & \textbf{PSNR (dB)} & \textbf{SSIM} & \textbf{CER (\%)} & \textbf{$\Delta$ PSNR} \\
+Eks & Komponen Loss & PSNR (dB) & SSIM & CER (\%) & $\Delta$ PSNR \\
 \hline
 1 & $\mathcal{L}_{\text{pixel}}$ (L1) & 24.59 $\pm$ 4.10 & 0.9614 $\pm$ 0.0278 & N/A$^{\dagger}$ & baseline \\
 2 & $\mathcal{L}_{\text{pixel}}$ + $\mathcal{L}_{\text{adv}}$ & 24.86$^{\star}$ $\pm$ 4.21 & 0.9626 $\pm$ 0.0279 & N/A$^{\dagger}$ & +0.27 \\
@@ -350,13 +365,13 @@ Tabel~\ref{tab:ablasi-loss-results} menyajikan hasil dari studi ablasi inkrement
 
 Analisis kontribusi per komponen:
 
-\textbf{Adversarial Loss}: Memberikan peningkatan PSNR terbesar (+0.27 dB dari baseline), mencapai 24.86 dB. Komponen ini meningkatkan realisme tekstur melalui mekanisme pelatihan adversarial tanpa mengorbankan stabilitas konvergensi. SSIM juga meningkat (+0.0012), mengindikasikan perbaikan kesamaan struktural. \\
+Adversarial Loss: Memberikan peningkatan PSNR terbesar (+0.27 dB dari baseline), mencapai 24.86 dB. Komponen ini meningkatkan realisme tekstur melalui mekanisme pelatihan adversarial tanpa mengorbankan stabilitas konvergensi. SSIM juga meningkat (+0.0012), mengindikasikan perbaikan kesamaan struktural. \\
 
-\textbf{Perceptual Loss}: Mengoptimalkan kesamaan struktural dengan SSIM tinggi (0.9630), namun dengan trade-off penurunan PSNR minor (-0.04 dB menjadi 24.55 dB). Penurunan metrik berbasis piksel ini merupakan konsekuensi yang diharapkan dari optimisasi berbasis fitur (VGG-19), di mana ketajaman visual dan konsistensi perseptual diprioritaskan di atas akurasi piksel absolut. \\
+Perceptual Loss: Mengoptimalkan kesamaan struktural dengan SSIM tinggi (0.9630), namun dengan trade-off penurunan PSNR minor (-0.04 dB menjadi 24.55 dB). Penurunan metrik berbasis piksel ini merupakan konsekuensi yang diharapkan dari optimisasi berbasis fitur (VGG-19), di mana ketajaman visual dan konsistensi perseptual diprioritaskan di atas akurasi piksel absolut. \\
 
-\textbf{CTC Loss}: Mengaktifkan kapabilitas kepekaan HTR, mencapai CER 29.66\% sambil mempertahankan kualitas visual yang kompetitif (PSNR 24.76 dB, hanya -0.10 dB dari maksimum). Dalam konteks ablasi 15 epoch, ini adalah konfigurasi yang sesuai untuk evaluasi cepat, mencapai keseimbangan Pareto antara kualitas visual dan keterbacaan teks tanpa overhead komponen kelima. \\
+CTC Loss: Mengaktifkan kapabilitas kepekaan HTR, mencapai CER 29.66\% sambil mempertahankan kualitas visual yang kompetitif (PSNR 24.76 dB, hanya -0.10 dB dari maksimum). Dalam konteks ablasi 15 epoch, ini adalah konfigurasi yang sesuai untuk evaluasi cepat, mencapai keseimbangan Pareto antara kualitas visual dan keterbacaan teks tanpa overhead komponen kelima. \\
 
-\textbf{Recognition Feature Loss}: Menunjukkan kontribusi marginal dalam ablasi singkat, dengan penurunan performa CER sebesar 0.50\% (menjadi 30.16\%) tanpa adanya peningkatan visual yang signifikan. Temuan ini mengindikasikan bahwa pada fase awal pelatihan, komponen ini bersifat redundan jika dibandingkan dengan sinyal kepekaan teks yang sudah disediakan oleh CTC Loss.\\
+Recognition Feature Loss: Menunjukkan kontribusi marginal dalam ablasi singkat, dengan penurunan performa CER sebesar 0.50\% (menjadi 30.16\%) tanpa adanya peningkatan visual yang signifikan. Temuan ini mengindikasikan bahwa pada fase awal pelatihan, komponen ini bersifat redundan jika dibandingkan dengan sinyal kepekaan teks yang sudah disediakan oleh CTC Loss.\\
 
 Temuan penting - perbandingan dengan pelatihan produksi:
 
@@ -384,7 +399,7 @@ Eksperimen ablasi membandingkan \textit{frozen recognizer} (Bab~IV.1.4) versus \
 
 \vspace{0.5em}
 
-\item \textbf{Stabilitas Gradien}
+\item Stabilitas Gradien
 
 Tabel \ref{tab:frozen-vs-joint-loss} menunjukkan perbandingan dinamika \textit{loss} antara kedua pendekatan.
 
@@ -421,7 +436,7 @@ Gambar \ref{fig:loss-trajectory} mengonfirmasi \textit{mode collapse} pada \text
 
 \vspace{0.5em}
 
-\item \textbf{Performa Keterbacaan Teks}
+\item Performa Keterbacaan Teks
 
 Evaluasi performa keterbacaan teks dilakukan menggunakan metrik CER dan WER pada data validasi. Tabel \ref{tab:frozen-vs-joint-cer} menyajikan perbandingan antara kedua pendekatan.
 
@@ -468,7 +483,7 @@ Catatan: Fluktuasi \textit{loss} pada \textit{frozen} lebih terkendali (G loss r
 
 \vspace{0.5em}
 
-\item \textbf{Efisiensi Komputasi}
+\item Efisiensi Komputasi
 
 Perbandingan efisiensi komputasi dilakukan dengan mengukur waktu pelatihan, penggunaan memori GPU, dan jumlah parameter yang dioptimasi. Tabel \ref{tab:frozen-vs-joint-efficiency} merangkum hasil analisis efisiensi.
 
@@ -519,13 +534,13 @@ Penelitian ini membandingkan dua strategi integrasi HTR dalam sistem restorasi d
 \toprule
 Metrik & Frozen & Joint (Epoch 20) & Perbedaan\\
 \midrule
-\textbf{CER (\%)} & 31.63 & 42.85 & -26.2\% (frozen lebih baik)\\[0.3em]
-\textbf{$\Delta$CER dari Baseline} & -2.09 & +9.13 & Frozen: perbaikan, Joint: degradasi\\[0.3em]
-\textbf{PSNR (dB)} & 23.09 $\pm$ 3.88 & 10.71 & +115\% (frozen lebih baik)\\[0.3em]
-\textbf{SSIM} & 0.954 $\pm$ 0.031 & 0.742 & +28.5\% (frozen lebih baik)\\[0.3em]
-\textbf{Trainable Params (M)} & 17.4 & 45.3 & 61.6\% reduction\\[0.3em]
-\textbf{Training Speed (s/epoch)} & 85 & 630 & 7.4$\times$ lebih cepat\\[0.3em]
-\textbf{Catastrophic Forgetting} & Tidak & Ya (Peak CER 69.06\%) & ---\\
+CER (\%) & 31.63 & 42.85 & -26.2\% (frozen lebih baik)\\[0.3em]
+$\Delta$CER dari Baseline & -2.09 & +9.13 & Frozen: perbaikan, Joint: degradasi\\[0.3em]
+PSNR (dB) & 23.09 $\pm$ 3.88 & 10.71 & +115\% (frozen lebih baik)\\[0.3em]
+SSIM & 0.954 $\pm$ 0.031 & 0.742 & +28.5\% (frozen lebih baik)\\[0.3em]
+Trainable Params (M) & 17.4 & 45.3 & 61.6\% reduction\\[0.3em]
+Training Speed (s/epoch) & 85 & 630 & 7.4$\times$ lebih cepat\\[0.3em]
+Catastrophic Forgetting & Tidak & Ya (Peak CER 69.06\%) & ---\\
 \bottomrule
 \end{tabular}%
 }
@@ -563,11 +578,11 @@ Setelah memvalidasi strategi \textit{frozen recognizer} sebagai fondasi sistem (
 
 % Enumerasi Kontribusi Diskriminator Dual-Modal
 \begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
-    \item \textbf{Protokol Studi Ablasi}
+    \item Protokol Studi Ablasi
     
     Untuk mengisolasi kontribusi arsitektur dual-modal dilakukan studi ablasi dengan membandingkan dua varian diskriminator yang dilatih dengan konfigurasi identik: generator Enhanced U-Net, 50 epoch, protokol curriculum learning, fungsi loss identik ($L_{adv} + L_{L1} + L_{perc} + L_{CTC}$), dan model terbaik (epoch 44) dipilih pada set validasi ($n$=710) berdasarkan kriteria gabungan PSNR-CER.
 
-    \item \textbf{Hasil Perbandingan Kuantitatif}
+    \item Hasil Perbandingan Kuantitatif
     \begin{table}[H]
     \centering
     \caption[Studi Ablasi Arsitektur Diskriminator: Perbandingan CNN]{Studi Ablasi Arsitektur Diskriminator: Perbandingan CNN Tunggal vs Dual-Modal pada Set Validasi}
@@ -585,30 +600,30 @@ Setelah memvalidasi strategi \textit{frozen recognizer} sebagai fondasi sistem (
     \end{table}
     \noindent Hasil eksperimen menunjukkan perbedaan yang sangat minimal antara kedua arsitektur ($\Delta$PSNR = +0.28 dB, $\Delta$SSIM = +0.0015, $\Delta$CER = -0.01\%), tidak signifikan secara statistik ($p > 0.05$). Dari perspektif pengguna, kedua arsitektur menghasilkan keluaran yang identik dengan metrik kualitas visual dan HTR yang sebanding.
 
-    \item \textbf{Interpretasi Temuan}
+    \item Interpretasi Temuan
     
-    Hasil eksperimen menunjukkan bahwa hipotesis mengenai keunggulan diskriminator dual-modal \textbf{tidak terdukung} secara statistik dalam konfigurasi penelitian ini. Penambahan cabang tekstual (BiLSTM) dan mekanisme atensi tidak memberikan kontribusi signifikan terhadap kualitas restorasi maupun akurasi teks dibandingkan dengan diskriminator berbasis CNN tunggal. Hal ini mengindikasikan bahwa kompleksitas tambahan dari arsitektur dual-modal tidak terjustifikasi oleh peningkatan performa yang dihasilkan.
+    Hasil eksperimen menunjukkan bahwa hipotesis mengenai keunggulan diskriminator dual-modal tidak terdukung secara statistik dalam konfigurasi penelitian ini. Penambahan cabang tekstual (BiLSTM) dan mekanisme atensi tidak memberikan kontribusi signifikan terhadap kualitas restorasi maupun akurasi teks dibandingkan dengan diskriminator berbasis CNN tunggal. Hal ini mengindikasikan bahwa kompleksitas tambahan dari arsitektur dual-modal tidak terjustifikasi oleh peningkatan performa yang dihasilkan.
     
     Temuan ini menegaskan bahwa dalam konteks restorasi dokumen dengan karakteristik dataset dan konfigurasi pelatihan yang digunakan, diskriminator visual (CNN) sudah memadai untuk membedakan citra asli dan hasil restorasi. Informasi tekstual yang diharapkan dapat membantu proses diskriminasi ternyata tidak memberikan dampak yang berarti pada hasil akhir.
 
-    \item \textbf{Analisis Faktor Penyebab}
+    \item Analisis Faktor Penyebab
     
     Berdasarkan evaluasi hasil, teridentifikasi beberapa faktor yang menyebabkan tidak efektifnya kontribusi diskriminator dual-modal:
     \begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
-        \item \textbf{Kualitas Masukan Tekstual}: Diskriminator menerima masukan teks hasil prediksi yang masih mengandung kesalahan (CER \texttildelow 27\%). Hal ini merupakan kendala inheren dalam desain GAN standar di mana diskriminator harus mengevaluasi luaran aktual generator. Derau pada data teks ini kemungkinan besar menghambat cabang LSTM untuk mempelajari representasi tekstual yang akurat, namun penggunaan teks \textit{ground truth} secara langsung juga berisiko menciptakan kesenjangan domain yang tidak realistis.
+        \item Kualitas Masukan Tekstual: Diskriminator menerima masukan teks hasil prediksi yang masih mengandung kesalahan (CER \texttildelow 27\%). Hal ini merupakan kendala inheren dalam desain GAN standar di mana diskriminator harus mengevaluasi luaran aktual generator. Derau pada data teks ini kemungkinan besar menghambat cabang LSTM untuk mempelajari representasi tekstual yang akurat, namun penggunaan teks \textit{ground truth} secara langsung juga berisiko menciptakan kesenjangan domain yang tidak realistis.
         
-        \item \textbf{Dominasi Komponen Loss Lain}: Dalam konfigurasi \textit{loss function} yang digunakan, bobot \textit{adversarial} relatif kecil (3.0) dibandingkan dengan komponen lain seperti CTC (0.15 dengan magnitude besar) dan Pixel (50.0). Akibatnya, pengaruh diskriminator secara keseluruhan terhadap pembaruan bobot generator menjadi terbatas, sehingga perubahan arsitektur diskriminator tidak memberikan dampak signifikan.
+        \item Dominasi Komponen Loss Lain: Dalam konfigurasi \textit{loss function} yang digunakan, bobot \textit{adversarial} relatif kecil (3.0) dibandingkan dengan komponen lain seperti CTC (0.15 dengan magnitude besar) dan Pixel (50.0). Akibatnya, pengaruh diskriminator secara keseluruhan terhadap pembaruan bobot generator menjadi terbatas, sehingga perubahan arsitektur diskriminator tidak memberikan dampak signifikan.
         
-        \item \textbf{Kecukupan Fitur Visual}: Untuk tugas restorasi dokumen ini, fitur-fitur visual (tekstur kertas, ketajaman tinta, noise latar belakang) tampaknya menjadi indikator utama keaslian citra. Diskriminator CNN tunggal sudah cukup efektif dalam menangkap fitur-fitur ini, sehingga penambahan analisis semantik teks menjadi redundan atau kurang relevan untuk tugas diskriminasi visual.
+        \item Kecukupan Fitur Visual: Untuk tugas restorasi dokumen ini, fitur-fitur visual (tekstur kertas, ketajaman tinta, noise latar belakang) tampaknya menjadi indikator utama keaslian citra. Diskriminator CNN tunggal sudah cukup efektif dalam menangkap fitur-fitur ini, sehingga penambahan analisis semantik teks menjadi redundan atau kurang relevan untuk tugas diskriminasi visual.
     \end{enumerate}
 
-    \item \textbf{Implikasi Teoretis dan Arah Penelitian Masa Depan}
+    \item Implikasi Teoretis dan Arah Penelitian Masa Depan
     
     Hasil negatif pada pengujian hipotesis diskriminator dual-modal memberikan implikasi teoretis bahwa penambahan kompleksitas model melalui integrasi fitur tekstual tidak secara otomatis menjamin peningkatan kualitas restorasi. Temuan ini menantang asumsi bahwa semakin kaya informasi yang diberikan kepada diskriminator (visual + tekstual), semakin baik performa generator. Dalam kasus ini, informasi visual ternyata sudah memadai.
     
     Penelitian masa depan dapat mengeksplorasi strategi pelatihan alternatif seperti \textit{Teacher Forcing} atau \textit{Scheduled Sampling}, di mana diskriminator secara berkala diberikan akses ke teks \textit{ground truth} untuk mempelajari representasi tekstual yang lebih baik. Namun, pendekatan ini harus diterapkan dengan hati-hati untuk menghindari risiko \textit{overpowering} diskriminator yang dapat menyebabkan hilangnya gradien bagi generator jika diskriminator menjadi terlalu kuat dibandingkan generator.
 
-    \item \textbf{Implikasi untuk Desain Sistem GAN-HTR}
+    \item Implikasi untuk Desain Sistem GAN-HTR
     
     Temuan dari studi ablasi diskriminator memberikan wawasan penting tentang prioritas desain dalam sistem GAN-HTR. Dalam konteks penelitian ini, performa optimal lebih ditentukan oleh strategi pelatihan (seperti \textit{frozen recognizer} dan penyeimbangan \textit{loss}) daripada kompleksitas arsitektur diskriminator.
     
@@ -712,7 +727,7 @@ Konfigurasi bobot \textit{loss} ditentukan secara empiris dan menunjukkan pola \
 \footnotesize
 \begin{tabular}{lcccc}
 \hline
-\textbf{Komponen} & \textbf{Bobot} & \textbf{Rerata Raw} & \textbf{Tertimbang} & \textbf{Kontribusi (\%)} \\
+Komponen & Bobot & Rerata Raw & Tertimbang & Kontribusi (\%) \\
 \hline
 Pixel & 50.0 & 0.0123 & 0.62 & 0.7\% \\
 Adversarial & 3.0 & 0.8882 & 2.66 & 3.1\% \\
@@ -779,7 +794,7 @@ Catatan Penting: Hasil PSNR dari grid search (rentang 0.58--11.39 dB) tidak dapa
 \resizebox{\textwidth}{!}{
 \begin{tabular}{clcccc}
 \hline
-\textbf{Rank} & \textbf{Config} & \textbf{PSNR (dB)} & \textbf{CER (\%)} & \textbf{SSIM} & \textbf{Score} \\
+Rank & Config & PSNR (dB) & CER (\%) & SSIM & Score \\
 \hline
 1 & Px=100, Adv=3.0, Perc=1.0, CTC=0.15, RecF=16 & 11.39 & 86.82 & 0.666 & -5.97 \\
 2 & Px=100, Adv=1.5, Perc=0.5, CTC=0.075, RecF=0 & 4.17 & 84.30 & 0.202 & -12.69 \\
@@ -808,20 +823,20 @@ Pixel loss (L1) berfungsi sebagai anchor utama untuk mempertahankan kualitas vis
 \footnotesize
 \begin{tabular}{lcccc}
 \hline
-\textbf{Pixel Weight} & \textbf{Multiplier} & \textbf{Avg PSNR (dB)} & \textbf{Avg CER (\%)} & \textbf{n} \\
+Pixel Weight & Multiplier & Avg PSNR (dB) & Avg CER (\%) & n \\
 \hline
 25 & 0.5$\times$ baseline & 2.51 $\pm$ 1.36 & 98.13 & 5 \\
 50 & 1.0$\times$ baseline & 2.40 $\pm$ 2.37 & 99.02 & 4 \\
-100 & 2.0$\times$ baseline & \textbf{5.25 $\pm$ 3.19} & \textbf{92.14} & 6 \\
+100 & 2.0$\times$ baseline & 5.25 $\pm$ 3.19 & 92.14 & 6 \\
 \hline
 \end{tabular}
 \end{table}
 
 Interpretasi: Peningkatan bobot dari 50 ke 100 (2× baseline) menghasilkan peningkatan PSNR sebesar 118\% (dari 2.40 dB ke 5.25 dB) pada ablasi 3 epoch, dengan efek samping perbaikan CER (92.14\% vs 99.02\%). Pixel weight 100 menempati 4 dari 5 posisi teratas pada grid search, mengonfirmasi dominansinya dalam optimasi visual.
 
-\textbf{Resolusi Trade-off dengan Production}: Meskipun pixel weight 100 unggul pada pelatihan singkat, konfigurasi produksi menggunakan 50 untuk menjaga keseimbangan dengan komponen lain dalam konvergensi jangka panjang (50 epoch). Pelatihan produksi dengan pixel weight 50 mencapai PSNR 30.91 dB, menunjukkan bahwa bobot moderat memadai ketika dikombinasikan dengan curriculum learning dan komponen loss lainnya.
+Resolusi Trade-off dengan Production: Meskipun pixel weight 100 unggul pada pelatihan singkat, konfigurasi produksi menggunakan 50 untuk menjaga keseimbangan dengan komponen lain dalam konvergensi jangka panjang (50 epoch). Pelatihan produksi dengan pixel weight 50 mencapai PSNR 30.91 dB, menunjukkan bahwa bobot moderat memadai ketika dikombinasikan dengan curriculum learning dan komponen loss lainnya.
 
-\textbf{Peringatan Teknis}: Bobot 100 berisiko mendominasi sinyal gradien, menghambat pembelajaran fitur semantik dari komponen CTC dan RecFeat.
+Peringatan Teknis: Bobot 100 berisiko mendominasi sinyal gradien, menghambat pembelajaran fitur semantik dari komponen CTC dan RecFeat.
 
 \paragraph{CTC Loss Weight - Menjawab Pertanyaan Penelitian Kritis}
 Salah satu pertanyaan kunci penelitian ini adalah: "Apakah bobot CTC loss mempengaruhi kualitas visual hasil restorasi?"
@@ -833,17 +848,17 @@ Salah satu pertanyaan kunci penelitian ini adalah: "Apakah bobot CTC loss mempen
 \footnotesize
 \begin{tabular}{lcccc}
 \hline
-\textbf{CTC Weight} & \textbf{Multiplier} & \textbf{Avg PSNR (dB)} & \textbf{Avg CER (\%)} & \textbf{n} \\
+CTC Weight & Multiplier & Avg PSNR (dB) & Avg CER (\%) & n \\
 \hline
 0.075 & 0.5× baseline & 3.16 ± 1.50 & 95.99 & 6 \\
-0.150 & 1.0× baseline & \textbf{4.20 ± 4.92} & 96.49 & 4 \\
+0.150 & 1.0× baseline & 4.20 ± 4.92 & 96.49 & 4 \\
 0.300 & 2.0× baseline & 3.59 ± 2.03 & 95.53 & 5 \\
 \hline
 \end{tabular}
 \end{table}
 
 \paragraph{Recognition Feature Loss - Investigasi Efektivitas}
-Konfigurasi produksi penelitian ini menggunakan RecFeat=8.0, namun studi ablasi 15 epoch (Bagian~\ref{subsubsec:ablation-study}) menunjukkan Experiment 04 (tanpa RecFeat) mencapai CER lebih baik (29.66\%) dibanding Experiment 05 (dengan RecFeat, CER 30.16\%). Mini grid search memberikan klarifikasi lebih lanjut pada fase pelatihan awal:
+Konfigurasi produksi penelitian ini menggunakan RecFeat=8.0, namun studi ablasi 15 epoch (Bagian~\ref{subsubsec:hasil-ablasi-loss}) menunjukkan Experiment 04 (tanpa RecFeat) mencapai CER lebih baik (29.66\%) dibanding Experiment 05 (dengan RecFeat, CER 30.16\%). Mini grid search memberikan klarifikasi lebih lanjut pada fase pelatihan awal:
 
 \begin{table}[H]
 \centering
@@ -852,11 +867,11 @@ Konfigurasi produksi penelitian ini menggunakan RecFeat=8.0, namun studi ablasi 
 \footnotesize
 \begin{tabular}{lcccc}
 \hline
-\textbf{RecFeat Weight} & \textbf{Status} & \textbf{Avg PSNR (dB)} & \textbf{Avg CER (\%)} & \textbf{n} \\
+RecFeat Weight & Status & Avg PSNR (dB) & Avg CER (\%) & n \\
 \hline
 0.0 & Disabled & 4.19 ± 0.97 & 91.00 & 3 \\
 8.0 & Baseline & 1.90 ± 1.03 & 99.86 & 4 \\
-16.0 & 2× baseline & \textbf{4.19 ± 3.44} & 95.89 & 8 \\
+16.0 & 2× baseline & 4.19 ± 3.44 & 95.89 & 8 \\
 \hline
 \end{tabular}
 \end{table}
@@ -875,9 +890,9 @@ Validasi Konfigurasi Production: Pelatihan produksi (50 epoch) dengan baseline w
 \scriptsize
 \begin{tabular}{lcc}
 \toprule
-\textbf{Komponen} & \textbf{Parameter} & \textbf{Nilai} \\
+Komponen & Parameter & Nilai \\
 \midrule
-\textbf{General} & Epochs & 50 \\
+General & Epochs & 50 \\
 & Learning Rate & $2 \times 10^{-4}$ \\
 & Batch Size & 8 \\
 & Optimizer & Adam \\
@@ -885,21 +900,21 @@ Validasi Konfigurasi Production: Pelatihan produksi (50 epoch) dengan baseline w
 & Beta2 & 0.999 \\
 & Weight Decay & 0 \\
 \midrule
-\textbf{Generator} & Architecture & Enhanced U-Net \\
+Generator & Architecture & Enhanced U-Net \\
 & Input Size & $1024 \times 128$ \\
 & Channels & 64 \\
 \midrule
-\textbf{Discriminator} & Architecture & Dual-Modal \\
+Discriminator & Architecture & Dual-Modal \\
 & Visual Branch & CNN \\
 & Textual Branch & BiLSTM \\
 \midrule
-\textbf{Loss Weights} & Pixel (L1) & 50.0 \\
+Loss Weights & Pixel (L1) & 50.0 \\
 & Adversarial & 3.0 \\
 & Perceptual (VGG-19) & 1.0 \\
 & CTC & 0.15 \\
 & Recognition Feature & 8.0 \\
 \midrule
-\textbf{Curriculum} & Warmup Epochs & 10 \\
+Curriculum & Warmup Epochs & 10 \\
 & CTC Ramp-up Epochs & 20 \\
 & Final Epochs & 20 \\
 \bottomrule
@@ -909,7 +924,7 @@ Validasi Konfigurasi Production: Pelatihan produksi (50 epoch) dengan baseline w
 \vspace{0.5em}
 
 \noindent
-Studi ablasi di atas memberikan \textbf{validasi terkontrol} terhadap desain arsitektur menggunakan dataset semi-sintetis dengan distribusi degradasi yang dikendalikan. Namun, \textit{generalizability} metode terhadap degradasi \textit{autentik} dari arsip sejarah belum diuji. Dokumen kuno abad 16--18 mengandung artefak kompleks (\textit{bleed-through} tidak teratur, pemudaran \textit{non-uniform}, kerusakan fisik, noda organik) yang tidak sepenuhnya tercakup dalam degradasi sintetis meskipun parameter degradasi diturunkan dari distribusi data \textit{real}. Untuk memvalidasi aplikasi praktis, bagian berikutnya mengevaluasi model secara kualitatif terhadap 15 dokumen asli dari koleksi Arsip Nasional Republik Indonesia (ANRI), melibatkan validasi ahli paleografi.
+Studi ablasi di atas memberikan validasi terkontrol terhadap desain arsitektur menggunakan dataset semi-sintetis dengan distribusi degradasi yang dikendalikan. Namun, \textit{generalizability} metode terhadap degradasi \textit{autentik} dari arsip sejarah belum diuji. Dokumen kuno abad 16--18 mengandung artefak kompleks (\textit{bleed-through} tidak teratur, pemudaran \textit{non-uniform}, kerusakan fisik, noda organik) yang tidak sepenuhnya tercakup dalam degradasi sintetis meskipun parameter degradasi diturunkan dari distribusi data \textit{real}. Untuk memvalidasi aplikasi praktis, bagian berikutnya mengevaluasi model secara kualitatif terhadap 15 dokumen asli dari koleksi Arsip Nasional Republik Indonesia (ANRI), melibatkan validasi ahli paleografi.
 
 \vspace{0.8em}
 
@@ -923,7 +938,7 @@ Mengevaluasi generalisasi model terhadap degradasi historis nyata yang tidak ter
 \subsubsection{Dataset dan Metodologi Evaluasi}
 \label{subsubsec:anri-dataset-metodologi}
 
-\textbf{Dokumen Uji:} Dataset terdiri dari 15 dokumen representatif dari koleksi ANRI abad ke-17 hingga ke-18 (era VOC dan Hindia Belanda, 1650--1800) dengan karakteristik degradasi autentik:
+Dokumen Uji: Dataset terdiri dari 15 dokumen representatif dari koleksi ANRI abad ke-17 hingga ke-18 (era VOC dan Hindia Belanda, 1650--1800) dengan karakteristik degradasi autentik:
 \begin{itemize}[nosep]
     \item Penuaan kertas: diskolorasi kuning/coklat dengan intensitas tinggi
     \item Variasi kontras: rentang kontras dari rendah hingga tinggi, mencakup degradasi parah hingga sedang
@@ -932,25 +947,25 @@ Mengevaluasi generalisasi model terhadap degradasi historis nyata yang tidak ter
     \item Artefak tinta \textit{iron gall}: korosi tinta historis dengan halo gelap dan perubahan pH lokal
 \end{itemize}
 
-\textbf{Karakteristik Teknis Dataset:}
+Karakteristik Teknis Dataset:
 \begin{enumerate}[nosep,label=\alph*)]
-    \item \textbf{Resolusi} \\
+    \item Resolusi \\
     300 DPI hasil pemindaian material arsip
-    \item \textbf{Orientasi} \\
+    \item Orientasi \\
     Potret
-    \item \textbf{Distribusi degradasi} \\
+    \item Distribusi degradasi \\
     2 dokumen parah (13,3\%), 8 sedang (53,3\%), 5 ringan-sedang (33,3\%)
 \end{enumerate}
 
-\textbf{Prosedur Inferensi:}
+Prosedur Inferensi:
 \begin{enumerate}[nosep,label=\arabic*.]
-    \item \textbf{Pemrosesan dokumen} \\
+    \item Pemrosesan dokumen \\
     Dokumen halaman penuh diproses menggunakan model dengan performa validasi terbaik (\textit{checkpoint} epoch 44)
-    \item \textbf{Strategi tumpang tindih} \\
+    \item Strategi tumpang tindih \\
     Strategi tumpang tindih berorientasi potret untuk mempertahankan autentisitas fitur paleografi (detail implementasi pada Bab~IV.3)
-    \item \textbf{Format keluaran} \\
+    \item Format keluaran \\
     TIFF tanpa kompresi untuk standar preservasi arsip
-    \item \textbf{Evaluasi visual} \\
+    \item Evaluasi visual \\
     Perbandingan sistematis antara masukan terdegradasi dan keluaran terestorasi untuk 5 aspek kualitas (pembersihan latar, kejelasan teks, keberadaan artefak, pelestarian goresan, kegunaan keseluruhan)
 \end{enumerate}
 
@@ -974,11 +989,11 @@ Gambar~\ref{fig:anri_qualitative} menunjukkan contoh representatif restorasi pad
 \includegraphics[width=0.48\textwidth]{/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/data_dukung/evaluasi_anri/panel_f_ID-ANRI_K66b_064_278.png} \\
 \small (e) Kontras sedang - konservatif & \small (f) Kontras rendah - terbatas \\
 \end{tabular}
-\caption[Restorasi kualitatif dokumen ANRI autentik]{Restorasi kualitatif pada dokumen ANRI autentik abad ke-17--18 (n=15): setiap panel menunjukkan pasangan citra dengan masukan terdegradasi (kiri) dan keluaran terestorasi (kanan). \textbf{Baris 1 (a--b):} kasus sukses optimal pada dokumen kontras tinggi dengan pembersihan latar substansial (>80\%) dan pelestarian struktur teks yang sempurna. \textbf{Baris 2 (c--d):} kombinasi sukses tinggi (c) dan sukses parsial (d) pada kontras tinggi-sedang dengan artefak residual minimal. \textbf{Baris 3 (e--f):} kasus menantang pada kontras sedang-rendah menggunakan strategi konservatif untuk menghindari halusinasi, di mana peningkatan terbatas namun mempertahankan autentisitas paleografi.}
+\caption[Restorasi kualitatif dokumen ANRI autentik]{Restorasi kualitatif pada dokumen ANRI autentik abad ke-17--18 (n=15): setiap panel menunjukkan pasangan citra dengan masukan terdegradasi (kiri) dan keluaran terestorasi (kanan). Baris 1 (a--b): kasus sukses optimal pada dokumen kontras tinggi dengan pembersihan latar substansial (>80\%) dan pelestarian struktur teks yang sempurna. Baris 2 (c--d): kombinasi sukses tinggi (c) dan sukses parsial (d) pada kontras tinggi-sedang dengan artefak residual minimal. Baris 3 (e--f): kasus menantang pada kontras sedang-rendah menggunakan strategi konservatif untuk menghindari halusinasi, di mana peningkatan terbatas namun mempertahankan autentisitas paleografi.}
 \label{fig:anri_qualitative}
 \end{figure*}
 
-Observasi Berdasarkan Kategori Degradasi. Analisis visual 15 dokumen ANRI menunjukkan tiga pola performa utama berdasarkan tingkat kontras masukan (detail distribusi pada Tabel~\ref{table:anri_contrast_analysis}): \textbf{(1) Kontras tinggi} ($\geq$60): pembersihan latar optimal dengan eliminasi \textit{foxing} dan noda penuaan secara efektif, pelestarian morfologi karakter tanpa artefak, dan penghilangan \textit{bleed-through} dengan preservasi teks \textit{recto} yang baik; \textbf{(2) Kontras sedang} (30--60): sukses parsial dengan reduksi derau substansial namun artefak residual pada wilayah \textit{bleed-through} berat, peningkatan keterbacaan lebih konservatif untuk memprioritaskan negatif palsu daripada halusinasi; \textbf{(3) Kontras rendah} ($<$30): peningkatan terbatas dengan strategi konservatif menghindari pembangkitan artefak palsu, mempertahankan autentisitas paleografi meskipun peningkatan visual minimal.
+Observasi Berdasarkan Kategori Degradasi. Analisis visual 15 dokumen ANRI menunjukkan tiga pola performa utama berdasarkan tingkat kontras masukan (detail distribusi pada Tabel~\ref{table:anri_contrast_analysis}): (1) Kontras tinggi ($\geq$60): pembersihan latar optimal dengan eliminasi \textit{foxing} dan noda penuaan secara efektif, pelestarian morfologi karakter tanpa artefak, dan penghilangan \textit{bleed-through} dengan preservasi teks \textit{recto} yang baik; (2) Kontras sedang (30--60): sukses parsial dengan reduksi derau substansial namun artefak residual pada wilayah \textit{bleed-through} berat, peningkatan keterbacaan lebih konservatif untuk memprioritaskan negatif palsu daripada halusinasi; (3) Kontras rendah ($<$30): peningkatan terbatas dengan strategi konservatif menghindari pembangkitan artefak palsu, mempertahankan autentisitas paleografi meskipun peningkatan visual minimal.
 
 \begin{table}[!t]
 \renewcommand{\arraystretch}{1.3}
@@ -988,7 +1003,7 @@ Observasi Berdasarkan Kategori Degradasi. Analisis visual 15 dokumen ANRI menunj
 \small
 \begin{tabular}{|l|c|c|c|}
 \hline
-\textbf{Kategori Kontras} & \textbf{n} & \textbf{\% Total} & \textbf{Efektivitas Teramati} \\
+Kategori Kontras & n & \% Total & Efektivitas Teramati \\
 \hline
 Tinggi ($\geq$60) & 5 & 33,3\% & Baik Sekali$^a$ \\
 Sedang (30--60) & 8 & 53,3\% & Baik$^b$ \\
@@ -1000,7 +1015,7 @@ Rendah ($<$30) & 2 & 13,3\% & Terbatas$^c$ \\
 \end{tabular}
 \end{table}
 
-Meskipun model menunjukkan performa baik pada mayoritas dokumen ANRI, beberapa keterbatasan teridentifikasi: \textbf{(1) Pemudaran ekstrem}---dokumen dengan kontras $<$20 (1/15, 6,7\%) mendapat peningkatan minimal karena distribusi kontras dataset pelatihan semi-sintetis berbeda, konsisten dengan observasi pada set validasi di mana performa menurun pada PSNR masukan $<$8 dB; \textbf{(2) Variansi \textit{bleed-through}}---pola \textit{bleed-through} dunia nyata dengan tata letak halaman \textit{verso} kompleks lebih menantang dibanding augmentasi semi-sintetis sederhana, menghasilkan sukses parsial pada 4/15 kasus (26,7\%); \textbf{(3) Artefak tinta \textit{iron gall}}---degradasi spesifik kimiawi historis tidak sepenuhnya tereplikasi dalam pelatihan semi-sintetis, menyebabkan sesekali artefak \textit{over-suppression} pada 2/15 dokumen (13,3\%).
+Meskipun model menunjukkan performa baik pada mayoritas dokumen ANRI, beberapa keterbatasan teridentifikasi: (1) Pemudaran ekstrem---dokumen dengan kontras $<$20 (1/15, 6,7\%) mendapat peningkatan minimal karena distribusi kontras dataset pelatihan semi-sintetis berbeda, konsisten dengan observasi pada set validasi di mana performa menurun pada PSNR masukan $<$8 dB; (2) Variansi \textit{bleed-through}---pola \textit{bleed-through} dunia nyata dengan tata letak halaman \textit{verso} kompleks lebih menantang dibanding augmentasi semi-sintetis sederhana, menghasilkan sukses parsial pada 4/15 kasus (26,7\%); (3) Artefak tinta \textit{iron gall}---degradasi spesifik kimiawi historis tidak sepenuhnya tereplikasi dalam pelatihan semi-sintetis, menyebabkan sesekali artefak \textit{over-suppression} pada 2/15 dokumen (13,3\%).
 
 Implikasi Praktis untuk Digitisasi Arsip: Hasil evaluasi ANRI memberikan indikasi awal bahwa model dapat menggeneralisasi ke dokumen historis nyata dengan karakteristik degradasi yang tumpang tindih dengan distribusi pelatihan semi-sintetis (kontras $\geq$30, penuaan sedang hingga berat). Untuk kasus ekstrem di luar domain pelatihan, strategi konservatif model menghindari mode kegagalan katastrofik seperti halusinasi atau korupsi struktural---pendekatan yang sesuai dengan prinsip preservasi arsip di mana negatif palsu lebih dapat diterima daripada positif palsu yang menyesatkan interpretasi historis.
 
@@ -1014,7 +1029,7 @@ Implikasi Praktis untuk Digitisasi Arsip: Hasil evaluasi ANRI memberikan indikas
 
 Untuk mendapatkan perspektif kualitatif dari praktisi lapangan, penelitian ini melakukan studi percontohan (\textit{pilot study}) yang melibatkan dua evaluator independen dengan latar belakang paleografi dan restorasi arsip. Penting untuk dicatat bahwa evaluasi ini bersifat pendahuluan dengan ukuran sampel terbatas ($n=15$) dan tidak dimaksudkan sebagai validasi statistik yang konklusif untuk seluruh populasi arsip.
 
-\textbf{Metodologi Validasi:}
+Metodologi Validasi:
 \begin{itemize}[nosep]
     \item Panel evaluator: 
     \begin{itemize}
@@ -1043,14 +1058,14 @@ Untuk mendapatkan perspektif kualitatif dari praktisi lapangan, penelitian ini m
 \small
 \begin{tabular}{|l|c|c|c|}
 \hline
-\textbf{Kriteria} & \textbf{Penilai 1} & \textbf{Penilai 2} & \textbf{Rerata} \\
+Kriteria & Penilai 1 & Penilai 2 & Rerata \\
 \hline
 Keterbacaan Teks & 3,47 & 3,33 & 3,40 \\
 Autentisitas Paleografi & 3,60 & 3,53 & 3,57 \\
 Minimasi Artefak (inv.) & 3,27 & 3,13 & 3,20 \\
 Kegunaan Transkripsi & 3,53 & 3,47 & 3,50 \\
 \hline
-\textbf{Skor Keseluruhan} & \textbf{3,47} & \textbf{3,37} & \textbf{3,42} \\
+Skor Keseluruhan & 3,47 & 3,37 & 3,42 \\
 \hline
 \multicolumn{4}{l}{\footnotesize Cohen's kappa (antarpenilai): $\kappa$ = 0,78 (kesepakatan substansial pada sampel ini)} \\
 \multicolumn{4}{l}{\footnotesize Skala: 1=Buruk, 2=Cukup, 3=Baik, 4=Sangat Baik} \\
@@ -1061,7 +1076,7 @@ Kegunaan Transkripsi & 3,53 & 3,47 & 3,50 \\
 \subsubsubsection{Analisis Distribusi Skor}
 \label{subsubsubsec:analisis-distribusi-skor}
 
-Analisis stratifikasi menunjukkan korelasi kuat antara kontras masukan dan skor paleografi: \textbf{Kontras tinggi} (n=5): rerata 3,75/4,0 dengan apresiasi preservasi detail mikroskopis goresan halus, modulasi tekanan pena) krusial untuk analisis paleografi komparatif; \textbf{Kontras sedang} (n=8): rerata 3,38/4,0 dengan evaluasi positif meskipun terdapat catatan minor \textit{over-smoothing} pada region \textit{bleed-through} berat; \textbf{Kontras rendah} (n=2): rerata 2,63/4,0 dengan apresiasi terhadap pendekatan konservatif yang menghindari \textit{false reconstruction}, mempertahankan integritas paleografi.
+Analisis stratifikasi menunjukkan korelasi kuat antara kontras masukan dan skor paleografi: Kontras tinggi (n=5): rerata 3,75/4,0 dengan apresiasi preservasi detail mikroskopis goresan halus, modulasi tekanan pena) krusial untuk analisis paleografi komparatif; Kontras sedang (n=8): rerata 3,38/4,0 dengan evaluasi positif meskipun terdapat catatan minor \textit{over-smoothing} pada region \textit{bleed-through} berat; Kontras rendah (n=2): rerata 2,63/4,0 dengan apresiasi terhadap pendekatan konservatif yang menghindari \textit{false reconstruction}, mempertahankan integritas paleografi.
 
 \subsubsubsection{Umpan Balik Kualitatif Ahli}
 \label{subsubsubsec:umpan-balik-kualitatif}
@@ -1077,7 +1092,7 @@ Analisis stratifikasi menunjukkan korelasi kuat antara kontras masukan dan skor 
 \subsubsubsection{Kesimpulan Evaluasi Awal}
 \label{subsubsubsec:kesimpulan-validasi-ahli}
 
-Kesimpulannya, evaluasi awal oleh ahli paleografi (Cohen's $\kappa$ = 0,78, skor keseluruhan 3,42/4,0) memberikan indikasi positif bahwa model memiliki potensi untuk aplikasi digitisasi arsip, dengan catatan keterbatasan generalisasi akibat ukuran sampel kecil. Aspek yang dinilai menjanjikan meliputi: \textbf{(1) Preservasi arsip digital}---autentisitas fitur paleografi terjaga (3,57/4,0) memungkinkan analisis komparatif skrip dan identifikasi juru tulis; \textbf{(2) Aksesibilitas publik}---peningkatan keterbacaan (3,40/4,0) mengurangi hambatan peneliti nonspesialis; \textbf{(3) Alur kerja semiotomatis}---kegunaan transkripsi (3,50/4,0) mendukung integrasi \textit{pipeline} HTR dengan supervisi minimal. Hasil evaluasi ANRI secara keseluruhan memberikan indikasi awal potensi generalisasi model ke dokumen historis nyata dalam rentang distribusi pelatihan, dengan strategi konservatif yang menjaga integritas arsip pada kasus kontras rendah ekstrem.
+Kesimpulannya, evaluasi awal oleh ahli paleografi (Cohen's $\kappa$ = 0,78, skor keseluruhan 3,42/4,0) memberikan indikasi positif bahwa model memiliki potensi untuk aplikasi digitisasi arsip, dengan catatan keterbatasan generalisasi akibat ukuran sampel kecil. Aspek yang dinilai menjanjikan meliputi: (1) Preservasi arsip digital---autentisitas fitur paleografi terjaga (3,57/4,0) memungkinkan analisis komparatif skrip dan identifikasi juru tulis; (2) Aksesibilitas publik---peningkatan keterbacaan (3,40/4,0) mengurangi hambatan peneliti nonspesialis; (3) Alur kerja semiotomatis---kegunaan transkripsi (3,50/4,0) mendukung integrasi \textit{pipeline} HTR dengan supervisi minimal. Hasil evaluasi ANRI secara keseluruhan memberikan indikasi awal potensi generalisasi model ke dokumen historis nyata dalam rentang distribusi pelatihan, dengan strategi konservatif yang menjaga integritas arsip pada kasus kontras rendah ekstrem.
 
 \subsubsection{Analisis Korelasi Tingkat Degradasi}
 \label{subsubsec:anri-korelasi-degradasi}
@@ -1147,7 +1162,7 @@ Performa yang konsisten pada dokumen ANRI nyata (meskipun hanya dilatih pada deg
 \centering
 \begin{tabular}{|p{2.5cm}|p{2.8cm}|p{2.8cm}|}
 \hline
-\textbf{Aspek} & \textbf{Semi-Sintetis} & \textbf{Nyata ANRI} \\
+Aspek & Semi-Sintetis & Nyata ANRI \\
 \hline
 Degradasi & \textit{Pipeline} terkontrol & Penuaan alami \\
 & 6 tahap & 250--450 tahun \\
@@ -1183,7 +1198,7 @@ Meskipun dilatih secara eksklusif pada data berpasangan semi-sintetis, model men
 \subsubsection{Keterbatasan dan Pekerjaan Mendatang}
 \label{subsubsec:anri-keterbatasan}
 
-\textbf{Keterbatasan Evaluasi Saat Ini}
+Keterbatasan Evaluasi Saat Ini
 \begin{itemize}[nosep]
     \item Tidak ada metrik HTR kuantitatif: karena dokumen ANRI tidak memiliki transkripsi \textit{ground truth} yang andal (usia 250--450 tahun, transkripsi paleografi memerlukan keahlian khusus), CER/WER tidak dapat diukur secara objektif. Evaluasi terbatas pada penilaian visual kualitatif dan penilaian pakar
     
@@ -1255,7 +1270,7 @@ Temuan Eksperimental: Studi ablasi diskriminator (Bagian~\ref{subsubsec:kontribu
 
 Interpretasi: Analisis mendalam mengidentifikasi bahwa kontribusi terbatas bukan karena keterbatasan intrinsik arsitektur, melainkan keterbatasan implementasi: (1) modus teks prediksi menyebabkan LSTM belajar dari teks berderau (CER 27\%), (2) ketidakseimbangan bobot adversarial loss (hanya $\sim$5\% dari total sinyal pelatihan), (3) hambatan kapasitas generator yang menentukan batas kualitas keluaran.
 
-\textbf{Redundansi Fungsional}: Analisis mendalam menunjukkan adanya redundansi fungsional. Peran ``pengawasan tekstual'' yang awalnya dirancang untuk diskriminator dual-modal (sesuai hipotesis Bab~I) ternyata telah dijalankan jauh lebih efektif oleh mekanisme \textit{frozen recognizer} melalui CTC \textit{loss}. Gradien yang dihasilkan oleh CTC \textit{loss} bersifat deterministik dan spesifik per-karakter (\textit{character-level supervision}), sedangkan umpan balik dari cabang tekstual diskriminator bersifat probabilistik global (skalar \textit{real/fake}). Akibatnya, generator belajar memprioritaskan sinyal CTC yang jauh lebih kuat dan presisi, menjadikan kompleksitas cabang tekstual pada diskriminator menjadi tidak relevan (\textit{obsolete}). Bobot CTC \textit{loss} (0.15) yang tampak kecil secara nominal ternyata menghasilkan gradien yang dominan karena skala inherennya yang besar, mengalahkan kontribusi \textit{adversarial loss} dari diskriminator (bobot 3.0) yang bersifat abstrak.
+Redundansi Fungsional: Analisis mendalam menunjukkan adanya redundansi fungsional. Peran ``pengawasan tekstual'' yang awalnya dirancang untuk diskriminator dual-modal (sesuai hipotesis Bab~I) ternyata telah dijalankan jauh lebih efektif oleh mekanisme \textit{frozen recognizer} melalui CTC \textit{loss}. Gradien yang dihasilkan oleh CTC \textit{loss} bersifat deterministik dan spesifik per-karakter (\textit{character-level supervision}), sedangkan umpan balik dari cabang tekstual diskriminator bersifat probabilistik global (skalar \textit{real/fake}). Akibatnya, generator belajar memprioritaskan sinyal CTC yang jauh lebih kuat dan presisi, menjadikan kompleksitas cabang tekstual pada diskriminator menjadi tidak relevan (\textit{obsolete}). Bobot CTC \textit{loss} (0.15) yang tampak kecil secara nominal ternyata menghasilkan gradien yang dominan karena skala inherennya yang besar, mengalahkan kontribusi \textit{adversarial loss} dari diskriminator (bobot 3.0) yang bersifat abstrak.
 
 Keputusan: Komponen hipotesis tentang diskriminator dual-modal tidak terdukung secara empiris dalam implementasi saat ini. Arsitektur dual-modal tidak menghasilkan peningkatan signifikan dibanding baseline CNN-only. Berdasarkan prinsip parsimoni, penggunaan diskriminator CNN tunggal lebih direkomendasikan untuk efisiensi. Keberadaan komponen dual-modal pada model produksi saat ini diakui sebagai redundansi desain eksperimental yang dapat dieliminasi pada iterasi pengembangan selanjutnya.
 
@@ -1266,17 +1281,17 @@ Keputusan: Komponen hipotesis tentang diskriminator dual-modal tidak terdukung s
 Temuan Eksperimental: Studi ablasi \textit{frozen recognizer} vs \textit{joint training} (Bagian~\ref{subsubsec:kontribusi-frozen-recognizer}) menunjukkan perbedaan fundamental dalam stabilitas dan preservasi kemampuan HTR:
 
 \begin{itemize}[nosep]
-    \item \textbf{Stabilitas Gradien} \\
+    \item Stabilitas Gradien \\
     G \textit{loss} standar deviasi $\pm$0.45 (\textit{frozen}) vs $\pm$158.7 (\textit{joint}), rentang 2.15--3.62 vs 47.13--404.04
-    \item \textbf{Pencegahan Kelupaan Katastropik} \\
+    \item Pencegahan Kelupaan Katastropik \\
     CER 31.63\% (\textit{frozen}) vs 100.00\% (\textit{joint}), degradasi +5.06\% vs +73.43\% dari baseline
-    \item \textbf{Kualitas Visual} \\
+    \item Kualitas Visual \\
     PSNR 23.09 $\pm$ 3.88 dB (\textit{frozen}) vs 17.70 $\pm$ 5.21 dB (\textit{joint}), perbedaan 5.39 dB
-    \item \textbf{Mode Collapse} \\
+    \item Mode Collapse \\
     D \textit{loss} 0.693 $\pm$ 0.12 (\textit{frozen}) vs 0.115 $\pm$ 0.09 (\textit{joint}, mendekati nol)
-    \item \textbf{Signifikansi statistik} \\
+    \item Signifikansi statistik \\
     $p < 0.001$ untuk semua metrik
-    \item \textbf{Ukuran efek} \\
+    \item Ukuran efek \\
     Cohen's $d = 6.23$ untuk perbedaan CER (very large)
 \end{itemize}
 
@@ -1336,7 +1351,7 @@ Keputusan: Komponen hipotesis tentang peningkatan signifikan keterbacaan terduku
 Untuk memvalidasi signifikansi statistik temuan, dilakukan pengujian hipotesis formal terhadap metrik kunci pada set uji (712 sampel):
 
 \begin{enumerate}[label=\arabic*.]
-\item \textbf{Uji Peningkatan Keterbacaan (Validasi Komponen 4)}
+\item Uji Peningkatan Keterbacaan (Validasi Komponen 4)
 
 \begin{itemize}[nosep]
     \item H$_0$: CER$_{\text{restored}}$ $\geq$ CER$_{\text{degraded}}$ (tidak ada perbaikan)
@@ -1346,7 +1361,7 @@ Untuk memvalidasi signifikansi statistik temuan, dilakukan pengujian hipotesis f
     \item Keputusan: Tolak H$_0$ pada $\alpha = 0.05$, perbaikan keterbacaan sangat signifikan secara statistik
 \end{itemize}
 
-\item \textbf{Uji Pencapaian Target Kualitas Visual (Validasi Komponen 4)}
+\item Uji Pencapaian Target Kualitas Visual (Validasi Komponen 4)
 
 \begin{itemize}[nosep]
     \item Target: PSNR $>$ 30 dB, SSIM $>$ 0.95
@@ -1356,7 +1371,7 @@ Untuk memvalidasi signifikansi statistik temuan, dilakukan pengujian hipotesis f
     \item Keputusan: Kedua target kualitas visual tercapai dengan signifikansi statistik
 \end{itemize}
 
-\item \textbf{Uji Efektivitas Frozen Recognizer vs Joint Training (Validasi Komponen 2)}
+\item Uji Efektivitas Frozen Recognizer vs Joint Training (Validasi Komponen 2)
 
 \begin{itemize}[nosep]
     \item H$_0$: CER$_{\text{frozen}}$ $=$ CER$_{\text{joint}}$ (tidak ada perbedaan)
@@ -1366,7 +1381,7 @@ Untuk memvalidasi signifikansi statistik temuan, dilakukan pengujian hipotesis f
     \item Keputusan: Tolak H$_0$, \textit{frozen recognizer} menunjukkan performa secara statistik jauh lebih tinggi dibanding \textit{joint training} (CER 31.63\% vs 42.85\%, $p<0.001$, $d=6.23$)
 \end{itemize}
 
-\item \textbf{Uji Kontribusi Diskriminator Dual-Modal (Validasi Komponen 1)}
+\item Uji Kontribusi Diskriminator Dual-Modal (Validasi Komponen 1)
 
 \begin{itemize}[nosep]
     \item H$_0$: Tidak ada perbedaan performa antara diskriminator dual-modal dan CNN-only
@@ -1377,7 +1392,7 @@ Untuk memvalidasi signifikansi statistik temuan, dilakukan pengujian hipotesis f
     \item Keputusan: Gagal tolak H$_0$ pada $\alpha = 0.05$, kontribusi dual-modal tidak signifikan secara statistik
 \end{itemize}
 
-\item \textbf{Uji Efektivitas Curriculum Learning (Validasi Komponen 3)}
+\item Uji Efektivitas Curriculum Learning (Validasi Komponen 3)
 
 \begin{itemize}[nosep]
     \item H$_0$: Tidak ada perbedaan performa akhir antara \textit{curriculum} dan \textit{non-curriculum}
@@ -1395,7 +1410,7 @@ Untuk memvalidasi signifikansi statistik temuan, dilakukan pengujian hipotesis f
 \subsubsection{Kesimpulan Pengujian Hipotesis}
 \label{subsubsec:kesimpulan-hipotesis}
 
-Berdasarkan evaluasi empiris dan pengujian statistik terhadap empat komponen hipotesis, dapat disimpulkan bahwa hipotesis penelitian \textbf{diterima dengan modifikasi}. Rincian keputusan untuk setiap komponen:
+Berdasarkan evaluasi empiris dan pengujian statistik terhadap empat komponen hipotesis, dapat disimpulkan bahwa hipotesis penelitian diterima dengan modifikasi. Rincian keputusan untuk setiap komponen:
 
 \begin{table}[H]
 \centering
@@ -1404,17 +1419,17 @@ Berdasarkan evaluasi empiris dan pengujian statistik terhadap empat komponen hip
 \resizebox{\textwidth}{!}{
 \begin{tabular}{|p{6cm}|p{3cm}|p{5cm}|}
 \hline
-\textbf{Komponen Hipotesis} & \textbf{Keputusan} & \textbf{Bukti Empiris} \\
+Komponen Hipotesis & Keputusan & Bukti Empiris \\
 \hline
-Diskriminator dual-modal memberikan umpan balik & \textbf{Tidak Terdukung}$^*$ & $\Delta$PSNR +0.28 dB, $p>0.05$, kontribusi marginal \\
+Diskriminator dual-modal memberikan umpan balik & Tidak Terdukung$^*$ & $\Delta$PSNR +0.28 dB, $p>0.05$, kontribusi marginal \\
 \hline
-Strategi \textit{frozen recognizer} mengatasi ketidakstabilan & \textbf{Terdukung Penuh} & CER 31.63\% vs 42.85\%, $p<0.001$, $d=6.23$ \\
+Strategi \textit{frozen recognizer} mengatasi ketidakstabilan & Terdukung Penuh & CER 31.63\% vs 42.85\%, $p<0.001$, $d=6.23$ \\
 \hline
 \textit{Curriculum learning} tidak meningkatkan performa akhir & Tidak Didukung Penuh & Performa akhir tidak signifikan ($\Delta$PSNR -0.14 dB, $p>0.05$) \\
 \hline
 Optimasi \textit{loss} 5-komponen mengatasi kesenjangan & Terdukung Sebagian & 4 dari 5 komponen efektif (RecFeat tidak efektif), PSNR 30.91 dB \\
 \hline
-Peningkatan signifikan keterbacaan + kualitas visual & \textbf{Terdukung Penuh (Sintetis)}$^{\dagger}$ & CER -58.2\% (Sintetis). Validasi nyata: Kualitatif (Indikatif) \\
+Peningkatan signifikan keterbacaan + kualitas visual & Terdukung Penuh (Sintetis)$^{\dagger}$ & CER -58.2\% (Sintetis). Validasi nyata: Kualitatif (Indikatif) \\
 \hline
 \end{tabular}
 }
@@ -1446,13 +1461,13 @@ Hipotesis penelitian terkonfirmasi dalam hal hasil akhir: kerangka kerja yang di
 Hipotesis yang tervalidasi memberikan jawaban terhadap pertanyaan penelitian utama (Bab~I):
 
 \begin{enumerate}[nosep,label=\alph*)]
-    \item \textbf{Kontribusi diskriminator dual-modal} \\
+    \item Kontribusi diskriminator dual-modal \\
     Tidak memberikan kontribusi signifikan ($\Delta$PSNR +0.28 dB, $p>0.05$), menunjukkan bahwa kompleksitas arsitektur tambahan tidak diperlukan untuk mencapai performa optimal pada dataset ini
-    \item \textbf{Efektivitas \textit{frozen recognizer} vs \textit{joint training}} \\
+    \item Efektivitas \textit{frozen recognizer vs \textit{joint training}} \\
     \textit{Frozen} terbukti secara signifikan lebih efektif dengan perbedaan very large ($d=6.23$, $p<0.001$), esensial untuk mencegah \textit{kelupaan katastropik} dan menjaga stabilitas gradien
-    \item \textbf{Peran \textit{curriculum learning}} \\
+    \item Peran \textit{curriculum learning} \\
     Tidak meningkatkan performa akhir signifikan ($\Delta$PSNR -0.14 dB, $p>0.05$)
-    \item \textbf{Optimasi \textit{loss} multi-komponen} \\
+    \item Optimasi \textit{loss multi-komponen} \\
     Konfigurasi 5-komponen mencapai keseimbangan yang sesuai untuk domain paleografi, tervalidasi oleh GradNorm dengan stabilitas bobot 99.5\%
 \end{enumerate}
 
@@ -1477,12 +1492,12 @@ Strategi \textit{frozen recognizer} terbukti menjadi faktor kunci keberhasilan s
 Studi ablasi mengungkapkan bahwa arsitektur diskriminator dual-modal menunjukkan kontribusi marginal ($\Delta$PSNR +0.28 dB, $\Delta$CER -0.01\%, $p>0.05$). Sebagaimana dianalisis pada Bagian~\ref{subsubsec:kontribusi-dual-modal}, kontribusi marginal ini disebabkan oleh keterbatasan implementasi (misalnya, penggunaan teks prediksi berderau dan bobot \textit{adversarial} yang rendah), bukan karena keterbatasan konseptual arsitektur. Temuan ini memberikan wawasan teoretis bahwa dalam optimisasi GAN multi-objektif, protokol pelatihan dan strategi seperti \textit{frozen recognizer} lebih dominan daripada penambahan kompleksitas pada arsitektur diskriminator. Secara praktis, hal ini mengimplikasikan bahwa arsitektur CNN tunggal yang lebih efisien adalah pilihan yang lebih rasional untuk tugas ini, menjadikan komponen dual-modal sebagai kandidat utama untuk penyederhanaan model di masa depan.
 
 \paragraph{Kesesuaian dengan Teori dan Literatur}
-Temuan penelitian ini sejalan dengan literatur GAN-HTR yang menunjukkan bahwa komponen \textit{loss} sawar-HTR ($\mathcal{L}_{\text{ctc}}$, $\mathcal{L}_{\text{rec-feat}}$) memberikan kontribusi signifikan pada pelestarian teks. Namun, penelitian ini melangkah lebih jauh dengan memvalidasi bahwa strategi pembekuan \textit{recognizer} (berbeda dari \textit{joint training} yang diusulkan oleh Souibgui \textit{et al.}) menghasilkan stabilitas pelatihan lebih baik tanpa mengorbankan kinerja HTR. Sebagaimana divalidasi melalui analisis korelasi tingkat degradasi (Bagian~\ref{subsubsec:anri-korelasi-degradasi}), model menunjukkan efektivitas lebih tinggi untuk dokumen sangat terdegradasi, konsisten dengan temuan DE-GAN dan DocEnTr pada \textit{benchmark} DIBCO.
+Temuan penelitian ini sejalan dengan literatur GAN-HTR yang menunjukkan bahwa komponen \textit{loss} sawar-HTR ($\mathcal{L}_{\text{ctc}}$, $\mathcal{L}_{\text{rec-feat}}$) memberikan kontribusi signifikan pada pelestarian teks. Namun, penelitian ini melangkah lebih jauh dengan memvalidasi bahwa strategi pembekuan \textit{recognizer} (berbeda dari \textit{joint training} yang diusulkan oleh \cite{souibgui2022}) menghasilkan stabilitas pelatihan lebih baik tanpa mengorbankan kinerja HTR. Sebagaimana divalidasi melalui analisis korelasi tingkat degradasi (Bagian~\ref{subsubsec:anri-korelasi-degradasi}), model menunjukkan efektivitas lebih tinggi untuk dokumen sangat terdegradasi, konsisten dengan temuan DE-GAN dan DocEnTr pada \textit{benchmark} DIBCO.
 
 \paragraph{Implikasi Teoretis: \textit{Multi-Objective} GAN Optimization}
 Penelitian ini mengkonfirmasi bahwa keberhasilan GAN multi-objektif (visual + HTR) tidak semata bergantung pada kompleksitas arsitektur, melainkan pada keselarasan protokol pelatihan dengan tujuan optimisasi. Temuan kunci: (1) \textit{frozen recognizer} + optimasi \textit{loss} > Kompleksitas diskriminator; (2) Konfigurasi 5-komponen \textit{loss} (Pixel, adversarial, Perceptual, CTC, RecFeat) mencapai keseimbangan Pareto optimal; (3) \textit{Curriculum learning} dengan \textit{CTC weight annealing} tidak meningkatkan performa akhir secara signifikan ($\Delta$PSNR -0.14 dB, $p>0.05$), tetapi digunakan dalam produksi untuk implementasi yang sistematis.
 
-\textbf{Perubahan Paradigma Desain}: Temuan ini menantang tren umum dalam literatur GAN terkini yang cenderung menambah kompleksitas arsitektur diskriminator (\textit{multi-scale}, \textit{attention-based}, atau \textit{dual-modal}). Penelitian ini membuktikan bahwa dalam konteks restorasi dokumen berorientasi teks, optimasi fungsi kerugian (\textit{loss function engineering}) dan protokol pelatihan (strategi \textit{frozen}) memegang peranan yang jauh lebih vital daripada kompleksitas arsitektur jaringan. Diskriminator visual standar berbasis CNN sudah memadai ketika dikombinasikan dengan \textit{frozen recognizer} yang memberikan sinyal gradien tekstual deterministik melalui CTC \textit{loss}. Oleh karena itu, desain masa depan disarankan kembali ke arsitektur diskriminator visual standar (CNN) untuk efisiensi komputasi dan parsimoni model tanpa kehilangan performa. Wawasan ini memberikan panduan desain untuk penelitian masa depan dalam restorasi dokumen berorientasi HTR: prioritaskan kesederhanaan arsitektur (\textit{Occam's Razor}) dan investasi pada rekayasa fungsi objektif yang presisi.
+Perubahan Paradigma Desain: Temuan ini menantang tren umum dalam literatur GAN terkini yang cenderung menambah kompleksitas arsitektur diskriminator (\textit{multi-scale}, \textit{attention-based}, atau \textit{dual-modal}). Penelitian ini membuktikan bahwa dalam konteks restorasi dokumen berorientasi teks, optimasi fungsi kerugian (\textit{loss function engineering}) dan protokol pelatihan (strategi \textit{frozen}) memegang peranan yang jauh lebih vital daripada kompleksitas arsitektur jaringan. Diskriminator visual standar berbasis CNN sudah memadai ketika dikombinasikan dengan \textit{frozen recognizer} yang memberikan sinyal gradien tekstual deterministik melalui CTC \textit{loss}. Oleh karena itu, desain masa depan disarankan kembali ke arsitektur diskriminator visual standar (CNN) untuk efisiensi komputasi dan parsimoni model tanpa kehilangan performa. Wawasan ini memberikan panduan desain untuk penelitian masa depan dalam restorasi dokumen berorientasi HTR: prioritaskan kesederhanaan arsitektur (\textit{Occam's Razor}) dan investasi pada rekayasa fungsi objektif yang presisi.
 
 \vspace{0.8em}
 
@@ -1502,7 +1517,7 @@ Analisis terhadap 712 sampel set uji mengidentifikasi kategori kegagalan berdasa
 \small
 \begin{tabular}{|l|c|c|c|}
 \hline
-\textbf{Pola Kegagalan} & \textbf{Jumlah} & \textbf{\% Total} & \textbf{CER Rata-rata (\%)} \\
+Pola Kegagalan & Jumlah & \% Total & CER Rata-rata (\%) \\
 \hline
 Ligatur paleografi kompleks & 448 & 62.9 & 35.2 \\
 Lainnya (CER $>$ 50\%) & 67 & 9.4 & 78.3 \\
@@ -1510,7 +1525,7 @@ Numerik dan simbol & 13 & 1.8 & 92.1 \\
 Teks memudar ekstrem & 3 & 0.4 & 100.0 \\
 Prediksi sangat pendek & 3 & 0.4 & 97.5 \\
 \hline
-\textbf{Total CER Tinggi ($>$15\%)} & \textbf{534} & \textbf{75.0} & \textbf{42.8} \\
+Total CER Tinggi ($>$15\%) & 534 & 75.0 & 42.8 \\
 CER Normal/Rendah ($<$15\%) & 178 & 25.0 & 6.2 \\
 \hline
 \multicolumn{4}{l}{\footnotesize Kategorisasi berdasarkan analisis karakteristik kesalahan HTR pasca restorasi.} \\
@@ -1536,11 +1551,11 @@ Temuan kunci: CER 35.2\% pada kategori ligatur hanya berbeda 1.1 poin persentase
 Meskipun jarang (1.2\% dari total, 9 kasus), kegagalan ekstrem memerlukan analisis khusus:
 
 \begin{enumerate}[label=\alph*)]
-    \item \textbf{Teks Memudar Ekstrem (3 kasus, 0.4\%):} Degradasi dengan kontras $<$ 10 dan SNR $<$ 5 dB berada di luar distribusi pelatihan semi-sintetis (median SNR 15--25 dB). Model mengadopsi pendekatan konservatif untuk menghindari halusinasi. Untuk 99.6\% sampel lainnya, model menggeneralisasi dengan baik.
+    \item Teks Memudar Ekstrem (3 kasus, 0.4\%): Degradasi dengan kontras $<$ 10 dan SNR $<$ 5 dB berada di luar distribusi pelatihan semi-sintetis (median SNR 15--25 dB). Model mengadopsi pendekatan konservatif untuk menghindari halusinasi. Untuk 99.6\% sampel lainnya, model menggeneralisasi dengan baik.
 
-    \item \textbf{Numerik dan Simbol (13 kasus, 1.8\%):} \textit{Recognizer} TrOCR-Medieval dioptimalkan untuk teks naratif, bukan angka atau simbol moneter (``fl.'', ``st.''), menghasilkan CER tinggi (92.1\%). Kesalahan ini tidak mengurangi utilitas untuk transkripsi teks utama.
+    \item Numerik dan Simbol (13 kasus, 1.8\%): \textit{Recognizer} TrOCR-Medieval dioptimalkan untuk teks naratif, bukan angka atau simbol moneter (``fl.'', ``st.''), menghasilkan CER tinggi (92.1\%). Kesalahan ini tidak mengurangi utilitas untuk transkripsi teks utama.
 
-    \item \textbf{Prediksi Sangat Pendek (3 kasus, 0.4\%):} \textit{Over-suppression} pada region dengan \textit{bleed-through} berat menyebabkan hilangnya sebagian teks sekunder, menunjukkan \textit{trade-off} antara pembersihan agresif dan preservasi konten.
+    \item Prediksi Sangat Pendek (3 kasus, 0.4\%): \textit{Over-suppression} pada region dengan \textit{bleed-through} berat menyebabkan hilangnya sebagian teks sekunder, menunjukkan \textit{trade-off} antara pembersihan agresif dan preservasi konten.
 \end{enumerate}
 
 \paragraph{Korelasi dengan Baseline Citra Bersih}
@@ -1552,11 +1567,11 @@ Analisis korelasi Pearson antara CER pada citra terestorasi dan citra bersih (\t
 Analisis pola kegagalan mengungkapkan tiga keterbatasan metodologi utama:
 
 \begin{enumerate}
-    \item \textbf{Cakupan Dataset Pelatihan:} Dataset semi-sintetis tidak mencakup degradasi ekstrem (SNR $<$ 10 dB, kontras $<$ 20). Solusi: augmentasi degradasi dengan simulasi pemudaran parah untuk meningkatkan \textit{robustness}.
+    \item Cakupan Dataset Pelatihan: Dataset semi-sintetis tidak mencakup degradasi ekstrem (SNR $<$ 10 dB, kontras $<$ 20). Solusi: augmentasi degradasi dengan simulasi pemudaran parah untuk meningkatkan \textit{robustness}.
 
-    \item \textbf{Kapabilitas \textit{Recognizer} untuk Ligatur:} TrOCR-Medieval praterlatih memiliki keterbatasan pada ligatur paleografi spesifik Belanda abad 16--18, membatasi restorasi pada batas atas teoretis 34.1\% CER. Solusi: \textit{fine-tuning recognizer} pada korpus paleografi Belanda dengan anotasi ligatur eksplisit.
+    \item Kapabilitas \textit{Recognizer untuk Ligatur:} TrOCR-Medieval praterlatih memiliki keterbatasan pada ligatur paleografi spesifik Belanda abad 16--18, membatasi restorasi pada batas atas teoretis 34.1\% CER. Solusi: \textit{fine-tuning recognizer} pada korpus paleografi Belanda dengan anotasi ligatur eksplisit.
 
-    \item \textbf{\textit{Trade-off} Pembersihan Latar Belakang:} Pada 0.4\% kasus, pembersihan agresif menyebabkan hilangnya sebagian teks sekunder. Model memilih strategi konservatif secara default untuk preservasi autentisitas arsip, menerima artefak residual minor daripada risiko kehilangan teks.
+    \item \textit{Trade-off Pembersihan Latar Belakang:} Pada 0.4\% kasus, pembersihan agresif menyebabkan hilangnya sebagian teks sekunder. Model memilih strategi konservatif secara default untuk preservasi autentisitas arsip, menerima artefak residual minor daripada risiko kehilangan teks.
 \end{enumerate}
 
 \paragraph{Kesimpulan Analisis Kegagalan}
@@ -1585,11 +1600,11 @@ Studi ablasi (Tabel~\ref{tab:diskriminator-ablasi}) menunjukkan arsitektur dual-
 Perbandingan \textit{frozen recognizer} vs \textit{joint training} (Bagian~\ref{subsubsec:kontribusi-frozen-recognizer}) memvalidasi keunggulan pendekatan pembekuan dengan perbedaan signifikan ($p<0.001$, $d=6.23$) pada studi ablasi 20 epoch:
 
 \begin{enumerate}[nosep,label=\arabic*.]
-    \item \textbf{Stabilitas} \\
+    \item Stabilitas \\
     G \textit{loss} $\sigma = 0.45$ (frozen) vs $\sigma = 158.7$ (joint), rentang 2.15--3.62 vs 47.13--404.04
-    \item \textbf{Eliminasi \textit{mode collapse}} \\
+    \item Eliminasi \textit{mode collapse} \\
     D \textit{loss} 0.693 $\pm$ 0.12 (frozen) vs 0.115 $\pm$ 0.09 (joint)
-    \item \textbf{Kinerja HTR} \\
+    \item Kinerja HTR \\
     CER 31.63\% (frozen) vs 42.85\% (joint)
 \end{enumerate}
 
@@ -1599,11 +1614,11 @@ Perbandingan \textit{frozen recognizer} vs \textit{joint training} (Bagian~\ref{
 Analisis trajektori metrik validasi (Gambar~\ref{fig:validation-metrics-trajectory}) memvalidasi strategi tiga fase:
 
 \begin{enumerate}[nosep,label=\arabic*.]
-    \item \textbf{Fase Warmup Visual (epoch 1--10)} \\
+    \item Fase Warmup Visual (epoch 1--10) \\
     Konvergensi metrik visual (PSNR 25 dB, SSIM 0.94) membangun kemampuan rekonstruksi dasar
-    \item \textbf{Fase Peningkatan CTC (epoch 11--30)} \\
+    \item Fase Peningkatan CTC (epoch 11--30) \\
     Peningkatan linear bobot CTC (0$\rightarrow$1.0) menghasilkan adaptasi halus (fluktuasi G \textit{loss} terkontrol $\sigma = 136.6$)
-    \item \textbf{Fase Pelatihan Penuh (epoch 31--50)} \\
+    \item Fase Pelatihan Penuh (epoch 31--50) \\
     Konvergensi stabil mencapai PSNR 30.91 dB, CER 27.11\% (\textit{validation})
 \end{enumerate}
 
@@ -1623,7 +1638,7 @@ Analisis trajektori metrik validasi (Gambar~\ref{fig:validation-metrics-trajecto
 \end{enumerate}
 
 \paragraph{Positioning Relatif terhadap \textit{State-of-the-Art}}
-Model yang diusulkan mencapai CER 34.9\% pada \textit{set uji} (pengurangan 58.2\% dari kondisi terdegradasi 83.4\%), mendekati batas teoretis citra bersih (CER 34.1\%, kesenjangan 0.8 poin persentase), sambil mempertahankan kualitas visual tinggi (PSNR 30.74 dB, SSIM 0.987). Evaluasi awal pada 15 dokumen ANRI autentik menunjukkan indikasi generalisasi yang menjanjikan (tingkat penerimaan visual 86.7\%) dengan dukungan evaluasi ahli paleografi. Performa ini sebanding dengan Souibgui (2022) pada domain berbeda, dengan keunggulan tambahan integrasi HTR \textit{end-to-end}.
+Model yang diusulkan mencapai CER 34.9\% pada \textit{set uji} (pengurangan 58.2\% dari kondisi terdegradasi 83.4\%), mendekati batas teoretis citra bersih (CER 34.1\%, kesenjangan 0.8 poin persentase), sambil mempertahankan kualitas visual tinggi (PSNR 30.74 dB, SSIM 0.987). Evaluasi awal pada 15 dokumen ANRI autentik menunjukkan indikasi generalisasi yang menjanjikan (tingkat penerimaan visual 86.7\%) dengan dukungan evaluasi ahli paleografi. Performa ini sebanding dengan \cite{souibgui2022} pada domain berbeda, dengan keunggulan tambahan integrasi HTR \textit{end-to-end}.
 \vspace{0.8em}
 \subsection{Ringkasan Temuan}
 \label{subsec:ringkasan-temuan}

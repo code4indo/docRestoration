@@ -18,7 +18,7 @@
 
 
 \refsection{0}
-  \datalist[entry]{apa/global//global/global}
+  \datalist[entry]{nyt/global//global/global}
     \entry{baltrusaitis2019}{article}{}
       \name{author}{3}{}{%
         {{un=0,uniquepart=base,hash=66df84f9a5b3fb42b542824373ee39f5}{%
@@ -50,7 +50,6 @@
       \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{IEEE Transactions on Pattern Analysis and Machine Intelligence}
@@ -90,8 +89,8 @@
       }
       \strng{namehash}{5b195b34f54d3e071b82ddb71e157be1}
       \strng{fullhash}{19c2ee3db8f1e14eeb04ec0f3fffa9f5}
-      \strng{bibnamehash}{19c2ee3db8f1e14eeb04ec0f3fffa9f5}
-      \strng{authorbibnamehash}{19c2ee3db8f1e14eeb04ec0f3fffa9f5}
+      \strng{bibnamehash}{5b195b34f54d3e071b82ddb71e157be1}
+      \strng{authorbibnamehash}{5b195b34f54d3e071b82ddb71e157be1}
       \strng{authornamehash}{5b195b34f54d3e071b82ddb71e157be1}
       \strng{authorfullhash}{19c2ee3db8f1e14eeb04ec0f3fffa9f5}
       \field{sortinit}{C}
@@ -104,7 +103,7 @@
       \field{title}{Rethinking Atrous Convolution for Semantic Image Segmentation}
       \field{year}{2017}
     \endentry
-    \entry{chen2018gradnorm}{article}{}
+    \entry{chen2018gradnorm}{inproceedings}{}
       \name{author}{4}{}{%
         {{un=1,uniquepart=given,hash=76448b761ad64dd0746ba4b504382a50}{%
            family={Chen},
@@ -136,8 +135,8 @@
       }
       \strng{namehash}{c35b2dbc0f66c34d1c746b31fb212190}
       \strng{fullhash}{91415c3eeddbb2a3eaa99cdacdf35c4d}
-      \strng{bibnamehash}{91415c3eeddbb2a3eaa99cdacdf35c4d}
-      \strng{authorbibnamehash}{91415c3eeddbb2a3eaa99cdacdf35c4d}
+      \strng{bibnamehash}{c35b2dbc0f66c34d1c746b31fb212190}
+      \strng{authorbibnamehash}{c35b2dbc0f66c34d1c746b31fb212190}
       \strng{authornamehash}{c35b2dbc0f66c34d1c746b31fb212190}
       \strng{authorfullhash}{91415c3eeddbb2a3eaa99cdacdf35c4d}
       \field{sortinit}{C}
@@ -146,7 +145,7 @@
       \field{labeldatesource}{year}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{Proceedings of the International Conference on Machine Learning}
+      \field{booktitle}{Proceedings of the International Conference on Machine Learning}
       \field{title}{GradNorm: Gradient Normalization for Adaptive Loss Balancing in Deep Multitask Networks}
       \field{volume}{80}
       \field{year}{2018}
@@ -188,15 +187,14 @@
       }
       \strng{namehash}{8c30dbf85a7c9a261063d9317c1f2414}
       \strng{fullhash}{094df2d7c8540249516c0e624b76760f}
-      \strng{bibnamehash}{094df2d7c8540249516c0e624b76760f}
-      \strng{authorbibnamehash}{094df2d7c8540249516c0e624b76760f}
+      \strng{bibnamehash}{8c30dbf85a7c9a261063d9317c1f2414}
+      \strng{authorbibnamehash}{8c30dbf85a7c9a261063d9317c1f2414}
       \strng{authornamehash}{8c30dbf85a7c9a261063d9317c1f2414}
       \strng{authorfullhash}{094df2d7c8540249516c0e624b76760f}
       \field{sortinit}{D}
       \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{IEEE Transactions on Pattern Analysis and Machine Intelligence}
@@ -206,7 +204,7 @@
       \field{pages}{1234\bibrangedash 1248}
       \range{pages}{15}
     \endentry
-    \entry{diaz2021}{article}{}
+    \entry{diaz2021}{inproceedings}{}
       \name{author}{3}{}{%
         {{un=0,uniquepart=base,hash=0abaf86b78e6f4d7a123928810f614c2}{%
            family={Diaz},
@@ -237,10 +235,9 @@
       \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{International Conference on Document Analysis and Recognition}
+      \field{booktitle}{International Conference on Document Analysis and Recognition}
       \field{title}{Transformer-Based Handwritten Text Recognition: Beyond Recurrent Networks}
       \field{year}{2021}
       \field{pages}{832\bibrangedash 847}
@@ -271,7 +268,6 @@
       \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Perspectives on Psychological Science}
@@ -285,7 +281,7 @@
       \verb 10.1177/1745691612459059
       \endverb
     \endentry
-    \entry{gatos2006}{article}{}
+    \entry{gatos2006}{inproceedings}{}
       \name{author}{3}{}{%
         {{un=0,uniquepart=base,hash=91c48c907c4427b147e451d5414a99f4}{%
            family={Gatos},
@@ -316,10 +312,9 @@
       \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{Pattern Recognition}
+      \field{booktitle}{Pattern Recognition}
       \field{number}{3}
       \field{title}{Adaptive Degraded Document Image Binarization}
       \field{volume}{39}
@@ -327,7 +322,7 @@
       \field{pages}{317\bibrangedash 327}
       \range{pages}{11}
     \endentry
-    \entry{goodfellow2014}{article}{}
+    \entry{goodfellow2014}{inproceedings}{}
       \name{author}{8}{}{%
         {{un=0,uniquepart=base,hash=5d2585c11210cf1d4512e6e0a03ec315}{%
            family={Goodfellow},
@@ -380,25 +375,24 @@
       }
       \strng{namehash}{d17e6557c5836d2d978179999ea1037f}
       \strng{fullhash}{fa2b4fb373e75fcf07b4b987e4507545}
-      \strng{bibnamehash}{fa2b4fb373e75fcf07b4b987e4507545}
-      \strng{authorbibnamehash}{fa2b4fb373e75fcf07b4b987e4507545}
+      \strng{bibnamehash}{d17e6557c5836d2d978179999ea1037f}
+      \strng{authorbibnamehash}{d17e6557c5836d2d978179999ea1037f}
       \strng{authornamehash}{d17e6557c5836d2d978179999ea1037f}
       \strng{authorfullhash}{fa2b4fb373e75fcf07b4b987e4507545}
       \field{sortinit}{G}
       \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{Advances in Neural Information Processing Systems}
+      \field{booktitle}{Advances in Neural Information Processing Systems}
       \field{title}{Generative Adversarial Nets}
       \field{volume}{27}
       \field{year}{2014}
       \field{pages}{2672\bibrangedash 2680}
       \range{pages}{9}
     \endentry
-    \entry{graves2006}{article}{}
+    \entry{graves2006}{inproceedings}{}
       \name{author}{4}{}{%
         {{un=0,uniquepart=base,hash=dfca94b0427da7f9088af596e23b46c0}{%
            family={Graves},
@@ -427,24 +421,23 @@
       }
       \strng{namehash}{8b91c8aa3714ffeda8908af3996aa567}
       \strng{fullhash}{90fbf08cb4d3d4ba450f98e0f8b3c7dd}
-      \strng{bibnamehash}{90fbf08cb4d3d4ba450f98e0f8b3c7dd}
-      \strng{authorbibnamehash}{90fbf08cb4d3d4ba450f98e0f8b3c7dd}
+      \strng{bibnamehash}{8b91c8aa3714ffeda8908af3996aa567}
+      \strng{authorbibnamehash}{8b91c8aa3714ffeda8908af3996aa567}
       \strng{authornamehash}{8b91c8aa3714ffeda8908af3996aa567}
       \strng{authorfullhash}{90fbf08cb4d3d4ba450f98e0f8b3c7dd}
       \field{sortinit}{G}
       \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{Proceedings of the 23rd International Conference on Machine Learning}
+      \field{booktitle}{Proceedings of the 23rd International Conference on Machine Learning}
       \field{title}{Connectionist Temporal Classification: Labelling Unsegmented Sequence Data with Recurrent Neural Networks}
       \field{year}{2006}
       \field{pages}{369\bibrangedash 376}
       \range{pages}{8}
     \endentry
-    \entry{he2016deep}{article}{}
+    \entry{he2016deep}{inproceedings}{}
       \name{author}{4}{}{%
         {{un=0,uniquepart=base,hash=6b4b60e909e78633945f3f9c9dc83e01}{%
            family={He},
@@ -473,24 +466,23 @@
       }
       \strng{namehash}{6edb98fe38401d2fe4a026f5ce6e8451}
       \strng{fullhash}{42c4b52dc3a62cebabbc11c73e1afb53}
-      \strng{bibnamehash}{42c4b52dc3a62cebabbc11c73e1afb53}
-      \strng{authorbibnamehash}{42c4b52dc3a62cebabbc11c73e1afb53}
+      \strng{bibnamehash}{6edb98fe38401d2fe4a026f5ce6e8451}
+      \strng{authorbibnamehash}{6edb98fe38401d2fe4a026f5ce6e8451}
       \strng{authornamehash}{6edb98fe38401d2fe4a026f5ce6e8451}
       \strng{authorfullhash}{42c4b52dc3a62cebabbc11c73e1afb53}
       \field{sortinit}{H}
       \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition}
+      \field{booktitle}{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition}
       \field{title}{Deep Residual Learning for Image Recognition}
       \field{year}{2016}
       \field{pages}{770\bibrangedash 778}
       \range{pages}{9}
     \endentry
-    \entry{isola2017}{article}{}
+    \entry{isola2017}{inproceedings}{}
       \name{author}{4}{}{%
         {{un=0,uniquepart=base,hash=cae9f806bc99a5f19fadea538fc2db04}{%
            family={Isola},
@@ -519,18 +511,17 @@
       }
       \strng{namehash}{dd9b478c7b76d20d978868251cf3ad35}
       \strng{fullhash}{18664a8c078ce7dff4c499de4e40bf2f}
-      \strng{bibnamehash}{18664a8c078ce7dff4c499de4e40bf2f}
-      \strng{authorbibnamehash}{18664a8c078ce7dff4c499de4e40bf2f}
+      \strng{bibnamehash}{dd9b478c7b76d20d978868251cf3ad35}
+      \strng{authorbibnamehash}{dd9b478c7b76d20d978868251cf3ad35}
       \strng{authornamehash}{dd9b478c7b76d20d978868251cf3ad35}
       \strng{authorfullhash}{18664a8c078ce7dff4c499de4e40bf2f}
       \field{sortinit}{I}
       \field{sortinithash}{8d291c51ee89b6cd86bf5379f0b151d8}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition}
+      \field{booktitle}{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition}
       \field{title}{Image-to-Image Translation with Conditional Adversarial Networks}
       \field{year}{2017}
       \field{pages}{1125\bibrangedash 1134}
@@ -561,7 +552,6 @@
       \field{sortinithash}{b2f54a9081ace9966a7cb9413811edb4}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Multimedia Tools and Applications}
@@ -571,7 +561,7 @@
       \field{pages}{22309\bibrangedash 22344}
       \range{pages}{36}
     \endentry
-    \entry{johnson2016}{article}{}
+    \entry{johnson2016}{inproceedings}{}
       \name{author}{3}{}{%
         {{un=0,uniquepart=base,hash=90edc587e1d523d4e173b1fe6e733445}{%
            family={Johnson},
@@ -602,10 +592,9 @@
       \field{sortinithash}{b2f54a9081ace9966a7cb9413811edb4}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{European Conference on Computer Vision}
+      \field{booktitle}{European Conference on Computer Vision}
       \field{title}{Perceptual Losses for Real-Time Style Transfer and Super-Resolution}
       \field{year}{2016}
       \field{pages}{694\bibrangedash 711}
@@ -642,7 +631,6 @@
       \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{International Journal on Document Analysis and Recognition (IJDAR)}
@@ -682,15 +670,14 @@
       }
       \strng{namehash}{a8935245432813fb23dd85f47405e842}
       \strng{fullhash}{f2ea57710bc69a73b9f320eeea17288d}
-      \strng{bibnamehash}{f2ea57710bc69a73b9f320eeea17288d}
-      \strng{authorbibnamehash}{f2ea57710bc69a73b9f320eeea17288d}
+      \strng{bibnamehash}{a8935245432813fb23dd85f47405e842}
+      \strng{authorbibnamehash}{a8935245432813fb23dd85f47405e842}
       \strng{authornamehash}{a8935245432813fb23dd85f47405e842}
       \strng{authorfullhash}{f2ea57710bc69a73b9f320eeea17288d}
       \field{sortinit}{K}
       \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{International Journal on Document Analysis and Recognition (IJDAR)}
@@ -767,15 +754,14 @@
       }
       \strng{namehash}{fc5e0b8fe992805285a4d8fe325e2e0c}
       \strng{fullhash}{0d406a3407dc6ef85c64e21a6b568462}
-      \strng{bibnamehash}{0d406a3407dc6ef85c64e21a6b568462}
-      \strng{authorbibnamehash}{0d406a3407dc6ef85c64e21a6b568462}
+      \strng{bibnamehash}{fc5e0b8fe992805285a4d8fe325e2e0c}
+      \strng{authorbibnamehash}{fc5e0b8fe992805285a4d8fe325e2e0c}
       \strng{authornamehash}{fc5e0b8fe992805285a4d8fe325e2e0c}
       \strng{authorfullhash}{0d406a3407dc6ef85c64e21a6b568462}
       \field{sortinit}{K}
       \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Proceedings of the National Academy of Sciences}
@@ -805,7 +791,6 @@
       \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{International Journal of Forensic Document Examiners}
@@ -815,7 +800,7 @@
       \field{pages}{54\bibrangedash 58}
       \range{pages}{5}
     \endentry
-    \entry{lin2017fpn}{article}{}
+    \entry{lin2017fpn}{inproceedings}{}
       \name{author}{6}{}{%
         {{un=0,uniquepart=base,hash=08f925fe4692d130a1d7cb7d94483351}{%
            family={Lin},
@@ -856,24 +841,23 @@
       }
       \strng{namehash}{3b7e00bc88d7aca4d4d5ddb8c252e36c}
       \strng{fullhash}{407b643cc48d7ba78686be05e508bfa5}
-      \strng{bibnamehash}{407b643cc48d7ba78686be05e508bfa5}
-      \strng{authorbibnamehash}{407b643cc48d7ba78686be05e508bfa5}
+      \strng{bibnamehash}{3b7e00bc88d7aca4d4d5ddb8c252e36c}
+      \strng{authorbibnamehash}{3b7e00bc88d7aca4d4d5ddb8c252e36c}
       \strng{authornamehash}{3b7e00bc88d7aca4d4d5ddb8c252e36c}
       \strng{authorfullhash}{407b643cc48d7ba78686be05e508bfa5}
       \field{sortinit}{L}
       \field{sortinithash}{7c47d417cecb1f4bd38d1825c427a61a}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition}
+      \field{booktitle}{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition}
       \field{title}{Feature Pyramid Networks for Object Detection}
       \field{year}{2017}
       \field{pages}{2117\bibrangedash 2125}
       \range{pages}{9}
     \endentry
-    \entry{martinez2024}{article}{}
+    \entry{martinez2024}{inproceedings}{}
       \name{author}{3}{}{%
         {{un=1,uniquepart=given,hash=ec25a8f863b237cf4d23a67accd68644}{%
            family={Martinez},
@@ -904,16 +888,15 @@
       \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{International Conference on Document Analysis and Recognition}
+      \field{booktitle}{International Conference on Document Analysis and Recognition}
       \field{title}{Transformer-Based Document Understanding: Recent Advances and Future Directions}
       \field{year}{2024}
       \field{pages}{112\bibrangedash 127}
       \range{pages}{16}
     \endentry
-    \entry{mirza2014}{article}{}
+    \entry{mirza2014}{inproceedings}{}
       \name{author}{2}{}{%
         {{un=0,uniquepart=base,hash=9e80f4779b032f68a6106e1424345450}{%
            family={Mirza},
@@ -938,10 +921,9 @@
       \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{Advances in Neural Information Processing Systems}
+      \field{booktitle}{Advances in Neural Information Processing Systems}
       \field{title}{Conditional Generative Adversarial Nets}
       \field{volume}{27}
       \field{year}{2014}
@@ -967,7 +949,6 @@
       \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Restaurator}
@@ -1010,15 +991,14 @@
       }
       \strng{namehash}{4426e36dd640b17087a43ded652de34e}
       \strng{fullhash}{1bba0e24b6438c99ebaec6a99a4d13e5}
-      \strng{bibnamehash}{1bba0e24b6438c99ebaec6a99a4d13e5}
-      \strng{authorbibnamehash}{1bba0e24b6438c99ebaec6a99a4d13e5}
+      \strng{bibnamehash}{4426e36dd640b17087a43ded652de34e}
+      \strng{authorbibnamehash}{4426e36dd640b17087a43ded652de34e}
       \strng{authornamehash}{4426e36dd640b17087a43ded652de34e}
       \strng{authorfullhash}{1bba0e24b6438c99ebaec6a99a4d13e5}
       \field{sortinit}{N}
       \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Pattern Recognition}
@@ -1093,15 +1073,14 @@
       }
       \strng{namehash}{3c926513cb4db42dfabd499e86fbfa18}
       \strng{fullhash}{c45c479e7d10228165a943da13467bf8}
-      \strng{bibnamehash}{c45c479e7d10228165a943da13467bf8}
-      \strng{authorbibnamehash}{c45c479e7d10228165a943da13467bf8}
+      \strng{bibnamehash}{3c926513cb4db42dfabd499e86fbfa18}
+      \strng{authorbibnamehash}{3c926513cb4db42dfabd499e86fbfa18}
       \strng{authornamehash}{3c926513cb4db42dfabd499e86fbfa18}
       \strng{authorfullhash}{c45c479e7d10228165a943da13467bf8}
       \field{sortinit}{O}
       \field{sortinithash}{2cd7140a07aea5341f9e2771efe90aae}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{arXiv preprint arXiv:1804.03999}
@@ -1127,7 +1106,6 @@
       \field{sortinithash}{2cd7140a07aea5341f9e2771efe90aae}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{IEEE Transactions on Systems, Man, and Cybernetics}
@@ -1140,6 +1118,56 @@
       \verb{doi}
       \verb 10.1109/TSMC.1979.4310076
       \endverb
+    \endentry
+    \entry{peffers2007design}{article}{}
+      \name{author}{4}{}{%
+        {{un=0,uniquepart=base,hash=3127efe8cdd4557b7228a8724f568529}{%
+           family={Peffers},
+           familyi={P\bibinitperiod},
+           given={Ken},
+           giveni={K\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=8b17b21a3e4c61d1302f46cba38c6e50}{%
+           family={Tuunanen},
+           familyi={T\bibinitperiod},
+           given={Tuure},
+           giveni={T\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=33ad207ea3031c6d744a31f5bc43c547}{%
+           family={Rothenberger},
+           familyi={R\bibinitperiod},
+           given={Marcus\bibnamedelima A},
+           giveni={M\bibinitperiod\bibinitdelim A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=edf3e165ce4429b30d49e353a7d1417a}{%
+           family={Chatterjee},
+           familyi={C\bibinitperiod},
+           given={Samir},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Taylor \& Francis}%
+      }
+      \strng{namehash}{4ccaed1d47a4875e5f027cdf2d20bbca}
+      \strng{fullhash}{0d82c455b50c2b184d97697dac2e8660}
+      \strng{bibnamehash}{4ccaed1d47a4875e5f027cdf2d20bbca}
+      \strng{authorbibnamehash}{4ccaed1d47a4875e5f027cdf2d20bbca}
+      \strng{authornamehash}{4ccaed1d47a4875e5f027cdf2d20bbca}
+      \strng{authorfullhash}{0d82c455b50c2b184d97697dac2e8660}
+      \field{sortinit}{P}
+      \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{year}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of management information systems}
+      \field{number}{3}
+      \field{title}{A design science research methodology for information systems research}
+      \field{volume}{24}
+      \field{year}{2007}
+      \field{pages}{45\bibrangedash 77}
+      \range{pages}{33}
     \endentry
     \entry{porck2000}{article}{}
       \name{author}{2}{}{%
@@ -1166,7 +1194,6 @@
       \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{European Commission on Preservation and Access}
@@ -1207,7 +1234,6 @@
       \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{International Conference on Document Analysis and Recognition}
@@ -1216,7 +1242,7 @@
       \field{pages}{1471\bibrangedash 1476}
       \range{pages}{6}
     \endentry
-    \entry{radford2021}{article}{}
+    \entry{radford2021}{inproceedings}{}
       \name{author}{12}{}{%
         {{un=0,uniquepart=base,hash=a812c46caad94fc8701be37871f303ba}{%
            family={Radford},
@@ -1293,18 +1319,17 @@
       }
       \strng{namehash}{ca3baa5a22057195db1c71be39b4c922}
       \strng{fullhash}{de02402f48bd17333411ead3b5ca6de9}
-      \strng{bibnamehash}{de02402f48bd17333411ead3b5ca6de9}
-      \strng{authorbibnamehash}{de02402f48bd17333411ead3b5ca6de9}
+      \strng{bibnamehash}{ca3baa5a22057195db1c71be39b4c922}
+      \strng{authorbibnamehash}{ca3baa5a22057195db1c71be39b4c922}
       \strng{authornamehash}{ca3baa5a22057195db1c71be39b4c922}
       \strng{authorfullhash}{de02402f48bd17333411ead3b5ca6de9}
       \field{sortinit}{R}
       \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{Proceedings of the International Conference on Machine Learning}
+      \field{booktitle}{Proceedings of the International Conference on Machine Learning}
       \field{title}{Learning Transferable Visual Models From Natural Language Supervision}
       \field{volume}{139}
       \field{year}{2021}
@@ -1370,15 +1395,14 @@
       }
       \strng{namehash}{93aba8e9bb746e2d8ac216494b952014}
       \strng{fullhash}{21f7721b75bba06d59f9d5ce222a34a5}
-      \strng{bibnamehash}{21f7721b75bba06d59f9d5ce222a34a5}
-      \strng{authorbibnamehash}{21f7721b75bba06d59f9d5ce222a34a5}
+      \strng{bibnamehash}{93aba8e9bb746e2d8ac216494b952014}
+      \strng{authorbibnamehash}{93aba8e9bb746e2d8ac216494b952014}
       \strng{authornamehash}{93aba8e9bb746e2d8ac216494b952014}
       \strng{authorfullhash}{21f7721b75bba06d59f9d5ce222a34a5}
       \field{sortinit}{R}
       \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Journal of Machine Learning Research}
@@ -1427,13 +1451,12 @@
       \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{New Tools for Preservation: Assessing Long-Term Environmental Effects on Library and Archives Collections}
       \field{year}{1993}
     \endentry
-    \entry{ronneberger2015}{article}{}
+    \entry{ronneberger2015}{inproceedings}{}
       \name{author}{3}{}{%
         {{un=0,uniquepart=base,hash=8e46da9de9e53ea5d37089897d69cdd9}{%
            family={Ronneberger},
@@ -1466,16 +1489,15 @@
       \field{extradate}{1}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{Medical Image Computing and Computer-Assisted Intervention -- MICCAI 2015}
+      \field{booktitle}{Medical Image Computing and Computer-Assisted Intervention -- MICCAI 2015}
       \field{title}{U-Net: Convolutional Networks for Biomedical Image Segmentation}
       \field{year}{2015}
       \field{pages}{234\bibrangedash 241}
       \range{pages}{8}
     \endentry
-    \entry{ronneberger2015unet}{article}{}
+    \entry{ronneberger2015unet}{inproceedings}{}
       \name{author}{3}{}{%
         {{un=0,uniquepart=base,hash=8e46da9de9e53ea5d37089897d69cdd9}{%
            family={Ronneberger},
@@ -1508,10 +1530,9 @@
       \field{extradate}{2}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{Medical Image Computing and Computer-Assisted Intervention}
+      \field{booktitle}{Medical Image Computing and Computer-Assisted Intervention}
       \field{title}{U-Net: Convolutional Networks for Biomedical Image Segmentation}
       \field{year}{2015}
       \field{pages}{234\bibrangedash 241}
@@ -1542,7 +1563,6 @@
       \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Pattern Recognition}
@@ -1587,7 +1607,6 @@
       \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{IEEE Transactions on Pattern Analysis and Machine Intelligence}
@@ -1598,7 +1617,7 @@
       \field{pages}{2298\bibrangedash 2304}
       \range{pages}{7}
     \endentry
-    \entry{textdiae2022}{article}{}
+    \entry{docentr2022}{inproceedings}{}
       \true{moreauthor}
       \true{morelabelname}
       \name{author}{2}{}{%
@@ -1621,13 +1640,52 @@
       \strng{authorbibnamehash}{fb9fa65aab05cc72c4807422cd9439b9}
       \strng{authornamehash}{fb9fa65aab05cc72c4807422cd9439b9}
       \strng{authorfullhash}{fb9fa65aab05cc72c4807422cd9439b9}
+      \field{extraname}{1}
       \field{sortinit}{S}
       \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradate}{1}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{Proceedings of the AAAI Conference on Artificial Intelligence}
+      \field{booktitle}{IEEE Conference on Computer Vision and Pattern Recognition Workshops}
+      \field{title}{DocEnTr: Transformer Peningkatan Citra Dokumen Ujung-ke-Ujung}
+      \field{year}{2022}
+      \field{pages}{322\bibrangedash 327}
+      \range{pages}{6}
+    \endentry
+    \entry{textdiae2022}{inproceedings}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{2}{}{%
+        {{un=1,uniquepart=given,hash=eea8c5e0ed3b08a8bd0ba747d143127b}{%
+           family={Souibgui},
+           familyi={S\bibinitperiod},
+           given={Mohamed},
+           giveni={M\bibinitperiod},
+           givenun=1}}%
+        {{un=0,uniquepart=base,hash=66cb90245a8c290a513a7287cdbe3a92}{%
+           family={Kessentini},
+           familyi={K\bibinitperiod},
+           given={Yousri},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{fb9fa65aab05cc72c4807422cd9439b9}
+      \strng{fullhash}{fb9fa65aab05cc72c4807422cd9439b9}
+      \strng{bibnamehash}{fb9fa65aab05cc72c4807422cd9439b9}
+      \strng{authorbibnamehash}{fb9fa65aab05cc72c4807422cd9439b9}
+      \strng{authornamehash}{fb9fa65aab05cc72c4807422cd9439b9}
+      \strng{authorfullhash}{fb9fa65aab05cc72c4807422cd9439b9}
+      \field{extraname}{2}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradate}{2}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{year}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the AAAI Conference on Artificial Intelligence}
       \field{number}{3}
       \field{title}{Text-DIAE: A Self-Supervised Degradation Invariant Autoencoder for Text Recognition and Document Enhancement}
       \field{volume}{36}
@@ -1636,7 +1694,7 @@
       \range{pages}{9}
     \endentry
     \entry{erb2021}{article}{}
-      \name{author}{3}{}{%
+      \name{author}{3}{ul=3}{%
         {{un=1,uniquepart=given,hash=eea8c5e0ed3b08a8bd0ba747d143127b}{%
            family={Souibgui},
            familyi={S\bibinitperiod},
@@ -1656,11 +1714,11 @@
            giveni={A\bibinitperiod},
            givenun=0}}%
       }
-      \strng{namehash}{114aa61fd744998ab5784fae975e84ea}
+      \strng{namehash}{c6151c645aa9cb06eeeced2813137c02}
       \strng{fullhash}{c6151c645aa9cb06eeeced2813137c02}
       \strng{bibnamehash}{c6151c645aa9cb06eeeced2813137c02}
       \strng{authorbibnamehash}{c6151c645aa9cb06eeeced2813137c02}
-      \strng{authornamehash}{114aa61fd744998ab5784fae975e84ea}
+      \strng{authornamehash}{c6151c645aa9cb06eeeced2813137c02}
       \strng{authorfullhash}{c6151c645aa9cb06eeeced2813137c02}
       \field{extraname}{1}
       \field{sortinit}{S}
@@ -1677,7 +1735,7 @@
       \range{pages}{8}
     \endentry
     \entry{souibgui2022}{article}{}
-      \name{author}{3}{}{%
+      \name{author}{3}{ul=3}{%
         {{un=1,uniquepart=given,hash=eea8c5e0ed3b08a8bd0ba747d143127b}{%
            family={Souibgui},
            familyi={S\bibinitperiod},
@@ -1697,11 +1755,11 @@
            giveni={A\bibinitperiod},
            givenun=0}}%
       }
-      \strng{namehash}{114aa61fd744998ab5784fae975e84ea}
+      \strng{namehash}{c6151c645aa9cb06eeeced2813137c02}
       \strng{fullhash}{c6151c645aa9cb06eeeced2813137c02}
       \strng{bibnamehash}{c6151c645aa9cb06eeeced2813137c02}
       \strng{authorbibnamehash}{c6151c645aa9cb06eeeced2813137c02}
-      \strng{authornamehash}{114aa61fd744998ab5784fae975e84ea}
+      \strng{authornamehash}{c6151c645aa9cb06eeeced2813137c02}
       \strng{authorfullhash}{c6151c645aa9cb06eeeced2813137c02}
       \field{extraname}{2}
       \field{sortinit}{S}
@@ -1795,7 +1853,7 @@
       \endverb
     \endentry
     \entry{souibgui2021erb}{article}{}
-      \name{author}{3}{}{%
+      \name{author}{3}{ul=3}{%
         {{un=1,uniquepart=given,hash=e1fdb3b6bfe2f2e0e97a3081c38ee984}{%
            family={Souibgui},
            familyi={S\bibinitperiod},
@@ -1815,13 +1873,12 @@
            giveni={A\bibinitperiod},
            givenun=0}}%
       }
-      \strng{namehash}{7d23c8943ef130acd6b39856e05c0e40}
+      \strng{namehash}{a59d65b6deb9728996ade5696c757bfc}
       \strng{fullhash}{a59d65b6deb9728996ade5696c757bfc}
       \strng{bibnamehash}{a59d65b6deb9728996ade5696c757bfc}
       \strng{authorbibnamehash}{a59d65b6deb9728996ade5696c757bfc}
-      \strng{authornamehash}{7d23c8943ef130acd6b39856e05c0e40}
+      \strng{authornamehash}{a59d65b6deb9728996ade5696c757bfc}
       \strng{authorfullhash}{a59d65b6deb9728996ade5696c757bfc}
-      \field{extraname}{1}
       \field{sortinit}{S}
       \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
       \field{extradatescope}{labelyear}
@@ -1838,8 +1895,8 @@
       \verb 10.1016/j.patcog.2021.108043
       \endverb
     \endentry
-    \entry{souibgui2022docentr}{article}{}
-      \name{author}{6}{}{%
+    \entry{souibgui2022docentr}{inproceedings}{}
+      \name{author}{6}{ul=3}{%
         {{un=1,uniquepart=given,hash=e1fdb3b6bfe2f2e0e97a3081c38ee984}{%
            family={Souibgui},
            familyi={S\bibinitperiod},
@@ -1877,26 +1934,25 @@
            giveni={M\bibinitperiod},
            givenun=0}}%
       }
-      \strng{namehash}{7d23c8943ef130acd6b39856e05c0e40}
+      \strng{namehash}{ca114a9f2c3eacb20497845be078641c}
       \strng{fullhash}{d62c8bd100e60d8afadb27b28400bb83}
-      \strng{bibnamehash}{d62c8bd100e60d8afadb27b28400bb83}
-      \strng{authorbibnamehash}{d62c8bd100e60d8afadb27b28400bb83}
-      \strng{authornamehash}{7d23c8943ef130acd6b39856e05c0e40}
+      \strng{bibnamehash}{ca114a9f2c3eacb20497845be078641c}
+      \strng{authorbibnamehash}{ca114a9f2c3eacb20497845be078641c}
+      \strng{authornamehash}{ca114a9f2c3eacb20497845be078641c}
       \strng{authorfullhash}{d62c8bd100e60d8afadb27b28400bb83}
-      \field{extraname}{2}
       \field{sortinit}{S}
       \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) Workshops}
+      \field{booktitle}{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) Workshops}
       \field{title}{DocEnTr: An End-to-End Document Image Enhancement Transformer}
       \field{year}{2022}
       \field{pages}{1860\bibrangedash 1869}
       \range{pages}{10}
     \endentry
-    \entry{tensmeyer2017}{article}{}
+    \entry{tensmeyer2017}{inproceedings}{}
       \name{author}{2}{}{%
         {{un=0,uniquepart=base,hash=d90668393c0a553bfffa9c255ac96cb6}{%
            family={Tensmeyer},
@@ -1921,10 +1977,9 @@
       \field{sortinithash}{9af77f0292593c26bde9a56e688eaee9}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{2017 14th IAPR International Conference on Document Analysis and Recognition (ICDAR)}
+      \field{booktitle}{2017 14th IAPR International Conference on Document Analysis and Recognition (ICDAR)}
       \field{title}{Document Image Binarization with Fully Convolutional Neural Networks}
       \field{volume}{1}
       \field{year}{2017}
@@ -1934,7 +1989,7 @@
       \verb 10.1109/ICDAR.2017.25
       \endverb
     \endentry
-    \entry{thompson2023}{article}{}
+    \entry{thompson2023}{inproceedings}{}
       \name{author}{3}{}{%
         {{un=0,uniquepart=base,hash=0b34d74d3c14e6d748fc32016c3103e1}{%
            family={Thompson},
@@ -1965,10 +2020,9 @@
       \field{sortinithash}{9af77f0292593c26bde9a56e688eaee9}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{International Conference on Document Analysis and Recognition}
+      \field{booktitle}{International Conference on Document Analysis and Recognition}
       \field{title}{Neural Architecture Search for Document Analysis: A Comprehensive Study}
       \field{year}{2023}
       \field{pages}{234\bibrangedash 249}
@@ -2027,15 +2081,14 @@
       }
       \strng{namehash}{ee273ab30cfb889666f8c4d806eb9ce7}
       \strng{fullhash}{cb26e47f6b8133865271fc8483132297}
-      \strng{bibnamehash}{cb26e47f6b8133865271fc8483132297}
-      \strng{authorbibnamehash}{cb26e47f6b8133865271fc8483132297}
+      \strng{bibnamehash}{ee273ab30cfb889666f8c4d806eb9ce7}
+      \strng{authorbibnamehash}{ee273ab30cfb889666f8c4d806eb9ce7}
       \strng{authornamehash}{ee273ab30cfb889666f8c4d806eb9ce7}
       \strng{authorfullhash}{cb26e47f6b8133865271fc8483132297}
       \field{sortinit}{V}
       \field{sortinithash}{afb52128e5b4dc4b843768c0113d673b}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Advances in Neural Information Processing Systems}
@@ -2074,15 +2127,14 @@
       }
       \strng{namehash}{ec7f3703fbd419b313e0a329e6241059}
       \strng{fullhash}{678422238c76e65638062cadc184ea94}
-      \strng{bibnamehash}{678422238c76e65638062cadc184ea94}
-      \strng{authorbibnamehash}{678422238c76e65638062cadc184ea94}
+      \strng{bibnamehash}{ec7f3703fbd419b313e0a329e6241059}
+      \strng{authorbibnamehash}{ec7f3703fbd419b313e0a329e6241059}
       \strng{authornamehash}{ec7f3703fbd419b313e0a329e6241059}
       \strng{authorfullhash}{678422238c76e65638062cadc184ea94}
       \field{sortinit}{W}
       \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{IEEE Transactions on Image Processing}
@@ -2160,15 +2212,14 @@
       }
       \strng{namehash}{7e5e566ee8f47df717196e96221e7705}
       \strng{fullhash}{4bdd409640033fd45335b8306e21c00a}
-      \strng{bibnamehash}{4bdd409640033fd45335b8306e21c00a}
-      \strng{authorbibnamehash}{4bdd409640033fd45335b8306e21c00a}
+      \strng{bibnamehash}{7e5e566ee8f47df717196e96221e7705}
+      \strng{authorbibnamehash}{7e5e566ee8f47df717196e96221e7705}
       \strng{authornamehash}{7e5e566ee8f47df717196e96221e7705}
       \strng{authorfullhash}{4bdd409640033fd45335b8306e21c00a}
       \field{sortinit}{W}
       \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Transactions on Machine Learning Research}
@@ -2206,7 +2257,6 @@
       \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{International Journal on Document Analysis and Recognition (IJDAR)}
@@ -2216,7 +2266,7 @@
       \field{pages}{145\bibrangedash 162}
       \range{pages}{18}
     \endentry
-    \entry{woo2018cbam}{article}{}
+    \entry{woo2018cbam}{inproceedings}{}
       \name{author}{4}{}{%
         {{un=0,uniquepart=base,hash=d2a3537691dc8a58afa60ad3349cc936}{%
            family={Woo},
@@ -2245,24 +2295,23 @@
       }
       \strng{namehash}{724756a234761fb287e6b72e05f33eab}
       \strng{fullhash}{f2845c6d6bdba109b1276302b426eccd}
-      \strng{bibnamehash}{f2845c6d6bdba109b1276302b426eccd}
-      \strng{authorbibnamehash}{f2845c6d6bdba109b1276302b426eccd}
+      \strng{bibnamehash}{724756a234761fb287e6b72e05f33eab}
+      \strng{authorbibnamehash}{724756a234761fb287e6b72e05f33eab}
       \strng{authornamehash}{724756a234761fb287e6b72e05f33eab}
       \strng{authorfullhash}{f2845c6d6bdba109b1276302b426eccd}
       \field{sortinit}{W}
       \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{Proceedings of the European Conference on Computer Vision (ECCV)}
+      \field{booktitle}{Proceedings of the European Conference on Computer Vision (ECCV)}
       \field{title}{CBAM: Convolutional Block Attention Module}
       \field{year}{2018}
       \field{pages}{3\bibrangedash 19}
       \range{pages}{17}
     \endentry
-    \entry{wu2023}{article}{}
+    \entry{wu2023}{inproceedings}{}
       \name{author}{2}{}{%
         {{un=0,uniquepart=base,hash=b626dcc418c3a5c74cfaa4c5e643a71f}{%
            family={Wu},
@@ -2287,10 +2336,9 @@
       \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{Proceedings of the European Conference on Computer Vision}
+      \field{booktitle}{Proceedings of the European Conference on Computer Vision}
       \field{title}{Group Normalization for Document Image Analysis}
       \field{year}{2023}
       \field{pages}{567\bibrangedash 582}
@@ -2298,12 +2346,12 @@
     \endentry
     \entry{zhang2024}{article}{}
       \name{author}{4}{}{%
-        {{un=0,uniquepart=base,hash=047f7de07364289ade5035d665f1c939}{%
+        {{un=2,uniquepart=given,hash=047f7de07364289ade5035d665f1c939}{%
            family={Zhang},
            familyi={Z\bibinitperiod},
            given={Yao},
            giveni={Y\bibinitperiod},
-           givenun=0}}%
+           givenun=2}}%
         {{un=0,uniquepart=base,hash=be6f1b6df7f1ddfafad18806238fa391}{%
            family={Li},
            familyi={L\bibinitperiod},
@@ -2325,11 +2373,10 @@
       }
       \strng{namehash}{83c5057f189c88a39af532ba0f2d0158}
       \strng{fullhash}{763b35ed129f2df1d419569c3f0542e1}
-      \strng{bibnamehash}{763b35ed129f2df1d419569c3f0542e1}
-      \strng{authorbibnamehash}{763b35ed129f2df1d419569c3f0542e1}
+      \strng{bibnamehash}{83c5057f189c88a39af532ba0f2d0158}
+      \strng{authorbibnamehash}{83c5057f189c88a39af532ba0f2d0158}
       \strng{authornamehash}{83c5057f189c88a39af532ba0f2d0158}
       \strng{authorfullhash}{763b35ed129f2df1d419569c3f0542e1}
-      \field{extraname}{1}
       \field{sortinit}{Z}
       \field{sortinithash}{96892c0b0a36bb8557c40c49813d48b3}
       \field{extradatescope}{labelyear}
@@ -2343,14 +2390,14 @@
       \field{pages}{15678\bibrangedash 15698}
       \range{pages}{21}
     \endentry
-    \entry{zhang2018residual}{article}{}
+    \entry{zhang2018residual}{inproceedings}{}
       \name{author}{5}{}{%
-        {{un=0,uniquepart=base,hash=a442658eb75ebe4d9d10264263190850}{%
+        {{un=2,uniquepart=given,hash=a442658eb75ebe4d9d10264263190850}{%
            family={Zhang},
            familyi={Z\bibinitperiod},
            given={Yulun},
            giveni={Y\bibinitperiod},
-           givenun=0}}%
+           givenun=2}}%
         {{un=0,uniquepart=base,hash=13ed7d456ab4a3d565a2a0426b25dc3f}{%
            family={Tian},
            familyi={T\bibinitperiod},
@@ -2378,24 +2425,23 @@
       }
       \strng{namehash}{1a33c68bd6caec2e08aa42e69ea1d7ff}
       \strng{fullhash}{a8e800e4d7b14f724e301b13bfed9a92}
-      \strng{bibnamehash}{a8e800e4d7b14f724e301b13bfed9a92}
-      \strng{authorbibnamehash}{a8e800e4d7b14f724e301b13bfed9a92}
+      \strng{bibnamehash}{1a33c68bd6caec2e08aa42e69ea1d7ff}
+      \strng{authorbibnamehash}{1a33c68bd6caec2e08aa42e69ea1d7ff}
       \strng{authornamehash}{1a33c68bd6caec2e08aa42e69ea1d7ff}
       \strng{authorfullhash}{a8e800e4d7b14f724e301b13bfed9a92}
-      \field{extraname}{2}
       \field{sortinit}{Z}
       \field{sortinithash}{96892c0b0a36bb8557c40c49813d48b3}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition}
+      \field{booktitle}{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition}
       \field{title}{Residual Dense Network for Image Super-Resolution}
       \field{year}{2018}
       \field{pages}{2472\bibrangedash 2481}
       \range{pages}{10}
     \endentry
-    \entry{zhao2019}{article}{}
+    \entry{zhao2019}{inproceedings}{}
       \name{author}{3}{}{%
         {{un=0,uniquepart=base,hash=0db445256963546f26ac7dc0d929265b}{%
            family={Zhao},
@@ -2426,16 +2472,15 @@
       \field{sortinithash}{96892c0b0a36bb8557c40c49813d48b3}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition}
+      \field{booktitle}{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition}
       \field{title}{Exploring Self-Attention for Image Recognition}
       \field{year}{2019}
       \field{pages}{10076\bibrangedash 10085}
       \range{pages}{10}
     \endentry
-    \entry{zhu2017}{article}{}
+    \entry{zhu2017}{inproceedings}{}
       \name{author}{4}{}{%
         {{un=0,uniquepart=base,hash=9fbb4b31963f07f34a13b375b4997338}{%
            family={Zhu},
@@ -2464,18 +2509,17 @@
       }
       \strng{namehash}{6bbc73cad9d67ffe67a198aaeed8ce61}
       \strng{fullhash}{69bc0b2da0c2e1bc9b8395c1d38556bb}
-      \strng{bibnamehash}{69bc0b2da0c2e1bc9b8395c1d38556bb}
-      \strng{authorbibnamehash}{69bc0b2da0c2e1bc9b8395c1d38556bb}
+      \strng{bibnamehash}{6bbc73cad9d67ffe67a198aaeed8ce61}
+      \strng{authorbibnamehash}{6bbc73cad9d67ffe67a198aaeed8ce61}
       \strng{authornamehash}{6bbc73cad9d67ffe67a198aaeed8ce61}
       \strng{authorfullhash}{69bc0b2da0c2e1bc9b8395c1d38556bb}
       \field{sortinit}{Z}
       \field{sortinithash}{96892c0b0a36bb8557c40c49813d48b3}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
-      \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{Proceedings of the IEEE International Conference on Computer Vision}
+      \field{booktitle}{Proceedings of the IEEE International Conference on Computer Vision}
       \field{title}{Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks}
       \field{year}{2017}
       \field{pages}{2223\bibrangedash 2232}

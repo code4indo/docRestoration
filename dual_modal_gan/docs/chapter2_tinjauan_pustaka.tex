@@ -72,11 +72,11 @@
 \titlespacing*{\subsubsection}{0pt}{0.5cm}{0pt}
 
 % Pengaturan format paragraph (level 4) - Modified untuk baris baru setelah judul
-% Menggunakan \@startsection untuk kontrol penuh dengan jarak sama seperti level 3
+% Menggunakan \@startsection untuk kontrol penuh dengan jarak minimal
 \makeatletter
 \renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
-  {0.5cm}%                           % Space before heading (sama dengan subsubsection)
-  {0.5pt}%                             % Space after heading (positif = baris baru, 0pt = langsung ke teks)
+  {1ex}%                             % Space before heading (minimal: 1ex)
+  {0.5pt}%                           % Space after heading (positif = baris baru)
   {\normalfont\normalsize\bfseries}} % Font style
 \makeatother
 
@@ -103,7 +103,7 @@
 \renewcommand{\thesection}{\Roman{section}}
 \renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
 \renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
-\renewcommand{\theparagraph}{\thesubsubsection.\arabic{paragraph}}  % Level 4 numbering
+\renewcommand{\theparagraph}{\arabic{paragraph}.}  % Level 4 numbering: angka tunggal 1. 2. 3. dst
 
 % Pengaturan format penomoran tabel mengikuti section
 \counterwithin{table}{section}
@@ -120,12 +120,12 @@
 \begin{document}
 
 % Override biblatex strings for Indonesian - DIRECT MACRO REPLACEMENT
-\makeatletter
-\def\abx@lstr@andothers{dkk\adddot}
-\def\abx@sstr@andothers{dkk\adddot}
-\def\abx@lstr@and{ dan }
-\def\abx@sstr@and{ dan }
-\makeatother
+% \makeatletter
+% \def\abx@lstr@andothers{dkk\adddot}
+% \def\abx@sstr@andothers{dkk\adddot}
+% \def\abx@lstr@and{ dan }
+% \def\abx@sstr@and{ dan }
+% \makeatother
 
 % ============================================================
 % BAB II: TINJAUAN PUSTAKA
@@ -427,7 +427,7 @@ Untuk restorasi dokumen, $y$ adalah citra yang mengalami degradasi dan $x$ adala
 \paragraph{Inovasi Kunci Pix2Pix}
 \label{para:pix2pix-inovasi}
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
 \item Diskriminator PatchGAN \mbox{}\\[0.1em]
 Alih-alih mengklasifikasikan seluruh citra sebagai nyata atau palsu, PatchGAN mengklasifikasikan patch N × N. Keluaran Diskriminator adalah matriks di mana setiap elemen bersesuaian dengan patch dari citra masukan. Pendekatan ini memiliki dua keuntungan: (a) fokus pada detail frekuensi tinggi yang penting untuk realisme tekstur, dan (b) parameter lebih sedikit karena arsitektur konvolusional penuh.
 
@@ -483,7 +483,7 @@ ERB-MultiTask muncul sebagai respons terhadap keterbatasan fundamental dari pend
 
 ERB-MultiTask merepresentasikan terobosan signifikan sebagai penelitian pertama yang mengintegrasikan jaringan saraf generatif mendalam dengan Recurrent Neural Networks (RNN) untuk peningkatan dokumen tulisan tangan. Kontribusi kunci meliputi:
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
 \item Arsitektur GAN + CRNN Ujung-ke-Ujung \mbox{}\\[0.1em]
 Menggabungkan GAN untuk peningkatan kualitas dokumen dengan pengenal CRNN dalam satu kerangka kerja terpadu. Ini adalah pendekatan pertama yang secara simultan menangani tugas peningkatan kualitas dan transkripsi.
 
@@ -492,7 +492,7 @@ Menggunakan arsitektur Fully Convolutional Network (FCN) standar untuk generator
 
 \item Pelatihan Skenario Ganda \mbox{}\\[0.1em]
 Mengimplementasikan dua skenario pelatihan yang berbeda:
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
  \item Skenario S1: Pengenal CRNN diberi citra bersih acuan selama pelatihan GAN
  \item Skenario S2: Pengenal CRNN diberi citra yang dihasilkan (dibersihkan oleh generator) selama pelatihan
 \end{enumerate}
@@ -506,7 +506,7 @@ Demonstrasi efektivitas pada skrip Arab (basis data KHATT) dan skrip Latin (basi
 
 Inovasi teknis utama dari ERB-MultiTask mencakup integrasi tiga komponen jaringan saraf tiruan dalam kerangka kerja ujung-ke-ujung:
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
  \item Generator: Fully Convolutional Network (FCN) standar untuk translasi citra-ke-citra dengan koneksi pintas
  \item Diskriminator: FCN berbasis PatchGAN yang mengevaluasi realisme pada tingkat patch untuk fokus detail tekstur
  \item Pengenal CRNN: CNN-BiGRU dengan decoding CTC terintegrasi dalam lingkaran pelatihan untuk optimisasi keterbacaan
@@ -519,20 +519,20 @@ Inovasi teknis utama dari ERB-MultiTask mencakup integrasi tiga komponen jaringa
 ERB-MultiTask dievaluasi melalui protokol eksperimental yang komprehensif dengan beberapa himpunan data dan metrik evaluasi ganda:
 
 1. Himpunan Data Multi-Skrip:
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
  \item Himpunan Data KHATT: Dokumen tulisan tangan historis Arab
  \item Himpunan Data IAM: Dokumen tulisan tangan Latin
  \item DIBCO 2018: Tolok ukur binarisasi dokumen
 \end{enumerate}
 
 2. Metrik Evaluasi Ganda:
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
  \item Kualitas Visual: PSNR, F-measure (FM), pseudo-F-measure (Fps), dan Distance Reciprocal Distortion (DRD)
  \item Keterbacaan: Character Error Rate (CER) dan Word Error Rate (WER) menggunakan pengenal CRNN
 \end{enumerate}
 
 3. Hasil Kuantitatif (Degraded-KHATT Test Set):
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
  \item Baseline cGAN: PSNR 15.52 dB, FM 75.01\%, DRD 6.05, CER 29.24\%, WER 53.68\%
  \item ERB-MultiTask S1: PSNR 15.45 dB, FM 77.45\%, DRD 7.97, CER 27.03\% (CRNN1), CER 24.33\% (CRNN2)
  \item ERB-MultiTask S2: PSNR 15.44 dB, FM 74.52\%, DRD 6.18, CER 27.90\% (CRNN1), CER 25.31\% (CRNN2)
@@ -583,7 +583,7 @@ Meskipun mengintegrasikan evaluasi CRNN, pengujian masih dilakukan secara terpis
 
 ERB-MultiTask memiliki kontribusi historis yang sangat penting:
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
  \item Integrasi Pionir: Penelitian pertama yang mengintegrasikan HTR pengenal (CRNN) dalam lingkaran pelatihan GAN untuk peningkatan dokumen tulisan tangan
  \item Evaluasi Dual-Objective: Mengadopsi protokol evaluasi simultan untuk visual quality (PSNR, FM) dan keterbacaan fungsional (CER, WER)
  \item Progressive Learning: Membuktikan bahwa melatih pengenal secara progresif dari degraded domain ke clean domain lebih efektif
@@ -596,7 +596,7 @@ ERB-MultiTask memiliki kontribusi historis yang sangat penting:
 
 Meskipun ERB-MultiTask merepresentasikan terobosan pionir dalam integrasi HTR dengan document enhancement, beberapa kesenjangan dapat diidentifikasi:
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
  \item Diskriminator Single-Modal: Evaluasi hanya pada modalitas visual tanpa pertimbangan koherensi struktur teks atau kualitas sekuensial. Diskriminator tidak peka terhadap apakah teks terbaca atau tidak.
 
  \item Keterbatasan Arsitektur Pengenal: CRNN berbasis BiGRU memiliki keterbatasan dalam menangkap dependensi jarak jauh dibandingkan arsitektur modern berbasis Transformer atau mekanisme atensi.
@@ -616,7 +616,7 @@ Meskipun ERB-MultiTask merepresentasikan terobosan pionir dalam integrasi HTR de
 
 DE-GAN merepresentasikan pendekatan GAN untuk peningkatan dokumen dengan karakteristik:
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
  \item Kerangka Kerja Adversarial: Mengadaptasi GAN bersyarat (cGANs) untuk peningkatan dokumen dengan generator U-Net dan diskriminator PatchGAN
  \item Kemampuan Multi-Tugas: Menangani binarisasi, penghilangan kekaburan, penghapusan watermark, dan pembersihan dalam satu kerangka kerja
  \item Evaluasi OCR Pasca-Proses: Mengevaluasi dampak peningkatan terhadap performa OCR, namun OCR tidak terintegrasi dalam pelatihan
@@ -626,7 +626,7 @@ DE-GAN merepresentasikan pendekatan GAN untuk peningkatan dokumen dengan karakte
 \paragraph{Perbedaan Pendekatan: DE-GAN vs ERB-MultiTask}
 \label{para:degan-perbedaan}
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
  \item Tidak Ada Integrasi HTR: DE-GAN hanya mengoptimasi kualitas visual tanpa supervisi dari pengenal
  \item Evaluasi Terpisah: Evaluasi OCR/HTR dilakukan pasca-proses, bukan sebagai bagian dari tujuan pelatihan
  \item Optimasi Tujuan Tunggal: Hanya menggunakan loss adversarial dan loss rekonstruksi (BCE), tanpa komponen keterbacaan
@@ -670,7 +670,7 @@ Aspek & ERB-MultiTask \cite{souibgui2021erb} & DE-GAN \cite{souibgui2021degan} \
 
 DE-GAN memperkenalkan beberapa masalah baru yang menjadi fokus penelitian selanjutnya:
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
  \item Penghilangan Tanda Air Padat: Berhasil mengatasi masalah tanda air/stempel padat pada dokumen dengan PSNR 40.98 dan SSIM 0.998, mengungguli metode citra alami (\textcite{dekel2024}: PSNR 36.02, \textcite{wu2023}: PSNR 23.37)
  \item Penghilangan Kekaburan Dokumen: Mencapai PSNR 20.37 dB, mengungguli CNN dasar (19.36 dB) dan pix2pix-HD (19.89 dB)
  \item Aplikasi Dokumen Nyata: Berhasil diterapkan pada dokumen historis alami dengan degradasi seperti noda dan tembusan
@@ -681,7 +681,7 @@ DE-GAN memperkenalkan beberapa masalah baru yang menjadi fokus penelitian selanj
 
 DE-GAN dibandingkan secara langsung dengan metode GAN lain pada H-DIBCO 2018:
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
  \item vs CycleGAN: DE-GAN superior (PSNR 16.16 vs 11.00, F-measure 77.59 vs 56.33)
  \item vs pix2pix-HD: DE-GAN lebih baik (PSNR 16.16 vs 14.42, F-measure 77.59 vs 72.79) dengan data pelatihan yang lebih sedikit
  \item vs FCN (U-Net): DE-GAN mengungguli untuk pembersihan dokumen (PSNR 38.12 vs 36.02)
@@ -692,13 +692,13 @@ DE-GAN dibandingkan secara langsung dengan metode GAN lain pada H-DIBCO 2018:
 
 Meskipun DE-GAN telah melakukan eksperimen keterbacaan yang komprehensif, terdapat beberapa keterbatasan fundamental dalam pendekatan mereka:
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
 \item Evaluasi OCR Pasca-Pelatihan: \mbox{}\\[0.1em]
 Evaluasi keterbacaan dilakukan setelah pelatihan GAN selesai, bukan diintegrasikan dalam lingkaran optimisasi. Artinya, Generator dioptimasi hanya untuk kualitas visual, bukan untuk kinerja OCR. Kesenjangan ini signifikan karena peningkatan visual tidak selalu linear dengan peningkatan keterbacaan.
 
 \item Jalur Pelatihan Terpisah: \mbox{}\\[0.1em]
 Skenario pembelajaran progresif memerlukan dua tahap pelatihan terpisah:
-\begin{enumerate}
+\begin{enumerate}[label=\alph*., topsep=0pt, parsep=0pt]
  \item Pelatihan GAN untuk peningkatan kualitas dokumen
  \item Pelatihan HTR pada hasil peningkatan kualitas
 \end{enumerate}
@@ -706,7 +706,7 @@ Pendekatan ini kurang efisien dan tidak memanfaatkan umpan balik langsung dari e
 
 \item Diskriminator Hanya-Visual: \mbox{}\\[0.1em]
 Diskriminator DE-GAN hanya mengevaluasi apakah citra terlihat bersih tanpa mempertimbangkan:
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
  \item Preservasi struktur teks
  \item Integritas karakter
  \item Keterbacaan untuk sistem OCR
@@ -725,7 +725,7 @@ Tidak ada mekanisme untuk memastikan bahwa konten teks terjaga dengan baik. Gene
 
 Berdasarkan analisis komprehensif terhadap DE-GAN, terdapat tiga kesenjangan fundamental yang memotivasi penelitian lebih lanjut:
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
 \item Evaluasi HTR Pasca-Pelatihan: \mbox{}\\[0.1em]
 DE-GAN melakukan evaluasi keterbacaan secara pasca-pelatihan dengan model HTR terpisah, bukan terintegrasi dalam lingkaran pelatihan. Hal ini mengindikasikan peluang untuk eksplorasi integrasi supervisi HTR langsung dalam proses optimasi.
 
@@ -751,7 +751,7 @@ Berbeda dari pendekatan adversarial DE-GAN yang mengandalkan pelatihan kompetiti
 Text-DIAE mengusulkan paradigma pelatihan dua-tahap yang revolusioner:
 
 1. Pra-Pelatihan Mandiri: Model dilatih pada data tanpa label dengan tiga tugas pendahuluan:
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
  \item Penutupan: Menutup 75\% patch citra secara acak dan merekonstruksi konten asli
  \item Kekaburan: Menerapkan degradasi kekaburan buatan dan rekonstruksi
  \item Penambahan Derau: Menambahkan derau sintetis dan penghilangan derau
@@ -764,7 +764,7 @@ Inovasi kunci adalah invarian degradasi: encoder belajar menghasilkan representa
 Arsitektur Vision Transformer
 
 Text-DIAE menggunakan arsitektur berbasis ViT dengan struktur encoder-decoder:
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
  \item Encoder: Vision Transformer standar dengan Multi-Head Self-Attention
  \item Decoder: Transformer blocks yang merekonstruksi citra asli dari representasi laten
  \item Pembelajaran Multi-Tugas: Pelatihan simultan pada berbagai jenis degradasi
@@ -775,7 +775,7 @@ Text-DIAE menggunakan arsitektur berbasis ViT dengan struktur encoder-decoder:
 
 Text-DIAE menunjukkan beberapa keunggulan signifikan:
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
 \item Efisiensi Data: \mbox{}\\[0.1em]
 Membutuhkan 43-166 kali lebih sedikit data untuk konvergen dibandingkan metode pembelajaran kontrastif seperti SeqCLR dan SimCLR. Pada eksperimen IAM, Text-DIAE hanya menggunakan ~18.2M sampel vs 409M sampel untuk metode sebelumnya.
 
@@ -794,7 +794,7 @@ Satu kerangka kerja yang dapat menangani pengenalan teks dan peningkatan dokumen
 
 Meskipun mencapai hasil yang mengesankan, Text-DIAE memiliki keterbatasan khususnya untuk aplikasi dokumen historis:
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
 \item Kesenjangan antara Invarian dan Keterbacaan: \mbox{}\\[0.1em]
 Text-DIAE mengoptimalkan invarian degradasi (representasi sama untuk citra bersih/ yang mengalami degradasi), namun tidak secara eksplisit mengoptimalkan keterbacaan teks untuk sistem HTR. Eksperimen menunjukkan peningkatan kualitas visual tidak selalu linear dengan penurunan CER.
 
@@ -812,7 +812,7 @@ Kompleksitas kuadratik dari mekanisme perhatian-diri membuatnya kurang praktis u
 \noindent\textit{D. Analisis Eksperimental: Kinerja OCR}
 
 Eksperimen menarik dari Text-DIAE menunjukkan:
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
  \item Pada tugas penghilangan kekaburan, Text-DIAE mengurangi CER dari 78.86\% (asli) menjadi 8.94\% (vs DocEnTr: 18.51\%)
  \item Namun, CER absolut masih jauh dari data dasar (4.88\%)
  \item Ini menunjukkan bahwa meskipun peningkatan signifikan, masih ada kesenjangan antara peningkatan kualitas visual dan keterbacaan teks optimal
@@ -823,7 +823,7 @@ Eksperimen menarik dari Text-DIAE menunjukkan:
 
 Text-DIAE merepresentasikan kemajuan penting dalam pembelajaran mandiri untuk pemrosesan dokumen. Namun, beberapa kesenjangan masih dapat diidentifikasi:
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
 \item Optimisasi Invarian vs Keterbacaan: \mbox{}\\[0.1em]
 Text-DIAE mengoptimalkan invarian terhadap degradasi, namun tidak secara eksplisit mengoptimalkan untuk kinerja HTR downstream. Supervisi langsung dari model pengenalan teks belum dieksplorasi.
 
@@ -847,7 +847,7 @@ Paradigma pre-training kemudian fine-tuning memerlukan koordinasi multi-tahap di
 
 DocEnTr mengusulkan encoder-decoder berbasis transformer yang sepenuhnya berbeda dari pendekatan CNN+Transformer hibrida:
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
 \item Arsitektur Sepenuhnya Transformer: \mbox{}\\[0.1em]
 Berbeda dengan pendekatan sebelumnya yang masih menggunakan CNN untuk ekstraksi fitur, DocEnTr menggunakan murni lapisan transformer. Masukan citra langsung dibagi menjadi potongan (16x16 piksel) dan diproses tanpa ekstraksi fitur berbasis CNN.
 
@@ -863,7 +863,7 @@ Citra diproses pada tingkat potongan dengan pengkodean posisional untuk memperta
 
 DocEnTr menunjukkan beberapa keunggulan signifikan dibandingkan metode berbasis CNN:
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
 \item Pemahaman Konteks Global: \mbox{}\\[0.1em]
 Mekanisme perhatian-diri memungkinkan model untuk memahami konteks global dari dokumen, yang penting untuk konsistensi visual dan koherensi struktural.
 
@@ -879,7 +879,7 @@ Pada tolok ukur DIBCO, DocEnTr mencapai kinerja terkini dengan PSNR signifikan l
 
 DocEnTr tersedia dalam tiga konfigurasi yang menyeimbangkan kompleksitas komputasi dan kinerja:
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
  \item DocEnTr-Small: 6 lapisan, 512 dimensi, 4 kepala perhatian, 17M parameter
  \item DocEnTr-Base: 12 lapisan, 768 dimensi, 8 kepala perhatian, 68M parameter
  \item DocEnTr-Large: 24 lapisan, 1024 dimensi, 16 kepala perhatian, 255M parameter
@@ -890,7 +890,7 @@ DocEnTr tersedia dalam tiga konfigurasi yang menyeimbangkan kompleksitas komputa
 
 Meskipun DocEnTr menunjukkan hasil mengagumkan pada tolok ukur standar, terdapat beberapa pertimbangan penting untuk aplikasi pada dokumen historis:
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
 \item Kurangnya Bias Induktif Fitur Lokal: \mbox{}\\[0.1em] Dokumen historis seringkali mengandung goresan halus dan detail tekstur lokal yang penting untuk pengenalan karakter. Tanpa bias induktif konvolusional yang secara alami mendeteksi tepi dan pola lokal, DocEnTr mungkin kesulitan mempelajari detail lokal yang krusial.
 \item Kompleksitas Komputasi: \mbox{}\\[0.1em] Perhatian-diri memiliki kompleksitas kuadratik terhadap jumlah potongan, membuatnya kurang efisien untuk dokumen beresolusi tinggi yang umum dalam arsip historis.
 \item Kebutuhan Data Pelatihan: \mbox{}\\[0.1em] Model berbasis transformer biasanya memerlukan dataset pelatihan yang lebih besar dibandingkan CNN untuk mencapai kinerja optimal. Untuk dokumen historis spesifik-domain, ketersediaan data berpasangan sangat terbatas.
@@ -902,7 +902,7 @@ Meskipun DocEnTr menunjukkan hasil mengagumkan pada tolok ukur standar, terdapat
 
 DocEnTr menunjukkan potensi arsitektur transformer untuk restorasi dokumen, namun kesenjangan fundamental dapat diidentifikasi:
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
  \item Optimisasi Visual Saja: Loss MSE mengoptimalkan kesamaan piksel tanpa pertimbangan eksplisit keterbacaan untuk HTR.
  \item Tanpa Komponen Adversarial: Ketiadaan pelatihan adversarial berpotensi menghasilkan keluaran yang terlalu halus.
  \item Kompleksitas Komputasi: Arsitektur transformer-murni memiliki kompleksitas kuadratik untuk dokumen resolusi tinggi.
@@ -959,7 +959,7 @@ Intuisi adalah bahwa pemetaan harus bijektif: jika kita memetakan citra yang men
 
 Aplikasi CycleGAN untuk restorasi dokumen menunjukkan hasil yang beragam. Keuntungan utama adalah tidak memerlukan data berpasangan, yang sangat berharga untuk dokumen historis. Namun, beberapa masalah fundamental muncul:
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
 \item Keruntuhan Modus dan Ketidakstabilan: \mbox{}\\[0.1em] Pelatihan CycleGAN terkenal tidak stabil. Tanpa supervisi berpasangan, model dapat konvergen ke solusi yang memenuhi konsistensi siklus tetapi tidak menghasilkan restorasi yang bermakna. Misalnya, Generator dapat mempelajari pemetaan identitas trivial yang hanya menyalin masukan, yang secara teknis memenuhi konsistensi siklus tetapi tidak melakukan restorasi.
 \item Kurangnya Jaminan Preservasi Konten: \mbox{}\\[0.1em] Konsistensi siklus tidak secara eksplisit menjamin preservasi dari konten teks. Model dapat mengubah bentuk karakter atau menghapus karakter selama pemetaan maju-mundur memulihkan struktur citra keseluruhan.
 \item Kompleksitas Pelatihan: \mbox{}\\[0.1em] Pelatihan CycleGAN memerlukan penalaan hati-hati dari berbagai bobot loss dan dinamika pelatihan dari empat jaringan (dua generator, dua diskriminator) secara simultan. Hal ini membuat kerangka kerja ini kurang praktis dan kurang dapat direproduksi.
@@ -1044,7 +1044,7 @@ Keterbatasan: Segmentasi karakter sangat menantang untuk teks tulisan tangan den
 \end{figure}
 
 \textcite{shi2016} memperkenalkan CRNN (Convolutional Recurrent Neural Network) yang menjadi terobosan untuk pengenalan urutan-ke-urutan tanpa segmentasi eksplisit. Arsitektur terdiri dari:
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
 \item Lapisan CNN \mbox{}\\[0.1em]
 Mengekstrak fitur visual dari citra masukan dalam bentuk urutan fitur. Lapisan konvolusional dengan pooling mengurangi dimensi spasial secara vertikal tetapi mempertahankan urutan horizontal.
 
@@ -1086,7 +1086,7 @@ Di mana $\mathcal{B}$ adalah fungsi penciutan yang memetakan urutan dengan pengu
 \label{para:ctc-implikasi}
 
 Memahami mekanisme CTC sangat penting untuk menghargai mengapa restorasi berorientasi HTR penting:
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
 \item Sensitivitas terhadap Kualitas Fitur \mbox{}\\[0.1em]
 CTC bergantung pada fitur diskriminatif yang jelas untuk setiap langkah waktu. Degradasi yang mengaburkan batas atau menciptakan fitur ambigu akan berdampak signifikan pada kepercayaan dan akurasi CTC.
 
@@ -1112,7 +1112,7 @@ Perkembangan terbaru dalam HTR telah mengadopsi arsitektur Transformer, menggant
 \label{subsubsec:transformer-dokumen}
 
 Evolusi terbaru dalam peningkatan dokumen ditandai oleh kemunculan DocEnTr dan Text-DIAE, yang menggunakan arsitektur Transformer penuh dengan pendekatan yang berbeda:
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
 \item DocEnTr \mbox{}\\[0.1em]
 Sepenuhnya Transformer dengan pembelajaran terawasi, mengoptimalkan loss MSE untuk peningkatan kualitas visual.
 \item Text-DIAE \mbox{}\\[0.1em]
@@ -1125,14 +1125,14 @@ Pra-pelatihan mandiri dengan invarian degradasi, diikuti penalaan halus terawasi
 Text-DIAE merepresentasikan paradigma baru dalam pemrosesan dokumen: pembelajaran mandiri yang mengurangi ketergantungan pada data berlabel. Ini sangat relevan untuk domain dokumen historis di mana data berlabel sangat terbatas.
 
 Kontribusi Utama Pembelajaran Mandiri:
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
  \item Efisiensi Data: Mengurangi kebutuhan data berlabel hingga 166 kali
  \item Generalisasi: Representasi yang lebih universal untuk berbagai tugas
  \item Skalabilitas: Memanfaatkan sejumlah besar dokumen historis tidak berlabel
 \end{enumerate}
 
 Perbedaan Fundamental dengan Supervised Learning:
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
  \item Fungsi Tujuan: Pembelajaran mandiri menggunakan tujuan rekonstruksi (MSE), terawasi menggunakan loss spesifik-tugas (CTC, entropi silang)
  \item Strategi Pelatihan: Dua-tahap (pra-pelatihan + penalaan halus) vs ujung-ke-ujung
  \item Kebutuhan Data: Data tidak berlabel untuk pra-pelatihan vs data berlabel untuk terawasi
@@ -1142,7 +1142,7 @@ Perbedaan Fundamental dengan Supervised Learning:
 
 Meskipun \textit{Text-DIAE} menunjukkan efisiensi data yang mengesankan, pendekatan ini memiliki keterbatasan fundamental untuk optimisasi keterbacaan:
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
 \item Ketidaksesuaian Tujuan \mbox{}\\[0.1em]
 Tujuan pra-pelatihan (penutupan, kekaburan, rekonstruksi derau) tidak secara eksplisit mengoptimalkan keterbacaan teks. Kesenjangan antara invarian degradasi dan kinerja HTR tetap ada.
 
@@ -1171,7 +1171,7 @@ Tahap penalaan halus masih terpisah dari evaluasi HTR. Tidak ada integrasi ujung
 \end{table}
 
 Implikasi: Kesenjangan antara arsitektur CRNN dan Transformer dalam menangani kompleksitas dokumen historis membuka peluang eksplorasi untuk penggunaan arsitektur HTR yang lebih modern. Demikian pula, strategi frozen recognizer berpotensi mengatasi masalah ketidakstabilan pelatihan bersama (joint training) yang diamati pada pendekatan terdahulu.
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
  \item Komponen Terawasi: Integrasi HTR ujung-ke-ujung dengan loss CTC eksplisit
  \item Prinsip Mandiri: Pembelajaran multi-tugas dengan berbagai jenis degradasi
  \item Arsitektur Hibrida: CNN+Transformer untuk keseimbangan antara efisiensi dan kinerja
@@ -1181,14 +1181,16 @@ Implikasi: Kesenjangan antara arsitektur CRNN dan Transformer dalam menangani ko
 \label{subsubsec:arsitektur-cnn-transformer-paleografi}
 
 \paragraph{Arsitektur Dasar HTR Transformer}
+\label{para:arsitektur-dasar-htr-transformer}
 
 HTR Transformer umumnya menggunakan backbone CNN untuk ekstraksi fitur yang diikuti oleh encoder Transformer untuk pemodelan sekuens. Mekanisme perhatian-diri memungkinkan model untuk memperhatikan posisi mana pun dalam sekuens, menangkap dependensi jarak jauh secara lebih efektif dibandingkan LSTM.
 
 \paragraph{Justifikasi Pemilihan Arsitektur untuk Dokumen Paleografi}
+\label{para:justifikasi-pemilihan-arsitektur}
 
 Pemilihan arsitektur CNN+Transformer didasarkan pada karakteristik spesifik dokumen kuno, termasuk variasi gaya tulisan yang ekstrem dan tingkat degradasi visual yang kompleks. Dokumen paleografi memiliki tantangan unik yang membutuhkan pendekatan arsitektur yang komprehensif:
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
  \item Variasi Gaya Tulisan yang Ekstrem: Dokumen kuno mengandung berbagai gaya tulisan (scriptoria) dengan karakteristik unik. Arsitektur CNN dengan ekstraksi fitur progresif dapat menangkap hierarki fitur visual, mulai dari goresan dasar hingga kompleksitas karakter, melalui 4 tahap yang dirancang secara adaptif.
 
  \item Dependensi Jarak Jauh dalam Karakter: Tulisan tangan historis seringkali memiliki struktur di mana bagian awal karakter mempengaruhi bagian akhir. Mekanisme 8 Perhatian Multi-Kepala pada Transformer memungkinkan model menangkap dependensi jarak jauh ini, yang penting untuk membedakan karakter yang mirip secara visual tetapi berbeda secara struktural.
@@ -1204,14 +1206,15 @@ Pemilihan arsitektur CNN+Transformer didasarkan pada karakteristik spesifik doku
 \label{subsubsec:analisis-komparatif-transformer}
 
 \paragraph{Perbedaan Arsitektural Fundamental}
+\label{para:perbedaan-arsitektural-fundamental}
 
 Arsitektur yang diusulkan berbeda dari HTR konvensional yang umumnya menggunakan CRNN atau LSTM. Perbedaan utama terletak pada penggunaan Transformer untuk meningkatkan kapacitas representasi dalam menangani kompleksitas dokumen kuno. Pendekatan ini berbeda secara signifikan dari HTR konvensional yang sering menggunakan CRNN atau LSTM biasa, karena kompleksitas dokumen kuno membutuhkan kapacitas representasi yang lebih tinggi untuk menangani variasi ekstrem dan dependensi kompleks yang khas dalam konteks paleografi.
 
 \paragraph{Keunggulan Komparatif dalam Konteks Dokumen Paleografi}
-
+\label{para:keunggulan-komparatif-paleografi}
 Arsitektur CNN+Transformer menawarkan beberapa keunggulan fundamental dibandingkan dengan pendekatan HTR tradisional dalam konteks dokumen kuno:
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
  \item Kapasitas Representasi yang Lebih Tinggi: Stack 6 Transformer Encoder dengan 8 Multi-Head Attention memberikan matriks konektivitas $O(n^2)$, memungkinkan setiap posisi dalam sekuens untuk berinteraksi langsung dengan semua posisi lain. Ini lebih unggul dibandingkan LSTM yang hanya memiliki dependensi sekuensial $O(n)$. Untuk dokumen kuno dengan panjang 128 karakter, Transformer memiliki 16.384 kemungkinan koneksi antar posisi, sementara LSTM hanya memiliki 127 koneksi sekuensial.
 
  \item Kemampuan Pemrosesan Paralel: Arsitektur Transformer memungkinkan pemrosesan paralel seluruh sekuens, berbeda dengan LSTM yang sifatnya sekuensial. Ini memberikan keuntungan komputasi signifikan untuk dokumen panjang. Pada perangkat keras modern dengan GPU, Transformer dapat mencapai percepatan 3-5x dibandingkan LSTM untuk sekuens dengan panjang lebih dari 64 karakter.
@@ -1231,7 +1234,7 @@ Relevansi untuk Eksplorasi Arsitektur HTR
 
 Dalam konteks restorasi dokumen berorientasi HTR, pemilihan arsitektur pengenal yang tepat menjadi pertimbangan penting. Eksplorasi penggunaan Transformer-based HTR sebagai komponen frozen recognizer dimotivasi oleh:
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
 \item Kinerja Terkini: \mbox{} HTR Transformer mencapai CER yang lebih rendah dibandingkan CRNN pada banyak tolok ukur, memberikan dasar yang lebih baik untuk evaluasi.
 
 \item Gradien Stabil: \mbox{} Mekanisme perhatian-diri menghasilkan gradien yang lebih stabil dibandingkan LSTM, yang penting ketika melakukan propagasi balik melalui pengenal untuk pelatihan Generator.
@@ -1283,7 +1286,7 @@ Dalam konteks restorasi dokumen, pembelajaran multi-modal berpotensi mengintegra
 
 Dalam restorasi dokumen, diskriminator konvensional hanya mengevaluasi modalitas visual—apakah citra hasil restorasi terlihat bersih secara visual. Pendekatan multi-modal yang berpotensi dieksplorasi adalah diskriminator yang mengevaluasi dua modalitas secara bersamaan:
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
 \item Modalitas Visual: \mbox{} Evaluasi karakteristik spasial dan tekstur citra melalui jaringan konvolusional, mengikuti paradigma PatchGAN \cite{isola2017} yang menilai keaslian pada tingkat patch lokal.
 
 \item Modalitas Tekstual: \mbox{} Evaluasi koherensi struktur teks melalui pemrosesan sekuensial representasi karakter, menggunakan arsitektur seperti LSTM atau Transformer untuk menangkap dependensi linguistik.
@@ -1294,7 +1297,7 @@ Dalam restorasi dokumen, diskriminator konvensional hanya mengevaluasi modalitas
 \vspace{0.5ex}
 \noindent\textbf{Potensi Keuntungan Teoretis}
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
 \item Supervisi Multi-Dimensi: \mbox{} Evaluasi simultan terhadap modalitas visual dan tekstual berpotensi memberikan sinyal gradien yang lebih kaya dibandingkan evaluasi visual saja. Diskriminator dapat mendeteksi inkonsistensi yang tidak terlihat dari perspektif visual murni, seperti karakter yang secara visual terlihat wajar tetapi tidak koheren dalam konteks sekuens.
 
 \item Sejalan dengan Tujuan Akhir: \mbox{} Untuk restorasi dokumen yang ditujukan untuk HTR, supervisi tekstual berpotensi lebih selaras dengan tujuan downstream dibandingkan supervisi visual saja. Hal ini sejalan dengan prinsip optimisasi berorientasi tugas.
@@ -1368,7 +1371,7 @@ Berdasarkan analisis literatur, komponen yang mengintegrasikan supervisi langsun
 
 Dalam konteks integrasi model HTR dengan generator restorasi, terdapat dua paradigma yang dapat dieksplorasi:
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
 \item Frozen Recognizer \mbox{} Model HTR pra-terlatih dibekukan dan digunakan hanya untuk menghitung gradien tanpa mengubah bobotnya. Keuntungan teoretis mencakup stabilitas gradien dan konsistensi evaluasi. Loss potensial adalah kurangnya adaptasi terhadap karakteristik keluaran generator.
 
 \item Pelatihan Bersama \mbox{} Model HTR dan generator dilatih bersama secara ujung-ke-ujung. Keuntungan teoretis adalah kemampuan ko-adaptasi. Loss potensial adalah ketidakstabilan optimisasi karena kompetisi gradien antara dua tujuan yang berbeda.
@@ -1383,14 +1386,16 @@ Dalam konteks integrasi model HTR dengan generator restorasi, terdapat dua parad
 Penentuan bobot optimal untuk setiap komponen loss dalam kerangka multi-objektif merupakan tantangan penelitian yang terbuka. Beberapa pertimbangan teoretis:
 
 \textbf{Perbedaan Skala Magnitudo}
+\label{para:perbedaan-skala-magnitudo}
 
 Komponen loss yang berbeda dapat memiliki rentang nilai yang sangat berbeda. \textit{Adversarial loss} biasanya dalam rentang probabilitas log, reconstruction loss bergantung pada rentang nilai piksel, dan loss HTR bergantung pada panjang sekuens dan ukuran kosakata. Tanpa normalisasi atau pembobotan yang tepat, komponen dengan magnitudo lebih besar akan mendominasi optimisasi.
 
 \textbf{Strategi yang Dapat Dieksplorasi}
+\label{para:strategi-pembobotan}
 
 Beberapa strategi untuk penyeimbangan yang telah diusulkan dalam literatur:
 
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt]
 \item Penalaan Manual: \mbox{} Pendekatan \textit{grid search} atau random search dengan evaluasi empiris pada himpunan validasi. Sederhana tetapi memerlukan banyak eksperimen.
 
 \item Adaptive Weighting: \mbox{} \textcite{chen2018gradnorm} mengusulkan \textit{GradNorm} yang secara dinamis menyesuaikan bobot berdasarkan magnitudo relatif gradien dari setiap loss. Berpotensi mencapai keseimbangan otomatis.
@@ -1421,15 +1426,15 @@ Setelah melakukan analisis mendalam terhadap berbagai pendekatan restorasi dokum
 \begin{tabular}{|l|c|c|c|c|}
 \hline
 \textbf{Metode} & \textbf{PSNR} & \textbf{SSIM} & \textbf{CER} & \textbf{Evaluasi HTR} \\ \hline
-\textbf{Otsu} (1979) & T/A & T/A & -- & \texttimes \\ \hline
-\textbf{Sauvola} \cite{sauvola2000} & T/A & 0.68 & -- & \texttimes \\ \hline
-U-Net (2015) & T/A & T/A & -- & \texttimes\textsuperscript{2} \\ \hline
-\textbf{Pix}2Pix (2017) & T/A & T/A & -- & \texttimes\textsuperscript{2} \\ \hline
-ERB-MultiTask (2021) & 15.7 dB & 0.87 & 27.03 / 24.33\% & \checkmark\textsuperscript{1,2} \\ \hline
-DE-GAN (2021) & 15.5 dB & 0.86 & 28.2\% & \checkmark\textsuperscript{1,2} \\ \hline
-\textbf{Text}-DIAE (2022) & 28.5 dB & 0.88 & -- & \texttimes \\ \hline
-\textbf{Doc}EnTr (2022) & 35.2 dB & 0.92 & -- & \texttimes \\ \hline
-\textbf{Cycle}GAN (2017) & 30.2 dB & 0.90 & -- & \texttimes \\ \hline
+\textbf{Otsu} \citep{otsu1979} & T/A & T/A & -- & \texttimes \\ \hline
+\textbf{Sauvola} \citep{sauvola2000} & T/A & 0.68 & -- & \texttimes \\ \hline
+U-Net \citep{ronneberger2015} & T/A & T/A & -- & \texttimes\textsuperscript{2} \\ \hline
+\textbf{Pix}2Pix \citep{isola2017} & T/A & T/A & -- & \texttimes\textsuperscript{2} \\ \hline
+ERB-MultiTask \citep{erb2021} & 15.7 dB & 0.87 & 27.03 / 24.33\% & \checkmark\textsuperscript{1,2} \\ \hline
+DE-GAN \citep{souibgui2021} & 15.5 dB & 0.86 & 28.2\% & \checkmark\textsuperscript{1,2} \\ \hline
+\textbf{Text}-DIAE \citep{textdiae2022} & 28.5 dB & 0.88 & -- & \texttimes \\ \hline
+\textbf{Doc}EnTr \citep{docentr2022} & 35.2 dB & 0.92 & -- & \texttimes \\ \hline
+\textbf{Cycle}GAN \citep{zhu2017} & 30.2 dB & 0.90 & -- & \texttimes \\ \hline
 \end{tabular}
 \end{table}
 
@@ -1447,15 +1452,15 @@ DE-GAN (2021) & 15.5 dB & 0.86 & 28.2\% & \checkmark\textsuperscript{1,2} \\ \hl
 \begin{tabular}{|l|c|c|c|}
 \hline
 \textbf{Metode} & \textbf{Diskriminator} & \textbf{Arsitektur} & \textbf{Tipe Loss} \\ \hline
-\textbf{Otsu} (1979) & T/A & N/A & Threshold \\ \hline
-\textbf{Sauvola} (2000) & T/A & N/A & Adaptif \\ \hline
-U-Net (2015) & T/A & CNN Encoder-Decoder & L2 (MSE) \\ \hline
-\textbf{Pix}2Pix (2017) & Visual saja & CNN U-Net + PatchGAN & Adv + L1 \\ \hline
-ERB-MultiTask (2021) & Visual saja & FCN + CRNN & Adv + CRNN \\ \hline
-DE-GAN (2021) & Visual saja & CNN U-Net & Adv + BCE \\ \hline
-\textbf{Text}-DIAE (2022) & T/A & ViT Autoencoder & Rekonstruksi \\ \hline
-\textbf{Doc}EnTr (2022) & T/A & Transformer Only & MSE \\ \hline
-\textbf{Cycle}GAN (2017) & Visual saja & CNN Encoder-Decoder & Cycle + Adv \\ \hline
+\textbf{Otsu} \citep{otsu1979} & T/A & N/A & Threshold \\ \hline
+\textbf{Sauvola} \citep{sauvola2000} & T/A & N/A & Adaptif \\ \hline
+U-Net \citep{ronneberger2015} & T/A & CNN Encoder-Decoder & L2 (MSE) \\ \hline
+\textbf{Pix}2Pix \citep{isola2017} & Visual saja & CNN U-Net + PatchGAN & Adv + L1 \\ \hline
+ERB-MultiTask \citep{erb2021} & Visual saja & FCN + CRNN & Adv + CRNN \\ \hline
+DE-GAN \citep{souibgui2021} & Visual saja & CNN U-Net & Adv + BCE \\ \hline
+\textbf{Text}-DIAE \citep{textdiae2022} & T/A & ViT Autoencoder & Rekonstruksi \\ \hline
+\textbf{Doc}EnTr \citep{docentr2022} & T/A & Transformer Only & MSE \\ \hline
+\textbf{Cycle}GAN \citep{zhu2017} & Visual saja & CNN Encoder-Decoder & Cycle + Adv \\ \hline
 \end{tabular}
 \end{table}
 

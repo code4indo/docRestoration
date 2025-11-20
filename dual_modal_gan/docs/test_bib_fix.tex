@@ -1,0 +1,27 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[bahasa]{babel}
+\usepackage{mathptmx}
+\usepackage[style=authoryear,backend=biber]{biblatex}
+\usepackage{csquotes}
+
+% Map bahasa to english for biblatex
+\DeclareLanguageMapping{bahasa}{english}
+
+% Map bahasa to english for csquotes
+\DeclareQuoteAlias{english}{bahasa}
+
+\addbibresource{test.bib}
+
+% Override English strings with Indonesian
+\DefineBibliographyStrings{english}{
+  in = {dalam},
+  andothers = {dkk\adddot},
+  and = {dan},
+}
+
+\begin{document}
+Cite this: \cite{test}
+\printbibliography
+\end{document}

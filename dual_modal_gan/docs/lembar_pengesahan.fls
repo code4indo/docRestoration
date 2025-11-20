@@ -1,0 +1,13 @@
+PWD /home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs
+INPUT /etc/texmf/web2c/texmf.cnf
+INPUT /usr/share/texmf/web2c/texmf.cnf
+INPUT /usr/share/texlive/texmf-dist/web2c/texmf.cnf
+INPUT /var/lib/texmf/web2c/pdftex/pdflatex.fmt
+INPUT /home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/lembar_pengesahan.tex
+OUTPUT lembar_pengesahan.log
+INPUT /usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr12.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm
+OUTPUT lembar_pengesahan.pdf
+INPUT /var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map

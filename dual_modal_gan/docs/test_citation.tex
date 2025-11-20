@@ -1,0 +1,45 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[bahasa]{babel}
+\usepackage{csquotes}
+
+% APA Style Bibliography - KONFIGURASI TERPUSAT (Copied from main_tesis.tex)
+\usepackage[style=authoryear,backend=biber,natbib=true,sorting=nyt,hyperref=true]{biblatex}
+\addbibresource{test_bib.bib}
+
+% Custom Indonesian/English citation labels (Copied from main_tesis.tex)
+\DefineBibliographyStrings{english}{
+  andothers       = {et al\adddot},
+  mathesis        = {Master's thesis},
+  phdthesis       = {PhD thesis},
+  and             = {and},
+  page            = {p\adddot},
+  pages           = {pp\adddot},
+  in              = {in},
+  volume          = {vol\adddot},
+  number          = {no\adddot},
+  edition         = {ed\adddot},
+  editor          = {ed\adddot},
+  editors         = {eds\adddot},
+}
+
+\begin{document}
+
+1. One author: \citep{hill2007} (Expected: (Hill, 2007))
+
+2. More than 2 authors, with page numbers: \citep[23-25]{baker1998} (Expected: (Baker dkk., 1998: 23-25))
+
+3. Two authors: \citep{gao2009} (Expected: (Gao dan Zhao, 2009))
+
+4. Two references with different number of authors: \citep{hill2007, kramer2005} (Expected: (Hill, 2007 dan Kramer dkk., 2005))
+
+5. Two references, each with more than 2 authors: \citep{kramer2005, kumai1985} (Expected: (Kramer dkk., 2005 dan Kumai dkk., 1985))
+
+6. Two references, same lead author, different times: \citep{culver2003a, culver2003b} (Expected: (Culver dkk., 2003a dan 2003b))
+
+7. In-text citation: ... hasil penelitian \citet{wijaya1996} (Expected: ... hasil penelitian Wijaya (1996))
+
+\printbibliography
+
+\end{document}

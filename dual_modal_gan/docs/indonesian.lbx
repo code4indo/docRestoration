@@ -1,0 +1,31 @@
+% Custom Indonesian localization for biblatex
+% File: indonesian.lbx
+% Override "et al" dengan "dkk"
+
+\ProvidesFile{indonesian.lbx}[2025/11/19 v1.0 biblatex localization]
+
+\InheritBibliographyExtras{english}
+
+\NewBibliographyString{
+  andothers,
+  andmore,
+}
+
+\DeclareBibliographyStrings{
+  inherit          = {english},
+  andothers        = {{dkk\adddot}{dkk\adddot}},
+  andmore          = {{dkk\adddot}{dkk\adddot}},
+  and              = {{dan}{dan}},
+  mathesis         = {{Tesis Magister}{Tesis Magister}},
+  phdthesis        = {{Disertasi PhD}{Disertasi PhD}},
+  page             = {{hal\adddot}{hal\adddot}},
+  pages            = {{hal\adddot}{hal\adddot}},
+  in               = {{dalam}{dalam}},
+  volume           = {{vol\adddot}{vol\adddot}},
+  number           = {{no\adddot}{no\adddot}},
+  edition          = {{ed\adddot}{ed\adddot}},
+  editor           = {{ed\adddot}{ed\adddot}},
+  editors          = {{eds\adddot}{eds\adddot}},
+}
+
+\endinput

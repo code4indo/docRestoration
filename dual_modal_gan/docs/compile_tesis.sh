@@ -15,23 +15,40 @@ echo ""
 
 # Fungsi untuk kompilasi lengkap
 compile_full() {
-    echo "📄 Mengkompilasi dokumen lengkap (main_tesis.tex)..."
+    echo "� Sinkronisasi semua chapter..."
+    echo ""
+    
+    # Sync all chapters first
+    ./sync_all_chapters.sh || {
+        echo "❌ Error saat sinkronisasi chapter. Jalankan manual:"
+        echo "   ./sync_all_chapters.sh"
+        exit 1
+    }
+    
+    echo ""
+    echo "�📄 Mengkompilasi dokumen lengkap (main_tesis.tex)..."
     echo ""
     
     # First pass
-    echo "▶️  Pass 1/3: Kompilasi awal..."
+    echo "▶️  Pass 1/4: Kompilasi awal..."
     pdflatex -interaction=nonstopmode main_tesis.tex > /dev/null 2>&1 || {
         echo "❌ Error pada pass 1. Jalankan manual untuk melihat error:"
         echo "   pdflatex main_tesis.tex"
         exit 1
     }
     
+    # Run biber for bibliography processing
+    echo "▶️  Pass 2/4: Memproses bibliography dengan biber..."
+    biber main_tesis > /dev/null 2>&1 || {
+        echo "⚠️  Warning: biber gagal. Melanjutkan tanpa bibliography..."
+    }
+    
     # Second pass (untuk update references)
-    echo "▶️  Pass 2/3: Update references..."
+    echo "▶️  Pass 3/4: Update references..."
     pdflatex -interaction=nonstopmode main_tesis.tex > /dev/null 2>&1
     
     # Third pass (untuk finalisasi)
-    echo "▶️  Pass 3/3: Finalisasi dokumen..."
+    echo "▶️  Pass 4/4: Finalisasi dokumen..."
     pdflatex -interaction=nonstopmode main_tesis.tex > /dev/null 2>&1
     
     # Cleanup auxiliary files

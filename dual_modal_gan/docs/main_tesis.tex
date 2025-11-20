@@ -14,20 +14,7 @@
 \usepackage{float}
 \usepackage{enumitem}
 \usepackage{longtable}
-\usepackage{hyperref}
-\hypersetup{
-    pdfencoding=auto,
-    pdftitle={Tesis - Restorasi Dokumen Terdegradasi},
-    pdfauthor={},
-    pdfsubject={Tesis},
-    colorlinks=true,
-    linkcolor=black,
-    citecolor=black,
-    urlcolor=blue,
-    pdfstartview=FitH,
-    bookmarksopen=true,
-    bookmarksnumbered=true
-}
+
 \usepackage{tocloft}
 \usepackage{caption}
 
@@ -52,18 +39,42 @@
 \usepackage{multirow}
 \usepackage{array}
 \usepackage{tabularx}
+\usepackage{letltxmacro}  % Required for \LetLtxMacro
+\usepackage{xstring}      % Required for \ifstrequal
 
-% APA Style Bibliography - KONFIGURASI TERPUSAT
-\usepackage[style=apa,backend=biber]{biblatex}
+% SOLUTION: Use authoryear with custom Indonesian .lbx file
+\usepackage[style=authoryear,backend=biber,natbib=true,sorting=nyt,hyperref=true,maxcitenames=2,mincitenames=1]{biblatex}
 \usepackage{csquotes}
+
+% CRITICAL FIX: Map bahasa to indonesian.lbx (custom localization file in same directory)
+% This custom .lbx file properly defines andothers = {dkk} following biblatex standards
+\DeclareLanguageMapping{bahasa}{indonesian}
+\DeclareQuoteAlias{english}{bahasa}
+
 \addbibresource{bibliography.bib}
 
-% Custom Indonesian citation labels
-\DefineBibliographyStrings{english}{
-  andothers       = {dkk.},
-  mathesis        = {Tesis Master},
-  phdthesis       = {Disertasi},
-  and             = {dan},
+% NOTE: indonesian.lbx file in this directory handles all localization
+% including the critical "andothers = {dkk}" string replacement
+% No need for \DefineBibliographyStrings here - it's all in indonesian.lbx
+
+% Konfigurasi separator halaman dengan titik dua untuk sitasi
+\renewcommand*{\postnotedelim}{\addcolon\space}
+\DeclareFieldFormat{postnote}{#1}
+\DeclareFieldFormat{multipostnote}{#1}
+
+\usepackage{hyperref}
+\hypersetup{
+    pdfencoding=auto,
+    pdftitle={Tesis - Restorasi Dokumen Terdegradasi},
+    pdfauthor={},
+    pdfsubject={Tesis},
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=blue,
+    pdfstartview=FitH,
+    bookmarksopen=true,
+    bookmarksnumbered=true
 }
 
 % Aktifkan hyphenation Bahasa Indonesia dan optimasi spasi
@@ -109,8 +120,10 @@
 \onehalfspacing
 
 % Pengaturan penomoran
-\setcounter{secnumdepth}{4}
-\setcounter{tocdepth}{4}
+\setcounter{secnumdepth}{3}
+
+% Pengaturan TOC depth
+\setcounter{tocdepth}{3}
 
 % Pengaturan heading
 \renewcommand{\thesection}{\Roman{section}}
@@ -155,7 +168,7 @@
 \setlength{\cftbeforesubsubsecskip}{0pt} % 1 spasi untuk subsubsection
 
 % Konfigurasi Daftar Gambar
-\renewcommand{\listfigurename}{DAFTAR GAMBAR}
+\renewcommand{\listfigurename}{} % Kosongkan nama heading otomatis
 \renewcommand{\figurename}{Gambar}
 \renewcommand{\cftfigpresnum}{Gambar~}
 \renewcommand{\cftfigaftersnum}{.~~}
@@ -167,7 +180,7 @@
 \setlength{\cftbeforefigskip}{0pt}
 
 % Konfigurasi Daftar Tabel
-\renewcommand{\listtablename}{DAFTAR TABEL}
+\renewcommand{\listtablename}{} % Kosongkan nama heading otomatis
 \renewcommand{\tablename}{Tabel}
 \renewcommand{\cfttabpresnum}{Tabel~}
 \renewcommand{\cfttabaftersnum}{.~~}
@@ -180,32 +193,35 @@
 
 \begin{document}
 
+% Pengaturan TOC depth setelah \begin{document} - DIPINDAHKAN KE SEBELUM TABLEOFCONTENTS
+
 % ============================================================
 % HALAMAN COVER/JUDUL
 % ============================================================
-\begin{titlepage}
-\centering
-\vspace*{2cm}
+% \begin{titlepage}
+% \centering
+% \vspace*{2cm}
 
-{\fontsize{14}{16.8}\selectfont\textbf{RESTORASI DOKUMEN TERDEGRADASI MENGGUNAKAN}}\\[0.5em]
-{\fontsize{14}{16.8}\selectfont\textbf{GENERATIVE ADVERSARIAL NETWORK DENGAN}}\\[0.5em]
-{\fontsize{14}{16.8}\selectfont\textbf{DISKRIMINATOR DUAL-MODAL DAN OPTIMASI}}\\[0.5em]
-{\fontsize{14}{16.8}\selectfont\textbf{LOSS FUNCTION BERORIENTASI HTR}}\\[3cm]
+% {\fontsize{14}{16.8}\selectfont\textbf{RESTORASI DOKUMEN TERDEGRADASI MENGGUNAKAN}}\\[0.5em]
+% {\fontsize{14}{16.8}\selectfont\textbf{GENERATIVE ADVERSARIAL NETWORK DENGAN}}\\[0.5em]
+% {\fontsize{14}{16.8}\selectfont\textbf{DISKRIMINATOR DUAL-MODAL DAN OPTIMASI}}\\[0.5em]
+% {\fontsize{14}{16.8}\selectfont\textbf{LOSS FUNCTION BERORIENTASI HTR}}\\[3cm]
 
-{\fontsize{12}{14.4}\selectfont\textbf{TESIS}}\\[2cm]
+% {\fontsize{12}{14.4}\selectfont\textbf{TESIS}}\\[2cm]
 
-\fontsize{12}{14.4}\selectfont
-Oleh:\\[0.5cm]
-\textbf{[NAMA MAHASISWA]}\\
-\textbf{[NIM]}
+% \fontsize{12}{14.4}\selectfont
+% Oleh:\\[0.5cm]
+% \textbf{[NAMA MAHASISWA]}\\
+% \textbf{[NIM]}
 
-\vfill
+% \vfill
 
-{\fontsize{12}{14.4}\selectfont\textbf{PROGRAM PASCASARJANA}}\\
-{\fontsize{12}{14.4}\selectfont\textbf{[NAMA UNIVERSITAS]}}\\
-{\fontsize{12}{14.4}\selectfont\textbf{[TAHUN]}}
+% {\fontsize{12}{14.4}\selectfont\textbf{PROGRAM PASCASARJANA}}\\
+% {\fontsize{12}{14.4}\selectfont\textbf{[NAMA UNIVERSITAS]}}\\
+% {\fontsize{12}{14.4}\selectfont\textbf{[TAHUN]}}
 
-\end{titlepage}
+% \end{titlepage}
+\input{cover.tex}
 
 % ============================================================
 % PENOMORAN HALAMAN ROMAWI KECIL UNTUK BAGIAN AWAL
@@ -229,113 +245,36 @@ Oleh:\\[0.5cm]
 % HALAMAN PENGESAHAN
 % ============================================================
 \newpage
-\vspace{2cm}
-\begin{center}
-{\fontsize{14}{16.8}\selectfont\textbf{HALAMAN PENGESAHAN}}\\[1em]
-\end{center}
-\vspace{2em}
-
-\noindent Tesis ini telah diuji dan dipertahankan di hadapan Tim Penguji\\pada tanggal [TANGGAL SIDANG]
-
-\vspace{2em}
-
-\noindent\textbf{Tim Penguji:}
-
-\vspace{3em}
-
-\noindent\begin{tabular}{@{}ll}
-\textbf{Ketua} & : [NAMA KETUA PENGUJI]\\
- & NIP. [NIP]\\
- & \\
- & \\
- & Tanda tangan: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\\
-\\[2em]
-\textbf{Sekretaris} & : [NAMA SEKRETARIS PENGUJI]\\
- & NIP. [NIP]\\
- & \\
- & \\
- & Tanda tangan: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\\
-\\[2em]
-\textbf{Anggota} & : [NAMA ANGGOTA PENGUJI 1]\\
- & NIP. [NIP]\\
- & \\
- & \\
-& Tanda tangan: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\\
-\end{tabular}
-
-\vspace{3em}
-
-\noindent Mengetahui,
-
-\vspace{3em}
-
-\noindent\begin{tabular}{@{}ll}
-\textbf{Direktur Program Pascasarjana} & \textbf{Ketua Program Studi}\\
-\\\\
-\\\\
-\\\\
-[NAMA DIREKTUR] & [NAMA KETUA PRODI]\\
-NIP. [NIP] & NIP. [NIP]
-\end{tabular}
+\input{lembar_pengesahan.tex}
 
 % ============================================================
 % HALAMAN DEDIKASI
 % ============================================================
 \newpage
-\vspace{5cm}
+\vspace{10cm}
 \begin{center}
-\textit{Halaman ini dipersembahkan untuk:}
+\textit{Dipersembahkan kepada orang tua, istri, anak, adik kakak, mertua serta keluarga besarku tercinta yang senantiasa mendukung lahir dan batin.}
 
 \vspace{2em}
 
-[ISI DEDIKASI]
+% [ISI DEDIKASI]
 
-\vspace{1em}
+% \vspace{1em}
 
-[Contoh: Keluarga tercinta, guru-guru yang telah membimbing,\\dan semua pihak yang telah mendukung penelitian ini]
+% [Contoh: Keluarga tercinta, guru-guru yang telah membimbing,\\dan semua pihak yang telah mendukung penelitian ini]
 \end{center}
 
 % ============================================================
-% KATA PENGANTAR
+% KATA PENGATAR
 % ============================================================
-\newpage
-\vspace{2cm}
-\begin{center}
-{\fontsize{14}{16.8}\selectfont\textbf{KATA PENGANTAR}}\\[1em]
-\end{center}
-\vspace{1em}
 
-Puji syukur penulis panjatkan ke hadirat Tuhan Yang Maha Esa atas segala rahmat dan karunia-Nya sehingga penulis dapat menyelesaikan tesis yang berjudul ``Restorasi Dokumen Terdegradasi Menggunakan Generative Adversarial Network dengan Diskriminator Dual-Modal dan Optimasi Loss Function Berorientasi HTR''.
-
-\vspace{1em}
-
-[ISI KATA PENGANTAR - ucapan terima kasih kepada pembimbing, keluarga, dan pihak-pihak yang membantu]
-
-\vspace{2em}
-
-\noindent [KOTA], [BULAN TAHUN]
-
-\vspace{2em}
-
-\noindent Penulis,
-
-\vspace{3em}
-
-\noindent [NAMA MAHASISWA]
+\input{kata_pengantar.tex}
 
 % ============================================================
 % DAFTAR ISI
 % ============================================================
 \newpage
-\vspace{2cm}
-\begin{center}
-{\fontsize{14}{16.8}\selectfont\textbf{DAFTAR ISI}}\\[1em]
-\end{center}
-\vspace{1em}
-
-{\singlespacing
 \tableofcontents
-}
 
 % ============================================================
 % DAFTAR LAMPIRAN
@@ -358,15 +297,7 @@ Puji syukur penulis panjatkan ke hadirat Tuhan Yang Maha Esa atas segala rahmat 
 % DAFTAR GAMBAR
 % ============================================================
 \newpage
-\vspace{2cm}
-\begin{center}
-{\fontsize{14}{16.8}\selectfont\textbf{DAFTAR GAMBAR}}\\[1em]
-\end{center}
-\vspace{1em}
-
-{\singlespacing
 \listoffigures
-}
 
 % ============================================================
 % DAFTAR TABEL
@@ -380,15 +311,7 @@ Puji syukur penulis panjatkan ke hadirat Tuhan Yang Maha Esa atas segala rahmat 
 
 {\singlespacing
 \listoftables
-}
-
-% ============================================================
-% DAFTAR LAMBANG DAN SINGKATAN
-% ============================================================
-\newpage
-\input{Chapter_Lambang_content_only.tex}
-
-% ============================================================
+}listoftables ============================================================
 % PENOMORAN HALAMAN ARABIC UNTUK ISI UTAMA
 % ============================================================
 \newpage

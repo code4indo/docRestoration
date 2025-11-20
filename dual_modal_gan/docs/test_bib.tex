@@ -1,0 +1,21 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[bahasa]{babel}
+\usepackage{mathptmx}
+\usepackage[style=authoryear,backend=biber]{biblatex}
+\usepackage{csquotes}
+
+\addbibresource{test.bib}
+
+\DefineBibliographyStrings{english}{
+  in = {in},
+}
+\DefineBibliographyStrings{indonesian}{
+  in = {dalam},
+}
+
+\begin{document}
+Cite this: \cite{test}
+\printbibliography
+\end{document}

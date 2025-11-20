@@ -1,19 +1,60 @@
-\vspace{2cm}
+% \documentclass[12pt, a4paper]{report}
+
+% % Paket yang diperlukan
+% \usepackage[utf8]{inputenc}
+% \usepackage[T1]{fontenc}
+% \usepackage{mathptmx}   % Menggunakan font Times New Roman
+% \usepackage[indonesian]{babel}
+% \usepackage{setspace}   % Untuk pengaturan spasi
+% \usepackage[left=4cm, right=3cm, top=3cm, bottom=3cm]{geometry} % Margin standar skripsi/tesis
+
+% \begin{document}
+
+\thispagestyle{plain} % Halaman abstrak biasanya menggunakan nomor romawi (diatur di main file)
+
 \begin{center}
-{\fontsize{14}{16.8}\selectfont\textbf{ABSTRAK}}\\[1em]
+    % --- BAGIAN JUDUL ---
+    % Instruksi Gambar: Times New Roman, Huruf Kapital, Ukuran 14, Cetak Tebal, Spasi 1
+    \textbf{ABSTRAK} \\
+    \vspace{1em} % Jarak antara kata ABSTRAK dan Judul
+    
+    \begingroup
+    \fontsize{14pt}{16.8pt}\selectfont % Mengatur ukuran font 14pt
+    \bfseries % Cetak Tebal
+    \begin{spacing}{1.0} % Spasi Tunggal
+        \MakeUppercase{Restorasi Dokumen Terdegradasi Menggunakan Generative Adversarial Network dengan Diskriminator Dual-Modal dan Optimasi Loss Function Berorientasi HTR}
+    \end{spacing}
+    \endgroup
+
+    \vspace{1cm} % Jarak visual sebelum identitas
+
+    % --- IDENTITAS PENULIS ---
+    Oleh\\
+    \textbf{JATNIKO NUR MUTAQIN}\\
+    \textbf{NIM: 23523314}\\
+    \textbf{(Program Studi Magister Informatika)}
 \end{center}
-\vspace{1em}
 
-\noindent\textbf{Judul:} Restorasi Dokumen Terdegradasi Menggunakan Generative Adversarial Network dengan Diskriminator Dual-Modal dan Optimasi Loss Function Berorientasi HTR
+% Instruksi Gambar: Kalimat pertama abstrak berjarak tiga spasi dari baris terakhir program studi
+\vspace{3\baselineskip} 
 
-\noindent\textbf{Nama:} [NAMA MAHASISWA]
+% --- ISI ABSTRAK ---
+% Instruksi Gambar: Ukuran 12, Times New Roman, Tidak Tebal, Spasi 1
+\begin{spacing}{1.0}
+    \noindent % Awal paragraf tidak menjorok (opsional, sesuaikan panduan jika harus menjorok)
+    Arsip Nasional Republik Indonesia (ANRI) menyimpan ribuan koleksi dokumen paleografi dari abad ke-16 hingga ke-18 yang memiliki nilai sejarah krusial. Namun, sebagian besar dokumen tersebut mengalami degradasi fisik yang parah akibat faktor usia, kelembapan tropis, dan korosi tinta besi galat . Kondisi ini memunculkan tantangan ganda: dokumen sulit dibaca secara visual oleh manusia dan hampir mustahil diproses oleh mesin. Pendekatan restorasi konvensional selama ini cenderung berfokus pada perbaikan visual semata (estetika), seperti penghilangan noda dan peningkatan kontras. Sayangnya, peningkatan kualitas visual tersebut tidak selalu berbanding lurus dengan peningkatan keterbacaan mesin, yang menjadi syarat mutlak bagi upaya digitalisasi dan indeksasi arsip secara massal. Kesenjangan antara kualitas visual dan fungsional inilah yang menjadi fokus utama penelitian ini.
+    Penelitian ini bertujuan untuk mengembangkan kerangka kerja restorasi dokumen berbasis Generative Adversarial Network (GAN) yang secara eksplisit mengintegrasikan umpan balik semantik guna meningkatkan kinerja HTR. Kebaruan dari penelitian ini terletak pada penerapan strategi Frozen Recognizer yang dikombinasikan dengan fungsi kerugian multi-objektif 5-komponen, serta evaluasi kritis terhadap arsitektur Diskriminator Dual-Modal. Metode yang digunakan melibatkan pelatihan generator U-Net yang dimodifikasi, yang tidak hanya belajar dari perbedaan piksel citra, tetapi juga menerima umpan balik gradien dari model pengenal teks yang bobotnya dibekukan. Pendekatan ini dirancang untuk menjaga stabilitas pelatihan yang sering kali menjadi masalah pada arsitektur GAN konvensional.
+    Evaluasi dilakukan secara komprehensif menggunakan 712 citra uji semi-sintetis yang merepresentasikan karakteristik degradasi dokumen historis. Hasil penelitian menunjukkan bahwa model yang diusulkan mampu menurunkan Character Error Rate (CER) secara signifikan dari rata-rata 83,4\% pada dokumen terdegradasi menjadi 34,9\% pada dokumen hasil restorasi (p<0,001). Capaian ini mendekati batas kinerja teoretis pada citra bersih sebesar 34,1\%. Selain keunggulan fungsional, model juga mempertahankan kualitas visual yang tinggi dengan skor Peak Signal-to-Noise Ratio (PSNR) mencapai 30,74 dB dan Structural Similarity Index (SSIM) sebesar 0,987. Jika dibandingkan dengan penelitian sejenis yang menggunakan arsitektur joint-training, pendekatan frozen recognizer terbukti lebih unggul dalam mencegah fenomena keruntuhan modus dan osilasi gradien.
+    Melalui studi ablasi, penelitian ini mengungkap temuan empiris yang menantang asumsi umum dalam literatur Deep Learning terkini. Ditemukan bahwa penambahan kompleksitas arsitektur melalui Diskriminator Dual-Modal (Visual-Tekstual) hanya memberikan kontribusi peningkatan kinerja yang marginal dan tidak signifikan secara statistik. Sebaliknya, protokol pelatihan yang disiplin menggunakan strategi Frozen Recognizer dan penyeimbangan fungsi loss terbukti menjadi faktor determinan utama keberhasilan restorasi. Hal ini mengindikasikan bahwa stabilitas sinyal pembelajaran jauh lebih vital daripada kompleksitas arsitektur jaringan itu sendiri.
+    Secara teoretis, penelitian ini menyumbangkan wawasan baru mengenai prinsip parsimoni dalam perancangan jaringan saraf tiruan untuk restorasi dokumen, di mana arsitektur yang lebih efisien dapat mengungguli arsitektur kompleks jika dilatih dengan strategi objektif ganda yang tepat. Secara praktis, kerangka kerja ini menawarkan solusi konkret bagi lembaga kearsipan untuk mempercepat proses transkripsi otomatis dokumen historis yang sebelumnya tidak terbaca, membuka peluang baru bagi pelestarian warisan budaya bangsa di era digital.
+    
+\end{spacing}
 
-\noindent\textbf{NIM:} [NIM]
+% Instruksi Gambar: Kata kunci berjarak dua spasi dari akhir abstrak
+\vspace{2\baselineskip}
 
-\vspace{1em}
+% --- KATA KUNCI ---
+\noindent
+\textbf{Kata kunci:} Restorasi Dokumen, \textit{Generative Adversarial Networks} (GAN), \textit{Handwritten Text Recognition} (HTR), \textit{Frozen Recognizer}, Dokumen Paleografi
 
-Restorasi dokumen historis terdegradasi sering kali berfokus pada perbaikan visual semata, yang tidak selalu berbanding lurus dengan peningkatan keterbacaan mesin (\textit{machine legibility}). Penelitian ini mengusulkan kerangka kerja \textit{Generative Adversarial Network} (GAN) yang mengintegrasikan umpan balik semantik secara eksplisit untuk meningkatkan kinerja \textit{Handwritten Text Recognition} (HTR) pada dokumen paleografi abad ke-16 hingga ke-18. Kami mengevaluasi arsitektur Diskriminator Dual-Modal (Visual-Tekstual) dan strategi pelatihan \textit{Frozen Recognizer} menggunakan fungsi \textit{loss} multi-objektif 5-komponen. Evaluasi pada 712 citra uji semi-sintetis menunjukkan bahwa model yang diusulkan berhasil menurunkan \textit{Character Error Rate} (CER) secara signifikan dari 83,4\% menjadi 34,9\% ($p<0,001$), mendekati batas kinerja teoretis citra bersih (34,1\%), sambil mempertahankan kualitas visual tinggi (PSNR 30,74 dB; SSIM 0,987). Melalui studi ablasi sistematis, penelitian ini mengungkap temuan kritis bahwa arsitektur Diskriminator Dual-Modal memberikan kontribusi marginal yang tidak signifikan. Sebaliknya, strategi \textit{Frozen Recognizer} terbukti menjadi faktor determinan dalam menjaga stabilitas gradien dan mencegah keruntuhan modus (\textit{mode collapse}). Temuan ini menantang tren kompleksitas arsitektur dalam literatur terkini, menyimpulkan bahwa protokol pelatihan yang tepat dan penyeimbangan fungsi \textit{loss} jauh lebih vital daripada kompleksitas diskriminator. Berdasarkan prinsip parsimoni, kami merekomendasikan penggunaan arsitektur diskriminator visual tunggal dengan strategi \textit{frozen} sebagai standar efisiensi untuk restorasi dokumen berorientasi teks.
-
-\vspace{1em}
-
-\noindent\textbf{Kata Kunci:} Restorasi Dokumen, \textit{Generative Adversarial Networks} (GAN), \textit{Handwritten Text Recognition} (HTR), \textit{Frozen Recognizer}, Dokumen Paleografi
+% \end{document}
