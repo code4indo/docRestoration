@@ -39,11 +39,12 @@
 \usepackage{multirow}
 \usepackage{array}
 \usepackage{tabularx}
+\usepackage{rotating}     % Required for \rotatebox in lampiran B
 \usepackage{letltxmacro}  % Required for \LetLtxMacro
 \usepackage{xstring}      % Required for \ifstrequal
 
 % SOLUTION: Use authoryear with custom Indonesian .lbx file
-\usepackage[style=authoryear,backend=biber,natbib=true,sorting=nyt,hyperref=true,maxcitenames=2,mincitenames=1]{biblatex}
+\usepackage[style=authoryear,backend=biber,natbib=true,sorting=nyt,hyperref=true,maxcitenames=2,mincitenames=1,doi=false]{biblatex}
 \usepackage{csquotes}
 
 % CRITICAL FIX: Map bahasa to indonesian.lbx (custom localization file in same directory)
@@ -120,9 +121,9 @@
 \onehalfspacing
 
 % Pengaturan penomoran
-\setcounter{secnumdepth}{3}
+\setcounter{secnumdepth}{4}
 
-% Pengaturan TOC depth
+% Pengaturan TOC depth - hanya sampai level 3 (subsubsection)
 \setcounter{tocdepth}{3}
 
 % Pengaturan heading
@@ -222,48 +223,44 @@
 % {\fontsize{12}{14.4}\selectfont\textbf{[TAHUN]}}
 
 % \end{titlepage}
+\pagenumbering{empty}
 \input{cover.tex}
+\newpage
 
 % ============================================================
 % PENOMORAN HALAMAN ROMAWI KECIL UNTUK BAGIAN AWAL
 % ============================================================
 \pagenumbering{roman}
-\setcounter{page}{2}
+\setcounter{page}{1}
 
 % ============================================================
 % ABSTRAK (BAHASA INDONESIA)
 % ============================================================
 \newpage
+\addcontentsline{toc}{section}{ABSTRAK}
 \input{abstrak_id.tex}
 
 % ============================================================
 % ABSTRACT (BAHASA INGGRIS)
 % ============================================================
 \newpage
+\addcontentsline{toc}{section}{ABSTRACT}
 \input{abstrak_en.tex}
 
 % ============================================================
 % HALAMAN PENGESAHAN
 % ============================================================
 \newpage
+\addcontentsline{toc}{section}{LEMBAR PENGESAHAN}
 \input{lembar_pengesahan.tex}
 
 % ============================================================
 % HALAMAN DEDIKASI
 % ============================================================
 \newpage
-\vspace{10cm}
-\begin{center}
-\textit{Dipersembahkan kepada orang tua, istri, anak, adik kakak, mertua serta keluarga besarku tercinta yang senantiasa mendukung lahir dan batin.}
+\addcontentsline{toc}{section}{HALAMAN PERUNTUKAN}
+\input{halaman_dedikasi.tex}
 
-\vspace{2em}
-
-% [ISI DEDIKASI]
-
-% \vspace{1em}
-
-% [Contoh: Keluarga tercinta, guru-guru yang telah membimbing,\\dan semua pihak yang telah mendukung penelitian ini]
-\end{center}
 
 % ============================================================
 % KATA PENGATAR
@@ -280,7 +277,7 @@
 % DAFTAR ISI
 % ============================================================
 \newpage
-\addcontentsline{toc}{section}{DAFTAR ISI}
+% \addcontentsline{toc}{section}{DAFTAR ISI}
 \vspace{2cm}
 \begin{center}
 {\fontsize{14}{16.8}\selectfont\textbf{DAFTAR ISI}}\\[1em]
@@ -288,9 +285,7 @@
 \vspace{1em}
 
 {\singlespacing
-\makeatletter
-\@starttoc{toc}
-\makeatother
+\tableofcontents
 }
 
 % ============================================================
@@ -304,12 +299,11 @@
 \end{center}
 \vspace{1em}
 
-[Daftar lampiran akan ditambahkan di sini]
-
-% Contoh format:
-% Lampiran 1. Kode Program Generator ........................... XXX
-% Lampiran 2. Kode Program Discriminator ....................... XXX
-% Lampiran 3. Dataset dan Preprocessing ........................ XXX
+{\singlespacing
+Lampiran A. Arsitektur Generator U-Net Enhanced \dotfill \pageref{lampiran:A}\\
+Lampiran B. Arsitektur Diskriminator Dual-Modal Enhanced \dotfill \pageref{lampiran:B}\\
+Lampiran C. Formulir Penilaian Ahli Paleografi \dotfill \pageref{lampiran:C}
+}
 
 % ============================================================
 % DAFTAR GAMBAR DAN ILUSTRASI
@@ -349,8 +343,10 @@
 % DAFTAR LAMBANG DAN SINGKATAN
 % ============================================================
 \newpage
-\addcontentsline{toc}{section}{DAFTAR LAMBANG DAN SINGKATAN}
+% \addcontentsline{toc}{section}{DAFTAR LAMBANG DAN SINGKATAN}
+{\singlespacing
 \input{Chapter_Lambang_content_only.tex}
+}
 
 
 % ============================================================
@@ -396,22 +392,6 @@
 \input{chapter6_kesimpulan_content_only.tex}
 
 % ============================================================
-% LAMPIRAN
-% ============================================================
-
-% Lampiran D: Rubrik Penilaian Ahli Paleografi
-\newpage
-\input{lampiran_D_rubrik_paleografi_content_only.tex}
-
-% Lampiran A: Arsitektur Jaringan Generator
-\newpage
-\input{lampiran_A_arsitektur_generator.tex}
-
-% Lampiran B: Arsitektur Jaringan Diskriminator
-\newpage
-\input{lampiran_B_arsitektur_diskriminator.tex}
-
-% ============================================================
 % DAFTAR PUSTAKA
 % ============================================================
 \newpage
@@ -424,5 +404,30 @@
 
 % Daftar Pustaka menggunakan biblatex dengan style APA
 \printbibliography[heading=none]
+
+
+% ============================================================
+% LAMPIRAN
+% ============================================================
+\newpage
+\addcontentsline{toc}{section}{LAMPIRAN}
+\addtocontents{lot}{\protect\setcounter{tocdepth}{-1}}
+\input{label_lampiran.tex}
+
+\captionsetup{list=no}
+
+% Lampiran A: Arsitektur Jaringan Generator
+\newpage
+\input{lampiran_A_arsitektur_generator.tex}
+
+% Lampiran B: Arsitektur Jaringan Diskriminator
+\newpage
+\input{lampiran_B_arsitektur_diskriminator.tex}
+
+% Lampiran C: Rubrik Penilaian Ahli Paleografi
+\newpage
+\input{lampiran_C_rubrik_paleografi.tex}
+\addtocontents{lot}{\protect\setcounter{tocdepth}{3}}
+\captionsetup{list=true}
 
 \end{document}

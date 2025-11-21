@@ -1,0 +1,525 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./main_tesis.tex
+LaTeX2e <2021-11-15> patch level 1
+L3 programming layer <2022-01-21>
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2021/10/04 v1.4n Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/babel/babel.sty
+(/usr/share/texlive/texmf-dist/tex/generic/babel/txtbabel.def)
+(/usr/share/texlive/texmf-dist/tex/generic/babel-indonesian/bahasa.ldf
+(/usr/share/texlive/texmf-dist/tex/generic/babel-indonesian/indonesian.ldf)))
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/mathptmx.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/etoolbox/etoolbox.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype-pdftex.def)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.cfg))
+(/usr/share/texlive/texmf-dist/tex/latex/hyphenat/hyphenat.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def)))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/setspace/setspace.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/ifvtex.sty
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-common-lists.t
+ex)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-latex.def
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfrcs.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/pgf.revision.tex)))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgfcore.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/systemlayer/pgfsys.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeysfiltered.code.t
+ex)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-pdftex.def
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-common-pdf.de
+f)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsyssoftpath.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsysprotocol.code.
+tex)) (/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcore.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.basic.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.trigonomet
+ric.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.random.cod
+e.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.comparison
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.base.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.round.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.misc.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integerari
+thmetics.code.tex)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfloat.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfint.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepoints.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathconstruct.
+code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathusage.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorescopes.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoregraphicstate.c
+ode.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransformation
+s.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorequick.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreobjects.code.t
+ex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathprocessing
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorearrows.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreshade.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreimage.code.tex
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreexternal.code.
+tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorelayers.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransparency.c
+ode.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepatterns.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorerdf.code.tex))
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleshapes.code.tex
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleplot.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-0-65
+.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-1-18
+.sty)) (/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgffor.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/math/pgfmath.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgffor.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/tikz.code.tex
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryplothandlers
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmodulematrix.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarytopaths.code.tex)))
+(/usr/share/texlive/texmf-dist/tex/latex/float/float.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/enumitem/enumitem.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/tools/longtable.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/tocloft/tocloft.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/caption/ltcaption.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/caption/subcaption.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/base/textcomp.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/booktabs/booktabs.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/multirow/multirow.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/tools/array.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/tools/tabularx.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/rotating.sty
+(/usr/share/texlive/texmf-dist/tex/latex/base/ifthen.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/letltxmacro/letltxmacro.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/xstring/xstring.sty
+(/usr/share/texlive/texmf-dist/tex/generic/xstring/xstring.tex))
+(/usr/share/texlive/texmf-dist/tex/latex/biblatex/biblatex.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+(/usr/share/texlive/texmf-dist/tex/generic/infwarerr/infwarerr.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty
+(/usr/share/texlive/texmf-dist/tex/generic/kvsetkeys/kvsetkeys.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/logreq/logreq.sty
+(/usr/share/texlive/texmf-dist/tex/latex/logreq/logreq.def))
+(/usr/share/texlive/texmf-dist/tex/latex/url/url.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/biblatex/blx-dm.def)
+(/usr/share/texlive/texmf-dist/tex/latex/biblatex/blx-compat.def)
+(/usr/share/texlive/texmf-dist/tex/latex/biblatex/biblatex.def)
+(/usr/share/texlive/texmf-dist/tex/latex/biblatex/blx-natbib.def)
+(/usr/share/texlive/texmf-dist/tex/latex/biblatex/bbx/authoryear.bbx
+(/usr/share/texlive/texmf-dist/tex/latex/biblatex/bbx/standard.bbx))
+(/usr/share/texlive/texmf-dist/tex/latex/biblatex/cbx/authoryear.cbx)
+(/usr/share/texlive/texmf-dist/tex/latex/biblatex/biblatex.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/l3kernel/expl3.sty
+(/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def))
+(/usr/share/texlive/texmf-dist/tex/latex/biblatex/blx-case-expl3.sty
+(/usr/share/texlive/texmf-dist/tex/latex/l3packages/xparse/xparse.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/csquotes/csquotes.sty
+(/usr/share/texlive/texmf-dist/tex/latex/csquotes/csquotes.def)
+(/usr/share/texlive/texmf-dist/tex/latex/csquotes/csquotes.cfg))
+
+! LaTeX Error: Option clash for package biblatex.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.53 \DeclareLanguageMapping
+                            {bahasa}{indonesian}
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/share/texlive/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdfescape/pdfescape.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hycolor/hycolor.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/auxhook/auxhook.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref-langpatches.def)
+(/usr/share/texlive/texmf-dist/tex/generic/intcalc/intcalc.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/etexcmds/etexcmds.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/puenc.def)
+(/usr/share/texlive/texmf-dist/tex/generic/bitset/bitset.sty
+(/usr/share/texlive/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/base/atbegshi-ltx.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/usr/share/texlive/texmf-dist/tex/latex/base/atveryend-ltx.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+(/usr/share/texlive/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty)))
+(/usr/share/texlive/texmf-dist/tex/generic/stringenc/stringenc.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/stringenc/se-pdfdoc.def)
+(/usr/share/texlive/texmf-dist/tex/latex/titlesec/titlesec.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd) (./main_tesis.aux
+
+LaTeX Warning: Label `sec:pendahuluan' multiply defined.
+
+)
+Runaway argument?
+{{V.6}{131}{Efisiensi Komputas 
+! File ended while scanning use of \@newl@bel.
+<inserted text> 
+                \par 
+l.197 \begin{document}
+                      
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-ptm.cfg)
+(/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+(./indonesian.lbx
+(/usr/share/texlive/texmf-dist/tex/latex/biblatex/lbx/english.lbx)
+(/usr/share/texlive/texmf-dist/tex/latex/biblatex/lbx/english.lbx))
+(./main_tesis.bbl)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
+(/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty))
+(./main_tesis.out
+! Undefined control sequence.
+l.112 \BOOK
+           
+) (./main_tesis.out
+! Undefined control sequence.
+l.112 \BOOK
+           
+) (./cover.tex
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\c@page' on input line 63.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\c@page' on input line 63.
+
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./itb_logo.jpg>])
+(./abstrak_id.tex [1]) [2] (./abstrak_en.tex
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ztmcm.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omlztmcm.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsztmcm.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omxztmcm.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msa.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msb.cfg) [3]) [4]
+(./lembar_pengesahan.tex) [5] (./halaman_dedikasi.tex [6])
+(./kata_pengantar.tex [7]) [8] (./main_tesis.toc) [9] [10] (./main_tesis.lof)
+[11] (./main_tesis.lot) [12] (./Chapter_Lambang_content_only.tex [13] [14]
+[15] [16]) [17] (./chapter1_pendahuluan_content_only.tex [1] [2] [3] [4]
+[5] [6] [7] [8] [9]) [10] (./chapter2_tinjauan_pustaka_content_only.tex
+[11 </home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/draw
+io/roadmap_chapter2.png>] [12 </home/lambda_one/tesis/GAN-HTR-ORI/docRestoratio
+n/Paper/main/fig_degradation_examples/ink_bleed_through.png> </home/lambda_one/
+tesis/GAN-HTR-ORI/docRestoration/Paper/main/fig_degradation_examples/ink_corros
+ion.png> </home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/main/fig_degr
+adation_examples/paper_aging.png> </home/lambda_one/tesis/GAN-HTR-ORI/docRestor
+ation/Paper/main/fig_degradation_examples/physical_damage.png> </home/lambda_on
+e/tesis/GAN-HTR-ORI/docRestoration/Paper/main/fig_degradation_examples/ink_degr
+adation.png> </home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/main/fig_
+degradation_examples/combined_degradation.png>] [13] [14] [15] [16] [17]
+[18] [19] [20 <./images/U-Net-architecture-Ronneberger-et-al-2015.png>]
+[21 <./images/The-GAN-architecture-schematized-from-Goodfellow-et-al-2014-Radfo
+rd-et-al-2015.png>] (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
+[22] [23] [24] [25]
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-cmr.cfg) [26] [27]
+[28] [29] [30] [31] [32] [33] [34] [35] [36] [37] [38] [39] [40] [41 <./images/
+The-architecture-of-CRNN-proposed-by-Shi-et-al-48-The-model-mainly-consists-of.
+png>] [42 <./images/ctc_mekanisme.png>] [43] [44] [45] [46] [47] [48] [49]
+[50] [51] [52] [53] [54] [55] [56] [57] [58]) [59]
+(./chapter3_metodologi_content_only.tex [61] [62 <./images/DRSM.png>] [63]
+[64] [65] [66]
+Overfull \hbox (16.08183pt too wide) in paragraph at lines 167--188
+ [][] 
+[67] (/usr/share/texlive/texmf-dist/tex/latex/base/t1cmtt.fd)
+Overfull \hbox (24.05031pt too wide) in paragraph at lines 210--223
+ [][] 
+
+Overfull \hbox (8.16977pt too wide) in paragraph at lines 234--259
+ [][] 
+[68] [69] [70 <./images/PengembanganArtefak.png>] [71] [72] [73] [74]) [75]
+(./chapter4_analysis_design_content_only.tex [78] [79]
+Overfull \hbox (139.43582pt too wide) in paragraph at lines 118--121
+ [][] 
+[80] [81 </home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/drawio/main_f
+ramework.png>] [82] [83 </home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Pape
+r/drawio/arsitektur_generator.png>] [84]
+Overfull \hbox (23.37357pt too wide) in paragraph at lines 212--227
+ [][] 
+[85] [86] [87] [88] [89 </home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Pape
+r/drawio/arsitektur-dualModal.png>] [90] [91] [92] [93] [94] [95]
+Overfull \hbox (7.30388pt too wide) in paragraph at lines 474--489
+ [][] 
+[96] [97] [98] [99] [100] [101 </home/lambda_one/tesis/GAN-HTR-ORI/docRestorati
+on/Paper/data_dukung/gambar_degGT/gt1.png (PNG copy)> </home/lambda_one/tesis/G
+AN-HTR-ORI/docRestoration/Paper/data_dukung/gambar_degGT/deg1.png (PNG copy)>]
+[102] [103] [104] [105]
+Overfull \hbox (22.6592pt too wide) in paragraph at lines 740--749
+ [][] 
+[106] [107 </home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/data_dukung
+/fig_convergence_analysis_combined.pdf>] [108] [109] [110] [111] [112] [113]
+[114] [115] [116]) [117] (./chapter5_hasil_content_only.texpdfTeX warning (ext4
+): destination with the same identifier (name{page.117}) has been already used,
+ duplicate ignored
+<to be read again> 
+                   \relax 
+l.66 \end{table}
+                 [117] [118] [119 </home/lambda_one/tesis/GAN-HTR-ORI/docRestor
+ation/Paper/visualizations/fig_metrics_comparison.pdf> </home/lambda_one/tesis/
+GAN-HTR-ORI/docRestoration/Paper/visualizations/fig_improvement_analysis.pdf>]
+[120 </home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/visualizations/fi
+g_method_comparison_2samples.pdf>] [121 </home/lambda_one/tesis/GAN-HTR-ORI/doc
+Restoration/Paper/data_dukung/fig_validation_metrics_trajectory.pdf>]
+
+Package tabularx Warning: X Columns too narrow (table too wide)
+(tabularx)                 on input line 161.
+
+
+Overfull \hbox (19.38965pt too wide) in paragraph at lines 161--161
+[]|\T1/ptm/m/n/10 (-20) Dataset| 
+
+Overfull \hbox (21.68756pt too wide) in paragraph at lines 161--161
+[]|\T1/ptm/m/n/10 (-20) DIBCO,
+
+Overfull \hbox (9.99855pt too wide) in paragraph at lines 161--161
+\T1/ptm/m/n/10 (-20) Palm
+
+Overfull \hbox (1.94228pt too wide) in paragraph at lines 161--161
+\T1/ptm/m/n/10 (-20) Le-
+
+Overfull \hbox (22.11449pt too wide) in paragraph at lines 161--161
+[]|\T1/ptm/m/n/10 (-20) DocEng| 
+
+Overfull \hbox (10.65437pt too wide) in paragraph at lines 161--161
+[]|\T1/ptm/m/n/10 (-20) IAM-
+
+Overfull \hbox (12.873pt too wide) in paragraph at lines 161--161
+\T1/ptm/m/n/10 (-20) Synth| 
+
+Overfull \hbox (10.25102pt too wide) in paragraph at lines 161--161
+[]|\T1/ptm/m/n/10 (-20) IAM,
+
+Overfull \hbox (22.09232pt too wide) in paragraph at lines 161--161
+\T1/ptm/m/n/10 (-20) KHATT| 
+
+Overfull \hbox (13.95103pt too wide) in paragraph at lines 161--161
+[]|\T1/ptm/m/n/10 (-20) ANRI
+
+Overfull \hbox (11.7518pt too wide) in paragraph at lines 161--161
+\T1/ptm/m/n/10 (-20) Semi-
+
+Overfull \hbox (12.873pt too wide) in paragraph at lines 161--161
+\T1/ptm/m/n/10 (-20) Synth| 
+
+Overfull \hbox (30.15901pt too wide) in alignment at lines 161--161
+[][][][][][] 
+[122]
+
+LaTeX Warning: Reference `tab:hyperparameter-training' on page 123 undefined on
+ input line 178.
+
+[123] [124] [125] [126] [127]
+Overfull \hbox (26.20764pt too wide) in paragraph at lines 299--312
+ [][] 
+[128 </home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/fro
+zen_vs_joint_loss_trajectory.pdf>] [129 </home/lambda_one/tesis/GAN-HTR-ORI/doc
+Restoration/dual_modal_gan/docs/frozen_vs_joint_cer_comparison.pdf>]
+
+LaTeX Warning: Reference `tab:frozen-vs-joint-efficiency' on page 130 undefined
+ on input line 340.
+
+[130 </home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/fro
+zen_vs_joint_psnr_comparison.pdf>] [131 </home/lambda_one/tesis/GAN-HTR-ORI/doc
+Restoration/dual_modal_gan/docs/frozen_vs_joint_efficiency.pdf>] [132] [133 </h
+ome/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/frozen_vs_j
+oint_radar.pdf>] [134] [135] [136]
+
+LaTeX Warning: Reference `fig:detailed-loss-analysis' on page 137 undefined on 
+input line 524.
+
+[137] [138 </home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/do
+cs/detailed_loss_analysis.png>] [139 </home/lambda_one/tesis/GAN-HTR-ORI/docRes
+toration/dual_modal_gan/docs/statistical_analysis.png>]
+
+LaTeX Warning: Reference `tab:hyperparameter-training' on page 140 undefined on
+ input line 559.
+
+[140 </home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/cur
+riculum_phases_analysis.png>]
+
+LaTeX Warning: Reference `tab:hyperparameter-training' on page 141 undefined on
+ input line 566.
+
+[141] [142 <./loss_weights_justification/loss_contribution_pie_chart.png> <./lo
+ss_weights_justification/loss_weights_magnitude_comparison.png>] [143 </home/la
+mbda_one/tesis/GAN-HTR-ORI/docRestoration/dual_modal_gan/docs/loss_weights_just
+ification/loss_contribution_sidebyside.png>] [144] [145] [146]
+
+LaTeX Warning: Reference `fig:anri_qualitative' on page 147 undefined on input 
+line 830.
+
+[147]
+
+LaTeX Warning: Reference `table:anri_contrast_analysis' on page 148 undefined o
+n input line 849.
+
+[148 </home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/data_dukung/evalu
+asi_anri/panel_a_ID-ANRI_K66b_065_119.png (PNG copy)> </home/lambda_one/tesis/G
+AN-HTR-ORI/docRestoration/Paper/data_dukung/evaluasi_anri/panel_b_ID-ANRI_K66b_
+070_179.png (PNG copy)> </home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Pape
+r/data_dukung/evaluasi_anri/panel_c_ID-ANRI_K66b_005_0526_ori.png (PNG copy)> <
+/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/data_dukung/evaluasi_an
+ri/panel_d_ID-ANRI_K66b_059_067.png (PNG copy)> </home/lambda_one/tesis/GAN-HTR
+-ORI/docRestoration/Paper/data_dukung/evaluasi_anri/panel_e_ID-ANRI_K66a_2525_0
+024.png (PNG copy)> </home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/da
+ta_dukung/evaluasi_anri/panel_f_ID-ANRI_K66b_064_278.png (PNG copy)>] [149]
+[150] [151]
+Overfull \hbox (19.91814pt too wide) in paragraph at lines 957--958
+ [][] 
+[152] [153 </home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/data_dukung
+/fig_combined_correlation_analysis.pdf>] [154] [155] [156]
+
+LaTeX Warning: Reference `subsubsec:kontribusi-dual-modal' on page 157 undefine
+d on input line 1113.
+
+
+LaTeX Warning: Reference `tab:diskriminator-ablasi' on page 157 undefined on in
+put line 1113.
+
+[157] [158]
+
+LaTeX Warning: Reference `subsubsec:kontribusi-curriculum-learning' on page 159
+ undefined on input line 1158.
+
+
+LaTeX Warning: Reference `subsubsec:interaksi-komponen' on page 159 undefined o
+n input line 1167.
+
+[159] [160] [161] [162] [163] [164]
+
+LaTeX Warning: Reference `subsubsec:kontribusi-dual-modal' on page 165 undefine
+d on input line 1343.
+
+[165]
+
+LaTeX Warning: Reference `subsubsec:anri-korelasi-degradasi' on page 166 undefi
+ned on input line 1346.
+
+[166]
+
+LaTeX Warning: Reference `table:failure-distribution' on page 167 undefined on 
+input line 1361.
+
+
+LaTeX Warning: Reference `fig:failure-distribution' on page 167 undefined on in
+put line 1361.
+
+[167] [168 </home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/data_dukung
+/fig_failure_distribution.pdf>] [169]
+
+LaTeX Warning: Reference `tab:diskriminator-ablasi' on page 170 undefined on in
+put line 1448.
+
+[170]
+
+LaTeX Warning: Reference `subsubsec:kontribusi-curriculum-learning' on page 171
+ undefined on input line 1476.
+
+[171]) [172] (./chapter6_kesimpulan_content_only.tex [173] [174] [175])
+[176] [177] [178] [179] [180] [181] (./label_lampiran.tex [182])
+(./lampiran_A_arsitektur_generator.tex) [183]
+(./lampiran_B_arsitektur_diskriminator.tex) [184]
+(./lampiran_C_rubrik_paleografi.tex [185]) [186] (./main_tesis.aux)
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: There were multiply-defined labels.
+
+
+Package rerunfilecheck Warning: File `main_tesis.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+
+Package biblatex Warning: Please rerun LaTeX.
+(biblatex)                Page breaks have changed.
+
+ )
+(see the transcript file for additional information){/usr/share/texmf/fonts/enc
+/dvips/cm-super/cm-super-t1.enc}{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-s
+uper-ts1.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/s
+hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/t
+exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/f
+onts/type1/public/amsfonts/symbols/msam10.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texmf-dist/fon
+ts/type1/public/rsfs/rsfs10.pfb></usr/share/texmf/fonts/type1/public/cm-super/s
+frm1200.pfb></usr/share/texmf/fonts/type1/public/cm-super/sftt1095.pfb></usr/sh
+are/texmf/fonts/type1/public/cm-super/sftt1200.pfb></usr/share/texlive/texmf-di
+st/fonts/type1/urw/symbol/usyr.pfb></usr/share/texlive/texmf-dist/fonts/type1/u
+rw/symbol/usyr.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.
+pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/shar
+e/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf
+-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on main_tesis.pdf (202 pages, 19884645 bytes).
+Transcript written on main_tesis.log.

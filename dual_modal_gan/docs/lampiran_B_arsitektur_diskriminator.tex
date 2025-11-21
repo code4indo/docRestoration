@@ -1,20 +1,22 @@
+% Content-only for \input into main_tesis.tex
+% (preamble removed, inherits from main)
+
+\label{lampiran:B}
 \setcounter{table}{0}
-\setcounter{figure}{0}
+\renewcommand{\thetable}{B.\arabic{table}}
 
 \vspace{2cm}
-\begin{center}
-{\fontsize{14}{16.8}\selectfont\textbf{Lampiran B \quad Arsitektur Diskriminator Dual-Modal Enhanced}}\\[1em]
-\end{center}
-\addcontentsline{toc}{section}{LAMPIRAN B ARSITEKTUR DISKRIMINATOR DUAL-MODAL ENHANCED}
+\noindent{\fontsize{12}{16.8}\selectfont\textbf{Lampiran B \quad Arsitektur Diskriminator Dual-Modal Enhanced}}\\[1em]
+%
 
-\vspace{2em}
+\vspace{1em}
 
 \begin{table}[H]
 \caption{Arsitektur Diskriminator Dual-Modal Enhanced. Spesifikasi detail tiga cabang (Citra CNN, Teks BiLSTM, Fusi \textit{Cross-Modal}). Cabang citra memproses fitur visual melalui 4 \textit{DownBlocks} dengan \textit{spatial attention}, cabang teks memproses sekuens karakter melalui embedding + BiLSTM + \textit{self-attention}. \textit{Cross-modal fusion} menghasilkan klasifikasi \textit{real}/\textit{fake}. Total: 17.4M parameter.}
 \label{tab:B_discriminator_arch}
-\scriptsize
+\small
 \centering
-\begin{tabular}{|l|l|p{4cm}|r|}
+\begin{tabular}{|l|l|p{3cm}|r|}
 \hline
 \textbf{Cabang} & \textbf{Lapisan} & \textbf{Keluaran} & \textbf{Param.} \\
 \hline

@@ -1,55 +1,18 @@
-\documentclass[12pt,a4paper]{article}
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage[bahasa]{babel}
-\usepackage{mathptmx} % Times New Roman font
-\usepackage{microtype}
-\usepackage[none]{hyphenat}
-\usepackage{graphicx}
-\usepackage{amsmath}
-\usepackage{setspace}
-\usepackage{geometry}
-\usepackage{longtable}
-\usepackage{booktabs}
-\usepackage{multirow}
-\usepackage{array}
-\usepackage{enumitem}
-\usepackage{amssymb} % For \square symbol
+% Content-only for \input into main_tesis.tex
+% (preamble removed, inherits from main)
 
-% Pengaturan margin
-\geometry{
-    a4paper,
-    left=4cm,
-    right=3cm,
-    top=3cm,
-    bottom=3cm
-}
-
-% Pengaturan spasi
-\onehalfspacing
-
-% Pengaturan paragraf
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{6pt}
-
-\begin{document}
+\label{lampiran:C}
+\setcounter{table}{0}
+\renewcommand{\thetable}{C.\arabic{table}}
 
 % ============================================================
-% LAMPIRAN D
+% LAMPIRAN C
 % ============================================================
 
-\section*{LAMPIRAN D}
-\addcontentsline{toc}{section}{LAMPIRAN D: Instrumen Evaluasi Ahli Paleografi}
+\vspace{1cm}
+\noindent{\fontsize{12}{16.8}\selectfont\textbf{Lampiran C \quad Formulir Penilaian Ahli Paleografi}}\\[0.5em]
 
 \vspace{1em}
-
-\begin{center}
-{\Large\textbf{INSTRUMEN EVALUASI}}\\[0.5em]
-{\Large\textbf{RUBRIK PENILAIAN AHLI PALEOGRAFI}}\\[0.5em]
-{\large\textbf{Restorasi Dokumen Terdegradasi}}
-\end{center}
-
-\vspace{2em}
 
 % ============================================================
 % INFORMASI EVALUATOR
@@ -57,7 +20,9 @@
 
 \subsection*{Petunjuk Penggunaan Instrumen}
 
-Rubrik ini dirancang untuk evaluasi kualitas restorasi dokumen historis terdegradasi oleh ahli paleografi atau restorasi arsip. Setiap kriteria dinilai dengan skala 1--5, kemudian diagregasi menggunakan metodologi yang dijelaskan di bawah. Instrumen ini telah divalidasi dalam studi percontohan dengan 15 dokumen ANRI (Mei 2024) oleh 2 ahli independen dengan reliabilitas tinggi (Cohen's $\kappa$ = 0,78).
+Formulir ini digunakan untuk mengevaluasi kualitas restorasi dokumen historis terdegradasi oleh ahli paleografi atau restorasi arsip. Setiap kriteria dinilai dengan skala 1--5, kemudian diagregasi menggunakan metode yang dijelaskan di bawah. 
+
+% Instrumen ini telah divalidasi dalam studi percontohan dengan 15 dokumen ANRI (Mei 2024) oleh 2 ahli independen dengan reliabilitas tinggi (Cohen's $\kappa$ = 0,78).
 
 \vspace{2em}
 
@@ -75,21 +40,21 @@ Penilaian dilakukan berdasarkan 5 aspek utama dengan skala 1-5:
     \item \textbf{Skor 2}: Kurang (Kualitas kurang, peningkatan keterbacaan minimal)
     \item \textbf{Skor 1}: Sangat Kurang (Tidak ada peningkatan atau memperburuk)
 \end{itemize}
-\newpage
-\vspace{1em}
+\vspace{0.5em}
 
 % ============================================================
 % TABEL RUBRIK PENILAIAN
 % ============================================================
 
-\begin{longtable}{|p{0.5cm}|p{3.5cm}|p{7cm}|p{1.5cm}|}
-\caption{Rubrik Penilaian Kualitas Restorasi Dokumen} \\
+\small
+\begin{longtable}{|p{0.45cm}|p{3.2cm}|p{6.8cm}|p{1.5cm}|}
+\caption{Formulir Penilaian Kualitas Restorasi Dokumen} \\
 \hline
 \textbf{No} & \textbf{Aspek Penilaian} & \textbf{Deskripsi} & \textbf{Skor} \\
 \hline
 \endfirsthead
 
-\multicolumn{4}{c}{\textit{Lanjutan Tabel Rubrik Penilaian}} \\
+\multicolumn{4}{c}{\textit{Lanjutan Tabel Formulir Penilaian}} \\
 \hline
 \textbf{No} & \textbf{Aspek Penilaian} & \textbf{Deskripsi} & \textbf{Skor} \\
 \hline
@@ -148,27 +113,26 @@ Penilaian dilakukan berdasarkan 5 aspek utama dengan skala 1-5:
 \hline
 14 & Kelayakan Transkripsi & Kemudahan transkripsi ahli paleografi & 1 2 3 4 5 \\
 \hline
-15 & Standar Arsip Digital & Kesesuaian standar preservasi UNESCO & 1 2 3 4 5 \\
+15 & Standar Arsip Digital & Kesesuaian standar preservasi & 1 2 3 4 5 \\
 \hline
 
 \end{longtable}
 
-\vspace{2em}
+\vspace{1em}
 
 % ============================================================
 % PERHITUNGAN SKOR
 % ============================================================
+\subsection*{Agregasi Skor}
 
-\subsection*{Metodologi Agregasi Skor}
-
-Rubrik 15 kriteria di atas diagregasi menjadi 4 kriteria untuk analisis makro:
+Formulir 15 kriteria di atas diagregasi menjadi 4 kriteria untuk analisis makro:
 
 \begin{table}[h]
 \centering
 \small
 \begin{tabular}{|l|l|l|}
 \hline
-\textbf{Kriteria Agregat} & \textbf{Mapping dari Rubrik} & \textbf{Perhitungan} \\
+\textbf{Kriteria Agregat} & \textbf{Mapping dari Formulir} & \textbf{Perhitungan} \\
 \hline
 Keterbacaan Teks & Kriteria 6--11 (C+D) & Rerata 6 kriteria \\
 Autentisitas Paleografi & Kriteria 12--13 (E.1--2) & Rerata 2 kriteria \\
@@ -176,18 +140,16 @@ Minimasi Artefak & Kriteria 4--5 (B) & Rerata 2 kriteria (inverse) \\
 Kegunaan Transkripsi & Kriteria 14--15 (E.3--4) & Rerata 2 kriteria \\
 \hline
 \multicolumn{3}{l}{\footnotesize Kriteria 1--3 (A) tidak dihitung dalam agregat (untuk validasi tambahan).} \\
-\multicolumn{3}{l}{\footnotesize Konversi skala: Skor rubrik (1-5) $\times$ 0,8 = skor agregat (skala 1-4)} \\
+\multicolumn{3}{l}{\footnotesize Konversi skala: Skor formulir (1-5) $\times$ 0,8 = skor agregat (skala 1-4)} \\
 \multicolumn{3}{l}{\footnotesize Skor keseluruhan: Rerata dari 4 kriteria agregat} \\
 \end{tabular}
 \end{table}
 
-\subsection*{Validasi Instrumen: Hasil Studi Percontohan}
+\subsection*{Validasi Instrumen: Hasil Studi Percontohan (n=15 dokumen ANRI)}
 
-Rubrik di atas telah divalidasi dalam studi percontohan dengan 15 dokumen ANRI (Mei 2024) yang dievaluasi oleh 2 ahli independen. Hasil agregat menunjukkan reliabilitas instrumen:
-
-\begin{table}[h]
+\begin{table}[h!]
 \centering
-\small
+\tiny
 \begin{tabular}{|l|c|c|c|}
 \hline
 \textbf{Kriteria} & \textbf{Penilai 1} & \textbf{Penilai 2} & \textbf{Rerata} \\
@@ -206,38 +168,5 @@ Kegunaan Transkripsi & 3,53 & 3,47 & 3,50 \\
 \end{tabular}
 \end{table}
 
-\textit{Sumber}: Lihat Chapter 5 untuk analisis lengkap hasil evaluasi. Distribusi dokumen: kontras tinggi (n=5, $\bar{x}$=3,75), sedang (n=8, $\bar{x}$=3,38), rendah (n=2, $\bar{x}$=2,63). Konsistensi antarpenilai ($\kappa$=0,78) mengonfirmasi validitas instrumen untuk evaluasi dokumen historis terdegradasi.
-
-\vspace{2em}
-
-% ============================================================
-% CATATAN EVALUATOR
-% ============================================================
-
-\subsection*{Ringkasan Umpan Balik Ahli}
-
-\textbf{Kelebihan Utama:}
-\begin{itemize}[leftmargin=*, itemsep=2pt]
-    \item Preservasi karakteristik skrip Belanda abad ke-17 (ligatur, \textit{aspect ratio})
-    \item Pembersihan \textit{foxing} efektif tanpa korbankan detail autentisitas
-    \item Detail mikroskopis goresan terjaga untuk analisis paleografi
-    \item Sesuai untuk digitisasi massal dengan koreksi manual minimal
-\end{itemize}
-
-\textbf{Area Perbaikan:}
-\begin{itemize}[leftmargin=*, itemsep=2pt]
-    \item \textit{Slight blur} pada region tinta \textit{iron gall} terkorosi (2--3 kasus sedang)
-    \item Derau residual minimal pada \textit{bleed-through} berat
-    \item Disarankan verifikasi ahli untuk dokumen kontras <30\%
-\end{itemize}
-
-\textbf{Rekomendasi:}
-Pendekatan konservatif model yang menghindari \textit{creative reconstruction} sangat diapresiasi untuk preservasi integritas historis. Cocok untuk praproses \textit{batch} pipeline HTR dengan supervisi minimal.
-
-\vspace{2em}
-
-\subsection*{Validitas dan Reliabilitas}
-
-Evaluasi dilakukan oleh 2 evaluator independen dengan kesepakatan substansial (Cohen's $\kappa$ = 0,78). Korelasi Spearman antarpenilai: $\rho$ = 0,91 (p$<$0,001). Hasil mendukung validitas \textit{pilot study} untuk eksplorasi aplikasi arsip praktis meskipun ukuran sampel terbatas (n=15).
-
-\end{document}
+% \textit{Sumber}: Lihat Chapter 5 untuk analisis lengkap hasil evaluasi. Distribusi dokumen: kontras tinggi (n=5, $\bar{x}$=3,75), sedang (n=8, $\bar{x}$=3,38), rendah (n=2, $\bar{x}$=2,63). Konsistensi antarpenilai ($\kappa$=0,78) mengonfirmasi validitas instrumen untuk evaluasi dokumen historis terdegradasi.
+\vspace{1em}

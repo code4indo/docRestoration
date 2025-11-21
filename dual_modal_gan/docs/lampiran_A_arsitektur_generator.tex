@@ -1,13 +1,18 @@
+% Content-only for \input into main_tesis.tex
+% (preamble removed, inherits from main)
+
+\label{lampiran:A}
+\setcounter{table}{0}
+\renewcommand{\thetable}{A.\arabic{table}}
+
 \setcounter{table}{0}
 \setcounter{figure}{0}
 
 \vspace{2cm}
-\begin{center}
-{\fontsize{14}{16.8}\selectfont\textbf{Lampiran A \quad Arsitektur Generator U-Net Enhanced}}\\[1em]
-\end{center}
-\addcontentsline{toc}{section}{LAMPIRAN A ARSITEKTUR GENERATOR U-NET ENHANCED}
+\noindent{\fontsize{12}{16.8}\selectfont\textbf{Lampiran A \quad Arsitektur Generator U-Net Enhanced}}\\[1em]
+%
 
-\vspace{2em}
+\vspace{1em}
 
 \begin{table}[H]
 \caption{Arsitektur Generator U-Net Enhanced. Spesifikasi detail lima tahap encoder (progressive downsampling dari $128 \times 1024$ ke $4 \times 32$), bottleneck MSFP dengan konvolusi terdilasi, dan lima tahap decoder dengan attention gates. Setiap tahap mengintegrasikan RDB+CBAM untuk ekstraksi fitur hierarkis dan atensi adaptif. Total parameter: 21.8M.}

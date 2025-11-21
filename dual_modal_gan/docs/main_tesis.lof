@@ -6,27 +6,27 @@
 \contentsline {figure}{\numberline {II.5}{\ignorespaces Arsitektur CRNN untuk Ekstraksi Fitur Visual}}{41}{figure.caption.9}%
 \contentsline {figure}{\numberline {II.6}{\ignorespaces Mekanisme CTC untuk Penyelarasan Otomatis}}{42}{figure.caption.10}%
 \contentsline {figure}{\numberline {III.1}{\ignorespaces Kerangka DSRM dengan Siklus Iteratif}}{62}{figure.caption.14}%
-\contentsline {figure}{\numberline {III.2}{\ignorespaces Pipeline Pengembangan Framework GAN-HTR}}{71}{figure.caption.19}%
+\contentsline {figure}{\numberline {III.2}{\ignorespaces Alur Pengembangan Kerangka Kerja}}{69}{figure.caption.19}%
 \contentsline {figure}{\numberline {IV.1}{\ignorespaces Kerangka kerja GAN-HTR dengan diskriminator dual-modal}}{81}{figure.caption.21}%
-\contentsline {figure}{\numberline {IV.2}{\ignorespaces Visualisasi arsitektur Generator U-Net Enhanced}}{84}{figure.caption.23}%
-\contentsline {figure}{\numberline {IV.3}{\ignorespaces Visualisasi arsitektur Diskriminator Dual-Modal Enhanced}}{90}{figure.caption.25}%
-\contentsline {figure}{\numberline {IV.4}{\ignorespaces Pasangan dataset semi-sintetis realistis}}{103}{figure.caption.28}%
-\contentsline {figure}{\numberline {IV.5}{\ignorespaces Trajektori konvergensi pelatihan selama 50 epoch}}{109}{figure.caption.30}%
-\contentsline {figure}{\numberline {V.1}{\ignorespaces Perbandingan metrik kuantitatif}}{119}{figure.caption.35}%
-\contentsline {figure}{\numberline {V.2}{\ignorespaces Analisis peningkatan absolut dan relatif}}{119}{figure.caption.36}%
-\contentsline {figure}{\numberline {V.3}{\ignorespaces Perbandingan visual empat metode restorasi}}{120}{figure.caption.37}%
-\contentsline {figure}{\numberline {V.4}{\ignorespaces Trajektori metrik validasi selama 50 epoch}}{121}{figure.caption.38}%
-\contentsline {figure}{\numberline {V.5}{\ignorespaces Trajektori loss frozen vs joint training}}{128}{figure.caption.42}%
-\contentsline {figure}{\numberline {V.6}{\ignorespaces Perbandingan CER frozen vs joint}}{129}{figure.caption.44}%
-\contentsline {figure}{\numberline {V.7}{\ignorespaces Perbandingan PSNR frozen vs joint}}{130}{figure.caption.45}%
-\contentsline {figure}{\numberline {V.8}{\ignorespaces Efisiensi komputasi frozen vs joint}}{131}{figure.caption.47}%
-\contentsline {figure}{\numberline {V.9}{\ignorespaces Ringkasan performa}}{133}{figure.caption.49}%
-\contentsline {figure}{\numberline {V.10}{\ignorespaces Analisis komponen loss curriculum vs non-curriculum}}{138}{figure.caption.52}%
-\contentsline {figure}{\numberline {V.11}{\ignorespaces Analisis statistik curriculum learning}}{139}{figure.caption.53}%
-\contentsline {figure}{\numberline {V.12}{\ignorespaces Analisis fase curriculum learning}}{140}{figure.caption.54}%
-\contentsline {figure}{\numberline {V.13}{\ignorespaces Distribusi kontribusi loss}}{142}{figure.caption.56}%
-\contentsline {figure}{\numberline {V.14}{\ignorespaces Variabilitas magnitude loss}}{142}{figure.caption.57}%
-\contentsline {figure}{\numberline {V.15}{\ignorespaces Mekanisme penyeimbangan magnitude}}{143}{figure.caption.58}%
-\contentsline {figure}{\numberline {V.16}{\ignorespaces Restorasi kualitatif dokumen ANRI autentik}}{148}{figure.caption.64}%
-\contentsline {figure}{\numberline {V.17}{\ignorespaces Korelasi tingkat degradasi}}{153}{figure.caption.67}%
-\contentsline {figure}{\numberline {V.18}{\ignorespaces Distribusi pola kegagalan (kiri) dan tingkat keparahan CER}}{168}{figure.caption.71}%
+\contentsline {figure}{\numberline {IV.2}{\ignorespaces Visualisasi Generator U-Net Enhanced}}{83}{figure.caption.22}%
+\contentsline {figure}{\numberline {IV.3}{\ignorespaces Visualisasi arsitektur Diskriminator Dual-Modal Enhanced}}{89}{figure.caption.24}%
+\contentsline {figure}{\numberline {IV.4}{\ignorespaces Pasangan dataset semi-sintetis realistis}}{101}{figure.caption.27}%
+\contentsline {figure}{\numberline {IV.5}{\ignorespaces Trajektori konvergensi pelatihan selama 50 epoch}}{107}{figure.caption.29}%
+\contentsline {figure}{\numberline {V.1}{\ignorespaces Perbandingan metrik kuantitatif}}{119}{figure.caption.34}%
+\contentsline {figure}{\numberline {V.2}{\ignorespaces Analisis peningkatan metrik}}{119}{figure.caption.35}%
+\contentsline {figure}{\numberline {V.3}{\ignorespaces Perbandingan visual metode restorasi}}{120}{figure.caption.36}%
+\contentsline {figure}{\numberline {V.4}{\ignorespaces Trajektori metrik validasi}}{120}{figure.caption.37}%
+\contentsline {figure}{\numberline {V.5}{\ignorespaces Trajektori loss frozen vs joint}}{127}{figure.caption.41}%
+\contentsline {figure}{\numberline {V.6}{\ignorespaces Trajektori CER frozen vs joint}}{129}{figure.caption.43}%
+\contentsline {figure}{\numberline {V.7}{\ignorespaces PSNR frozen vs joint}}{129}{figure.caption.44}%
+\contentsline {figure}{\numberline {V.8}{\ignorespaces Efisiensi komputasi frozen vs joint}}{131}{figure.caption.46}%
+\contentsline {figure}{\numberline {V.9}{\ignorespaces Radar chart performa frozen vs joint}}{133}{figure.caption.48}%
+\contentsline {figure}{\numberline {V.10}{\ignorespaces Evolusi komponen loss curriculum}}{137}{figure.caption.51}%
+\contentsline {figure}{\numberline {V.11}{\ignorespaces Analisis statistik curriculum learning}}{138}{figure.caption.52}%
+\contentsline {figure}{\numberline {V.12}{\ignorespaces Analisis tiga fase curriculum}}{139}{figure.caption.53}%
+\contentsline {figure}{\numberline {V.13}{\ignorespaces Distribusi kontribusi loss}}{141}{figure.caption.55}%
+\contentsline {figure}{\numberline {V.14}{\ignorespaces Variabilitas magnitude loss}}{141}{figure.caption.56}%
+\contentsline {figure}{\numberline {V.15}{\ignorespaces Mekanisme penyeimbangan magnitude}}{142}{figure.caption.57}%
+\contentsline {figure}{\numberline {V.16}{\ignorespaces Restorasi dokumen ANRI autentik}}{147}{figure.caption.63}%
+\contentsline {figure}{\numberline {V.17}{\ignorespaces Korelasi degradasi dan performa}}{152}{figure.caption.66}%
+\contentsline {figure}{\numberline {V.18}{\ignorespaces Distribusi dan tingkat keparahan kegagalan}}{167}{figure.caption.70}%

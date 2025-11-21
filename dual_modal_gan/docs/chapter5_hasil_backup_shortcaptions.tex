@@ -397,13 +397,13 @@ Studi ablasi 15 \textit{epoch} mencapai PSNR maksimal 24.86 dB (Eksperimen 02), 
 \subsubsection{Kontribusi Diskriminator Dual-Modal}
 \label{subsubsec:kontribusi-dual-modal}
 
-Bagian ini mengevaluasi kontribusi arsitektur diskriminator \textit{dual-modal} (dengan cabang visual CNN dan cabang tekstual LSTM, detail arsitektur dijelaskan pada Bab~IV.1.5) terhadap kualitas umpan balik generator dibandingkan diskriminator hanya visual. Evaluasi dilakukan melalui studi ablasi terkontrol untuk mengisolasi dampak arsitektur diskriminator terhadap metrik restorasi.
+Bagian ini mengevaluasi kontribusi arsitektur diskriminator \textit{dual-modal} (dengan cabang visual CNN dan cabang tekstual LSTM, detail arsitektur dijelaskan pada Bagian~\ref{subsubsec:diskriminator-dual-modal}) terhadap kualitas umpan balik generator dibandingkan diskriminator hanya visual. Evaluasi dilakukan melalui studi ablasi terkontrol untuk mengisolasi dampak arsitektur diskriminator terhadap metrik restorasi.
 
 \vspace{0.5em}
 
 \paragraph{1. Protokol Studi Ablasi}
 
-Untuk mengisolasi kontribusi arsitektur \textit{dual-modal} (cabang CNN+BiLSTM dengan \textit{bilateral cross-attention}, 17.4M parameter—detail spesifikasi arsitektur pada Bab~IV.1.5), dilakukan studi ablasi dengan membandingkan dua varian diskriminator yang dilatih dengan konfigurasi identik: generator Enhanced U-Net, 50 \textit{epoch}, protokol \textit{curriculum learning}, fungsi \textit{loss} identik ($L_{adv} + L_{L1} + L_{perc} + L_{CTC}$), dan \textit{checkpoint epoch} 44 dipilih pada \textit{set} validasi ($n$=710) berdasarkan kriteria gabungan PSNR-CER.
+Untuk mengisolasi kontribusi arsitektur \textit{dual-modal} (cabang CNN+BiLSTM dengan \textit{bilateral cross-attention}, 17.4M parameter—detail spesifikasi arsitektur pada Bagian~\ref{subsubsec:diskriminator-dual-modal}), dilakukan studi ablasi dengan membandingkan dua varian diskriminator yang dilatih dengan konfigurasi identik: generator Enhanced U-Net, 50 \textit{epoch}, protokol \textit{curriculum learning}, fungsi \textit{loss} identik ($L_{adv} + L_{L1} + L_{perc} + L_{CTC}$), dan \textit{checkpoint epoch} 44 dipilih pada \textit{set} validasi ($n$=710) berdasarkan kriteria gabungan PSNR-CER.
 
 \vspace{0.5em}
 
@@ -1202,7 +1202,7 @@ Mengevaluasi generalisasi model terhadap degradasi historis nyata yang tidak ter
 \textbf{Prosedur Inferensi:}
 \begin{enumerate}[nosep]
     \item Dokumen halaman penuh diproses menggunakan model dengan performa validasi terbaik (\textit{checkpoint} \textit{epoch} 44)
-    \item Strategi tumpang tindih berorientasi potret untuk mempertahankan autentisitas fitur paleografi (detail implementasi pada Bab~IV.3)
+    \item Strategi tumpang tindih berorientasi potret untuk mempertahankan autentisitas fitur paleografi
     \item Format keluaran: TIFF tanpa kompresi untuk standar preservasi arsip
     \item Evaluasi visual: perbandingan sistematis antara masukan terdegradasi dan keluaran terestorasi untuk 5 aspek kualitas (pembersihan latar, kejelasan teks, keberadaan artefak, pelestarian goresan, kegunaan keseluruhan)
 \end{enumerate}

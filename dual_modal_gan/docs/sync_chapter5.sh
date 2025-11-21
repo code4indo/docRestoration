@@ -18,6 +18,27 @@ if [ ! -f "chapter5_hasil.tex" ]; then
     exit 1
 fi
 
+# Find \begin{document} line
+BEGIN_LINE=$(grep -n '\\begin{document}' chapter5_hasil.tex | head -1 | cut -d: -f1)
+
+# Find \end{document} line
+END_LINE=$(grep -n '\\end{document}' chapter5_hasil.tex | tail -1 | cut -d: -f1)
+
+if [ -z "$BEGIN_LINE" ] || [ -z "$END_LINE" ]; then
+    echo "❌ ERROR: No \\begin{document} or \\end{document} found!"
+    exit 1
+fi
+
+# Calculate content lines (exclude \begin{document} and \end{document})
+START_LINE=$((BEGIN_LINE + 1))
+CONTENT_END_LINE=$((END_LINE - 1))
+
+echo "📍 Detection result:"
+echo "   \\begin{document} at line: $BEGIN_LINE"
+echo "   \\end{document} at line:   $END_LINE"
+echo "   Content range: $START_LINE-$CONTENT_END_LINE"
+echo ""
+
 # Backup content_only file
 if [ -f "chapter5_hasil_content_only.tex" ]; then
     BACKUP_FILE="chapter5_hasil_content_only.tex.backup_$(date +%Y%m%d_%H%M%S)"
@@ -25,10 +46,8 @@ if [ -f "chapter5_hasil_content_only.tex" ]; then
     echo "✓ Backup created: $BACKUP_FILE"
 fi
 
-# Extract content (line 125 to 2066, excluding \begin{document} and \end{document})
-# Line 125 is \begin{document}, we start from line 126
-# Line 2067 is \end{document}, we end at line 2066
-sed -n '125,2066p' chapter5_hasil.tex > chapter5_hasil_content_only.tex
+# Extract content dynamically
+sed -n "${START_LINE},${CONTENT_END_LINE}p" chapter5_hasil.tex > chapter5_hasil_content_only.tex
 
 echo "✓ Content extracted and synced"
 echo ""
