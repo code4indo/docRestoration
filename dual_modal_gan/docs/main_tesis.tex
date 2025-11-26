@@ -103,6 +103,10 @@
 \titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
 \titlespacing*{\subsection}{0pt}{0pt}{0pt}
 
+% Pengaturan jarak untuk subsubsection
+\titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection}{1em}{}
+\titlespacing*{\subsubsection}{0pt}{0.5\baselineskip}{0pt}
+
 % Pengaturan margin: kiri 4cm, lainnya 3cm
 \geometry{
     a4paper,
@@ -120,6 +124,17 @@
 % Pengaturan spasi
 \onehalfspacing
 
+% Pengaturan jarak persamaan (equation spacing)
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{0pt plus 2pt}
+\setlength{\belowdisplayshortskip}{3pt plus 2pt minus 2pt}
+
+% Menyetarakan jarak float dengan 1 spasi MS Word (Single Spacing 12pt ~= 14.5pt)
+\setlength{\textfloatsep}{14.5pt plus 2.0pt minus 2.0pt}
+\setlength{\floatsep}{14.5pt plus 2.0pt minus 2.0pt}
+\setlength{\intextsep}{14.5pt plus 2.0pt minus 2.0pt}
+
 % Pengaturan penomoran
 \setcounter{secnumdepth}{4}
 
@@ -135,7 +150,7 @@
 
 % Format untuk paragraph (subsubsubsection level)
 \titleformat{\paragraph}[hang]
-{\normalfont\normalsize\bfseries}
+{\normalfont\normalsize}
 {\theparagraph.}
 {0.5em}
 {}
@@ -280,12 +295,14 @@
 % \addcontentsline{toc}{section}{DAFTAR ISI}
 \vspace{2cm}
 \begin{center}
-{\fontsize{14}{16.8}\selectfont\textbf{DAFTAR ISI}}\\[1em]
+      {\fontsize{14}{16.8}\selectfont\textbf{DAFTAR ISI}}\\[1em]
 \end{center}
 \vspace{1em}
 
 {\singlespacing
-\tableofcontents
+      \makeatletter
+      \@starttoc{toc}
+      \makeatother
 }
 
 % ============================================================
@@ -295,14 +312,14 @@
 \addcontentsline{toc}{section}{DAFTAR LAMPIRAN}
 \vspace{2cm}
 \begin{center}
-{\fontsize{14}{16.8}\selectfont\textbf{DAFTAR LAMPIRAN}}\\[1em]
+      {\fontsize{14}{16.8}\selectfont\textbf{DAFTAR LAMPIRAN}}\\[1em]
 \end{center}
 \vspace{1em}
 
 {\singlespacing
-Lampiran A. Arsitektur Generator U-Net Enhanced \dotfill \pageref{lampiran:A}\\
-Lampiran B. Arsitektur Diskriminator Dual-Modal Enhanced \dotfill \pageref{lampiran:B}\\
-Lampiran C. Formulir Penilaian Ahli Paleografi \dotfill \pageref{lampiran:C}
+      Lampiran A. Arsitektur Generator U-Net Enhanced \dotfill \pageref{lampiran:A}\\
+      Lampiran B. Arsitektur Diskriminator Dual-Modal Enhanced \dotfill \pageref{lampiran:B}\\
+      Lampiran C. Formulir Penilaian Ahli Paleografi \dotfill \pageref{lampiran:C}
 }
 
 % ============================================================
@@ -312,14 +329,14 @@ Lampiran C. Formulir Penilaian Ahli Paleografi \dotfill \pageref{lampiran:C}
 \addcontentsline{toc}{section}{DAFTAR GAMBAR DAN ILUSTRASI}
 \vspace{2cm}
 \begin{center}
-{\fontsize{14}{16.8}\selectfont\textbf{DAFTAR GAMBAR DAN ILUSTRASI}}\\[1em]
+      {\fontsize{14}{16.8}\selectfont\textbf{DAFTAR GAMBAR DAN ILUSTRASI}}\\[1em]
 \end{center}
 \vspace{1em}
 
 {\singlespacing
-\makeatletter
-\@starttoc{lof}
-\makeatother
+      \makeatletter
+      \@starttoc{lof}
+      \makeatother
 }
 
 % ============================================================
@@ -329,14 +346,14 @@ Lampiran C. Formulir Penilaian Ahli Paleografi \dotfill \pageref{lampiran:C}
 \addcontentsline{toc}{section}{DAFTAR TABEL}
 \vspace{2cm}
 \begin{center}
-{\fontsize{14}{16.8}\selectfont\textbf{DAFTAR TABEL}}\\[1em]
+      {\fontsize{14}{16.8}\selectfont\textbf{DAFTAR TABEL}}\\[1em]
 \end{center}
 \vspace{1em}
 
 {\singlespacing
-\makeatletter
-\@starttoc{lot}
-\makeatother
+      \makeatletter
+      \@starttoc{lot}
+      \makeatother
 }
 
 % ============================================================
@@ -345,7 +362,7 @@ Lampiran C. Formulir Penilaian Ahli Paleografi \dotfill \pageref{lampiran:C}
 \newpage
 % \addcontentsline{toc}{section}{DAFTAR LAMBANG DAN SINGKATAN}
 {\singlespacing
-\input{Chapter_Lambang_content_only.tex}
+      \input{Chapter_Lambang_content_only.tex}
 }
 
 
@@ -397,7 +414,7 @@ Lampiran C. Formulir Penilaian Ahli Paleografi \dotfill \pageref{lampiran:C}
 \newpage
 \vspace{2cm}
 \begin{center}
-{\fontsize{14}{16.8}\selectfont\textbf{DAFTAR PUSTAKA}}\\[1em]
+      {\fontsize{14}{16.8}\selectfont\textbf{DAFTAR PUSTAKA}}\\[1em]
 \end{center}
 \addcontentsline{toc}{section}{DAFTAR PUSTAKA}
 \vspace{1em}

@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  # LAYPA service - using port 5002 (MLflow uses 5000)
+  laypa:
+    user: ${MY_UID}:${MY_GID}
+    image: 'loghi/docker.laypa:2.2.14'
+    command: 'python api/gunicorn_app.py'
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: ${LAYPA_GPU_COUNT}
+              capabilities: [gpu]
+    container_name: 'gan-htr-laypa'
+    ports:
+      - '127.0.0.1:5002:5000'
+    environment:
+      LAYPA_MAX_QUEUE_SIZE: 128
+      LAYPA_MODEL_BASE_PATH: ${LAYPA_MODEL_PATH}
+      LAYPA_OUTPUT_BASE_PATH: ${LAYPA_OUTPUT_PATH}
+      GUNICORN_RUN_HOST: '0.0.0.0:5000'
+      GUNICORN_WORKERS: 1
+      GUNICORN_THREADS: 1
+      GUNICORN_ACCESSLOG: '-'
+    volumes:
+      - '${LAYPA_MODEL_PATH}:${LAYPA_MODEL_PATH}'
+      - '${LAYPA_OUTPUT_PATH}:${LAYPA_OUTPUT_PATH}'
+    networks:
+      - loghi-pipeline
+    shm_size: 512mb
+    restart: unless-stopped
+
+  loghi-tooling:
+    user: ${MY_UID}:${MY_GID}
+    image: 'loghi/docker.loghi-tooling:2.2.14'
+    command: '/src/loghi-tooling/loghiwebservice/target/appassembler/bin/LoghiWebserviceApplication server ${TOOLING_CONFIG_FILE}'
+    container_name: 'gan-htr-tooling'
+    ports:
+      - '8082:8080'
+      - '8083:8081'
+    environment:
+      STORAGE_LOCATION: ${TOOLING_OUTPUT_PATH}
+      P2PALA_CONFIG_FILE: /doesnotexist
+      EXTRACT_BASELINES_MAX_THREADS: 4
+      EXTRACT_BASELINES_QUEUE_LENGTH: 64
+      CUT_FROM_IMAGE_MAX_THREADS: 4
+      CUT_FROM_IMAGE_QUEUE_LENGTH: 64
+      LOGHI_HTR_MERGE_PAGE_MAX_THREADS: 4
+      LOGHI_HTR_MERGE_PAGE_QUEUE_LENGTH: 64
+      RECALCULATE_READING_ORDER_NEW_MAX_THREADS: 4
+      RECALCULATE_READING_ORDER_NEW_QUEUE_LENGTH: 64
+      SPLIT_PAGE_TEXT_LINE_INTO_WORDS_MAX_THREADS: 4
+      SPLIT_PAGE_TEXT_LINE_INTO_WORDS_QUEUE_LENGTH: 64
+      DETECT_LANGUAGE_OF_PAGE_XML_MAX_THREADS: 4
+      DETECT_LANGUAGE_OF_PAGE_XML_QUEUE_LENGTH: 64
+    volumes: 
+      - '${TOOLING_CONFIG_FILE}:${TOOLING_CONFIG_FILE}'
+      - '${TOOLING_OUTPUT_PATH}:${TOOLING_OUTPUT_PATH}'
+    networks:
+      - loghi-pipeline
+    shm_size: 512mb
+    restart: unless-stopped
+
+  htr:
+    user: ${MY_UID}:${MY_GID}
+    image: 'loghi/docker.htr:2.2.14'
+    command: sh -c 'cd api && uvicorn app:app --host 0.0.0.0 --port 5000'
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: ${HTR_GPU_COUNT}
+              capabilities: [gpu]
+    container_name: 'gan-htr-htr'
+    ports:
+      - '127.0.0.1:5001:5000'
+    environment:
+      LOGHI_MODEL_PATH: ""
+      LOGHI_BASE_MODEL_DIR: /home/lambda_one/tesis/loghi/models
+      LOGHI_MODEL_NAME: generic-2023-02-15
+      LOGHI_CHARLIST_PATH: ${LOGHI_MODEL_PATH}/charlist.txt
+      LOGHI_BATCH_SIZE: 64
+      LOGHI_OUTPUT_PATH: ${LOGHI_OUTPUT_PATH}
+      LOGHI_OUTPUT_BASE_PATH: ${LOGHI_OUTPUT_PATH}
+      LOGHI_MAX_QUEUE_SIZE: 50000
+      LOGHI_PATIENCE: 0.5
+    volumes:
+      - '/home/lambda_one/tesis/loghi/models:/home/lambda_one/tesis/loghi/models'
+      - '${LOGHI_OUTPUT_PATH}:${LOGHI_OUTPUT_PATH}'
+    networks:
+      - loghi-pipeline
+    shm_size: 512mb
+    restart: unless-stopped
+
+networks:
+  loghi-pipeline:
+    driver: bridge

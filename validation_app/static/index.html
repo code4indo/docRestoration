@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Restoration Validation System</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>📊 Document Restoration Validation System</h1>
+            <p class="subtitle">Validasi Penurunan CER dengan LLM Judge (Grok 4.1 Fast)</p>
+        </div>
+    </header>
+
+    <main>
+        <!-- Upload Section -->
+        <section class="upload-section">
+            <div class="upload-card">
+                <h2>📤 Upload Dokumen Terdegradasi</h2>
+                <div class="upload-area" id="upload-area">
+                    <input type="file" id="file-input" accept="image/*" hidden>
+                    <div class="upload-content">
+                        <div class="upload-icon">🖼️</div>
+                        <p>Drag & drop gambar atau <span class="browse-link">pilih file</span></p>
+                        <p class="upload-hint">JPG, PNG, TIFF (max 10MB)</p>
+                    </div>
+                    <div class="preview-container" id="preview-container" style="display: none;">
+                        <img id="preview-image" alt="Preview">
+                        <button class="remove-btn" id="remove-btn">✕</button>
+                    </div>
+                </div>
+                
+                <div class="ground-truth-section">
+                    <label for="ground-truth">
+                        <span class="label-text">Ground Truth (Opsional)</span>
+                        <span class="label-hint">Jika tersedia, CER akan dihitung</span>
+                    </label>
+                    <textarea id="ground-truth" placeholder="Masukkan teks referensi (ground truth) jika tersedia..."></textarea>
+                </div>
+                
+                <button class="validate-btn" id="validate-btn" disabled>
+                    <span class="btn-icon">🔍</span>
+                    <span class="btn-text">Validasi Dokumen</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loading-overlay" style="display: none;">
+            <div class="loading-content">
+                <div class="spinner"></div>
+                <h3 id="loading-title">Memproses...</h3>
+                <p id="loading-status">Menjalankan restorasi dan HTR...</p>
+                <div class="progress-steps">
+                    <div class="step" id="step-restore">
+                        <span class="step-icon">⏳</span>
+                        <span class="step-text">Restorasi Gambar</span>
+                    </div>
+                    <div class="step" id="step-htr-degraded">
+                        <span class="step-icon">⏳</span>
+                        <span class="step-text">HTR Degraded</span>
+                    </div>
+                    <div class="step" id="step-htr-restored">
+                        <span class="step-icon">⏳</span>
+                        <span class="step-text">HTR Restored</span>
+                    </div>
+                    <div class="step" id="step-llm">
+                        <span class="step-icon">⏳</span>
+                        <span class="step-text">LLM Analysis</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <section class="results-section" id="results-section" style="display: none;">
+            <!-- Summary Cards -->
+            <div class="summary-cards">
+                <div class="summary-card cer-card" id="cer-card">
+                    <div class="card-icon">📉</div>
+                    <div class="card-content">
+                        <h3>CER Improvement</h3>
+                        <div class="metric-value" id="cer-improvement">--</div>
+                        <div class="metric-detail">
+                            <span>Degraded: <span id="cer-degraded">--</span>%</span>
+                            <span>→</span>
+                            <span>Restored: <span id="cer-restored">--</span>%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="summary-card quality-card">
+                    <div class="card-icon">⭐</div>
+                    <div class="card-content">
+                        <h3>Quality Score</h3>
+                        <div class="metric-value">
+                            <span id="quality-degraded">--</span>
+                            <span class="arrow">→</span>
+                            <span id="quality-restored" class="highlight">--</span>
+                        </div>
+                        <div class="metric-detail">LLM Overall Score</div>
+                    </div>
+                </div>
+                
+                <div class="summary-card verdict-card">
+                    <div class="card-icon" id="verdict-icon">🏆</div>
+                    <div class="card-content">
+                        <h3>Verdict</h3>
+                        <div class="verdict-text" id="verdict-text">--</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparison Section -->
+            <div class="comparison-section">
+                <h2>🔄 Perbandingan Visual & Teks</h2>
+                
+                <div class="comparison-grid">
+                    <!-- Degraded Column -->
+                    <div class="comparison-column degraded">
+                        <div class="column-header">
+                            <span class="column-badge degraded-badge">SEBELUM</span>
+                            <h3>Gambar Terdegradasi</h3>
+                        </div>
+                        <div class="image-container">
+                            <img id="degraded-image" alt="Degraded">
+                            <div class="image-overlay">
+                                <button class="zoom-btn" onclick="openImageModal('degraded')">🔍 Zoom</button>
+                            </div>
+                        </div>
+                        <div class="text-container">
+                            <div class="text-header">
+                                <span>📝 Hasil HTR</span>
+                                <span class="line-count" id="degraded-lines">0 baris</span>
+                            </div>
+                            <div class="text-content" id="degraded-text">
+                                <p class="no-text">Tidak ada teks terdeteksi</p>
+                            </div>
+                        </div>
+                        <div class="score-breakdown">
+                            <h4>📊 Skor Analisis LLM</h4>
+                            <div class="score-bars">
+                                <div class="score-row">
+                                    <span>Readability</span>
+                                    <div class="score-bar"><div class="score-fill" id="degraded-readability" style="width: 0%"></div></div>
+                                    <span class="score-value" id="degraded-readability-val">0</span>
+                                </div>
+                                <div class="score-row">
+                                    <span>Completeness</span>
+                                    <div class="score-bar"><div class="score-fill" id="degraded-completeness" style="width: 0%"></div></div>
+                                    <span class="score-value" id="degraded-completeness-val">0</span>
+                                </div>
+                                <div class="score-row">
+                                    <span>Accuracy</span>
+                                    <div class="score-bar"><div class="score-fill" id="degraded-accuracy" style="width: 0%"></div></div>
+                                    <span class="score-value" id="degraded-accuracy-val">0</span>
+                                </div>
+                            </div>
+                            <div class="issues-list" id="degraded-issues"></div>
+                        </div>
+                    </div>
+
+                    <!-- Arrow Divider -->
+                    <div class="comparison-arrow">
+                        <div class="arrow-icon">➡️</div>
+                        <span>Restorasi GAN</span>
+                    </div>
+
+                    <!-- Restored Column -->
+                    <div class="comparison-column restored">
+                        <div class="column-header">
+                            <span class="column-badge restored-badge">SESUDAH</span>
+                            <h3>Gambar Terestorasi</h3>
+                        </div>
+                        <div class="image-container">
+                            <img id="restored-image" alt="Restored">
+                            <div class="image-overlay">
+                                <button class="zoom-btn" onclick="openImageModal('restored')">🔍 Zoom</button>
+                            </div>
+                        </div>
+                        <div class="text-container">
+                            <div class="text-header">
+                                <span>📝 Hasil HTR</span>
+                                <span class="line-count" id="restored-lines">0 baris</span>
+                            </div>
+                            <div class="text-content" id="restored-text">
+                                <p class="no-text">Tidak ada teks terdeteksi</p>
+                            </div>
+                        </div>
+                        <div class="score-breakdown">
+                            <h4>📊 Skor Analisis LLM</h4>
+                            <div class="score-bars">
+                                <div class="score-row">
+                                    <span>Readability</span>
+                                    <div class="score-bar"><div class="score-fill improved" id="restored-readability" style="width: 0%"></div></div>
+                                    <span class="score-value" id="restored-readability-val">0</span>
+                                </div>
+                                <div class="score-row">
+                                    <span>Completeness</span>
+                                    <div class="score-bar"><div class="score-fill improved" id="restored-completeness" style="width: 0%"></div></div>
+                                    <span class="score-value" id="restored-completeness-val">0</span>
+                                </div>
+                                <div class="score-row">
+                                    <span>Accuracy</span>
+                                    <div class="score-bar"><div class="score-fill improved" id="restored-accuracy" style="width: 0%"></div></div>
+                                    <span class="score-value" id="restored-accuracy-val">0</span>
+                                </div>
+                            </div>
+                            <div class="improvements-list" id="restored-improvements"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estimated Ground Truth Section -->
+            <div class="estimated-gt-section">
+                <h2>🎯 Ground Truth Estimasi (LLM)</h2>
+                <div class="gt-explanation">
+                    <p>LLM menganalisis kedua hasil HTR secara semantik dan merekonstruksi teks asli dokumen (ejaan historis abad 16-18 dipertahankan)</p>
+                </div>
+                
+                <!-- Document Context -->
+                <div class="document-context-card" id="doc-context-card" style="display: none;">
+                    <div class="context-header">
+                        <span class="context-icon">📄</span>
+                        <span class="context-title">Konteks Dokumen</span>
+                    </div>
+                    <p id="document-context-text">--</p>
+                </div>
+                
+                <!-- GT Tabs: Dutch vs Indonesian -->
+                <div class="gt-tabs">
+                    <button class="gt-tab active" data-tab="dutch" onclick="switchGtTab('dutch')">🇳🇱 Belanda (Asli)</button>
+                    <button class="gt-tab" data-tab="indonesian" onclick="switchGtTab('indonesian')">🇮🇩 Terjemahan Indonesia</button>
+                </div>
+                
+                <div class="gt-card">
+                    <div class="gt-header">
+                        <span class="gt-badge">📜 Estimated Ground Truth</span>
+                        <div class="gt-confidence-wrapper">
+                            <span class="gt-confidence" id="gt-confidence">Confidence: --</span>
+                            <span class="gt-confidence-level" id="gt-confidence-level"></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Dutch GT Content -->
+                    <div class="gt-content gt-tab-content active" id="gt-dutch-content">
+                        <div id="estimated-gt-text">
+                            <p class="no-text">Ground truth akan ditampilkan setelah analisis LLM</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Indonesian Translation Content -->
+                    <div class="gt-content gt-tab-content" id="gt-indonesian-content" style="display: none;">
+                        <div id="estimated-gt-indonesian">
+                            <p class="no-text">Terjemahan akan ditampilkan setelah analisis LLM</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gt-stats">
+                        <div class="gt-stat">
+                            <span class="stat-label">CER Degraded (vs GT)</span>
+                            <span class="stat-value" id="cer-vs-gt-degraded">--</span>
+                        </div>
+                        <div class="gt-stat">
+                            <span class="stat-label">CER Restored (vs GT)</span>
+                            <span class="stat-value highlight" id="cer-vs-gt-restored">--</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Confidence Explanation -->
+                <div class="confidence-explanation-card" id="confidence-explanation-card" style="display: none;">
+                    <div class="explanation-header">
+                        <span class="explanation-icon">📊</span>
+                        <span class="explanation-title">Penjelasan Confidence Score</span>
+                    </div>
+                    <p id="confidence-explanation-text">--</p>
+                </div>
+                
+                <!-- Reconstruction Notes -->
+                <div class="reconstruction-notes" id="reconstruction-notes" style="display: none;">
+                    <div class="notes-header">
+                        <span class="notes-icon">📝</span>
+                        <span class="notes-title">Catatan Rekonstruksi</span>
+                    </div>
+                    <p id="reconstruction-notes-text">--</p>
+                </div>
+            </div>
+
+            <!-- LLM Analysis Section -->
+            <div class="llm-analysis-section">
+                <h2>🤖 Analisis LLM (Grok 4.1 Fast)</h2>
+                <div class="analysis-card">
+                    <div class="analysis-verdict">
+                        <h3>📋 Verdict</h3>
+                        <p id="llm-verdict">--</p>
+                    </div>
+                    <div class="analysis-recommendation">
+                        <h3>💡 Rekomendasi</h3>
+                        <p id="llm-recommendation">--</p>
+                    </div>
+                    <div class="analysis-confidence">
+                        <span>Confidence Level:</span>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" id="llm-confidence" style="width: 0%"></div>
+                        </div>
+                        <span id="llm-confidence-val">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="action-btn secondary" onclick="resetValidation()">
+                    🔄 Validasi Baru
+                </button>
+                <button class="action-btn primary" onclick="downloadReport()">
+                    📥 Download Report
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Image Modal -->
+    <div class="modal" id="image-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeImageModal()">✕</button>
+            <img id="modal-image" alt="Full size">
+        </div>
+    </div>
+
+    <footer>
+        <p>Document Restoration Validation System | Dual-Modal GAN + Loghi HTR + Grok 4.1 Fast</p>
+        <p class="links">
+            <a href="http://localhost:7862" target="_blank">Gradio UI</a> |
+            <a href="http://localhost:7863" target="_blank">HTR Viewer</a>
+        </p>
+    </footer>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

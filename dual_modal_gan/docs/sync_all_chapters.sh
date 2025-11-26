@@ -43,12 +43,7 @@ sync_chapter() {
     local start_line=$((begin_line + 1))
     local content_end_line=$((end_line - 1))
     
-    # Backup if target exists
-    if [ -f "$target_file" ]; then
-        local backup_file="${target_file}.backup_$(date +%Y%m%d_%H%M%S)"
-        cp "$target_file" "$backup_file"
-        echo "  ✓ Backup: $backup_file"
-    fi
+
     
     # Extract content
     sed -n "${start_line},${content_end_line}p" "$source_file" > "$target_file"

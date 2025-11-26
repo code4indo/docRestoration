@@ -41,41 +41,42 @@
   >
 ]>
 <requests version="1.0">
-  <internal package="biblatex" priority="9" active="0">
+  <internal package="biblatex" priority="9" active="1">
     <generic>latex</generic>
     <provides type="dynamic">
-      <file>chapter2_tinjauan_pustaka.bcf</file>
+      <file>chapter1_pendahuluan.bcf</file>
     </provides>
     <requires type="dynamic">
-      <file>chapter2_tinjauan_pustaka.bbl</file>
+      <file>chapter1_pendahuluan.bbl</file>
     </requires>
     <requires type="static">
       <file>blx-dm.def</file>
       <file>blx-compat.def</file>
       <file>biblatex.def</file>
+      <file>blx-natbib.def</file>
       <file>standard.bbx</file>
       <file>authoryear.bbx</file>
       <file>authoryear.cbx</file>
       <file>biblatex.cfg</file>
     </requires>
   </internal>
-  <external package="biblatex" priority="5" active="0">
+  <external package="biblatex" priority="5" active="1">
     <generic>biber</generic>
     <cmdline>
       <binary>biber</binary>
-      <infile>chapter2_tinjauan_pustaka</infile>
+      <infile>chapter1_pendahuluan</infile>
     </cmdline>
     <input>
-      <file>chapter2_tinjauan_pustaka.bcf</file>
+      <file>chapter1_pendahuluan.bcf</file>
     </input>
     <output>
-      <file>chapter2_tinjauan_pustaka.bbl</file>
+      <file>chapter1_pendahuluan.bbl</file>
     </output>
     <provides type="dynamic">
-      <file>chapter2_tinjauan_pustaka.bbl</file>
+      <file>chapter1_pendahuluan.bbl</file>
     </provides>
     <requires type="dynamic">
-      <file>chapter2_tinjauan_pustaka.bcf</file>
+      <file>chapter1_pendahuluan.bcf</file>
     </requires>
     <requires type="editable">
       <file>bibliography.bib</file>

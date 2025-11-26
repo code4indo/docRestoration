@@ -1165,12 +1165,6 @@ INPUT /usr/share/texlive/texmf-dist/tex/latex/biblatex/lbx/english.lbx
 INPUT ./indonesian.lbx
 INPUT indonesian.lbx
 OUTPUT main_tesis.bcf
-INPUT main_tesis.bbl
-INPUT ./main_tesis.bbl
-INPUT main_tesis.bbl
-INPUT ./main_tesis.bbl
-INPUT ./main_tesis.bbl
-INPUT main_tesis.bbl
 INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics/color.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
@@ -1328,13 +1322,9 @@ INPUT ./kata_pengantar.tex
 INPUT kata_pengantar.tex
 INPUT ./kata_pengantar.tex
 INPUT kata_pengantar.tex
-INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmr8t.tfm
-INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb8t.tfm
 INPUT ./main_tesis.toc
 INPUT main_tesis.toc
 INPUT main_tesis.toc
-INPUT /usr/share/texlive/texmf-dist/fonts/vf/adobe/times/ptmb8t.vf
-INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb8r.tfm
 OUTPUT main_tesis.toc
 INPUT ./main_tesis.lof
 INPUT main_tesis.lof

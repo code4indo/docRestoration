@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAN-HTR Document Viewer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>📜 GAN-HTR Document Viewer</h1>
+        <p class="subtitle">Hasil otomatis ditampilkan setelah proses restorasi</p>
+    </header>
+
+    <div class="toolbar">
+        <div class="refresh-controls">
+            <span id="status-indicator" class="status-indicator connected" title="Auto-refresh aktif"></span>
+            <button id="refresh-btn" class="btn btn-primary">🔄 Refresh</button>
+            <label class="auto-refresh-label">
+                <input type="checkbox" id="auto-refresh" checked>
+                Auto-refresh
+            </label>
+        </div>
+        <div class="toolbar-actions">
+            <button id="toggle-boxes" class="btn btn-secondary">🔲 Toggle Boxes</button>
+            <button id="export-text" class="btn btn-secondary">📄 Export Text</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Panel Kiri: Daftar Dokumen -->
+        <div class="sidebar" id="sidebar-panel">
+            <h2>📋 Dokumen</h2>
+            <div id="document-list">
+                <p class="placeholder">Memuat hasil...</p>
+            </div>
+        </div>
+
+        <!-- Panel Tengah: Gambar Dokumen -->
+        <div class="image-viewer" id="image-panel">
+            <h2>🖼️ Gambar</h2>
+            <div class="image-controls">
+                <button id="zoom-in" class="btn-icon" title="Zoom In">🔍+</button>
+                <button id="zoom-out" class="btn-icon" title="Zoom Out">🔍-</button>
+                <button id="zoom-reset" class="btn-icon" title="Reset Zoom">↺</button>
+                <span id="zoom-level">100%</span>
+            </div>
+            <div id="image-container">
+                <p class="placeholder">Pilih dokumen dari daftar.</p>
+            </div>
+        </div>
+
+        <!-- Panel Kanan: Teks Transkripsi -->
+        <div class="text-viewer" id="text-panel">
+            <h2>📝 Teks</h2>
+            <div class="text-controls">
+                <button id="copy-text" class="btn-icon" title="Copy All">📋</button>
+                <span id="line-count">0 baris</span>
+            </div>
+            <div id="text-content">
+                <p class="placeholder">Pilih dokumen dari daftar.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>GAN-HTR | <a href="http://localhost:7862" target="_blank">Buka Gradio</a></p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/split.js/dist/split.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

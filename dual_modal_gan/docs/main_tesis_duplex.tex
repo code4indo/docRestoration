@@ -1,0 +1,468 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[bahasa]{babel}
+\usepackage{mathptmx} % Times New Roman font
+\usepackage{microtype} % Untuk optimasi typography dan spacing
+\usepackage[none]{hyphenat} % Menonaktifkan hyphenation
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{setspace}
+\usepackage{geometry}
+\usepackage{tikz}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{longtable}
+
+\usepackage{tocloft}
+\usepackage{caption}
+
+% Caption configuration for consistent alignment
+\captionsetup{justification=centering}
+\captionsetup[table]{
+  format=hang,
+  labelsep=space,
+  justification=justified,
+  singlelinecheck=false
+}
+\captionsetup[figure]{
+  format=hang,
+  labelsep=space,
+  justification=justified,
+  singlelinecheck=false
+}
+
+\usepackage{subcaption}
+\usepackage{textcomp}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{rotating}     % Required for \rotatebox in lampiran B
+\usepackage{letltxmacro}  % Required for \LetLtxMacro
+\usepackage{xstring}      % Required for \ifstrequal
+
+% SOLUTION: Use authoryear with custom Indonesian .lbx file
+\usepackage[style=authoryear,backend=biber,natbib=true,sorting=nyt,hyperref=true,maxcitenames=2,mincitenames=1,doi=false]{biblatex}
+\usepackage{csquotes}
+
+% CRITICAL FIX: Map bahasa to indonesian.lbx (custom localization file in same directory)
+% This custom .lbx file properly defines andothers = {dkk} following biblatex standards
+\DeclareLanguageMapping{bahasa}{indonesian}
+\DeclareQuoteAlias{english}{bahasa}
+
+\addbibresource{bibliography.bib}
+
+% NOTE: indonesian.lbx file in this directory handles all localization
+% including the critical "andothers = {dkk}" string replacement
+% No need for \DefineBibliographyStrings here - it's all in indonesian.lbx
+
+% Konfigurasi separator halaman dengan titik dua untuk sitasi
+\renewcommand*{\postnotedelim}{\addcolon\space}
+\DeclareFieldFormat{postnote}{#1}
+\DeclareFieldFormat{multipostnote}{#1}
+
+\usepackage{hyperref}
+\hypersetup{
+    pdfencoding=auto,
+    pdftitle={Tesis - Restorasi Dokumen Terdegradasi},
+    pdfauthor={},
+    pdfsubject={Tesis},
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=blue,
+    pdfstartview=FitH,
+    bookmarksopen=true,
+    bookmarksnumbered=true
+}
+
+% Aktifkan hyphenation Bahasa Indonesia dan optimasi spasi
+\lefthyphenmin=2
+\righthyphenmin=2
+\pretolerance=1000
+\tolerance=2000
+\emergencystretch=3em
+\hbadness=10000
+\vbadness=10000
+\hyphenpenalty=500
+\exhyphenpenalty=500
+\sloppy
+
+% Aktifkan microtype untuk Bahasa Indonesia
+\microtypesetup{activate=true,protrusion=true,expansion=true,tracking=true,kerning=true}
+\microtypecontext{spacing=nonfrench}
+
+% Pengaturan paragraf
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+% Pengaturan jarak untuk subsection
+\usepackage{titlesec}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{0.5\baselineskip}{0pt}
+
+% Pengaturan jarak untuk subsubsection
+\titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection}{1em}{}
+\titlespacing*{\subsubsection}{0pt}{0.5\baselineskip}{0pt}
+
+% Pengaturan margin awal (simplex/satu sisi untuk halaman awal):
+% - Kiri 4cm, kanan 3cm, atas 3cm, bawah 3cm
+% Margin duplex akan diaktifkan mulai dari DAFTAR SINGKATAN DAN LAMBANG
+\geometry{
+    a4paper,
+    left=4cm,
+    right=3cm,
+    top=3cm,
+    bottom=3cm
+}
+
+% Reset paragraph counter at each subsubsection
+\makeatletter
+\@addtoreset{paragraph}{subsubsection}
+\makeatother
+
+% Pengaturan spasi
+\onehalfspacing
+
+% Pengaturan jarak persamaan (equation spacing)
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{0pt plus 2pt}
+\setlength{\belowdisplayshortskip}{3pt plus 2pt minus 2pt}
+
+% Menyetarakan jarak float dengan 1 spasi MS Word (Single Spacing 12pt ~= 14.5pt)}
+
+% Pengaturan penomoran
+\setcounter{secnumdepth}{4}
+
+% Pengaturan TOC depth - hanya sampai level 3 (subsubsection)
+\setcounter{tocdepth}{3}
+
+% Pengaturan heading
+\renewcommand{\thesection}{\Roman{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+% Paragraph level 4: gunakan nomor urut saja tanpa prefix
+\renewcommand{\theparagraph}{\arabic{paragraph}}
+
+% Format untuk paragraph (subsubsubsection level)
+\titleformat{\paragraph}[hang]
+{\normalfont\normalsize}
+{\theparagraph.}
+{0.5em}
+{}
+\titlespacing*{\paragraph}
+{0pt}{1.5ex plus 0.5ex minus .1ex}{0.8ex plus .1ex}
+
+% Alias subsubsubsection ke paragraph
+\let\subsubsubsection\paragraph
+\let\thesubsubsubsection\theparagraph
+
+% Pengaturan penomoran tabel dan gambar mengikuti section
+\counterwithin{table}{section}
+\renewcommand{\thetable}{\thesection.\arabic{table}}
+\counterwithin{figure}{section}
+\renewcommand{\thefigure}{\thesection.\arabic{figure}}
+
+% Pengaturan format penomoran persamaan mengikuti section
+\counterwithin{equation}{section}
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
+
+% Konfigurasi Daftar Isi
+\renewcommand{\cftsecfont}{\normalfont}
+\renewcommand{\cftsecpagefont}{\normalfont}
+\renewcommand{\cftsubsecfont}{\normalfont}
+\renewcommand{\cftsubsubsecfont}{\normalfont}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}} % Add this line to show dots for sections
+\setlength{\cftsecindent}{0em}
+\setlength{\cftsubsecindent}{1.5em}
+\setlength{\cftsubsubsecindent}{3em}
+\setlength{\cftbeforesecskip}{0pt} % 1 spasi untuk section
+\setlength{\cftbeforesubsecskip}{0pt} % 1 spasi untuk subsection
+\setlength{\cftbeforesubsubsecskip}{0pt} % 1 spasi untuk subsubsection
+
+% Konfigurasi Daftar Gambar
+% \renewcommand{\listfigurename}{} % Tidak diperlukan lagi karena menggunakan heading manual
+\renewcommand{\figurename}{Gambar}
+\renewcommand{\cftfigpresnum}{Gambar~}
+\renewcommand{\cftfigaftersnum}{.~~}
+\setlength{\cftfignumwidth}{6em}
+\setlength{\cftfigindent}{0em}
+\renewcommand{\cftfigfont}{\normalfont}
+\renewcommand{\cftfigpagefont}{\normalfont}
+\renewcommand{\cftfigafterpnum}{\vskip0pt}
+\setlength{\cftbeforefigskip}{0pt}
+
+% Konfigurasi Daftar Tabel
+% \renewcommand{\listtablename}{} % Tidak diperlukan lagi karena menggunakan heading manual
+\renewcommand{\tablename}{Tabel}
+\renewcommand{\cfttabpresnum}{Tabel~}
+\renewcommand{\cfttabaftersnum}{.~~}
+\setlength{\cfttabnumwidth}{6em}
+\setlength{\cfttabindent}{0em}
+\renewcommand{\cfttabfont}{\normalfont}
+\renewcommand{\cfttabpagefont}{\normalfont}
+\renewcommand{\cfttabafterpnum}{\vskip0pt}
+\setlength{\cftbeforetabskip}{0pt}
+
+\begin{document}
+
+% Pengaturan TOC depth setelah \begin{document} - DIPINDAHKAN KE SEBELUM TABLEOFCONTENTS
+
+% ============================================================
+% HALAMAN COVER/JUDUL
+% ============================================================
+% \begin{titlepage}
+% \centering
+% \vspace*{2cm}
+
+% {\fontsize{14}{16.8}\selectfont\textbf{RESTORASI DOKUMEN TERDEGRADASI MENGGUNAKAN}}\\[0.5em]
+% {\fontsize{14}{16.8}\selectfont\textbf{GENERATIVE ADVERSARIAL NETWORK DENGAN}}\\[0.5em]
+% {\fontsize{14}{16.8}\selectfont\textbf{DISKRIMINATOR DUAL-MODAL DAN OPTIMASI}}\\[0.5em]
+% {\fontsize{14}{16.8}\selectfont\textbf{LOSS FUNCTION BERORIENTASI HTR}}\\[3cm]
+
+% {\fontsize{12}{14.4}\selectfont\textbf{TESIS}}\\[2cm]
+
+% \fontsize{12}{14.4}\selectfont
+% Oleh:\\[0.5cm]
+% \textbf{[NAMA MAHASISWA]}\\
+% \textbf{[NIM]}
+
+% \vfill
+
+% {\fontsize{12}{14.4}\selectfont\textbf{PROGRAM PASCASARJANA}}\\
+% {\fontsize{12}{14.4}\selectfont\textbf{[NAMA UNIVERSITAS]}}\\
+% {\fontsize{12}{14.4}\selectfont\textbf{[TAHUN]}}
+
+% \end{titlepage}
+\pagenumbering{empty}
+\input{cover.tex}
+\newpage
+
+% ============================================================
+% PENOMORAN HALAMAN ROMAWI KECIL UNTUK BAGIAN AWAL
+% ============================================================
+\pagenumbering{roman}
+\setcounter{page}{1}
+
+% ============================================================
+% ABSTRAK (BAHASA INDONESIA)
+% ============================================================
+\newpage
+\addcontentsline{toc}{section}{ABSTRAK}
+\input{abstrak_id.tex}
+
+% ============================================================
+% ABSTRACT (BAHASA INGGRIS)
+% ============================================================
+\newpage
+\addcontentsline{toc}{section}{ABSTRACT}
+\input{abstrak_en.tex}
+
+% ============================================================
+% HALAMAN PENGESAHAN
+% ============================================================
+\newpage
+\addcontentsline{toc}{section}{LEMBAR PENGESAHAN}
+\input{lembar_pengesahan.tex}
+
+% ============================================================
+% HALAMAN DEDIKASI
+% ============================================================
+\newpage
+\addcontentsline{toc}{section}{HALAMAN PERUNTUKAN}
+\input{halaman_dedikasi.tex}
+
+
+% ============================================================
+% KATA PENGATAR
+% ============================================================
+\newpage\addcontentsline{toc}{section}{KATA PENGANTAR}% \vspace{2cm}
+% \begin{center}
+% {\fontsize{14}{16.8}\selectfont\textbf{KATA PENGANTAR}}\\[1em]
+% \end{center}
+% \vspace{1em}
+
+\input{kata_pengantar.tex}
+
+% ============================================================
+% DAFTAR ISI
+% ============================================================
+\newpage
+% \addcontentsline{toc}{section}{DAFTAR ISI}
+\vspace{2cm}
+\begin{center}
+      {\fontsize{14}{16.8}\selectfont\textbf{DAFTAR ISI}}\\[1em]
+\end{center}
+\vspace{1em}
+
+{\singlespacing
+      \makeatletter
+      \@starttoc{toc}
+      \makeatother
+}
+
+% ============================================================
+% DAFTAR LAMPIRAN
+% ============================================================
+\newpage
+\addcontentsline{toc}{section}{DAFTAR LAMPIRAN}
+\vspace{2cm}
+\begin{center}
+      {\fontsize{14}{16.8}\selectfont\textbf{DAFTAR LAMPIRAN}}\\[1em]
+\end{center}
+\vspace{1em}
+
+{\singlespacing
+      Lampiran A. Arsitektur Generator U-Net Enhanced \dotfill \pageref{lampiran:A}\\
+      Lampiran B. Arsitektur Diskriminator Dual-Modal Enhanced \dotfill \pageref{lampiran:B}\\
+      Lampiran C. Formulir Penilaian Ahli Paleografi \dotfill \pageref{lampiran:C}
+}
+
+% ============================================================
+% DAFTAR GAMBAR DAN ILUSTRASI
+% ============================================================
+\newpage
+\addcontentsline{toc}{section}{DAFTAR GAMBAR DAN ILUSTRASI}
+\vspace{2cm}
+\begin{center}
+      {\fontsize{14}{16.8}\selectfont\textbf{DAFTAR GAMBAR DAN ILUSTRASI}}\\[1em]
+\end{center}
+\vspace{1em}
+
+{\singlespacing
+      \makeatletter
+      \@starttoc{lof}
+      \makeatother
+}
+
+% ============================================================
+% DAFTAR TABEL
+% ============================================================
+\newpage
+\addcontentsline{toc}{section}{DAFTAR TABEL}
+\vspace{2cm}
+\begin{center}
+      {\fontsize{14}{16.8}\selectfont\textbf{DAFTAR TABEL}}\\[1em]
+\end{center}
+\vspace{1em}
+
+{\singlespacing
+      \makeatletter
+      \@starttoc{lot}
+      \makeatother
+}
+
+% ============================================================
+% DAFTAR LAMBANG DAN SINGKATAN
+% ============================================================
+\newpage
+% ============================================================
+% BERALIH KE MODE DUPLEX (BOLAK-BALIK) MULAI DARI SINI
+% ============================================================
+% Aktifkan margin untuk cetak bolak-balik:
+% - Halaman ganjil: kiri 4cm, kanan 3cm
+% - Halaman genap: kiri 3cm, kanan 4cm
+\newgeometry{
+      twoside,
+      a4paper,
+      inner=4cm,
+      outer=3cm,
+      top=3cm,
+      bottom=3cm
+}
+% \addcontentsline{toc}{section}{DAFTAR LAMBANG DAN SINGKATAN}
+{\singlespacing
+      \input{Chapter_Lambang_content_only.tex}
+}
+
+
+% ============================================================
+% PENOMORAN HALAMAN ARABIC UNTUK ISI UTAMA
+% ============================================================
+\clearpage
+\ifodd\value{page}\else
+\thispagestyle{empty}
+\hbox{}
+\newpage
+\fi
+\pagenumbering{arabic}
+% \setcounter{page}{1} % \pagenumbering resets page counter automatically
+
+% ============================================================
+% BAB I - PENDAHULUAN
+% ============================================================
+\input{chapter1_pendahuluan_content_only.tex}
+
+% ============================================================
+% BAB II - TINJAUAN PUSTAKA
+% ============================================================
+\newpage
+\input{chapter2_tinjauan_pustaka_content_only.tex}
+
+% ============================================================
+% BAB III - METODOLOGI PENELITIAN
+% ============================================================
+\newpage
+\input{chapter3_metodologi_content_only.tex}
+
+% ============================================================
+% BAB IV - PERANCANGAN DAN IMPLEMENTASI SISTEM
+% ============================================================
+\newpage
+\input{chapter4_analysis_design_content_only.tex}
+
+% ============================================================
+% BAB V - HASIL DAN PEMBAHASAN
+% ============================================================
+\newpage
+\input{chapter5_hasil_content_only.tex}
+
+% ============================================================
+% BAB VI - KESIMPULAN DAN SARAN
+% ============================================================
+\newpage
+\input{chapter6_kesimpulan_content_only.tex}
+
+% ============================================================
+% DAFTAR PUSTAKA
+% ============================================================
+\newpage
+\vspace{2cm}
+\begin{center}
+      {\fontsize{14}{16.8}\selectfont\textbf{DAFTAR PUSTAKA}}\\[1em]
+\end{center}
+\addcontentsline{toc}{section}{DAFTAR PUSTAKA}
+\vspace{1em}
+
+% Daftar Pustaka menggunakan biblatex dengan style APA
+\printbibliography[heading=none]
+
+
+% ============================================================
+% LAMPIRAN
+% ============================================================
+\newpage
+\addcontentsline{toc}{section}{LAMPIRAN}
+\addtocontents{lot}{\protect\setcounter{tocdepth}{-1}}
+\input{label_lampiran.tex}
+
+\captionsetup{list=no}
+
+% Lampiran A: Arsitektur Jaringan Generator
+\newpage
+\input{lampiran_A_arsitektur_generator.tex}
+
+% Lampiran B: Arsitektur Jaringan Diskriminator
+\newpage
+\input{lampiran_B_arsitektur_diskriminator.tex}
+
+% Lampiran C: Rubrik Penilaian Ahli Paleografi
+\newpage
+\input{lampiran_C_rubrik_paleografi.tex}
+\addtocontents{lot}{\protect\setcounter{tocdepth}{3}}
+\captionsetup{list=true}
+
+\end{document}
