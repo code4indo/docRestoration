@@ -1,0 +1,293 @@
+{
+  "total_errors": 5824,
+  "error_distribution": {
+    "deletion": 2049,
+    "substitution": 3775
+  },
+  "top_confusions": [
+    {
+      "gt_char": "n",
+      "pred_char": "m",
+      "count": 72,
+      "percentage": 1.9072847682119205
+    },
+    {
+      "gt_char": "m",
+      "pred_char": "n",
+      "count": 65,
+      "percentage": 1.7218543046357615
+    },
+    {
+      "gt_char": "r",
+      "pred_char": "e",
+      "count": 42,
+      "percentage": 1.1125827814569536
+    },
+    {
+      "gt_char": "r",
+      "pred_char": "a",
+      "count": 38,
+      "percentage": 1.0066225165562914
+    },
+    {
+      "gt_char": "r",
+      "pred_char": "n",
+      "count": 34,
+      "percentage": 0.9006622516556292
+    },
+    {
+      "gt_char": "k",
+      "pred_char": "h",
+      "count": 31,
+      "percentage": 0.8211920529801325
+    },
+    {
+      "gt_char": "n",
+      "pred_char": "u",
+      "count": 30,
+      "percentage": 0.7947019867549668
+    },
+    {
+      "gt_char": ",",
+      "pred_char": "„",
+      "count": 30,
+      "percentage": 0.7947019867549668
+    },
+    {
+      "gt_char": ":",
+      "pred_char": ".",
+      "count": 29,
+      "percentage": 0.7682119205298014
+    },
+    {
+      "gt_char": "l",
+      "pred_char": "e",
+      "count": 29,
+      "percentage": 0.7682119205298014
+    },
+    {
+      "gt_char": "e",
+      "pred_char": "r",
+      "count": 27,
+      "percentage": 0.7152317880794702
+    },
+    {
+      "gt_char": "t",
+      "pred_char": "r",
+      "count": 27,
+      "percentage": 0.7152317880794702
+    },
+    {
+      "gt_char": "r",
+      "pred_char": "o",
+      "count": 25,
+      "percentage": 0.6622516556291391
+    },
+    {
+      "gt_char": "e",
+      "pred_char": "a",
+      "count": 25,
+      "percentage": 0.6622516556291391
+    },
+    {
+      "gt_char": "o",
+      "pred_char": "e",
+      "count": 25,
+      "percentage": 0.6622516556291391
+    },
+    {
+      "gt_char": " ",
+      "pred_char": "o",
+      "count": 24,
+      "percentage": 0.6357615894039735
+    },
+    {
+      "gt_char": "n",
+      "pred_char": "r",
+      "count": 24,
+      "percentage": 0.6357615894039735
+    },
+    {
+      "gt_char": "i",
+      "pred_char": "e",
+      "count": 23,
+      "percentage": 0.609271523178808
+    },
+    {
+      "gt_char": "n",
+      "pred_char": "e",
+      "count": 23,
+      "percentage": 0.609271523178808
+    },
+    {
+      "gt_char": ",",
+      "pred_char": ".",
+      "count": 22,
+      "percentage": 0.5827814569536424
+    }
+  ],
+  "top_deletions": [
+    {
+      "char": " ",
+      "count": 478,
+      "percentage": 23.32845290385554
+    },
+    {
+      "char": "n",
+      "count": 124,
+      "percentage": 6.0517325524646175
+    },
+    {
+      "char": "e",
+      "count": 124,
+      "percentage": 6.0517325524646175
+    },
+    {
+      "char": "i",
+      "count": 115,
+      "percentage": 5.612493899463153
+    },
+    {
+      "char": ".",
+      "count": 108,
+      "percentage": 5.27086383601757
+    },
+    {
+      "char": ",",
+      "count": 88,
+      "percentage": 4.2947779404587605
+    },
+    {
+      "char": "t",
+      "count": 73,
+      "percentage": 3.5627135187896535
+    },
+    {
+      "char": "r",
+      "count": 71,
+      "percentage": 3.465104929233773
+    },
+    {
+      "char": "d",
+      "count": 70,
+      "percentage": 3.4163006344558324
+    },
+    {
+      "char": "s",
+      "count": 62,
+      "percentage": 3.0258662762323087
+    },
+    {
+      "char": ":",
+      "count": 47,
+      "percentage": 2.2938018545632017
+    },
+    {
+      "char": "o",
+      "count": 46,
+      "percentage": 2.2449975597852614
+    },
+    {
+      "char": "l",
+      "count": 46,
+      "percentage": 2.2449975597852614
+    },
+    {
+      "char": "1",
+      "count": 36,
+      "percentage": 1.7569546120058566
+    },
+    {
+      "char": "c",
+      "count": 32,
+      "percentage": 1.5617374328940947
+    }
+  ],
+  "problematic_words": [
+    {
+      "word": ".",
+      "error_count": 205
+    },
+    {
+      "word": ",",
+      "error_count": 148
+    },
+    {
+      "word": "dito",
+      "error_count": 80
+    },
+    {
+      "word": "van",
+      "error_count": 69
+    },
+    {
+      "word": "-",
+      "error_count": 45
+    },
+    {
+      "word": "en",
+      "error_count": 42
+    },
+    {
+      "word": "d:o",
+      "error_count": 39
+    },
+    {
+      "word": "de",
+      "error_count": 35
+    },
+    {
+      "word": "1",
+      "error_count": 35
+    },
+    {
+      "word": "Dispencier",
+      "error_count": 35
+    },
+    {
+      "word": "voeten",
+      "error_count": 34
+    },
+    {
+      "word": "den",
+      "error_count": 34
+    },
+    {
+      "word": "in",
+      "error_count": 33
+    },
+    {
+      "word": "niet",
+      "error_count": 32
+    },
+    {
+      "word": "lb",
+      "error_count": 31
+    },
+    {
+      "word": "te",
+      "error_count": 30
+    },
+    {
+      "word": "Quartiermester",
+      "error_count": 30
+    },
+    {
+      "word": "ende",
+      "error_count": 30
+    },
+    {
+      "word": "tot",
+      "error_count": 28
+    },
+    {
+      "word": "29/160",
+      "error_count": 28
+    }
+  ],
+  "character_properties": {
+    "ligature_errors": 526,
+    "capital_errors": 438,
+    "punctuation_errors": 1549
+  }
+}

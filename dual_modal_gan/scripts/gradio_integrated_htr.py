@@ -52,8 +52,8 @@ CHECKPOINT_DIR = "production_full_coverage_vgg_v1"
 CHECKPOINT_NAME = "ckpt-94"
 
 # HTR Configuration (from environment or defaults)
-HTR_ADDRESS = os.getenv("LOGHI_ADDRESS", "http://localhost:5001")
-LAYPA_ADDRESS = os.getenv("LAYPA_ADDRESS", "http://localhost:5000")
+HTR_ADDRESS = os.getenv("LOGHI_ADDRESS", "http://10.13.0.4:5001")
+LAYPA_ADDRESS = os.getenv("LAYPA_ADDRESS", "http://10.13.0.4:5000")
 
 
 def load_generator():
@@ -269,11 +269,7 @@ with gr.Blocks(title="Document Restoration + HTR System") as demo:
             
             with gr.Accordion("HTR Settings", open=True):
                 run_htr = gr.Checkbox(value=False, label="Enable HTR (Handwritten Text Recognition)")
-                htr_address_input = gr.Textbox(
-                    value=HTR_ADDRESS,
-                    label="Loghi HTR Service Address",
-                    info="Default: http://localhost:5001"
-                )
+                # HTR address is hidden, using default: 10.13.0.4:5001
             
             submit_btn = gr.Button("✨ Process Document", variant="primary", size="lg")
             
@@ -288,22 +284,10 @@ with gr.Blocks(title="Document Restoration + HTR System") as demo:
                 file_count="single"
             )
             
-            gr.Markdown("### HTR Result")
-            htr_text = gr.Textbox(
-                label="Extracted Text",
-                lines=10,
-                placeholder="HTR results will appear here..."
+            status_message = gr.Textbox(
+                label="Status",
+                value="Ready"
             )
-            
-            with gr.Row():
-                htr_confidence = gr.Number(
-                    label="Confidence Score",
-                    precision=3
-                )
-                status_message = gr.Textbox(
-                    label="Status",
-                    value="Ready"
-                )
     
     with gr.Row():
         gr.Markdown(
@@ -316,13 +300,20 @@ with gr.Blocks(title="Document Restoration + HTR System") as demo:
             """
         )
             
+    # Create a wrapper function that uses default HTR address
+    def pipeline_wrapper(image, alpha, post_processing, aggressive, thin_strokes, gamma, run_htr):
+        restored, tiff_path, text, confidence, status = integrated_pipeline(
+            image, alpha, post_processing, aggressive, thin_strokes, gamma, run_htr, HTR_ADDRESS
+        )
+        return restored, tiff_path, status
+    
     submit_btn.click(
-        fn=integrated_pipeline,
+        fn=pipeline_wrapper,
         inputs=[
             input_image, alpha, post_processing, aggressive, thin_strokes, gamma,
-            run_htr, htr_address_input
+            run_htr
         ],
-        outputs=[output_image, download_file, htr_text, htr_confidence, status_message]
+        outputs=[output_image, download_file, status_message]
     )
 
 if __name__ == "__main__":

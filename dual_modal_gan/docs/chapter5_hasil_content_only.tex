@@ -587,20 +587,24 @@ Untuk memvalidasi robustness kesimpulan, dilakukan beberapa uji tambahan. Metode
     \label{fig:curriculum-phases-analysis}
 \end{figure}
 
-Efektivitas per fase: (1) \textit{Warmup} (1-10): PSNR 18.99$\pm$3.14 dB, CER 0.44$\pm$0.16. (2) \textit{Transisi} (11-30): PSNR 23.89$\pm$0.90 dB, CER menurun 0.312$\rightarrow$0.292, integrasi stabil. (3) \textit{Penuh} (31-50): PSNR 25.76$\pm$0.28 dB, \textit{peak epoch} 49 (26.03 dB, CER 0.286).
+Paradoks Stabilitas: Deviasi standar CTC \textit{loss} total menunjukkan perbedaan signifikan ($\sigma$ = 151.62 vs 4.09), namun analisis per-fase mengungkapkan bahwa perbedaan ini terutama disebabkan oleh efek transisi bobot CTC. Pada fase konvergensi akhir (epoch 31-50), kedua pendekatan menunjukkan stabilitas yang setara ($\sigma \approx 2.7$), mengindikasikan bahwa variabilitas tinggi pada \textit{curriculum} adalah \textit{artifact} dari aktivasi bertahap, bukan ketidakstabilan \textit{training} yang inherent.
+
+Efisiensi Konvergensi: \textit{Non-curriculum} mencapai performa puncak 4 epoch lebih cepat (epoch 45 vs 49), menghasilkan penghematan waktu komputasi tanpa pengorbanan kualitas. Ini membuktikan bahwa pemberian bobot CTC penuh dari awal (\textit{direct activation}) memfasilitasi konvergensi yang lebih efisien dibandingkan aktivasi bertahap.
+
+Analisis Penyebab: (1) Komponen \textit{loss} sudah optimal dengan keseimbangan stabil, (2) Dataset semi-sintetis terkontrol tidak memerlukan adaptasi bertahap kompleks, (3) Arsitektur U-Net \textit{enhanced} + diskriminator dual-modal cukup handal untuk optimisasi simultan multi-objektif dari epoch pertama tanpa memerlukan \textit{warmup} visual terpisah.
 
 \paragraph{Rekomendasi Implementasi dan Klarifikasi Protokol}
-Penting untuk dicatat bahwa model produksi yang menghasilkan metrik utama dalam penelitian ini (PSNR 30.91 dB, CER 34.9\%) dilatih menggunakan protokol \textit{curriculum learning} (seperti tercantum pada Tabel~\ref{tab:hyperparameter-training}). Temuan mengenai efektivitas \textit{non-curriculum} diperoleh melalui studi ablasi retrospektif setelah model produksi selesai dilatih. Oleh karena itu, meskipun \textit{non-curriculum} direkomendasikan untuk implementasi masa depan karena efisiensinya, konfigurasi final yang dilaporkan dalam tesis ini tetap menggunakan \textit{curriculum learning} sebagai protokol yang menghasilkan data uji.
+Penting untuk dicatat bahwa model produksi yang menghasilkan metrik utama dalam penelitian ini (PSNR 30.91 dB, CER 34.9\%) dilatih menggunakan protokol \textit{curriculum learning} (seperti tercantum pada Tabel~\ref{tab:hyperparameter-training}). Temuan mengenai efektivitas \textit{non-curriculum} diperoleh melalui studi ablasi retrospektif setelah model produksi selesai dilatih. Oleh karena itu, meskipun \textit{non-curriculum} direkomendasikan untuk implementasi masa depan karena efisiensi konvergensinya (4 epoch lebih cepat, kompleksitas lebih rendah), konfigurasi final yang dilaporkan dalam tesis ini tetap menggunakan \textit{curriculum learning} sebagai protokol yang menghasilkan data uji.
 
 \begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, noitemsep, topsep=0pt, label=\alph*)]
-    \item Rekomendasi Masa Depan: Gunakan \textit{non-curriculum} untuk efisiensi (4 epoch lebih cepat, stabilitas CTC 37$\times$ lebih tinggi, performa setara).
+    \item Rekomendasi Masa Depan: Gunakan \textit{non-curriculum} untuk efisiensi (4 epoch lebih cepat konvergensi, implementasi lebih sederhana, performa setara).
 
     \item Nilai Eksperimental: \textit{Curriculum} tetap bernilai untuk eksplorasi dinamika pelatihan dan dataset riil kompleks, serta merupakan protokol yang memvalidasi hasil utama penelitian ini.
 
     \item Reproduksibilitas: Untuk mereplikasi hasil persis seperti yang dilaporkan dalam Bab ini, gunakan konfigurasi \textit{curriculum} (Tabel~\ref{tab:hyperparameter-training}). Untuk optimasi sistem baru, gunakan \textit{non-curriculum}.
 \end{enumerate}
 
-Kesimpulan: \textit{Curriculum learning} tidak memberikan peningkatan performa signifikan ($\Delta$PSNR -0.14 dB, $p$=0.471) dengan stabilitas CTC yang lebih rendah (variance 37$\times$ lebih tinggi). Status hipotesis adalah ``Tidak Didukung Penuh'' sebagai peningkat performa, namun tetap didokumentasikan sebagai bagian dari sejarah eksperimen yang menghasilkan model produksi.
+Kesimpulan: \textit{Curriculum learning} tidak memberikan peningkatan performa signifikan ($\Delta$PSNR -0.14 dB, $p$=0.471) dengan konvergensi 4 epoch lebih lambat. Arsitektur yang handal dapat mengoptimasi semua objektif secara simultan dari awal tanpa memerlukan aktivasi bertahap. Status hipotesis adalah ``Tidak Didukung Penuh'' sebagai peningkat performa, namun tetap didokumentasikan sebagai bagian dari sejarah eksperimen yang menghasilkan model produksi.
 
 \subsubsection{Konfigurasi Loss Weights dan Metode Penentuan}
 \label{subsubsec:optimasi-loss-weights}

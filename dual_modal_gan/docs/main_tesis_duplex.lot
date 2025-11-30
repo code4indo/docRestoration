@@ -27,17 +27,17 @@
 \contentsline {table}{\numberline {V.7}{\ignorespaces Temuan kunci frozen vs joint}}{125}{table.caption.47}%
 \contentsline {table}{\numberline {V.8}{\ignorespaces Ablasi diskriminator dual-modal vs CNN}}{127}{table.caption.49}%
 \contentsline {table}{\numberline {V.9}{\ignorespaces Performa curriculum vs non-curriculum}}{129}{table.caption.50}%
-\contentsline {table}{\numberline {V.10}{\ignorespaces Konfigurasi bobot loss produksi}}{134}{table.caption.54}%
+\contentsline {table}{\numberline {V.10}{\ignorespaces Konfigurasi bobot loss produksi}}{135}{table.caption.54}%
 \contentsline {table}{\numberline {V.11}{\ignorespaces Top 5 konfigurasi grid search}}{137}{table.caption.58}%
-\contentsline {table}{\numberline {V.12}{\ignorespaces Sensitivitas pixel weight}}{137}{table.caption.59}%
-\contentsline {table}{\numberline {V.13}{\ignorespaces Dampak CTC weight}}{138}{table.caption.60}%
-\contentsline {table}{\numberline {V.14}{\ignorespaces Analisis RecFeat weight}}{138}{table.caption.61}%
-\contentsline {table}{\numberline {V.15}{\ignorespaces Konfigurasi hyperparameter}}{139}{table.caption.62}%
+\contentsline {table}{\numberline {V.12}{\ignorespaces Sensitivitas pixel weight}}{138}{table.caption.59}%
+\contentsline {table}{\numberline {V.13}{\ignorespaces Dampak CTC weight}}{139}{table.caption.60}%
+\contentsline {table}{\numberline {V.14}{\ignorespaces Analisis RecFeat weight}}{139}{table.caption.61}%
+\contentsline {table}{\numberline {V.15}{\ignorespaces Konfigurasi hyperparameter}}{140}{table.caption.62}%
 \contentsline {table}{\numberline {V.16}{\ignorespaces Hasil pengujian statistik formal hipotesis penelitian}}{140}{table.caption.63}%
-\contentsline {table}{\numberline {V.17}{\ignorespaces Performa restorasi ANRI}}{144}{table.caption.65}%
+\contentsline {table}{\numberline {V.17}{\ignorespaces Performa restorasi ANRI}}{145}{table.caption.65}%
 \contentsline {table}{\numberline {V.18}{\ignorespaces Evaluasi ahli paleografi}}{146}{table.caption.66}%
 \contentsline {table}{\numberline {V.19}{\ignorespaces Kesenjangan domain pelatihan-inferensi}}{150}{table.caption.68}%
-\contentsline {table}{\numberline {V.20}{\ignorespaces Evaluasi hipotesis penelitian}}{157}{table.caption.69}%
-\contentsline {table}{\numberline {V.21}{\ignorespaces Distribusi Pola Kegagalan}}{161}{table.caption.70}%
+\contentsline {table}{\numberline {V.20}{\ignorespaces Evaluasi hipotesis penelitian}}{158}{table.caption.69}%
+\contentsline {table}{\numberline {V.21}{\ignorespaces Distribusi Pola Kegagalan}}{162}{table.caption.70}%
 \setcounter {tocdepth}{-1}
 \setcounter {tocdepth}{3}

@@ -66,9 +66,9 @@ CHECKPOINT_DIR = "production_full_coverage_vgg_v1"
 CHECKPOINT_NAME = "ckpt-94"
 
 # Service Configuration
-LAYPA_ADDRESS = os.getenv("LAYPA_ADDRESS", "http://localhost:5002")
-HTR_ADDRESS = os.getenv("LOGHI_ADDRESS", "http://localhost:5001")
-TOOLING_ADDRESS = os.getenv("TOOLING_ADDRESS", "http://localhost:8082")
+LAYPA_ADDRESS = os.getenv("LAYPA_ADDRESS", "http://10.13.0.4:5002")
+HTR_ADDRESS = os.getenv("LOGHI_ADDRESS", "http://10.13.0.4:5001")
+TOOLING_ADDRESS = os.getenv("TOOLING_ADDRESS", "http://10.13.0.4:8082")
 
 
 def load_generator():
@@ -771,7 +771,7 @@ def integrated_pipeline_simple(image, alpha, post_processing, aggressive, thin_s
         }) if lines_data else pd.DataFrame({'No': [], 'Teks': [], 'Confidence': []})
         
         # Create viewer link
-        viewer_info = f"📺 Hasil disimpan. Buka HTR Viewer: http://localhost:7863" if viewer_path else ""
+        viewer_info = f"📺 Hasil disimpan. Buka HTR Viewer: http://10.13.0.4:7863" if viewer_path else ""
         
         final_status = f"{restore_status} | {htr_status}"
         return restored, tiff_path, jpg_path, formatted_text, confidence, final_status, annotated_img, df_lines, viewer_info
@@ -859,28 +859,95 @@ def integrated_pipeline_full_OLD(image, alpha, post_processing, aggressive, thin
     return restored, tiff_path, jpg_path, text, confidence, final_status, seg_image, df_lines
 
 
+# New pipeline functions for 3 modes
+def process_restoration_only(image, alpha, post_processing, aggressive, thin_strokes, gamma):
+    """Mode 1: Restoration Only"""
+    if image is None:
+        return None, None, None, "No image provided"
+    
+    restored, tiff_path, jpg_path, status = restore_document(
+        image, alpha, post_processing, aggressive, thin_strokes, gamma
+    )
+    return restored, tiff_path, jpg_path, status
+
+
+def process_htr_only(image):
+    """Mode 2: HTR Only (no restoration)"""
+    if image is None:
+        return None, None, None, "No image provided"
+    
+    # Run HTR directly on input image
+    text, confidence, htr_status, lines_data, viewer_path = perform_htr_via_pipeline_with_save(image, save_to_viewer=True)
+    
+    # Create temp files for download
+    if isinstance(image, np.ndarray):
+        pil_image = Image.fromarray(image)
+    else:
+        pil_image = image
+    
+    tiff_fd, tiff_path = tempfile.mkstemp(suffix='.tiff', prefix='htr_input_')
+    os.close(tiff_fd)
+    pil_image.save(tiff_path, format='TIFF', compression='tiff_lzw', dpi=(300, 300))
+    
+    jpg_fd, jpg_path = tempfile.mkstemp(suffix='.jpg', prefix='htr_input_')
+    os.close(jpg_fd)
+    pil_image.save(jpg_path, format='JPEG', quality=95, dpi=(300, 300))
+    
+    return image, tiff_path, jpg_path, htr_status
+
+
+def process_restoration_and_htr(image, alpha, post_processing, aggressive, thin_strokes, gamma):
+    """Mode 3: Restoration + HTR"""
+    if image is None:
+        return None, None, None, "No image provided"
+    
+    # Step 1: Restore
+    restored, tiff_path, jpg_path, restore_status = restore_document(
+        image, alpha, post_processing, aggressive, thin_strokes, gamma
+    )
+    
+    if restored is None:
+        return None, None, None, restore_status
+    
+    # Step 2: HTR on restored image
+    text, confidence, htr_status, lines_data, viewer_path = perform_htr_via_pipeline_with_save(restored, save_to_viewer=True)
+    
+    final_status = f"{restore_status} | {htr_status}"
+    return restored, tiff_path, jpg_path, final_status
+
+
 # Define Gradio Interface
 with gr.Blocks(title="Document Restoration + HTR") as demo:
     gr.Markdown(
         """
         # 📜 Document Restoration + Loghi HTR System
         
-        **Pipeline:** Document Restoration (Dual-Modal GAN) → HTR (Loghi)
+        **Pilih mode pemrosesan:**
+        - **Restoration Only**: Restorasi dokumen tanpa HTR
+        - **HTR Only**: Transkripsi langsung tanpa restorasi  
+        - **Restoration + HTR**: Restorasi kemudian transkripsi
         
-        📺 **[Buka HTR Viewer](http://localhost:7863)** - Hasil akan otomatis muncul di viewer setelah proses selesai
+        📺 **[Buka HTR Viewer](http://10.13.0.4:7863)** untuk melihat hasil transkripsi
         """
     )
     
     with gr.Row():
         with gr.Column(scale=1):
-            gr.Markdown("### Input & Settings")
+            gr.Markdown("### 📸 Input")
             input_image = gr.Image(
-                label="📸 Degraded Document", 
+                label="Upload Document", 
                 type="numpy",
-                height=400
+                height=350
             )
             
-            with gr.Accordion("⚙️ Restoration Settings", open=True):
+            # Mode selection
+            mode_select = gr.Radio(
+                choices=["Restoration Only", "HTR Only", "Restoration + HTR"],
+                value="Restoration + HTR",
+                label="🎯 Processing Mode"
+            )
+            
+            with gr.Accordion("⚙️ Restoration Settings", open=False):
                 alpha = gr.Slider(
                     minimum=0.0, maximum=0.5, value=0.0, step=0.05, 
                     label="Alpha Blending",
@@ -897,77 +964,44 @@ with gr.Blocks(title="Document Restoration + HTR") as demo:
                     aggressive = gr.Checkbox(value=False, label="Aggressive")
                     thin_strokes = gr.Checkbox(value=False, label="Thin Strokes")
             
-            with gr.Accordion("🔤 HTR Settings", open=True):
-                run_htr = gr.Checkbox(value=True, label="Enable HTR")
-                htr_mode = gr.Radio(
-                    choices=["Simple (Fast)", "Full Pipeline (Detailed)"],
-                    value="Simple (Fast)",
-                    label="HTR Mode"
-                )
-                laypa_model = gr.Textbox(
-                    value="general/baseline",
-                    label="LAYPA Model Path",
-                    info="Used in Full Pipeline mode"
-                )
-            
             with gr.Row():
-                submit_btn = gr.Button("✨ Process Document", variant="primary", size="lg")
+                submit_btn = gr.Button("✨ Process", variant="primary", size="lg")
                 clear_btn = gr.ClearButton()
             
         with gr.Column(scale=1):
-            gr.Markdown("### 🎨 Restoration Result")
-            output_image = gr.Image(label="Restored Document", type="numpy", height=400)
+            gr.Markdown("### 🎨 Result")
+            output_image = gr.Image(label="Output", type="numpy", height=350)
             with gr.Row():
-                download_tiff = gr.File(label="📥 Download TIFF (300 DPI)")
-                download_jpg = gr.File(label="📥 Download JPG (High Quality)")
+                download_tiff = gr.File(label="📥 TIFF (300 DPI)")
+                download_jpg = gr.File(label="📥 JPG")
             
             status_box = gr.Textbox(label="📊 Status", value="Ready", lines=2)
-    
-    with gr.Row():
-        with gr.Column(scale=1):
-            gr.Markdown("### 📝 HTR Result")
-            htr_text = gr.Textbox(
-                label="Extracted Text",
-                lines=8,
-                placeholder="HTR results will appear here..."
-            )
-            htr_confidence = gr.Number(label="Confidence", precision=3)
-            viewer_link = gr.Markdown(
-                value="",
-                label="Viewer Link"
+            
+            gr.Markdown(
+                """
+                ---
+                📺 **[Lihat Hasil Transkripsi di HTR Viewer](http://10.13.0.4:7863)**
+                """
             )
     
-    with gr.Accordion("ℹ️ Info", open=False):
-        gr.Markdown(
-            f"""
-            **Services:** Restoration `{CHECKPOINT_DIR}` | HTR `{HTR_ADDRESS}` | **[Viewer](http://localhost:7863)**
-            """
-        )
-    
-    # Event handlers
-    def process_document(img, a, pp, ag, ts, g, rh, mode, lm):
-        if mode == "Simple (Fast)":
-            result = integrated_pipeline_simple(img, a, pp, ag, ts, g, rh)
-        else:
-            result = integrated_pipeline_full(img, a, pp, ag, ts, g, rh, lm)
-        
-        # result: restored, tiff, jpg, text, conf, status, annotated, df, viewer_info
-        # Return simplified: restored, tiff, jpg, text, conf, status, viewer_link
-        viewer_md = ""
-        if result[8]:  # viewer_info exists
-            viewer_md = "📺 **[Lihat hasil di HTR Viewer](http://localhost:7863)** - Auto refresh aktif"
-        return result[0], result[1], result[2], result[3], result[4], result[5], viewer_md
+    # Event handler
+    def process_document(img, mode, a, pp, ag, ts, g):
+        if mode == "Restoration Only":
+            return process_restoration_only(img, a, pp, ag, ts, g)
+        elif mode == "HTR Only":
+            return process_htr_only(img)
+        else:  # Restoration + HTR
+            return process_restoration_and_htr(img, a, pp, ag, ts, g)
     
     submit_btn.click(
         fn=process_document,
         inputs=[
-            input_image, alpha, post_processing, aggressive, thin_strokes, gamma,
-            run_htr, htr_mode, laypa_model
+            input_image, mode_select, alpha, post_processing, aggressive, thin_strokes, gamma
         ],
-        outputs=[output_image, download_tiff, download_jpg, htr_text, htr_confidence, status_box, viewer_link]
+        outputs=[output_image, download_tiff, download_jpg, status_box]
     )
     
-    clear_btn.add([input_image, output_image, htr_text, htr_confidence, status_box, download_tiff, download_jpg])
+    clear_btn.add([input_image, output_image, status_box, download_tiff, download_jpg])
 
 
 if __name__ == "__main__":
