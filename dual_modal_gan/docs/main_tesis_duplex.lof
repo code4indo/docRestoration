@@ -5,28 +5,28 @@
 \contentsline {figure}{\numberline {II.4}{\ignorespaces Kerangka Kerja Pelatihan Adversarial pada GAN}}{21}{figure.caption.6}%
 \contentsline {figure}{\numberline {II.5}{\ignorespaces Arsitektur CRNN untuk Ekstraksi Fitur Visual}}{40}{figure.caption.9}%
 \contentsline {figure}{\numberline {II.6}{\ignorespaces Mekanisme CTC untuk Penyelarasan Otomatis}}{41}{figure.caption.10}%
-\contentsline {figure}{\numberline {III.1}{\ignorespaces Kerangka DSRM dengan Siklus Iteratif}}{62}{figure.caption.14}%
-\contentsline {figure}{\numberline {III.2}{\ignorespaces Alur Pengembangan Kerangka Kerja}}{69}{figure.caption.19}%
-\contentsline {figure}{\numberline {IV.1}{\ignorespaces Kerangka kerja GAN-HTR dengan diskriminator dual-modal}}{80}{figure.caption.21}%
-\contentsline {figure}{\numberline {IV.2}{\ignorespaces Visualisasi Generator U-Net Enhanced}}{82}{figure.caption.22}%
-\contentsline {figure}{\numberline {IV.3}{\ignorespaces Visualisasi arsitektur Diskriminator Dual-Modal Enhanced}}{88}{figure.caption.24}%
-\contentsline {figure}{\numberline {IV.4}{\ignorespaces Pasangan dataset semi-sintetis realistis}}{100}{figure.caption.27}%
-\contentsline {figure}{\numberline {IV.5}{\ignorespaces Trajektori konvergensi pelatihan selama 50 epoch}}{104}{figure.caption.29}%
-\contentsline {figure}{\numberline {V.1}{\ignorespaces Perbandingan metrik kuantitatif}}{119}{figure.caption.34}%
-\contentsline {figure}{\numberline {V.2}{\ignorespaces Analisis peningkatan metrik}}{119}{figure.caption.35}%
-\contentsline {figure}{\numberline {V.3}{\ignorespaces Perbandingan visual metode restorasi}}{120}{figure.caption.36}%
-\contentsline {figure}{\numberline {V.4}{\ignorespaces Trajektori metrik validasi}}{120}{figure.caption.37}%
-\contentsline {figure}{\numberline {V.5}{\ignorespaces Trajektori loss frozen vs joint}}{126}{figure.caption.41}%
-\contentsline {figure}{\numberline {V.6}{\ignorespaces Trajektori CER frozen vs joint}}{127}{figure.caption.43}%
-\contentsline {figure}{\numberline {V.7}{\ignorespaces PSNR frozen vs joint}}{128}{figure.caption.44}%
-\contentsline {figure}{\numberline {V.8}{\ignorespaces Efisiensi komputasi frozen vs joint}}{129}{figure.caption.46}%
-\contentsline {figure}{\numberline {V.9}{\ignorespaces Radar chart performa frozen vs joint}}{131}{figure.caption.48}%
-\contentsline {figure}{\numberline {V.10}{\ignorespaces Evolusi komponen loss curriculum}}{135}{figure.caption.51}%
-\contentsline {figure}{\numberline {V.11}{\ignorespaces Analisis statistik curriculum learning}}{136}{figure.caption.52}%
-\contentsline {figure}{\numberline {V.12}{\ignorespaces Analisis tiga fase curriculum}}{137}{figure.caption.53}%
-\contentsline {figure}{\numberline {V.13}{\ignorespaces Distribusi kontribusi loss}}{139}{figure.caption.55}%
-\contentsline {figure}{\numberline {V.14}{\ignorespaces Variabilitas magnitude loss}}{139}{figure.caption.56}%
-\contentsline {figure}{\numberline {V.15}{\ignorespaces Mekanisme penyeimbangan magnitude}}{140}{figure.caption.57}%
-\contentsline {figure}{\numberline {V.16}{\ignorespaces Restorasi dokumen ANRI autentik}}{145}{figure.caption.63}%
-\contentsline {figure}{\numberline {V.17}{\ignorespaces Korelasi degradasi dan performa}}{150}{figure.caption.66}%
-\contentsline {figure}{\numberline {V.18}{\ignorespaces Distribusi dan tingkat keparahan kegagalan}}{163}{figure.caption.70}%
+\contentsline {figure}{\numberline {III.1}{\ignorespaces Kerangka DSRM dengan Siklus Iteratif}}{60}{figure.caption.14}%
+\contentsline {figure}{\numberline {III.2}{\ignorespaces Alur Pengembangan Kerangka Kerja}}{67}{figure.caption.19}%
+\contentsline {figure}{\numberline {IV.1}{\ignorespaces Kerangka kerja GAN-HTR dengan diskriminator dual-modal}}{75}{figure.caption.21}%
+\contentsline {figure}{\numberline {IV.2}{\ignorespaces Visualisasi Generator U-Net Enhanced}}{77}{figure.caption.22}%
+\contentsline {figure}{\numberline {IV.3}{\ignorespaces Visualisasi arsitektur Diskriminator Dual-Modal Enhanced}}{83}{figure.caption.24}%
+\contentsline {figure}{\numberline {IV.4}{\ignorespaces Pasangan dataset semi-sintetis realistis}}{95}{figure.caption.27}%
+\contentsline {figure}{\numberline {IV.5}{\ignorespaces Trajektori konvergensi pelatihan selama 50 epoch}}{100}{figure.caption.29}%
+\contentsline {figure}{\numberline {V.1}{\ignorespaces Perbandingan metrik kuantitatif}}{114}{figure.caption.34}%
+\contentsline {figure}{\numberline {V.2}{\ignorespaces Analisis peningkatan metrik}}{114}{figure.caption.35}%
+\contentsline {figure}{\numberline {V.3}{\ignorespaces Perbandingan visual metode restorasi}}{115}{figure.caption.36}%
+\contentsline {figure}{\numberline {V.4}{\ignorespaces Trajektori metrik validasi}}{115}{figure.caption.37}%
+\contentsline {figure}{\numberline {V.5}{\ignorespaces Trajektori loss frozen vs joint}}{121}{figure.caption.41}%
+\contentsline {figure}{\numberline {V.6}{\ignorespaces Trajektori CER frozen vs joint}}{122}{figure.caption.43}%
+\contentsline {figure}{\numberline {V.7}{\ignorespaces PSNR frozen vs joint}}{123}{figure.caption.44}%
+\contentsline {figure}{\numberline {V.8}{\ignorespaces Efisiensi komputasi frozen vs joint}}{124}{figure.caption.46}%
+\contentsline {figure}{\numberline {V.9}{\ignorespaces Radar chart performa frozen vs joint}}{126}{figure.caption.48}%
+\contentsline {figure}{\numberline {V.10}{\ignorespaces Evolusi komponen loss curriculum}}{130}{figure.caption.51}%
+\contentsline {figure}{\numberline {V.11}{\ignorespaces Analisis statistik curriculum learning}}{132}{figure.caption.52}%
+\contentsline {figure}{\numberline {V.12}{\ignorespaces Analisis tiga fase curriculum}}{133}{figure.caption.53}%
+\contentsline {figure}{\numberline {V.13}{\ignorespaces Distribusi kontribusi loss}}{135}{figure.caption.55}%
+\contentsline {figure}{\numberline {V.14}{\ignorespaces Variabilitas magnitude loss}}{136}{figure.caption.56}%
+\contentsline {figure}{\numberline {V.15}{\ignorespaces Mekanisme penyeimbangan magnitude}}{136}{figure.caption.57}%
+\contentsline {figure}{\numberline {V.16}{\ignorespaces Restorasi dokumen ANRI autentik}}{143}{figure.caption.64}%
+\contentsline {figure}{\numberline {V.17}{\ignorespaces Korelasi degradasi dan performa}}{148}{figure.caption.67}%
+\contentsline {figure}{\numberline {V.18}{\ignorespaces Distribusi dan tingkat keparahan kegagalan}}{162}{figure.caption.71}%

@@ -1,0 +1,15 @@
+{
+  "total_errors": 19410,
+  "by_error_type": {
+    "deletion": 18011,
+    "substitution": 1399
+  },
+  "by_position": {
+    "start": 4023,
+    "middle": 12155,
+    "end": 3232
+  },
+  "ligature_errors": 1984,
+  "capital_errors": 541,
+  "punctuation_errors": 5025
+}

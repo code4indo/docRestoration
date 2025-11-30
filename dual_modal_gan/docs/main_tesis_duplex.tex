@@ -383,11 +383,6 @@
 % PENOMORAN HALAMAN ARABIC UNTUK ISI UTAMA
 % ============================================================
 \clearpage
-\ifodd\value{page}\else
-\thispagestyle{empty}
-\hbox{}
-\newpage
-\fi
 \pagenumbering{arabic}
 % \setcounter{page}{1} % \pagenumbering resets page counter automatically
 
@@ -396,11 +391,19 @@
 % ============================================================
 \input{chapter1_pendahuluan_content_only.tex}
 
+% Halaman kosong bernomor setelah Chapter 1 untuk konsistensi layout duplex
+\newpage
+\mbox{}
+
 % ============================================================
 % BAB II - TINJAUAN PUSTAKA
 % ============================================================
 \newpage
 \input{chapter2_tinjauan_pustaka_content_only.tex}
+
+% Halaman kosong bernomor setelah Chapter 2 untuk konsistensi layout duplex
+\newpage
+\mbox{}
 
 % ============================================================
 % BAB III - METODOLOGI PENELITIAN
@@ -408,17 +411,29 @@
 \newpage
 \input{chapter3_metodologi_content_only.tex}
 
+% Halaman kosong bernomor setelah Chapter 3 untuk konsistensi layout duplex
+\newpage
+\mbox{}
+
 % ============================================================
 % BAB IV - PERANCANGAN DAN IMPLEMENTASI SISTEM
 % ============================================================
 \newpage
 \input{chapter4_analysis_design_content_only.tex}
 
+% Halaman kosong bernomor setelah Chapter 4 untuk konsistensi layout duplex
+\newpage
+\mbox{}
+
 % ============================================================
 % BAB V - HASIL DAN PEMBAHASAN
 % ============================================================
 \newpage
 \input{chapter5_hasil_content_only.tex}
+
+% Halaman kosong bernomor setelah Chapter 5 untuk konsistensi layout duplex
+\newpage
+\mbox{}
 
 % ============================================================
 % BAB VI - KESIMPULAN DAN SARAN

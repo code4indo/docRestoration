@@ -1,0 +1,88 @@
+{
+  "position_stats": {
+    "start": {
+      "count": 4023,
+      "percentage": 20.726429675425038,
+      "error_types": {
+        "deletion": 3700,
+        "substitution": 323
+      }
+    },
+    "middle": {
+      "count": 12155,
+      "percentage": 62.62235960844925,
+      "error_types": {
+        "deletion": 11350,
+        "substitution": 805
+      }
+    },
+    "end": {
+      "count": 3232,
+      "percentage": 16.651210716125707,
+      "error_types": {
+        "deletion": 2961,
+        "substitution": 271
+      }
+    }
+  },
+  "normalized_position": {
+    "bin_centers": [
+      0.05,
+      0.15000000000000002,
+      0.25,
+      0.35000000000000003,
+      0.45,
+      0.55,
+      0.6500000000000001,
+      0.75,
+      0.8500000000000001,
+      0.95
+    ],
+    "histogram": [
+      4066,
+      695,
+      1194,
+      961,
+      629,
+      2179,
+      1025,
+      786,
+      938,
+      3958
+    ]
+  },
+  "bigram_patterns": {
+    "n →t": 8,
+    "en→e": 8,
+    "en→r": 8,
+    "en→a": 7,
+    " d→o": 6,
+    " v→e": 6,
+    " v→t": 6,
+    "n →a": 5,
+    " d→t": 5,
+    "to→e": 5,
+    "er→n": 5,
+    "er→t": 5,
+    " m→n": 5,
+    "ij→g": 5,
+    "er→d": 4,
+    "n →v": 4,
+    " 8→e": 4,
+    ", →t": 4,
+    "di→t": 4,
+    "it→e": 4
+  },
+  "statistical_tests": {
+    "chi_square": {
+      "statistic": 7541.217619783616,
+      "p_value": 0.0,
+      "significant": true,
+      "interpretation": "Non-uniform distribution"
+    },
+    "effect_size": {
+      "cramers_v": 0.6233155609319638,
+      "interpretation": "Large"
+    }
+  }
+}

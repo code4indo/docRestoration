@@ -1,15 +1,15 @@
 [0] Config.pm:307> INFO - This is Biber 2.17
 [0] Config.pm:310> INFO - Logfile is 'main_tesis_duplex.blg'
-[56] biber:340> INFO - === Wed Nov 26, 2025, 11:45:46
-[65] Biber.pm:418> INFO - Reading 'main_tesis_duplex.bcf'
-[122] Biber.pm:972> INFO - Found 54 citekeys in bib section 0
-[131] Biber.pm:4383> INFO - Processing section 0
-[138] Biber.pm:4574> INFO - Looking for bibtex file 'bibliography.bib' for section 0
-[139] bibtex.pm:1713> INFO - LaTeX decoding ...
-[172] bibtex.pm:1518> INFO - Found BibTeX data source 'bibliography.bib'
-[601] UCollate.pm:68> INFO - Overriding locale 'id-ID' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[601] UCollate.pm:68> INFO - Overriding locale 'id-ID' defaults 'variable = shifted' with 'variable = non-ignorable'
-[601] Biber.pm:4203> INFO - Sorting list 'nyt/global//global/global' of type 'entry' with template 'nyt' and locale 'id-ID'
-[601] Biber.pm:4209> INFO - No sort tailoring available for locale 'id-ID'
-[642] bbl.pm:654> INFO - Writing 'main_tesis_duplex.bbl' with encoding 'UTF-8'
-[672] bbl.pm:757> INFO - Output to main_tesis_duplex.bbl
+[58] biber:340> INFO - === Fri Nov 28, 2025, 09:33:51
+[68] Biber.pm:418> INFO - Reading 'main_tesis_duplex.bcf'
+[125] Biber.pm:972> INFO - Found 54 citekeys in bib section 0
+[134] Biber.pm:4383> INFO - Processing section 0
+[141] Biber.pm:4574> INFO - Looking for bibtex file 'bibliography.bib' for section 0
+[143] bibtex.pm:1713> INFO - LaTeX decoding ...
+[176] bibtex.pm:1518> INFO - Found BibTeX data source 'bibliography.bib'
+[511] UCollate.pm:68> INFO - Overriding locale 'id-ID' defaults 'variable = shifted' with 'variable = non-ignorable'
+[511] UCollate.pm:68> INFO - Overriding locale 'id-ID' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[511] Biber.pm:4203> INFO - Sorting list 'nyt/global//global/global' of type 'entry' with template 'nyt' and locale 'id-ID'
+[511] Biber.pm:4209> INFO - No sort tailoring available for locale 'id-ID'
+[551] bbl.pm:654> INFO - Writing 'main_tesis_duplex.bbl' with encoding 'UTF-8'
+[581] bbl.pm:757> INFO - Output to main_tesis_duplex.bbl

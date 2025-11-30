@@ -1,0 +1,342 @@
+[
+  {
+    "rank": 1,
+    "gt_char": " ",
+    "pred_char": "e",
+    "count": 31,
+    "percentage": "0.16%",
+    "example_words": [
+      ",",
+      "Rop",
+      ","
+    ],
+    "example_contexts": [
+      " ,[ →e]2.",
+      "op[ →e]21",
+      " ,[ →e]a "
+    ]
+  },
+  {
+    "rank": 2,
+    "gt_char": "n",
+    "pred_char": "e",
+    "count": 23,
+    "percentage": "0.12%",
+    "example_words": [
+      "ander",
+      "zijn",
+      "en"
+    ],
+    "example_contexts": [
+      " a[n→e]de",
+      "ij[n→e] g",
+      " e[n→e] g"
+    ]
+  },
+  {
+    "rank": 3,
+    "gt_char": "a",
+    "pred_char": "e",
+    "count": 23,
+    "percentage": "0.12%",
+    "example_words": [
+      "Kapitale",
+      "Guandang",
+      "aler"
+    ],
+    "example_contexts": [
+      " K[a→e]pi",
+      "nd[a→e]ng",
+      "m [a→e]le"
+    ]
+  },
+  {
+    "rank": 4,
+    "gt_char": "m",
+    "pred_char": "n",
+    "count": 22,
+    "percentage": "0.11%",
+    "example_words": [
+      "met",
+      "Limbot,",
+      "met"
+    ],
+    "example_contexts": [
+      "[m→n]et",
+      "Li[m→n]bo",
+      ": [m→n]et"
+    ]
+  },
+  {
+    "rank": 5,
+    "gt_char": " ",
+    "pred_char": "a",
+    "count": 20,
+    "percentage": "0.10%",
+    "example_words": [
+      "gedan",
+      ".",
+      "maken"
+    ],
+    "example_contexts": [
+      "an[ →a]zo",
+      " .[ →a]. ",
+      "en[ →a], "
+    ]
+  },
+  {
+    "rank": 6,
+    "gt_char": " ",
+    "pred_char": "t",
+    "count": 20,
+    "percentage": "0.10%",
+    "example_words": [
+      "grot",
+      "bewerken",
+      "9:den"
+    ],
+    "example_contexts": [
+      "ot[ →t]ge",
+      "en[ →t]en",
+      "en[ →t]di"
+    ]
+  },
+  {
+    "rank": 7,
+    "gt_char": " ",
+    "pred_char": "o",
+    "count": 19,
+    "percentage": "0.10%",
+    "example_words": [
+      "zo",
+      "Boter",
+      "Apij"
+    ],
+    "example_contexts": [
+      "zo[ →o]he",
+      "er[ →o], ",
+      "ij[ →o], "
+    ]
+  },
+  {
+    "rank": 8,
+    "gt_char": "d",
+    "pred_char": "t",
+    "count": 15,
+    "percentage": "0.08%",
+    "example_words": [
+      "de",
+      "heden",
+      "(onderstond)"
+    ],
+    "example_contexts": [
+      "r [d→t]e ",
+      "he[d→t]en",
+      "on[d→t]er"
+    ]
+  },
+  {
+    "rank": 9,
+    "gt_char": "o",
+    "pred_char": "e",
+    "count": 14,
+    "percentage": "0.07%",
+    "example_words": [
+      "strom",
+      "tontolij",
+      "(onderstond)"
+    ],
+    "example_contexts": [
+      "tr[o→e]m ",
+      " t[o→e]nt",
+      "st[o→e]nd"
+    ]
+  },
+  {
+    "rank": 10,
+    "gt_char": "n",
+    "pred_char": "a",
+    "count": 13,
+    "percentage": "0.07%",
+    "example_words": [
+      "voldaen",
+      "maken",
+      "Matrosen"
+    ],
+    "example_contexts": [
+      "ae[n→a]",
+      "ke[n→a] ,",
+      "se[n→a]"
+    ]
+  },
+  {
+    "rank": 11,
+    "gt_char": "e",
+    "pred_char": "t",
+    "count": 13,
+    "percentage": "0.07%",
+    "example_words": [
+      "desen",
+      "met",
+      "9ber"
+    ],
+    "example_contexts": [
+      " d[e→t]se",
+      " m[e→t]t ",
+      "9b[e→t]r "
+    ]
+  },
+  {
+    "rank": 12,
+    "gt_char": "e",
+    "pred_char": "s",
+    "count": 12,
+    "percentage": "0.06%",
+    "example_words": [
+      "zeten",
+      "voete",
+      "heijlige"
+    ],
+    "example_contexts": [
+      "et[e→s]n ",
+      "vo[e→s]te",
+      "ig[e→s] h"
+    ]
+  },
+  {
+    "rank": 13,
+    "gt_char": "l",
+    "pred_char": "e",
+    "count": 12,
+    "percentage": "0.06%",
+    "example_words": [
+      "Corporal",
+      "miserable",
+      "denselven"
+    ],
+    "example_contexts": [
+      "ra[l→e] m",
+      "ab[l→e]e ",
+      "se[l→e]ve"
+    ]
+  },
+  {
+    "rank": 14,
+    "gt_char": "e",
+    "pred_char": "o",
+    "count": 12,
+    "percentage": "0.06%",
+    "example_words": [
+      "stevenende",
+      "selven",
+      "denselven"
+    ],
+    "example_contexts": [
+      "st[e→o]ve",
+      " s[e→o]lv",
+      "ns[e→o]lv"
+    ]
+  },
+  {
+    "rank": 15,
+    "gt_char": "i",
+    "pred_char": "e",
+    "count": 11,
+    "percentage": "0.06%",
+    "example_words": [
+      "bij",
+      "penist",
+      "verigten"
+    ],
+    "example_contexts": [
+      " b[i→e]j ",
+      "en[i→e]st",
+      "er[i→e]gt"
+    ]
+  },
+  {
+    "rank": 16,
+    "gt_char": "r",
+    "pred_char": "a",
+    "count": 11,
+    "percentage": "0.06%",
+    "example_words": [
+      "grot",
+      "Corporal",
+      "geweldenarijen,"
+    ],
+    "example_contexts": [
+      " g[r→a]ot",
+      "po[r→a]al",
+      "na[r→a]ij"
+    ]
+  },
+  {
+    "rank": 17,
+    "gt_char": " ",
+    "pred_char": "r",
+    "count": 11,
+    "percentage": "0.06%",
+    "example_words": [
+      ".",
+      "platsen,",
+      "ales"
+    ],
+    "example_contexts": [
+      " .[ →r], ",
+      "n,[ →r]al",
+      "es[ →r]na"
+    ]
+  },
+  {
+    "rank": 18,
+    "gt_char": " ",
+    "pred_char": "v",
+    "count": 11,
+    "percentage": "0.06%",
+    "example_words": [
+      "kn",
+      "17",
+      "en"
+    ],
+    "example_contexts": [
+      "kn[ →v]Ar",
+      "17[ →v]8",
+      "en[ →v]uE"
+    ]
+  },
+  {
+    "rank": 19,
+    "gt_char": "i",
+    "pred_char": "t",
+    "count": 11,
+    "percentage": "0.06%",
+    "example_words": [
+      "gemediterd",
+      "Eerbiedig",
+      "sieken"
+    ],
+    "example_contexts": [
+      "ed[i→t]te",
+      "ed[i→t]g ",
+      " s[i→t]ek"
+    ]
+  },
+  {
+    "rank": 20,
+    "gt_char": "e",
+    "pred_char": "r",
+    "count": 11,
+    "percentage": "0.06%",
+    "example_words": [
+      "bescheydene",
+      "legen,",
+      "heden"
+    ],
+    "example_contexts": [
+      "en[e→r]",
+      " l[e→r]ge",
+      "ed[e→r]n "
+    ]
+  }
+]

@@ -11,8 +11,6 @@
 % BAB II: TINJAUAN PUSTAKA
 % ============================================================
 
-\setcounter{page}{11}
-
 \vspace{2cm}
 \begin{center}
       {\fontsize{14}{16.8}\selectfont\textbf{Bab II \quad Tinjauan Pustaka}}
@@ -107,7 +105,7 @@ Dampak terhadap HTR sangat besar karena kerusakan fisik menyebabkan oklusi atau 
 \paragraph{Pemudaran dan Degradasi Tinta}
 \label{para:pemudaran-tinta}
 
-Pemudaran tinta merupakan proses degradasi kimia di mana pigmen tinta kehilangan intensitas dan saturasi warna akibat oksidasi, paparan cahaya UV, atau reaksi dengan kontaminan atmosferik. Pada dokumen berusia ratusan tahun, pemudaran tinta terjadi secara progresif, menghasilkan: (1) penurunan intensitas warna dari hitam pekat menjadi abu-abu atau coklat terang, (2) penurunan kontras antara tinta dan background yang signifikan, (3) homogenisasi dan perlulusan goresan tinta yang dulunya tajam, sehingga detail halus seperti serif atau diakritik menjadi kabur \cite{pratikakis2013}. Tingkat pemudaran bervariasi bergantung pada paparan cahaya selama penyimpanan.
+Pemudaran tinta merupakan proses degradasi kimia di mana pigmen tinta kehilangan intensitas dan saturasi warna akibat oksidasi, paparan cahaya UV, atau reaksi dengan kontaminan atmosferik. Pada dokumen berusia ratusan tahun, pemudaran tinta terjadi secara progresif, menghasilkan: (1) penurunan intensitas warna dari hitam pekat menjadi abu-abu atau coklat terang, (2) penurunan kontras antara tinta dan background yang signifikan, (3) homogenisasi dan perlulusan goresan tinta yang dulunya tajam, sehingga detail halus seperti serif atau diakritik menjadi kabur \textcite{pratikakis2013}. Tingkat pemudaran bervariasi bergantung pada paparan cahaya selama penyimpanan.
 
 Dampak terhadap HTR sangat signifikan karena pemudaran mengurangi rasio sinyal-derau dan fitur visual diskriminatif: (1) penurunan kontras menghambat ekstraksi fitur edge-detection pada lapisan CNN awal, (2) hilangnya sharpness goresan mengurangi distinctiveness antar karakter, (3) noise latar belakang menjadi lebih terlihat relatif terhadap tinta yang memudar. Studi oleh \textcite{pratikakis2013} pada dataset DIBCO menunjukkan bahwa pemudaran moderat dapat meningkatkan CER dari 8 persen menjadi 25 persen. Pada dokumen ANRI, mayoritas mengalami pemudaran tinta dalam tingkat sedang hingga berat.
 
@@ -122,7 +120,7 @@ Degradasi gabungan menciptakan sinergi negatif di mana dampak terhadap keterbaca
 
 Dalam praktik, dokumen historis jarang mengalami degradasi tunggal. Lebih umum ditemukan kombinasi dari berbagai jenis degradasi yang berinteraksi secara kompleks. Misalnya, tembusan tinta yang tumpang tindih dengan noda air menciptakan kompleksitas visual yang jauh lebih sulit untuk ditangani dibandingkan degradasi individual.
 
-Fenomena ini yang membuat pendekatan tradisional berbasis aturan atau penalaan parameter menjadi tidak skalabel. Setiap kombinasi degradasi memerlukan parameter yang berbeda, dan tidak ada formulasi umum yang dapat menangani variasi ini. Hal ini menjadi motivasi utama untuk pendekatan berbasis pembelajaran mendalam yang dapat mempelajari representasi hierarkis dari data dengan variasi degradasi yang kompleks. Penelitian menunjukkan bahwa arsitektur seperti U-Net (\cite{ronneberger2015}) dan GAN (\cite{goodfellow2014}) mampu menangani variabilitas ini melalui pembelajaran dari data berpasangan, tanpa memerlukan formulasi eksplisit untuk setiap kombinasi degradasi. Namun, tantangan tetap ada dalam memastikan bahwa restorasi tidak hanya menghasilkan kualitas visual yang baik, tetapi juga menjaga keterbacaan teks untuk sistem HTR—kesenjangan yang akan dibahas lebih lanjut dalam Bagian II.8.
+Fenomena ini yang membuat pendekatan tradisional berbasis aturan atau penalaan parameter menjadi tidak skalabel. Setiap kombinasi degradasi memerlukan parameter yang berbeda, dan tidak ada formulasi umum yang dapat menangani variasi ini. Hal ini menjadi motivasi utama untuk pendekatan berbasis pembelajaran mendalam yang dapat mempelajari representasi hierarkis dari data dengan variasi degradasi yang kompleks. Penelitian menunjukkan bahwa arsitektur seperti U-Net (\textcite{ronneberger2015}) dan GAN (\textcite{goodfellow2014}) mampu menangani variabilitas ini melalui pembelajaran dari data berpasangan, tanpa memerlukan formulasi eksplisit untuk setiap kombinasi degradasi. Namun, tantangan tetap ada dalam memastikan bahwa restorasi tidak hanya menghasilkan kualitas visual yang baik, tetapi juga menjaga keterbacaan teks untuk sistem HTR—kesenjangan yang akan dibahas lebih lanjut dalam Bagian II.8.
 
 % \vspace{1.5ex}
 
@@ -137,17 +135,17 @@ Kompleksitas dan variabilitas degradasi yang telah dijelaskan di atas menciptaka
             \hline
             \textbf{Jenis Degradasi}             & \textbf{Tingkat} & \textbf{CER Increase} & \textbf{Confidence Drop} & \textbf{Referensi}           \\
             \hline
-            (A) Tinta Tembus                     & Sedang           & +40\%                 & -60\%                    & \cite{gatos2006}             \\
+            (A) Tinta Tembus                     & Sedang           & +40\%                 & -60\%                    & \textcite{gatos2006}             \\
             \hline
-            (B) Korosi Tinta Besi Galat          & Sedang           & +35\%                 & -50\%                    & \cite{neevel1995,krekel1999} \\
+            (B) Korosi Tinta Besi Galat          & Sedang           & +35\%                 & -50\%                    & \textcite{neevel1995,krekel1999} \\
             \hline
-            (C) Penuaan Kertas / Penguningan     & Sedang           & +40\%                 & -55\%                    & \cite{reilly1993,porck2000}  \\
+            (C) Penuaan Kertas / Penguningan     & Sedang           & +40\%                 & -55\%                    & \textcite{reilly1993,porck2000}  \\
             \hline
-            (D) Kerusakan Fisik (Robek, Lipatan) & Berat            & +60\%                 & -70\%                    & \cite{gatos2006}             \\
+            (D) Kerusakan Fisik (Robek, Lipatan) & Berat            & +60\%                 & -70\%                    & \textcite{gatos2006}             \\
             \hline
-            (E) Pemudaran Tinta                  & Sedang           & +25\%                 & -45\%                    & \cite{pratikakis2013}        \\
+            (E) Pemudaran Tinta                  & Sedang           & +25\%                 & -45\%                    & \textcite{pratikakis2013}        \\
             \hline
-            (F) Degradasi Gabungan               & Berat            & +85\%                 & -80\%                    & \cite{souibgui2022docentr}   \\
+            (F) Degradasi Gabungan               & Berat            & +85\%                 & -80\%                    & \textcite{souibgui2022docentr}   \\
             \hline
       \end{tabular}
 \end{table}
@@ -336,11 +334,11 @@ Evolusi temporal penelitian restorasi dokumen menunjukkan evolusi yang jelas dal
 
 \textit{Fase 1: Era Klasik (1979-2010)} -- Didominasi metode berbasis aturan seperti \textcite{otsu1979} dan \textcite{sauvola2000} dengan ambang batas adaptif. Karakteristik: fitur rekayasa manual, optimisasi parameter manual, keterbatasan pada degradasi kompleks.
 
-\textit{Fase 2: Era Pembelajaran Mendalam Awal (2015-2018)} -- Transisi ke pembelajaran representasi dengan U-Net \cite{ronneberger2015} dan autoencoder. Karakteristik: pembelajaran hierarkis, loss rekonstruksi (MSE/L1), keluaran cenderung kabur, fokus pada metrik visual (PSNR, SSIM).
+\textit{Fase 2: Era Pembelajaran Mendalam Awal (2015-2018)} -- Transisi ke pembelajaran representasi dengan U-Net \textcite{ronneberger2015} dan autoencoder. Karakteristik: pembelajaran hierarkis, loss rekonstruksi (MSE/L1), keluaran cenderung kabur, fokus pada metrik visual (PSNR, SSIM).
 
-\textit{Fase 3: Era Adversarial dan Multi-Modal (2017-2024)} -- Kemunculan GAN (Pix2Pix 2017, DE-GAN 2021), integrasi HTR (ERB-MultiTask 2021), dan munculnya pendekatan berbasis transformer (DocEnTr 2022, Text-DIAE 2022). Karakteristik: pelatihan adversarial untuk realisme, eksplorasi integrasi pengenal, adopsi mekanisme attention, dan eksplorasi terkini dari diffusion models (\cite{chen2018gradnorm}).
+\textit{Fase 3: Era Adversarial dan Multi-Modal (2017-2024)} -- Kemunculan GAN (Pix2Pix 2017, DE-GAN 2021), integrasi HTR (ERB-MultiTask 2021), dan munculnya pendekatan berbasis transformer (DocEnTr 2022, Text-DIAE 2022). Karakteristik: pelatihan adversarial untuk realisme, eksplorasi integrasi pengenal, adopsi mekanisme attention, dan eksplorasi terkini dari diffusion models (\textcite{chen2018gradnorm}).
 
-\textit{Fase 4: Era Paradigma Baru (2023-2024)} -- Pengenalan pendekatan pembelajaran mandiri (\cite{zhang2024}), vision transformers untuk analisis dokumen (\cite{kiessling2023}), dan mekanisme attention multi-skala (\cite{martinez2024}). Karakteristik: ketergantungan yang berkurang pada data pelatihan berpasangan, mekanisme attention berbasis transformasi dengan resolusi hierarkis, dan kerangka evaluasi holistik yang melampaui metrik tradisional (\cite{thompson2023}).
+\textit{Fase 4: Era Paradigma Baru (2023-2024)} -- Pengenalan pendekatan pembelajaran mandiri (\textcite{zhang2024}), vision transformers untuk analisis dokumen (\textcite{kiessling2023}), dan mekanisme attention multi-skala (\textcite{martinez2024}). Karakteristik: ketergantungan yang berkurang pada data pelatihan berpasangan, mekanisme attention berbasis transformasi dengan resolusi hierarkis, dan kerangka evaluasi holistik yang melampaui metrik tradisional (\textcite{thompson2023}).
 
 Evolusi ini mencerminkan perpindahan bertahap dari optimisasi visual murni menuju optimisasi yang lebih holistik yang mempertimbangkan keterbacaan fungsional untuk sistem HTR. Meta-analisis temporal menunjukkan korelasi Spearman r=0,73 antara tahun publikasi dan kompleksitas integrasi, mengindikasikan akselerasi dalam adopsi arsitektur multi-modal terintegrasi. Namun, analisis kesenjangan mengungkapkan bahwa integrasi eksplisit antara restorasi dan pengenalan teks dalam kerangka optimisasi terpadu masih menjadi area eksplorasi aktif dengan potensi penelitian yang signifikan.
 
@@ -351,7 +349,7 @@ Evolusi ini mencerminkan perpindahan bertahap dari optimisasi visual murni menuj
 
 % \vspace{1.5ex}
 
-\textcite{erb2021} \cite{erb2021} mengusulkan \textit{ERB-MultiTask} dengan judul ``\textit{Enhance to Read Better: A Multi-Task Adversarial Network for Handwritten Document Image Enhancement}''. Ini merupakan penelitian pionir yang melakukan validasi integrasi Convolutional Recurrent Neural Network (CRNN) pengenal secara langsung ke dalam proses pelatihan GAN untuk peningkatan dokumen tulisan tangan.
+\textcite{erb2021} \textcite{erb2021} mengusulkan \textit{ERB-MultiTask} dengan judul ``\textit{Enhance to Read Better: A Multi-Task Adversarial Network for Handwritten Document Image Enhancement}''. Ini merupakan penelitian pionir yang melakukan validasi integrasi Convolutional Recurrent Neural Network (CRNN) pengenal secara langsung ke dalam proses pelatihan GAN untuk peningkatan dokumen tulisan tangan.
 
 \paragraph{Konteks Penelitian dan Posisi dalam Evolusi GAN-HTR}
 \label{para:erb-konteks}
@@ -500,7 +498,7 @@ DE-GAN merepresentasikan pendekatan GAN untuk peningkatan dokumen dengan karakte
       \item Kerangka Kerja Adversarial: Mengadaptasi GAN bersyarat (cGANs) untuk peningkatan dokumen dengan generator U-Net dan diskriminator PatchGAN
       \item Kemampuan Multi-Tugas: Menangani binarisasi, penghilangan kekaburan, penghapusan watermark, dan pembersihan dalam satu kerangka kerja
       \item Evaluasi OCR Pasca-Proses: Mengevaluasi dampak peningkatan terhadap performa OCR, namun OCR tidak terintegrasi dalam pelatihan
-      \item Kontras dengan ERB: Berbeda dari ERB-MultiTask \cite{souibgui2021erb} yang mengintegrasikan pengenal, DE-GAN mengambil pendekatan tanpa integrasi
+      \item Kontras dengan ERB: Berbeda dari ERB-MultiTask \textcite{souibgui2021erb} yang mengintegrasikan pengenal, DE-GAN mengambil pendekatan tanpa integrasi
 \end{enumerate}
 
 \paragraph{Perbedaan Pendekatan: DE-GAN vs ERB-MultiTask}
@@ -528,7 +526,7 @@ Perbandingan antara ERB-MultiTask dan DE-GAN mengungkapkan dua paradigma berbeda
       \resizebox{\textwidth}{!}{
             \begin{tabular}{|l|c|c|}
                   \hline
-                  Aspek                    & ERB-MultiTask \cite{souibgui2021erb}          & DE-GAN \cite{souibgui2021degan} \\ \hline
+                  Aspek                    & ERB-MultiTask \textcite{souibgui2021erb}          & DE-GAN \textcite{souibgui2021degan} \\ \hline
                   \textbf{Integrasi} HTR   & \checkmark\ (Dalam lingkaran pelatihan)       & \texttimes\ (Post-hoc saja)     \\ \hline
                   \textbf{Loss} Function   & $\mathcal{L}_{adv} + BCE + \lambda \cdot CTC$ & $\mathcal{L}_{adv} + BCE$       \\ \hline
                   \textbf{Recognizer}      & CRNN (CNN-BiGRU)                              & Not used                        \\ \hline
@@ -863,7 +861,7 @@ Mayoritas benchmark yang dominan dalam literatur (DIBCO 2009-2019, H-DIBCO 2010-
 \paragraph{Bias Metrik Evaluasi}
 \label{para:bias-metrik}
 
-Dominasi PSNR dan SSIM sebagai metrik evaluasi utama dalam literatur menciptakan optimisasi implisit terhadap metrik ini. \textcite{wang2004} dalam studi seminal tentang Penilaian Kualitas Citra menunjukkan bahwa korelasi antara PSNR dengan kualitas perseptual manusia hanya berkisar 0,60-0,75, jauh dari korelasi sempurna. Lebih fundamental lagi, metrik visual tidak mengukur dampak terhadap keterbacaan untuk sistem HTR—kesenjangan signifikan yang baru mulai diakui dalam literatur terkini \cite{jadhav2022}. Praktik menggunakan metrik visual sebagai proxy untuk kualitas fungsional menciptakan bias evaluasi yang signifikan.
+Dominasi PSNR dan SSIM sebagai metrik evaluasi utama dalam literatur menciptakan optimisasi implisit terhadap metrik ini. \textcite{wang2004} dalam studi seminal tentang Penilaian Kualitas Citra menunjukkan bahwa korelasi antara PSNR dengan kualitas perseptual manusia hanya berkisar 0,60-0,75, jauh dari korelasi sempurna. Lebih fundamental lagi, metrik visual tidak mengukur dampak terhadap keterbacaan untuk sistem HTR—kesenjangan signifikan yang baru mulai diakui dalam literatur terkini \textcite{jadhav2022}. Praktik menggunakan metrik visual sebagai proxy untuk kualitas fungsional menciptakan bias evaluasi yang signifikan.
 
 \paragraph{Bias Publikasi dan Pelaporan Selektif}
 \label{para:bias-publikasi}
@@ -1167,7 +1165,7 @@ Dalam konteks restorasi dokumen, pembelajaran multi-modal berpotensi mengintegra
 Dalam restorasi dokumen, diskriminator konvensional hanya mengevaluasi modalitas visual—apakah citra hasil restorasi terlihat bersih secara visual. Pendekatan multi-modal yang berpotensi dieksplorasi adalah diskriminator yang mengevaluasi dua modalitas secara bersamaan:
 
 \begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\alph*., topsep=0pt, parsep=0pt, itemsep=0pt]
-      \item Modalitas Visual: \mbox{} Evaluasi karakteristik spasial dan tekstur citra melalui jaringan konvolusional, mengikuti paradigma PatchGAN \cite{isola2017} yang menilai keaslian pada tingkat patch lokal.
+      \item Modalitas Visual: \mbox{} Evaluasi karakteristik spasial dan tekstur citra melalui jaringan konvolusional, mengikuti paradigma PatchGAN \textcite{isola2017} yang menilai keaslian pada tingkat patch lokal.
 
       \item Modalitas Tekstual: \mbox{} Evaluasi koherensi struktur teks melalui pemrosesan sekuensial representasi karakter, menggunakan arsitektur seperti LSTM atau Transformer untuk menangkap dependensi linguistik.
 
@@ -1306,15 +1304,15 @@ Setelah melakukan analisis mendalam terhadap berbagai pendekatan restorasi dokum
             \begin{tabular}{|l|c|c|c|c|}
                   \hline
                   \textbf{Metode}                        & \textbf{PSNR} & \textbf{SSIM} & \textbf{CER}    & \textbf{Evaluasi HTR}           \\ \hline
-                  \textbf{Otsu} \cite{otsu1979}          & T/A           & T/A           & --              & \texttimes                      \\ \hline
-                  \textbf{Sauvola} \cite{sauvola2000}    & T/A           & 0.68          & --              & \texttimes                      \\ \hline
-                  U-Net \cite{ronneberger2015}           & T/A           & T/A           & --              & \texttimes\textsuperscript{2}   \\ \hline
-                  \textbf{Pix}2Pix \cite{isola2017}      & T/A           & T/A           & --              & \texttimes\textsuperscript{2}   \\ \hline
-                  ERB-MultiTask \cite{erb2021}           & 15.7 dB       & 0.87          & 27.03 / 24.33\% & \checkmark\textsuperscript{1,2} \\ \hline
-                  DE-GAN \cite{souibgui2021}             & 15.5 dB       & 0.86          & 28.2\%          & \checkmark\textsuperscript{1,2} \\ \hline
-                  \textbf{Text}-DIAE \cite{textdiae2022} & 28.5 dB       & 0.88          & --              & \texttimes                      \\ \hline
-                  \textbf{Doc}EnTr \cite{docentr2022}    & 35.2 dB       & 0.92          & --              & \texttimes                      \\ \hline
-                  \textbf{Cycle}GAN \cite{zhu2017}       & 30.2 dB       & 0.90          & --              & \texttimes                      \\ \hline
+                  \textbf{Otsu} \textcite{otsu1979}          & T/A           & T/A           & --              & \texttimes                      \\ \hline
+                  \textbf{Sauvola} \textcite{sauvola2000}    & T/A           & 0.68          & --              & \texttimes                      \\ \hline
+                  U-Net \textcite{ronneberger2015}           & T/A           & T/A           & --              & \texttimes\textsuperscript{2}   \\ \hline
+                  \textbf{Pix}2Pix \textcite{isola2017}      & T/A           & T/A           & --              & \texttimes\textsuperscript{2}   \\ \hline
+                  ERB-MultiTask \textcite{erb2021}           & 15.7 dB       & 0.87          & 27.03 / 24.33\% & \checkmark\textsuperscript{1,2} \\ \hline
+                  DE-GAN \textcite{souibgui2021}             & 15.5 dB       & 0.86          & 28.2\%          & \checkmark\textsuperscript{1,2} \\ \hline
+                  \textbf{Text}-DIAE \textcite{textdiae2022} & 28.5 dB       & 0.88          & --              & \texttimes                      \\ \hline
+                  \textbf{Doc}EnTr \textcite{docentr2022}    & 35.2 dB       & 0.92          & --              & \texttimes                      \\ \hline
+                  \textbf{Cycle}GAN \textcite{zhu2017}       & 30.2 dB       & 0.90          & --              & \texttimes                      \\ \hline
             \end{tabular}
       }
 \end{table}
@@ -1334,20 +1332,20 @@ Setelah melakukan analisis mendalam terhadap berbagai pendekatan restorasi dokum
             \begin{tabular}{|l|c|c|c|}
                   \hline
                   \textbf{Metode}                        & \textbf{Diskriminator} & \textbf{Arsitektur}  & \textbf{Tipe Loss} \\ \hline
-                  \textbf{Otsu} \cite{otsu1979}          & T/A                    & N/A                  & Threshold          \\ \hline
-                  \textbf{Sauvola} \cite{sauvola2000}    & T/A                    & N/A                  & Adaptif            \\ \hline
-                  U-Net \cite{ronneberger2015}           & T/A                    & CNN Encoder-Decoder  & L2 (MSE)           \\ \hline
-                  \textbf{Pix}2Pix \cite{isola2017}      & Visual saja            & CNN U-Net + PatchGAN & Adv + L1           \\ \hline
-                  ERB-MultiTask \cite{erb2021}           & Visual saja            & FCN + CRNN           & Adv + CRNN         \\ \hline
-                  DE-GAN \cite{souibgui2021}             & Visual saja            & CNN U-Net            & Adv + BCE          \\ \hline
-                  \textbf{Text}-DIAE \cite{textdiae2022} & T/A                    & ViT Autoencoder      & Rekonstruksi       \\ \hline
-                  \textbf{Doc}EnTr \cite{docentr2022}    & T/A                    & Transformer Only     & MSE                \\ \hline
-                  \textbf{Cycle}GAN \cite{zhu2017}       & Visual saja            & CNN Encoder-Decoder  & Cycle + Adv        \\ \hline
+                  \textbf{Otsu} \textcite{otsu1979}          & T/A                    & N/A                  & Threshold          \\ \hline
+                  \textbf{Sauvola} \textcite{sauvola2000}    & T/A                    & N/A                  & Adaptif            \\ \hline
+                  U-Net \textcite{ronneberger2015}           & T/A                    & CNN Encoder-Decoder  & L2 (MSE)           \\ \hline
+                  \textbf{Pix}2Pix \textcite{isola2017}      & Visual saja            & CNN U-Net + PatchGAN & Adv + L1           \\ \hline
+                  ERB-MultiTask \textcite{erb2021}           & Visual saja            & FCN + CRNN           & Adv + CRNN         \\ \hline
+                  DE-GAN \textcite{souibgui2021}             & Visual saja            & CNN U-Net            & Adv + BCE          \\ \hline
+                  \textbf{Text}-DIAE \textcite{textdiae2022} & T/A                    & ViT Autoencoder      & Rekonstruksi       \\ \hline
+                  \textbf{Doc}EnTr \textcite{docentr2022}    & T/A                    & Transformer Only     & MSE                \\ \hline
+                  \textbf{Cycle}GAN \textcite{zhu2017}       & Visual saja            & CNN Encoder-Decoder  & Cycle + Adv        \\ \hline
             \end{tabular}
       }
 \end{table}
 
-{\footnotesize\textsuperscript{1}DE-GAN dan ERB-MultiTask: Evaluasi pasca-pelatihan dengan pengenal yang telah dilatih sebelumnya, bukan pelatihan terintegrasi. Data PSNR/CER direvisi berdasarkan sumber asli \cite{souibgui2021erb,souibgui2022docentr}.
+{\footnotesize\textsuperscript{1}DE-GAN dan ERB-MultiTask: Evaluasi pasca-pelatihan dengan pengenal yang telah dilatih sebelumnya, bukan pelatihan terintegrasi. Data PSNR/CER direvisi berdasarkan sumber asli \textcite{souibgui2021erb,souibgui2022docentr}.
 \textsuperscript{2}U-Net dan Pix2Pix: Data T/A karena tidak ada evaluasi spesifik untuk handwritten document restoration pada sumber yang tersedia.}
 
 
@@ -1410,7 +1408,7 @@ Bab ini telah menyajikan analisis komprehensif dari lanskap penelitian restorasi
 \begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, label=\arabic*., topsep=0pt, parsep=0pt, itemsep=0pt]
       \item Kesenjangan Signifikan Optimisasi Visual-Fungsional
 
-            Meta-analisis kuantitatif mengungkapkan korelasi Spearman hanya 0,60-0,70 antara peningkatan PSNR dan penurunan CER \cite{jadhav2022}, membuktikan bahwa optimisasi visual tidak otomatis menjamin optimisasi keterbacaan. Hanya 2 dari 9 metode (22\%) melaporkan evaluasi HTR, mencerminkan kesenjangan evaluasi yang sistematis. Studi lintas-domain dalam peningkatan ucapan \cite{weninger2023} menunjukkan bahwa supervisi eksplisit dari model pengenal secara signifikan meningkatkan keterbacaan dibandingkan optimasi metrik akustik saja, memberikan indikasi teoretis untuk pendekatan serupa dalam restorasi dokumen. Lebih lanjut, benchmark standar seperti DIBCO series hanya menyediakan \textit{ground truth} visual tanpa metrik HTR (CER/WER), memperpanjang pemisahan antara penelitian restorasi dan aplikasi praktis.
+            Meta-analisis kuantitatif mengungkapkan korelasi Spearman hanya 0,60-0,70 antara peningkatan PSNR dan penurunan CER \textcite{jadhav2022}, membuktikan bahwa optimisasi visual tidak otomatis menjamin optimisasi keterbacaan. Hanya 2 dari 9 metode (22\%) melaporkan evaluasi HTR, mencerminkan kesenjangan evaluasi yang sistematis. Studi lintas-domain dalam peningkatan ucapan \textcite{weninger2023} menunjukkan bahwa supervisi eksplisit dari model pengenal secara signifikan meningkatkan keterbacaan dibandingkan optimasi metrik akustik saja, memberikan indikasi teoretis untuk pendekatan serupa dalam restorasi dokumen. Lebih lanjut, benchmark standar seperti DIBCO series hanya menyediakan \textit{ground truth} visual tanpa metrik HTR (CER/WER), memperpanjang pemisahan antara penelitian restorasi dan aplikasi praktis.
 
       \item Ketiadaan Loss Function HTR-Peka dalam Training Loop
 

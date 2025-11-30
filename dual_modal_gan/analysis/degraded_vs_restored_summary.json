@@ -1,0 +1,43 @@
+{
+  "total_samples": 712,
+  "total_errors": {
+    "degraded": 19417,
+    "restored": 5824,
+    "improvement": 13593,
+    "improvement_pct": 70.0056651387959
+  },
+  "by_error_type": {
+    "deletion": {
+      "degraded": 18010,
+      "restored": 2049,
+      "improvement": 15961
+    },
+    "substitution": {
+      "degraded": 1407,
+      "restored": 3775,
+      "improvement": -2368
+    },
+    "insertion": {
+      "degraded": 0,
+      "restored": 0,
+      "improvement": 0
+    }
+  },
+  "by_position": {
+    "start": {
+      "degraded": 4023,
+      "restored": 1696,
+      "improvement": 2327
+    },
+    "middle": {
+      "degraded": 12163,
+      "restored": 3101,
+      "improvement": 9062
+    },
+    "end": {
+      "degraded": 3231,
+      "restored": 1027,
+      "improvement": 2204
+    }
+  }
+}
