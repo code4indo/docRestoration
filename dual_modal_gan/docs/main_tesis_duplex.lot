@@ -1,43 +1,43 @@
 \babel@toc {bahasa}{}\relax 
-\contentsline {table}{\numberline {II.1}{\ignorespaces Dampak Kuantitatif Degradasi pada Performa HTR}}{16}{table.caption.3}%
-\contentsline {table}{\numberline {II.2}{\ignorespaces Perbandingan Paradigma Metode Restorasi}}{17}{table.caption.4}%
-\contentsline {table}{\numberline {II.3}{\ignorespaces Hasil Kuantitatif ERB-MultiTask}}{26}{table.caption.7}%
-\contentsline {table}{\numberline {II.4}{\ignorespaces Perbandingan ERB-MultiTask dan DE-GAN}}{28}{table.caption.8}%
-\contentsline {table}{\numberline {II.5}{\ignorespaces Perbandingan Pendekatan Terawasi vs Mandiri}}{44}{table.caption.11}%
-\contentsline {table}{\numberline {II.6}{\ignorespaces Perbandingan Metode Restorasi (Metrik Performa)}}{53}{table.caption.12}%
-\contentsline {table}{\numberline {II.7}{\ignorespaces Perbandingan Metode Restorasi (Karakteristik Arsitektur)}}{54}{table.caption.13}%
-\contentsline {table}{\numberline {III.1}{\ignorespaces Target Metrik Kuantitatif Penelitian (Revisi)}}{63}{table.caption.15}%
-\contentsline {table}{\numberline {III.2}{\ignorespaces Spesifikasi Kebutuhan Fungsional Kerangka Kerja Restorasi\relax }}{65}{table.caption.16}%
-\contentsline {table}{\numberline {III.3}{\ignorespaces Spesifikasi Kebutuhan Non-Fungsional Framework Restorasi\relax }}{65}{table.caption.17}%
-\contentsline {table}{\numberline {III.4}{\ignorespaces Matriks Pelacakan: Kebutuhan Sistem vs Rumusan Masalah dan Evaluasi\relax }}{66}{table.caption.18}%
-\contentsline {table}{\numberline {IV.1}{\ignorespaces Komparasi arsitektur dengan state-of-the-art}}{74}{table.caption.20}%
-\contentsline {table}{\numberline {IV.2}{\ignorespaces Analisis komparatif strategi integrasi pengenal HTR}}{80}{table.caption.23}%
-\contentsline {table}{\numberline {IV.3}{\ignorespaces Konfigurasi bobot loss optimal}}{90}{table.caption.25}%
-\contentsline {table}{\numberline {IV.4}{\ignorespaces Lingkungan eksperimen}}{92}{table.caption.26}%
-\contentsline {table}{\numberline {IV.5}{\ignorespaces Protokol curriculum learning tiga fase}}{99}{table.caption.28}%
-\contentsline {table}{\numberline {IV.6}{\ignorespaces Pemetaan metrik evaluasi dengan komponen arsitektur}}{106}{table.caption.30}%
-\contentsline {table}{\numberline {IV.7}{\ignorespaces Ringkasan metrik CER baseline}}{108}{table.caption.31}%
-\contentsline {table}{\numberline {IV.8}{\ignorespaces Konfigurasi eksperimen ablasi komponen loss}}{109}{table.caption.32}%
-\contentsline {table}{\numberline {V.1}{\ignorespaces Hasil kuantitatif pada set uji semi-sintetis}}{113}{table.caption.33}%
-\contentsline {table}{\numberline {V.2}{\ignorespaces Perbandingan dengan pustaka}}{117}{table.caption.38}%
-\contentsline {table}{\numberline {V.3}{\ignorespaces Studi ablasi komponen loss}}{118}{table.caption.39}%
-\contentsline {table}{\numberline {V.4}{\ignorespaces Perbandingan loss frozen vs joint}}{120}{table.caption.40}%
-\contentsline {table}{\numberline {V.5}{\ignorespaces Metrik keterbacaan frozen vs joint}}{122}{table.caption.42}%
-\contentsline {table}{\numberline {V.6}{\ignorespaces Efisiensi komputasi frozen vs joint}}{124}{table.caption.45}%
-\contentsline {table}{\numberline {V.7}{\ignorespaces Temuan kunci frozen vs joint}}{125}{table.caption.47}%
-\contentsline {table}{\numberline {V.8}{\ignorespaces Ablasi diskriminator dual-modal vs CNN}}{127}{table.caption.49}%
-\contentsline {table}{\numberline {V.9}{\ignorespaces Performa curriculum vs non-curriculum}}{129}{table.caption.50}%
-\contentsline {table}{\numberline {V.10}{\ignorespaces Konfigurasi bobot loss produksi}}{135}{table.caption.54}%
-\contentsline {table}{\numberline {V.11}{\ignorespaces Top 5 konfigurasi grid search}}{137}{table.caption.58}%
-\contentsline {table}{\numberline {V.12}{\ignorespaces Sensitivitas pixel weight}}{138}{table.caption.59}%
-\contentsline {table}{\numberline {V.13}{\ignorespaces Dampak CTC weight}}{139}{table.caption.60}%
-\contentsline {table}{\numberline {V.14}{\ignorespaces Analisis RecFeat weight}}{139}{table.caption.61}%
-\contentsline {table}{\numberline {V.15}{\ignorespaces Konfigurasi hyperparameter}}{140}{table.caption.62}%
-\contentsline {table}{\numberline {V.16}{\ignorespaces Hasil pengujian statistik formal hipotesis penelitian}}{140}{table.caption.63}%
-\contentsline {table}{\numberline {V.17}{\ignorespaces Performa restorasi ANRI}}{145}{table.caption.65}%
-\contentsline {table}{\numberline {V.18}{\ignorespaces Evaluasi ahli paleografi}}{146}{table.caption.66}%
-\contentsline {table}{\numberline {V.19}{\ignorespaces Kesenjangan domain pelatihan-inferensi}}{150}{table.caption.68}%
-\contentsline {table}{\numberline {V.20}{\ignorespaces Evaluasi hipotesis penelitian}}{158}{table.caption.69}%
-\contentsline {table}{\numberline {V.21}{\ignorespaces Distribusi Pola Kegagalan}}{162}{table.caption.70}%
+\contentsline {table}{\numberline {II.1}{\ignorespaces Dampak Kuantitatif Degradasi pada Performa HTR}}{17}{table.caption.3}%
+\contentsline {table}{\numberline {II.2}{\ignorespaces Perbandingan Paradigma Metode Restorasi}}{18}{table.caption.4}%
+\contentsline {table}{\numberline {II.3}{\ignorespaces Hasil Kuantitatif ERB-MultiTask}}{27}{table.caption.7}%
+\contentsline {table}{\numberline {II.4}{\ignorespaces Perbandingan ERB-MultiTask dan DE-GAN}}{30}{table.caption.8}%
+\contentsline {table}{\numberline {II.5}{\ignorespaces Perbandingan Pendekatan Terawasi vs Mandiri}}{46}{table.caption.11}%
+\contentsline {table}{\numberline {II.6}{\ignorespaces Perbandingan Metode Restorasi (Metrik Performa)}}{55}{table.caption.12}%
+\contentsline {table}{\numberline {II.7}{\ignorespaces Perbandingan Metode Restorasi (Karakteristik Arsitektur)}}{56}{table.caption.13}%
+\contentsline {table}{\numberline {III.1}{\ignorespaces Target Metrik Kuantitatif Penelitian (Revisi)}}{65}{table.caption.15}%
+\contentsline {table}{\numberline {III.2}{\ignorespaces Spesifikasi Kebutuhan Fungsional Kerangka Kerja Restorasi\relax }}{67}{table.caption.16}%
+\contentsline {table}{\numberline {III.3}{\ignorespaces Spesifikasi Kebutuhan Non-Fungsional \textit {Framework} Restorasi\relax }}{67}{table.caption.17}%
+\contentsline {table}{\numberline {III.4}{\ignorespaces Matriks Pelacakan: Kebutuhan Sistem vs Rumusan Masalah dan Evaluasi\relax }}{68}{table.caption.18}%
+\contentsline {table}{\numberline {IV.1}{\ignorespaces Komparasi arsitektur dengan state-of-the-art}}{75}{table.caption.20}%
+\contentsline {table}{\numberline {IV.2}{\ignorespaces Analisis komparatif strategi integrasi pengenal HTR}}{86}{table.caption.24}%
+\contentsline {table}{\numberline {IV.3}{\ignorespaces Konfigurasi bobot loss optimal}}{91}{table.caption.25}%
+\contentsline {table}{\numberline {IV.4}{\ignorespaces Lingkungan eksperimen}}{93}{table.caption.26}%
+\contentsline {table}{\numberline {IV.5}{\ignorespaces Protokol curriculum learning tiga fase}}{101}{table.caption.28}%
+\contentsline {table}{\numberline {IV.6}{\ignorespaces Pemetaan metrik evaluasi dengan komponen arsitektur}}{107}{table.caption.30}%
+\contentsline {table}{\numberline {IV.7}{\ignorespaces Ringkasan metrik CER baseline}}{109}{table.caption.31}%
+\contentsline {table}{\numberline {IV.8}{\ignorespaces Konfigurasi eksperimen ablasi komponen loss}}{111}{table.caption.32}%
+\contentsline {table}{\numberline {V.1}{\ignorespaces Hasil kuantitatif pada set uji semi-sintetis}}{115}{table.caption.33}%
+\contentsline {table}{\numberline {V.2}{\ignorespaces Perbandingan dengan pustaka}}{119}{table.caption.38}%
+\contentsline {table}{\numberline {V.3}{\ignorespaces Studi ablasi komponen loss}}{120}{table.caption.39}%
+\contentsline {table}{\numberline {V.4}{\ignorespaces Perbandingan loss frozen vs joint}}{122}{table.caption.40}%
+\contentsline {table}{\numberline {V.5}{\ignorespaces Metrik keterbacaan frozen vs joint}}{124}{table.caption.42}%
+\contentsline {table}{\numberline {V.6}{\ignorespaces Efisiensi komputasi frozen vs joint}}{126}{table.caption.45}%
+\contentsline {table}{\numberline {V.7}{\ignorespaces Temuan kunci frozen vs joint}}{127}{table.caption.47}%
+\contentsline {table}{\numberline {V.8}{\ignorespaces Ablasi diskriminator dual-modal vs CNN}}{129}{table.caption.49}%
+\contentsline {table}{\numberline {V.9}{\ignorespaces Performa curriculum vs non-curriculum}}{131}{table.caption.50}%
+\contentsline {table}{\numberline {V.10}{\ignorespaces Konfigurasi bobot loss produksi}}{137}{table.caption.54}%
+\contentsline {table}{\numberline {V.11}{\ignorespaces Top 5 konfigurasi grid search}}{139}{table.caption.58}%
+\contentsline {table}{\numberline {V.12}{\ignorespaces Sensitivitas pixel weight}}{140}{table.caption.59}%
+\contentsline {table}{\numberline {V.13}{\ignorespaces Dampak CTC weight}}{141}{table.caption.60}%
+\contentsline {table}{\numberline {V.14}{\ignorespaces Analisis RecFeat weight}}{141}{table.caption.61}%
+\contentsline {table}{\numberline {V.15}{\ignorespaces Konfigurasi hyperparameter}}{142}{table.caption.62}%
+\contentsline {table}{\numberline {V.16}{\ignorespaces Hasil pengujian statistik formal hipotesis penelitian}}{142}{table.caption.63}%
+\contentsline {table}{\numberline {V.17}{\ignorespaces Performa restorasi ANRI}}{147}{table.caption.65}%
+\contentsline {table}{\numberline {V.18}{\ignorespaces Evaluasi ahli paleografi}}{148}{table.caption.66}%
+\contentsline {table}{\numberline {V.19}{\ignorespaces Kesenjangan domain pelatihan-inferensi}}{152}{table.caption.68}%
+\contentsline {table}{\numberline {V.20}{\ignorespaces Evaluasi hipotesis penelitian}}{160}{table.caption.69}%
+\contentsline {table}{\numberline {V.21}{\ignorespaces Distribusi Pola Kegagalan}}{164}{table.caption.70}%
 \setcounter {tocdepth}{-1}
 \setcounter {tocdepth}{3}

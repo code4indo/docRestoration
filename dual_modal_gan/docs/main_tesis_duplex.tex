@@ -39,6 +39,7 @@
 \usepackage{multirow}
 \usepackage{array}
 \usepackage{tabularx}
+\usepackage{makecell} % Untuk \thead pada header tabel multi-baris
 \usepackage{rotating}     % Required for \rotatebox in lampiran B
 \usepackage{letltxmacro}  % Required for \LetLtxMacro
 \usepackage{xstring}      % Required for \ifstrequal
@@ -81,13 +82,13 @@
 % Aktifkan hyphenation Bahasa Indonesia dan optimasi spasi
 \lefthyphenmin=2
 \righthyphenmin=2
-\pretolerance=1000
-\tolerance=2000
-\emergencystretch=3em
+\pretolerance=5000
+\tolerance=9999
+\emergencystretch=\maxdimen
 \hbadness=10000
 \vbadness=10000
-\hyphenpenalty=500
-\exhyphenpenalty=500
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
 \sloppy
 
 % Aktifkan microtype untuk Bahasa Indonesia

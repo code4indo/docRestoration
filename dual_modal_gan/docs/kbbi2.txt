@@ -1,0 +1,29 @@
+Berikut adalah daftar beberapa contoh kesalahan umum dalam bahasa Indonesia yang dipengaruhi oleh bahasa Inggris. Pengaruh ini sering muncul dalam bentuk struktur kalimat, serapan kata, atau penggunaan yang tidak sesuai dengan kaidah bahasa Indonesia baku (berdasarkan Pedoman Umum Ejaan Bahasa Indonesia atau PUEBI). Saya menyusunnya dalam kategori untuk kemudahan, dengan penjelasan singkat dan contoh. Daftar ini tidak lengkap, tapi mencakup yang sering terjadi di media, tulisan formal, atau percakapan sehari-hari.
+
+### 1. Penggunaan Kata Sambung yang Salah (Dipengaruhi oleh Relative Pronouns seperti "where", "which")
+   - **Di mana** sebagai pengganti "yang" atau "tempat": Contoh salah: "Buku di mana saya baca kemarin hilang." (Seharusnya: "Buku yang saya baca kemarin hilang.") Pengaruh dari "book where I read yesterday."
+   - **Darimana** sebagai pengganti "dari mana" atau "yang": Contoh salah: "Ini adalah sumber darimana ide itu berasal." (Seharusnya: "Ini adalah sumber dari mana ide itu berasal" atau "Ini adalah sumber yang menjadi asal ide itu.") Mirip "from where".
+   - **Kemana** sebagai pengganti "ke mana" atau "yang": Contoh salah: "Jalan kemana kita harus lewat." (Seharusnya: "Jalan yang harus kita lewat.")
+
+### 2. Struktur Kalimat yang Terbalik atau Tidak Efektif (Dipengaruhi oleh Urutan Kata Inggris)
+   - **Kata kerja di awal kalimat majemuk**: Contoh salah: "Berbicara di depan wartawan, ia menjelaskan rencananya." (Seharusnya: "Ia berbicara di depan wartawan dan menjelaskan rencananya.") Pengaruh dari "Speaking in front of reporters, he explained...".
+   - **Struktur aktif pada klausa objek**: Contoh salah: "Lagu yang saya pernah dengar." (Seharusnya: "Lagu yang pernah saya dengar.") Dipengaruhi oleh "song that I ever heard".
+   - **Penggunaan "jadi" tanpa imbuhan**: Contoh salah: "Kaftan jadi favorit." (Seharusnya: "Kaftan menjadi favorit.") Mirip "becomes favorite".
+
+### 3. Serapan Kata yang Tidak Disesuaikan atau Campur Kode (Code-Mixing)
+   - **Rilis** sebagai verba: Contoh salah: "Perusahaan rilis produk baru." (Seharusnya: "Perusahaan meluncurkan produk baru.") Dari "release".
+   - **Eks** untuk mantan: Contoh salah: "Eks pekerja perusahaan itu." (Seharusnya: "Mantan pekerja perusahaan itu.") Dari "ex-".
+   - **Link**: Contoh salah: "Berikut link pendaftaran." (Seharusnya: "Berikut tautan pendaftaran.") Dari "link".
+   - **Makeup/Skincare/Outfit**: Contoh salah: "Rahasia makeup tahan lama." (Seharusnya: "Rahasia rias wajah tahan lama.") Dari istilah Inggris langsung tanpa adaptasi.
+   - **Favorit/Klub/Sepakbola**: Contoh salah: "Klub sepakbola favoritku." (Seharusnya: "Klub bola favoritku" atau gunakan "kesukaan" untuk "favorit".) Campur kode dengan kosakata Inggris.
+
+### 4. Penggunaan Kata yang Berlebihan atau Tidak Diperlukan (Dipengaruhi oleh Kopula seperti "is/a/an")
+   - **Adalah** dan **suatu/seorang**: Contoh salah: "Saya adalah seorang guru." (Seharusnya: "Saya guru.") Pengaruh dari "I am a teacher."
+   - **Bentuk jamak dengan pengulangan**: Contoh salah: "Negara-negara di Asia." (Seharusnya: "Banyak negara di Asia" jika maksudnya plural umum.) Dari penandaan plural seperti "countries".
+
+### 5. Kesalahan Lain yang Dipengaruhi Sintaksis Inggris
+   - **Kata ganti untuk objek non-manusia**: Contoh salah: "Dia (merujuk buku) sangat menarik." (Seharusnya: "Buku itu sangat menarik.") Dari "it".
+   - **Perbedaan dengan**: Contoh salah: "Perbedaan tilang manual dengan elektronik." (Seharusnya: "Perbedaan antara tilang manual dan elektronik.") Dari "differences with".
+   - **Campur kode dalam struktur**: Contoh salah: "Optimalisasi cek kesehatan." (Seharusnya: "Pemaksimalan pemeriksaan kesehatan.") Dari "optimize health check".
+
+Kesalahan ini sering muncul karena globalisasi dan paparan media berbahasa Inggris, membuat bahasa Indonesia terkesan kurang baku. Untuk menghindarinya, rujuk KBBI atau PUEBI, dan prioritaskan struktur alami bahasa Indonesia. Jika Anda punya konteks spesifik (misalnya, di tesis atau media), saya bisa beri contoh lebih lanjut!

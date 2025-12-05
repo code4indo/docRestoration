@@ -101,7 +101,7 @@ Keterbatasan penelitian yang teridentifikasi meliputi:
 \begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, noitemsep, topsep=0pt]
   \item Degradasi Ekstrem: Model menghadapi tantangan pada dokumen dengan kontras sangat rendah ($<30$) dan pemudaran berat (SNR $< 10$ dB), di mana pendekatan konservatif model cenderung menghasilkan peningkatan minimal untuk menghindari halusinasi fitur.
   \item Keterbatasan Pengenal HTR: Analisis kegagalan menunjukkan bahwa 62.9\% sisa kesalahan (\textit{residual error}) disebabkan oleh ligatur paleografi kompleks yang gagal dikenali oleh model HTR, bukan karena kegagalan restorasi visual.
-  \item Bias Aksara: Penelitian dibatasi pada aksara Latin paleografi (Bahasa Belanda Kuno), sehingga generalisasi ke aksara lain (Arab, Melayu, Jawa Kuno) belum tervalidasi.
+  \item Bias Aksara: Penelitian dibatasi pada aksara Latin paleografi (bahasa Belanda Kuno), sehingga generalisasi ke aksara lain (Arab, Melayu, Jawa Kuno) belum tervalidasi.
   \item Kesenjangan Domain: Meskipun validasi kualitatif menunjukkan hasil positif, ketiadaan data \textit{ground truth} berpasangan untuk dokumen historis nyata membatasi evaluasi kuantitatif yang presisi pada data riil.
   \item Kompleksitas Komputasi: Durasi pelatihan (17.82 GPU-jam untuk 50 \textit{epoch}) masih relatif tinggi untuk penerapan praktis yang membutuhkan pelatihan ulang berkala pada koleksi baru.
 \end{enumerate}
@@ -115,7 +115,7 @@ Berdasarkan temuan dan keterbatasan penelitian, saran diajukan bagi dua aspek: p
 \subsubsection{Saran untuk Penelitian Lanjutan}
 \label{subsubsec:saran-penelitian}
 
-Untuk mengatasi keterbatasan teknis dan memperluas cakupan keilmuan, penelitian mendatang disarankan berfokus pada:
+Untuk mengatasi keterbatasan teknis dan memperluas cakupan keilmuan, penelitian mendatang disarankan untuk berfokus pada:
 
 \begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, noitemsep, topsep=0pt]
   \item \textit{Fine-Tuning} Pengenal HTR pada Data Paleografi: Mengingat hambatan utama adalah pengenal (\textit{recognizer}), prioritas riset selanjutnya adalah melakukan \textit{fine-tuning} atau adaptasi domain pada model HTR menggunakan korpus spesifik paleografi ligatur kompleks untuk menurunkan batas bawah kesalahan teoretis.
