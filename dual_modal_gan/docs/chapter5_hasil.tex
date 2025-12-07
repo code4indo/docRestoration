@@ -271,6 +271,42 @@ Gambar~\ref{fig:validation-metrics-trajectory} menyajikan trajektori terperinci 
   Performa pada \textit{set} uji (PSNR 30.74 dB, SSIM 0.987, CER 34.9\%) konsisten dengan tren validasi, memvalidasi bahwa model tidak mengalami \textit{overfitting}. Perbedaan CER antara validasi dan uji (27.11\% vs 34.9\%, $\Delta$=7.79\%) konsisten dengan perbedaan \textit{recognizer} beku pada citra bersih (26.57\% vs 34.1\%, $\Delta$=7.53\%), mengonfirmasi bahwa \textit{gap} disebabkan kompleksitas intrinsik teks \textit{set} uji yang lebih tinggi, bukan degradasi performa model. Rasio peningkatan CER konsisten: validasi 67.5\% (83.4\%$\rightarrow$27.11\%), uji 58.2\% (83.4\%$\rightarrow$34.9\%).
 \end{enumerate}
 
+Untuk memberikan gambaran yang jelas mengenai berbagai nilai CER yang digunakan dalam penelitian ini, Tabel~\ref{table:cer-summary-baseline} merangkum tiga kategori baseline: (1) performa \textit{recognizer} pada citra bersih, (2) input terdegradasi tanpa restorasi, dan (3) hasil setelah restorasi.
+
+\begin{table}[H]
+  \caption[Ringkasan metrik CER baseline]{Ringkasan metrik CER pada berbagai kondisi: baseline \textit{recognizer}, input terdegradasi, dan hasil restorasi.}
+  \label{table:cer-summary-baseline}
+  \footnotesize
+  \centering
+  \renewcommand{\arraystretch}{1.1}
+  \begin{tabular}{|l|l|c|c|}
+    \hline
+    \textbf{Kondisi}             & \textbf{Dataset}       & \textbf{$n$} & \textbf{CER (\%)} \\
+    \hline
+    \multicolumn{4}{|c|}{\textit{\textbf{Baseline Recognizer} pada Citra Bersih (Ground Truth)}}  \\
+    \hline
+    CER$_{\text{pretrain}}$      & ANRI validasi awal     & 948          & 33,72             \\
+    CER$_{\text{val-GT}}$        & Validasi GT penelitian & 710          & 26,57             \\
+    CER$_{\text{test-GT}}$       & Uji GT penelitian      & 712          & 34,1              \\
+    \hline
+    \multicolumn{4}{|c|}{\textit{\textbf{Input Terdegradasi} (Tanpa Restorasi)}}   \\
+    \hline
+    CER$_{\text{degraded}}$      & Validasi \& Uji        & 1422         & 83,4              \\
+    \hline
+    \multicolumn{4}{|c|}{\textit{\textbf{Hasil Restorasi} Metode Usulan}}          \\
+    \hline
+    CER$_{\text{val-restored}}$  & Validasi               & 710          & 27,11             \\
+    CER$_{\text{test-restored}}$ & Uji                    & 712          & \textbf{34,9}     \\
+    \hline
+    \multicolumn{4}{|c|}{\textit{\textbf{Peningkatan Relatif} (Improvement)}}                    \\
+    \hline
+    Validasi                     & 83,4\% $\rightarrow$ 27,11\% & ---   & 67,5\%            \\
+    Uji                          & 83,4\% $\rightarrow$ 34,9\%  & ---   & \textbf{58,2\%}   \\
+    \hline
+  \end{tabular}
+\end{table}
+
+Perbedaan CER antara set validasi dan uji ($\Delta$=7,53 poin persentase pada citra bersih, $\Delta$=7,79 poin persentase pada hasil restorasi) mencerminkan variasi kompleksitas paleografi antar dataset---bukan \textit{overfitting}---dikonfirmasi oleh konsistensi rasio peningkatan (67,5\% vs 58,2\%).
 
 \subsection{Posisi Penelitian terhadap Pustaka Terkini}
 \label{subsec:perbandingan-literatur}

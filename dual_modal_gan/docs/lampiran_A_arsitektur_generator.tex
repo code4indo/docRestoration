@@ -15,7 +15,7 @@
 \vspace{1em}
 
 \begin{table}[H]
-\caption{Arsitektur Generator U-Net Enhanced. Spesifikasi detail lima tahap encoder (progressive downsampling dari $128 \times 1024$ ke $4 \times 32$), bottleneck MSFP dengan konvolusi terdilasi, dan lima tahap decoder dengan attention gates. Setiap tahap mengintegrasikan RDB+CBAM untuk ekstraksi fitur hierarkis dan atensi adaptif. Total parameter: 21.8M.}
+\caption{Arsitektur Generator U-Net Enhanced. Spesifikasi detail lima tahap encoder (progressive downsampling dari $128 \times 1024$ ke $4 \times 32$), bottleneck MSFP dengan konvolusi terdilasi, dan lima tahap decoder dengan attention gates. Setiap tahap mengintegrasikan RDB+CBAM untuk ekstraksi fitur hierarkis dan atensi adaptif. Total parameter: 21,8M; \textit{memory footprint}: $\sim$87~MB (\textit{float32}); aktivasi keluaran: \textit{Tanh} (rentang [-1, 1]).}
 \label{tab:A_generator_arch}
 \small
 \centering

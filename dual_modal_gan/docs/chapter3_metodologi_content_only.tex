@@ -258,8 +258,65 @@ Tabel~\ref{tab:traceability-matrix} memetakan kebutuhan sistem ke rumusan masala
 
 Kesimpulan Analisis Kebutuhan: Berdasarkan analisis di atas, kerangka kerja yang akan dikembangkan harus memenuhi total 12 kebutuhan (8 fungsional dan 4 non-fungsional) yang mencakup aspek visual, tekstual, performa, dan integrasi sistem. Spesifikasi kebutuhan ini menjadi acuan untuk: (1) Perancangan Arsitektur (Bab IV): Setiap komponen arsitektur (Generator, Recognizer, Discriminator, \textit{Loss Function}) dirancang untuk memenuhi kebutuhan spesifik yang telah ditetapkan, (2) Implementasi Sistem (Bab IV): Detail implementasi seperti alur data, \textit{training loop}, dan \textit{inference workflow} didesain untuk memenuhi kebutuhan fungsional FR-4 hingga FR-8, (3) Evaluasi dan Validasi (Bab V): Metrik evaluasi dan protokol eksperimen dirancang untuk mengukur pencapaian kebutuhan non-fungsional NFR-1 hingga NFR-4. Dengan demikian, analisis kebutuhan ini memberikan dasar yang kuat untuk tahapan selanjutnya dalam kerangka DSRM, yaitu perancangan dan pengembangan solusi (DSRM Tahap 3: Desain dan Pengembangan) yang akan diuraikan pada tahap berikutnya.
 
+\subsubsection{Lingkungan Eksperimen dan Spesifikasi Komputasi}
+\label{subsec:lingkungan-eksperimen}
+
+Implementasi menggunakan \textit{workstation} dengan spesifikasi pada Tabel~\ref{tab:hardware-specs-actual}. Sistem ini menyediakan komputasi paralel GPU untuk melatih arsitektur GAN yang kompleks, termasuk komponen \textit{dual-modal} dan \textit{frozen recognizer}.
+
+\begin{table}[H]
+  \caption[Lingkungan eksperimen]{Spesifikasi perangkat keras dan perangkat lunak yang digunakan dalam eksperimen.}
+  \label{tab:hardware-specs-actual}
+  \small
+  \centering
+  \begin{tabular}{|l|l|}
+    \hline
+    \textbf{Komponen} & \textbf{Spesifikasi}                                  \\
+    \hline
+    GPU               & 2$\times$ NVIDIA RTX A4000 (16 GB GDDR6 per GPU)      \\
+    \hline
+    CPU               & AMD Ryzen Threadripper PRO 3955WX (16-core/32-thread) \\
+    \hline
+    RAM               & 128 GB DDR4-3200                                      \\
+    \hline
+    Penyimpanan       & 1 TB NVMe SSD (Samsung 980 PRO)                       \\
+    \hline
+    Sistem Operasi    & Ubuntu 22.04.5 LTS                                    \\
+    \hline
+    Kerangka Kerja    & TensorFlow 2.16.1 + CUDA 12.8 + cuDNN 8.9.7           \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\paragraph{Dependensi Perangkat Lunak}
+Sistem menggunakan \textit{software stack} terintegrasi berikut:
+\begin{itemize}[leftmargin=1.5em, labelsep=0.5em, noitemsep, topsep=0pt]
+  \item Python 3.10.12 sebagai bahasa pemrograman utama.
+  \item TensorFlow 2.16.1 dengan CUDA 12.8 dan cuDNN 8.9 untuk komputasi GPU.
+  \item Poetry 1.7.1 untuk pengelolaan dependensi secara deterministik melalui \texttt{poetry.lock}.
+  \item TensorFlow Text 2.16 untuk operasi CTC \textit{loss}.
+  \item MLflow 2.14.1 untuk pelacakan eksperimen dengan pencatatan otomatis \textit{hyperparameter} dan metrik.
+\end{itemize}
+
+Pemilihan TensorFlow didasarkan pada stabilitas CTC \textit{loss} dan kematangan ekosistem \textit{tooling} pada domain HTR.
+
+\paragraph{Protokol Reproduktibilitas}
+Reproduktibilitas dijamin melalui empat mekanisme deterministik:
+\begin{enumerate}[label=\arabic*., leftmargin=1.5em, labelsep=0.5em, noitemsep, topsep=0pt]
+  \item \textit{Seed} acak tetap (\texttt{seed=42}) untuk NumPy, TensorFlow, dan Python \texttt{random}.
+  \item Mode deterministik TensorFlow (\texttt{tf.config.experimental.enable\_op\_determinism()}) dan cuDNN (\texttt{TF\_DETERMINISTIC\_OPS=1}).
+  \item Konfigurasi GPU \textit{single-device} (\texttt{GPU:0}) untuk menghindari variasi hasil akibat paralelisme.
+  \item Pelacakan eksperimen MLflow untuk audit penuh.
+\end{enumerate}
+
+Model disimpan setiap 5 \textit{epoch}, ditambah penyimpanan \textit{best model} berdasarkan metrik gabungan PSNR-CER pada set validasi.
+
+\paragraph{Konfigurasi Numerik dan Kinerja}
+Implementasi menggunakan presisi \texttt{float32} untuk menjaga stabilitas numerik CTC \textit{loss}. Presisi \texttt{float16} dengan \textit{mixed precision} tidak digunakan karena rentan terhadap \textit{numerical underflow} pada probabilitas karakter kecil.
+
+Infrastruktur komputasi (2$\times$ RTX A4000, 128 GB RAM) memungkinkan \textit{batch size} 2 per GPU untuk citra beresolusi $1024 \times 128$ piksel. Waktu pelatihan total adalah 17,82 jam GPU untuk 50 \textit{epoch}.
+
 \subsubsection{Desain dan Pengembangan Artefak (Tahap 3)}
-Tahap ini merupakan inti penelitian di mana artefak framework restorasi dirancang, diimplementasikan, dan disempurnakan melalui siklus iteratif berbasis eksperimen. Tahap ini mengikuti metodologi pengembangan deep learning yang terdokumentasi dan mencakup tiga aspek fundamental: penyiapan lingkungan komputasi, manajemen data dan eksperimen, serta pengembangan framework modular.
+Tahap ini merupakan inti penelitian di mana artefak \textit{framework} restorasi dirancang, diimplementasikan, dan disempurnakan melalui siklus iteratif berbasis eksperimen. Tahap ini mengikuti metodologi pengembangan \textit{deep learning} yang terdokumentasi dan mencakup pengembangan \textit{framework} modular.
 
 \begin{figure}[htbp]
     \centering
@@ -267,8 +324,6 @@ Tahap ini merupakan inti penelitian di mana artefak framework restorasi dirancan
     \caption[Alur Pengembangan Kerangka Kerja]{Alur pengembangan kerangka kerja restorasi dokumen dengan lima fase utama yang dilakukan secara sekuensial dengan iterasi pada fase 4 dan 5.}
     \label{fig:development-pipeline}
 \end{figure}
-
-Untuk memastikan reproduktibilitas, penelitian ini menggunakan lingkungan komputasi dengan GPU NVIDIA RTX A4000 (16 GB VRAM), \textit{framework deep learning} TensorFlow/Keras, dan MLflow untuk pelacakan eksperimen dan manajemen artefak model. Konfigurasi perangkat keras dan perangkat lunak lengkap didokumentasikan dalam repositori proyek untuk memfasilitasi replikasi eksperimen.
 
 \paragraph{Fase 1: Persiapan Dataset HTR}
 Dataset bersih disiapkan untuk melatih model \textit{Recognizer} dengan struktur pasangan citra-transkripsi. Dataset ini merupakan ekstraksi baris teks dari koleksi dokumen tulisan tangan paleografi Belanda abad ke-16 hingga ke-18 yang berasal dari Arsip Nasional Republik Indonesia (ANRI), yang telah didigitalisasi dan dianotasi dengan transkripsi \textit{ground truth} oleh ahli paleografi.
