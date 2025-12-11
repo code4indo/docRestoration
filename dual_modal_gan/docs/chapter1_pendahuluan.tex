@@ -122,40 +122,40 @@ Arsip Nasional Republik Indonesia menyimpan berbagai koleksi arsip bersejarah ya
 % sintaks untuk menambahkan space antar paragraf
 
 
-Degradasi yang terjadi mencakup berbagai bentuk kerusakan dengan karakteristik unik. Rembesan tinta merupakan tembusan tinta dari halaman lain yang menciptakan efek bayangan karakter terbalik dengan intensitas bervariasi. Pemudaran terjadi sebagai hilangnya warna tinta, khususnya pada \textit{iron gall ink} yang mengubah warna dari hitam menjadi coklat keabu-abuan. Tinta jenis ini juga dapat memicu korosi, sebuah proses kimiawi yang merusak serat kertas hingga membuatnya rapuh atau berlubang. Kerusakan lainnya adalah noda yang muncul dari kelembaban atau jamur, bersifat tidak teratur secara spasial, dan dapat menutupi sebagian atau seluruh karakter
+Degradasi yang terjadi mencakup berbagai bentuk kerusakan dengan karakteristik unik. Rembesan tinta merupakan tembusan tinta dari halaman lain yang menciptakan efek bayangan karakter terbalik dengan intensitas bervariasi. Pemudaran terjadi sebagai hilangnya warna tinta, khususnya pada \textit{iron gall ink} yang mengubah warna dari hitam menjadi coklat keabu-abuan. Tinta jenis ini juga dapat memicu korosi, sebuah proses kimiawi yang merusak serat kertas hingga membuatnya rapuh atau berlubang. Kerusakan lainnya adalah noda yang muncul dari kelembaban atau jamur, muncul secara tidak teratur, dan dapat menutupi sebagian atau seluruh karakter
 
 
 Kondisi degradasi ini tidak hanya mengganggu keutuhan visual dokumen, tetapi juga mengancam keutuhan dan keaslian informasi yang terkandung di dalamnya. Hal ini menimbulkan tantangan serius dalam upaya pelestarian digital, sebagaimana yang diamanatkan oleh Undang-Undang Nomor 43 Tahun 2009 tentang Kearsipan.
 
 
-Secara khusus, degradasi fisik dokumen menjadi penghambat utama dalam implementasi sistem Pengenalan Teks Tulisan Tangan (HTR) yang krusial untuk transkripsi otomatis dokumen tulisan tangan. Penelitian menunjukkan bahwa sistem HTR mengalami penurunan akurasi yang signifikan ketika diaplikasikan pada dokumen terdegradasi \textcite{gatos2006}. Tingkat kesalahan pengenalan karakter (CER) dapat meningkat hingga 15\% atau lebih pada dokumen dengan degradasi berat, sehingga menyulitkan proses digitalisasi dan ekstraksi informasi secara otomatis \textcite{jadhav2022}. Kondisi ini berdampak langsung pada efisiensi operasional lembaga kearsipan dan aksesibilitas informasi bagi peneliti serta masyarakat luas.
+Secara khusus, degradasi fisik dokumen menjadi penghambat utama dalam implementasi sistem Pengenalan Teks Tulisan Tangan (HTR) yang sangat penting untuk transkripsi otomatis dokumen tulisan tangan. Penelitian menunjukkan bahwa sistem HTR mengalami penurunan akurasi yang signifikan ketika diaplikasikan pada dokumen terdegradasi \textcite{gatos2006}. Tingkat kesalahan pengenalan karakter (CER) dapat meningkat hingga 15\% atau lebih pada dokumen dengan degradasi berat, sehingga menyulitkan proses digitalisasi dan ekstraksi informasi secara otomatis \textcite{jadhav2022}. Kondisi ini berdampak langsung pada efisiensi operasional lembaga kearsipan dan aksesibilitas informasi bagi peneliti serta masyarakat luas.
 
 
-Pendekatan untuk mengatasi masalah degradasi dokumen telah berkembang dari teknik tradisional hingga metode berbasis pembelajaran mendalam. Metode tradisional seperti penentuan ambang adaptif \textcite{sauvola2000, otsu1979} dan segmentasi berbasis ruang warna telah terbukti efektif untuk kasus degradasi sederhana, seperti noda ringan atau perubahan warna minor. Namun, metode ini memiliki keterbatasan signifikan dalam menangani degradasi kompleks seperti tembus tinta yang parah atau variasi intensitas latar belakang yang tidak merata \textcite{souibgui2021degan}. Sebagai alternatif, pendekatan berbasis Jaringan Adversarial Generatif (GAN) menawarkan solusi yang lebih adaptif dan andal untuk restorasi dokumen \textcite{goodfellow2014}.
+Pendekatan untuk mengatasi masalah degradasi dokumen telah berkembang dari teknik tradisional hingga metode berbasis pembelajaran mendalam. Metode tradisional seperti penentuan ambang adaptif \textcite{sauvola2000, otsu1979} dan segmentasi berbasis ruang warna terbukti efektif untuk kasus degradasi sederhana, seperti noda ringan atau perubahan warna minor. Namun, metode ini memiliki keterbatasan signifikan dalam menangani degradasi kompleks seperti tembus tinta yang parah atau variasi intensitas latar belakang yang tidak merata \textcite{souibgui2021degan}. Sebagai alternatif, pendekatan berbasis Jaringan Adversarial Generatif (GAN) menawarkan solusi yang lebih adaptif dan andal untuk restorasi dokumen \textcite{goodfellow2014}.
 
 
 GAN memanfaatkan dua jaringan saraf yang saling berkompetisi: generator (pembuat) yang mencoba menghasilkan citra dokumen yang lebih bersih, dan diskriminator (pembeda) yang menilai keaslian citra tersebut. Proses kompetitif ini memungkinkan GAN untuk mempelajari pola degradasi yang kompleks dan menghasilkan hasil restorasi yang lebih baik secara visual. Namun, evaluasi mendalam terhadap berbagai arsitektur GAN mengungkap pola yang menarik.
 
 
-Penelitian terkini menunjukkan bahwa performa metode-metode tersebut sangat bergantung pada bagaimana keterbacaan teks dievaluasi. DE-GAN, misalnya, melaporkan penurunan CER yang signifikan dari 0.37 menjadi 0.01 pada eksperimen tertentu, namun evaluasi keterbacaan ini dilakukan secara pasca-pelatihan, bukan sebagai bagian dari fungsi objektif \textcite{souibgui2021degan}. Sebaliknya, DocEnTr mencapai PSNR tertinggi (22.29 dB) dengan arsitektur transformer saja, namun pendekatan ini tanpa komponen kompetitif cenderung menghasilkan keluaran yang terlalu halus yang dapat menghilangkan detail tekstur penting \textcite{docentr2022}.
+Penelitian terkini menunjukkan bahwa performa metode-metode tersebut sangat bergantung pada bagaimana keterbacaan teks dievaluasi. DE-GAN, misalnya, melaporkan penurunan CER yang signifikan dari 0.37 menjadi 0.01 pada eksperimen tertentu, namun evaluasi keterbacaan ini dilakukan setelah pelatihan selesai, bukan sebagai bagian dari fungsi objektif \textcite{souibgui2021degan}. Sebaliknya, DocEnTr mencapai PSNR tertinggi (22.29 dB) dengan arsitektur transformer saja, namun pendekatan ini tanpa komponen kompetitif cenderung menghasilkan keluaran yang terlalu halus yang dapat menghilangkan detail tekstur penting \textcite{docentr2022}.
 
 
-Pola ini mengindikasikan adanya kompromi mendasar antara optimasi visual dan keterbacaan teks. Metode yang difokuskan pada metrik visual seperti PSNR seringkali mengabaikan karakteristik spesifik yang penting untuk HTR. Diskriminator pada arsitektur GAN umumnya dirancang untuk evaluasi visual semata, tidak mempertimbangkan apakah struktur karakter tetap dapat dibaca oleh sistem HTR. Akibatnya, peningkatan kualitas visual tidak selalu berbanding lurus dengan peningkatan akurasi pengenalan teks.
+Pola ini mengindikasikan adanya kompromi mendasar antara optimasi visual dan keterbacaan teks. Metode yang difokuskan pada metrik visual seperti PSNR seringkali mengabaikan karakteristik spesifik yang penting untuk HTR. Diskriminator pada arsitektur GAN umumnya dirancang untuk evaluasi visual semata, tidak mempertimbangkan apakah struktur karakter masih dapat dibaca oleh sistem HTR. Akibatnya, peningkatan kualitas visual tidak selalu berbanding lurus dengan peningkatan akurasi pengenalan teks.
 
 
-Implikasi penting dari temuan ini adalah bahwa citra yang terlihat bersih secara visual belum tentu optimal untuk sistem HTR. Metrik visual seperti PSNR dan SSIM mengukur kemiripan piksel secara keseluruhan, namun tidak sensitif terhadap distorsi halus pada struktur karakter yang krusial untuk pengenalan teks. Oleh karena itu, diperlukan pendekatan yang secara eksplisit mengintegrasikan evaluasi keterbacaan ke dalam proses restorasi dokumen.
+Temuan ini menunjukkan bahwa citra yang terlihat bersih secara visual belum tentu optimal untuk sistem HTR. Metrik visual seperti PSNR dan SSIM mengukur kemiripan piksel secara keseluruhan, namun tidak sensitif terhadap distorsi halus pada struktur karakter yang krusial untuk pengenalan teks. Oleh karena itu, diperlukan pendekatan yang secara eksplisit mengintegrasikan evaluasi keterbacaan ke dalam proses restorasi dokumen.
 
 
 Kesenjangan antara optimasi visual dan optimasi keterbacaan ini menjadi fokus utama penelitian ini. Untuk mengatasi keterbatasan tersebut, penelitian ini mengusulkan kerangka kerja GAN yang mengintegrasikan empat komponen inovatif dalam dua kontribusi utama. Pertama, arsitektur kerangka kerja dengan Diskriminator Dual-Modal yang memiliki cabang visual (CNN) dan cabang tekstual (LSTM) untuk mengevaluasi koherensi gambar-teks secara simultan, serta strategi \textit{Frozen Recognizer} yang mengintegrasikan CTC \textit{loss} dari model HTR pralatih tanpa mengubah bobotnya untuk memberikan gradien sadar teks yang stabil. Kedua, strategi pelatihan multi-objektif dengan \textit{Curriculum Learning} untuk penurunan bobot CTC \textit{loss} yang mencegah ketidakstabilan pelatihan akibat perbedaan skala komponen \textit{loss} ganda, dilengkapi dengan studi ablasi sistematis untuk validasi empiris kontribusi setiap komponen terhadap keseimbangan optimal antara kualitas visual (PSNR/SSIM) dan keterbacaan teks (CER/WER). Kerangka kerja ini mengoptimalkan fungsi loss 5-komponen yang terdiri dari: piksel, adversarial, perseptual, CTC, dan fitur rekognisi.
 
 
-Diskriminator Dual Modal dirancang dengan arsitektur dua cabang paralel. Cabang visual menggunakan jaringan konvolusional untuk mengekstrak fitur spasial dari gambar. Sementara itu, cabang tekstual menggunakan pemodelan urutan (LSTM/\textit{Transformer}) untuk memproses representasi teks dari model HTR. Kedua cabang ini kemudian difusikan melalui lapisan konkatenasi dan \textit{dense layers} untuk menghasilkan skor validitas koherensi gambar-teks.
+Diskriminator \textit{Dual-Modal} dirancang dengan arsitektur dua cabang paralel. Cabang visual menggunakan jaringan konvolusional untuk mengekstrak fitur spasial dari gambar. Sementara itu, cabang tekstual menggunakan pemodelan urutan (LSTM/\textit{Transformer}) untuk memproses representasi teks dari model HTR. Kedua cabang ini kemudian difusikan melalui lapisan konkatenasi dan \textit{dense layers} untuk menghasilkan skor validitas koherensi gambar-teks.
 
 
-Pendekatan ini didukung oleh penelitian terkini yang menunjukkan bahwa arsitektur multi-modal dapat meningkatkan stabilitas pelatihan dan kualitas keluaran GAN \textcite{baltrusaitis2019}. Sementara itu, integrasi CTC \textit{Loss} memungkinkan generator untuk belajar secara langsung dari umpan balik sistem HTR, sehingga restorasi yang dihasilkan tidak hanya terlihat bersih, tetapi juga memaksimalkan keterbacaan teks \textcite{graves2006}.
+Pendekatan ini sejalan dengan penelitian terkini yang menunjukkan bahwa arsitektur multi-modal dapat meningkatkan stabilitas pelatihan dan kualitas keluaran GAN \textcite{baltrusaitis2019}. Sementara itu, integrasi CTC \textit{Loss} memungkinkan generator untuk belajar secara langsung dari umpan balik sistem HTR, sehingga restorasi yang dihasilkan tidak hanya terlihat bersih, tetapi juga memaksimalkan keterbacaan teks \textcite{graves2006}.
 
 
-Kebaruan penelitian ini terletak pada kombinasi empat inovasi tersebut dalam satu kerangka kerja terpadu. Berbeda dengan DE-GAN yang menggunakan diskriminator berbasis visual tanpa integrasi HTR, atau ERB-MultiTask yang menggunakan diskriminator visual dengan pelatihan bersama \textit{recognizer} (berpotensi tidak stabil), penelitian ini mengembangkan diskriminator dual-modal yang secara eksplisit mengevaluasi koherensi visual-tekstual sambil menggunakan \textit{frozen recognizer} untuk stabilitas gradien. Berbeda dengan DocEnTr atau Text-DIAE yang fokus pada berbasis \textit{transformer} tanpa komponen \textit{adversarial}, kerangka kerja yang diusulkan mengkombinasikan keunggulan pelatihan adversarial dengan evaluasi dual-modal dan \textit{curriculum learning} untuk penurunan bobot CTC \textit{loss}. Dengan demikian, penelitian ini tidak hanya berkontribusi pada pengembangan arsitektur diskriminator yang lebih komprehensif dan strategi pelatihan yang lebih stabil, tetapi juga memberikan solusi praktis untuk mendukung preservasi digital dan aksesibilitas arsip nasional.
+Kebaruan penelitian ini terletak pada kombinasi empat inovasi tersebut dalam satu kerangka kerja terpadu. Berbeda dengan DE-GAN yang menggunakan diskriminator berbasis visual tanpa integrasi HTR, atau ERB-MultiTask yang menggunakan diskriminator visual dengan pelatihan bersama \textit{recognizer} (berpotensi tidak stabil), penelitian ini mengembangkan diskriminator \textit{dual-modal} yang secara langsung mengevaluasi koherensi visual-tekstual sambil menggunakan \textit{frozen recognizer} untuk stabilitas gradien. Berbeda dengan DocEnTr atau Text-DIAE yang fokus pada berbasis \textit{transformer} tanpa komponen \textit{adversarial}, kerangka kerja yang diusulkan mengkombinasikan keunggulan pelatihan adversarial dengan evaluasi \textit{dual-modal} dan \textit{curriculum learning} untuk penurunan bobot CTC \textit{loss}. Dengan demikian, penelitian ini tidak hanya berkontribusi pada pengembangan arsitektur diskriminator yang lebih komprehensif dan strategi pelatihan yang lebih stabil, tetapi juga memberikan solusi praktis untuk mendukung preservasi digital dan aksesibilitas arsip nasional.
 
 
 Penelitian ini dilandasi oleh premis bahwa diskriminator dual-modal yang menggabungkan evaluasi visual dan tekstual dapat memberikan umpan balik yang lebih komprehensif kepada generator, dan kombinasi dengan strategi \textit{frozen recognizer} serta \textit{curriculum learning} dapat mengatasi ketidakstabilan pelatihan dalam optimisasi multi-objektif.
@@ -231,7 +231,7 @@ Tujuan Khusus:
             Merancang fungsi \textit{loss} gabungan yang mengintegrasikan \textit{adversarial}, \textit{reconstruction}, dan \textit{recognition loss} dengan bobot terkalibrasi. Mengimplementasikan strategi \textit{curriculum learning} untuk mengatasi ketidakstabilan pelatihan dan memastikan konvergensi yang stabil.
 
       \item Melakukan Studi Ablasi untuk Validasi Kontribusi Komponen: \\
-            Mengisolasi dan mengukur kontribusi individual dari komponen utama (diskriminator dual-modal, \textit{frozen recognizer}, dan \textit{curriculum learning}) serta mengidentifikasi konfigurasi optimal untuk mencapai keseimbangan terbaik antara kualitas visual dan keterbacaan teks.
+            Mengidentifikasi dan mengukur kontribusi masing-masing komponen utama (diskriminator \textit{dual-modal}, \textit{frozen recognizer}, dan \textit{curriculum learning}) serta mengidentifikasi konfigurasi optimal untuk mencapai keseimbangan terbaik antara kualitas visual dan keterbacaan teks.
 \end{enumerate}
 
 \subsection{Ruang Lingkup}
@@ -292,41 +292,7 @@ Penggunaan diskriminator dual-modal dan strategi \textit{frozen recognizer} deng
 \subsection{Kebaruan Penelitian}
 \label{subsec:kebaruan}
 
-Kontribusi Teoritis:
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, noitemsep, topsep=0pt]
-      \item Arsitektur kerangka kerja GAN dual-objektif dengan Diskriminator Dual-Modal dan Strategi Frozen Recognizer: \\
-            Merancang kerangka kerja GAN yang mengintegrasikan evaluasi keterbacaan teks melalui dua komponen: (1) Diskriminator dual-modal (cabang CNN dan LSTM) yang mengevaluasi koherensi visual-tekstual untuk dual-\textit{objective}, berbeda dari diskriminator hanya visual; dan (2) Integrasi \textit{CTC loss} dari model HTR \textit{frozen weights} yang menghasilkan gradien HTR-\textit{aware} konsisten tanpa \textit{catastrophic forgetting}, berbeda dari pelatihan bersama yang tidak stabil.
-
-      \item Strategi Pelatihan Multi-Objektif dengan Curriculum Learning dan Validasi Ablasi Sistematis: \\
-            Mengembangkan strategi pelatihan dengan \textit{curriculum learning} dan \textit{annealing schedule} untuk \textit{CTC loss} yang mencegah dominasi satu komponen \textit{loss} dan memastikan konvergensi stabil, berbeda dari pendekatan yang menggunakan bobot tetap. Dilengkapi protokol ablasi yang mengisolasi kontribusi individual setiap komponen (dual-modal, \textit{frozen recognizer}, \textit{curriculum learning}, \textit{loss weights}) untuk validasi empiris terhadap metrik visual dan keterbacaan teks. Kerangka kerja ini mengoptimalkan fungsi loss 5-komponen yang terdiri dari: piksel, adversarial, perseptual, CTC, dan fitur rekognisi.
-
-            % \item \textbf{Strategi Frozen HTR sebagai Objective Evaluator:} \\
-            % Memvalidasi pendekatan menggunakan pre-trained frozen HTR model sebagai komponen evaluator yang memberikan consistent supervision signal, berbeda dengan pendekatan end to end joint pelatihan yang dapat menyebabkan co adaptation dan unstable pelatihan.
-
-            % \item \textbf{Evaluasi Komprehensif Dual Metrics:} \\
-            % Standar evaluasi yang menggabungkan metrik visual (PSNR/SSIM) dan tekstual (CER/WER) untuk perbandingan menyeluruh dengan state-of-the-art methods.
-\end{enumerate}
-
-
-% \textbf{Kontribusi Metodologis:}
-% \begin{enumerate}[label=\arabic*., leftmargin=1cm]
-%     \item Pipeline Degradasi Semi-Sintetis Realistis: \\
-%     Mengembangkan pipeline augmentasi yang  mengekstraksi tekstur latar belakang dari dokumen historis riil dan menerapkan degradasi yang bervariasi secara probabilistik untuk menghasilkan data berpasangan semi-sintetis yang representatif.
-
-%     \item Kebijakan Presisi untuk Kestabilan Numerik: \\
-%     Mendokumentasikan pentingnya pelatihan FP32 murni  (tanpa mixed precision FP16) untuk stabilitas komputasi CTC loss, dan  mekanisme gradient clipping dan loss clipping yang optimal.
-
-% \end{enumerate}
-
-% \newpage
-Kontribusi Praktis:
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, noitemsep, topsep=0pt]
-      \item Solusi untuk Preservasi Digital Arsip Nasional: \\
-            Menyediakan kerangka kerja praktis untuk mendukung program digitalisasi Arsip Nasional RI, memfasilitasi preservasi digital dan aksesibilitas informasi historis melalui restorasi dokumen dan transkripsi otomatis HTR yang lebih akurat.
-
-      \item Kumpulan Data sebagai Sumber Daya dengan Ground Truth untuk Penelitian Lanjutan: \\
-            Menyediakan kumpulan data dokumen terdegradasi semi-sintetis dengan \textit{ground truth} data berpasangan sebagai sumber daya untuk mendukung penelitian dalam domain restorasi dokumen dan HTR.
-\end{enumerate}
+Kebaruan penelitian ini terletak pada pengembangan kerangka kerja restorasi dokumen berbasis GAN yang mengintegrasikan arsitektur diskriminator \textit{dual-modal} (dengan cabang pemrosesan visual dan tekstual), strategi \textit{frozen recognizer} untuk supervisi HTR yang stabil, serta protokol pelatihan \textit{curriculum learning} untuk penjadwalan bobot \textit{loss} secara bertahap. Kerangka kerja ini dievaluasi melalui studi ablasi sistematis untuk mengidentifikasi kontribusi setiap komponen arsitektur. Selain itu, penelitian ini menghasilkan kumpulan data dokumen terdegradasi semi-sintetis dengan \textit{ground truth} yang dapat digunakan sebagai sumber daya penelitian lanjutan.
 
 
 \subsection{Sistematika Penulisan}
@@ -337,12 +303,12 @@ Tesis ini disusun dalam enam bab dengan struktur sebagai berikut:
 
 Bab I: Pendahuluan
 
-Bab ini menyajikan pendahuluan  yang menjadi landasan bagi keseluruhan penelitian. Pembahasan diawali dengan pemaparan latar belakang mengenai urgensi pelestarian dokumen historis dan tantangan degradasi yang dihadapi, serta menjelaskan keterbatasan metode restorasi yang ada saat ini. Berdasarkan permasalahan tersebut, dirumuskan masalah dan pertanyaan penelitian yang spesifik, yang menjadi acuan dalam penetapan tujuan dan ruang lingkup penelitian. Untuk menjawab tantangan tersebut, diajukan sebuah hipotesis yang akan diuji, serta diuraikan kebaruan dan kontribusi yang diharapkan dari penelitian ini. Di akhir bab, dijelaskan sistematika penulisan yang akan digunakan pada tesis ini.
+Bab ini menyajikan pendahuluan yang menjadi landasan bagi keseluruhan penelitian. Pembahasan diawali dengan latar belakang tentang urgensi pelestarian dokumen historis dan tantangan degradasi yang dihadapi, serta menjelaskan keterbatasan metode restorasi yang ada saat ini. Berdasarkan permasalahan tersebut, dirumuskan masalah dan pertanyaan penelitian yang spesifik, yang menjadi acuan dalam penetapan tujuan dan ruang lingkup penelitian. Untuk menjawab tantangan tersebut, diajukan sebuah hipotesis yang akan diuji, serta diuraikan kebaruan dan kontribusi yang diharapkan dari penelitian ini. Di akhir bab, dijelaskan sistematika penulisan yang akan digunakan pada tesis ini.
 
 
 Bab II: Tinjauan Pustaka
 
-Bab ini menyajikan landasan teoretis dan tinjauan pustaka untuk membangun justifikasi penelitian. Kajian diawali dengan pembahasan teori fundamental (GAN, U-Net, HTR), kemudian menelusuri evolusi metode restorasi dokumen. Dari analisis terhadap metode-metode tersebut beserta metrik evaluasinya, diidentifikasi celah penelitian, yaitu: belum adanya mekanisme restorasi yang secara eksplisit mempertahankan keterbacaan teks melalui diskriminator sadar teks.
+Bab ini menyajikan landasan teoretis dan tinjauan pustaka untuk membangun justifikasi penelitian. Kajian diawali dengan pembahasan teori fundamental (GAN, U-Net, HTR), kemudian membahas perkembangan metode restorasi dokumen. Dari analisis terhadap metode-metode tersebut beserta metrik evaluasinya, diidentifikasi celah penelitian, yaitu: belum adanya mekanisme restorasi yang secara eksplisit mempertahankan keterbacaan teks melalui diskriminator sadar teks.
 
 
 Bab III: Metodologi Penelitian
@@ -357,12 +323,12 @@ Bab ini menyajikan perancangan teknis dari kerangka kerja yang diusulkan. Pembah
 
 Bab V: Hasil dan Pembahasan
 
-Setelah kerangka kerja dirancang dan diimplementasikan pada bab sebelumnya, bab ini berfokus pada evaluasi eksperimental untuk mengukur kinerja dan efektivitasnya. Kinerja model dievaluasi secara komprehensif, diawali dengan analisis kuantitatif menggunakan metrik standar (PSNR, SSIM, CER, WER) yang kemudian diperkuat oleh analisis kualitatif melalui visualisasi hasil restorasi. Untuk memvalidasi keunggulan kerangka kerja ini, dilakukan analisis komparatif terhadap metode restorasi dokumen berbasis GAN yang relevan. Studi ablasi sistematis dilakukan untuk mengisolasi dan mengukur kontribusi individual dari setiap komponen yang diusulkan (diskriminator dual-modal, \textit{frozen recognizer}, \textit{curriculum learning}, dan konfigurasi \textit{loss}), sehingga dapat diidentifikasi komponen mana yang memberikan dampak signifikan terhadap kinerja sistem. Sebagai penutup, dilakukan pengujian hipotesis statistik untuk menjawab rumusan masalah penelitian secara formal berdasarkan data hasil eksperimen.
+Setelah kerangka kerja dirancang dan diimplementasikan pada bab sebelumnya, bab ini berfokus pada evaluasi eksperimental untuk mengukur kinerja dan efektivitasnya. Kinerja model dievaluasi secara komprehensif, diawali dengan analisis kuantitatif menggunakan metrik standar (PSNR, SSIM, CER, WER) yang kemudian diperkuat oleh analisis kualitatif melalui visualisasi hasil restorasi. Untuk membuktikan keunggulan kerangka kerja ini, dilakukan analisis komparatif terhadap metode restorasi dokumen berbasis GAN yang relevan. Studi ablasi sistematis dilakukan untuk mengisolasi dan mengukur kontribusi individual dari setiap komponen yang diusulkan (diskriminator \textit{dual-modal}, \textit{frozen recognizer}, \textit{curriculum learning}, dan konfigurasi \textit{loss}), sehingga dapat diidentifikasi komponen mana yang memberikan dampak signifikan terhadap kinerja sistem. Sebagai penutup, dilakukan pengujian hipotesis statistik untuk menjawab rumusan masalah penelitian secara formal berdasarkan data hasil eksperimen.
 
 
 Bab VI: Kesimpulan dan Saran
 
-Bab ini merupakan bagian penutup yang menyajikan sintesis dan evaluasi atas keseluruhan rangkaian penelitian yang telah dilaksanakan. Pembahasan akan diawali dengan merangkum temuan-temuan utama yang diperoleh dari hasil analisis dan evaluasi. Berdasarkan temuan tersebut, akan dilakukan penilaian terhadap ketercapaian tujuan penelitian dan pengujian hipotesis yang telah dirumuskan. Selanjutnya, akan diidentifikasi kontribusi signifikan dari penelitian ini, baik pada aspek teoretis (ilmiah) maupun implikasi praktisnya. Sebagai penutup, bab ini menyajikan rekomendasi yang konstruktif untuk pengembangan penelitian di masa depan serta saran untuk penerapan praktis.
+Bab ini merupakan bagian penutup yang menyajikan sintesis dan evaluasi atas keseluruhan rangkaian penelitian yang telah dilaksanakan. Pembahasan akan diawali dengan merangkum temuan-temuan utama yang diperoleh dari hasil analisis dan evaluasi. Berdasarkan temuan tersebut, akan dilakukan penilaian terhadap ketercapaian tujuan penelitian dan pengujian hipotesis yang telah dirumuskan. Selanjutnya, akan diidentifikasi kontribusi signifikan dari penelitian ini, baik pada aspek teoretis (ilmiah) maupun implikasi praktisnya. Sebagai penutup, bab ini menyajikan rekomendasi bagi pengembangan penelitian di masa depan serta saran untuk penerapan praktis.
 
 % ============================================================
 % CATATAN: DAFTAR PUSTAKA
