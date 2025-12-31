@@ -61,3 +61,4 @@ visualization/
 dual_modal_gan/data/
 *.tfrecord
 data/*.tfrecord
+api_key.txt

@@ -105,7 +105,7 @@
 \vspace{0.8em}
 
 Bab ini menguraikan pendekatan penelitian yang mengadopsi \textit{Design Science Research Methodology} (DSRM) sebagai kerangka kerja sistematis untuk pengembangan dan evaluasi artefak teknologi informasi. Metodologi DSRM dipilih karena tiga alasan utama: (1) kesesuaiannya untuk merancang artefak inovatif yang menyelesaikan masalah praktis, (2) pendekatan evaluasi berbasis bukti empiris yang mengutamakan validasi kuantitatif, dan (3) siklus iteratif yang mengakomodasi penyempurnaan berkelanjutan berdasarkan umpan balik evaluasi---karakteristik yang sangat relevan untuk pengembangan sistem \textit{deep learning}.
-Artefak yang dikembangkan dalam penelitian ini adalah kerangka kerja restorasi dokumen berbasis GAN dengan tiga komponen inovatif: (1) \textit{recognizer} HTR yang dibekukan (\textit{frozen}) sebagai evaluator objektif keterbacaan teks, (2) optimasi fungsi \textit{loss} multikomponen yang menyeimbangkan kualitas visual dan performa HTR, dan (3) eksplorasi diskriminator \textit{dual-modal} sebagai hipotesis penelitian untuk evaluasi bilateral visual-tekstual, yang kontribusi empirisnya divalidasi melalui studi ablasi terkawal (lihat Bab~V, Bagian~5.3.2.3). Implementasi teknis mengikuti siklus \textit{deep learning} yang iteratif, di mana setiap iterasi eksperimen didasarkan pada bukti empiris dari iterasi sebelumnya dan didokumentasikan secara sistematis menggunakan MLflow untuk mencapai tujuan penelitian dengan transparansi dan reproduktibilitas.
+Artefak yang dikembangkan dalam penelitian ini adalah metode restorasi dokumen berbasis GAN dengan tiga komponen inovatif: (1) \textit{recognizer} HTR yang dibekukan (\textit{frozen}) sebagai evaluator objektif keterbacaan teks, (2) optimasi fungsi \textit{loss} multikomponen yang menyeimbangkan kualitas visual dan performa HTR, dan (3) eksplorasi diskriminator \textit{dual-modal} sebagai hipotesis penelitian untuk evaluasi bilateral visual-tekstual, yang kontribusi empirisnya divalidasi melalui studi ablasi terkawal (lihat Bab~V, Bagian~5.3.2.3). Implementasi teknis mengikuti siklus \textit{deep learning} yang iteratif, di mana setiap iterasi eksperimen didasarkan pada bukti empiris dari iterasi sebelumnya dan didokumentasikan secara sistematis menggunakan MLflow untuk mencapai tujuan penelitian dengan transparansi dan reproduktibilitas.
 
 \subsection{Kerangka Teori Metodologi Penelitian}
 \label{subsec:kerangka-teori}
@@ -123,12 +123,12 @@ Dalam penelitian sistem informasi dan teknologi, pemilihan metodologi yang tepat
     \label{fig:dsrm-framework}
 \end{figure}
 
-Gambar \ref{fig:dsrm-framework} mengilustrasikan siklus iteratif DSRM yang menjadi karakteristik fundamental metodologi ini. \textit{Design Science Research Methodology} (DSRM), yang diperkenalkan oleh \textcite{peffers2007design}, merupakan kerangka penelitian yang dirancang khusus untuk pengembangan dan evaluasi artefak teknologi informasi. DSRM terdiri dari enam tahapan fundamental yang saling terkait dan bersifat iteratif: (1) identifikasi masalah dan motivasi, (2) definisi tujuan solusi, (3) desain dan pengembangan, (4) demonstrasi, (5) evaluasi, dan (6) komunikasi. Dalam setiap tahapan, hasil evaluasi memberikan umpan balik untuk penyempurnaan, menciptakan siklus perbaikan berkelanjutan.
+Gambar \ref{fig:dsrm-framework} mengilustrasikan siklus iteratif DSRM yang menjadi karakteristik fundamental metodologi ini. \textit{Design Science Research Methodology} (DSRM), yang diperkenalkan oleh \parencite{peffers2007design}, merupakan kerangka penelitian yang dirancang khusus untuk pengembangan dan evaluasi artefak teknologi informasi. DSRM terdiri dari enam tahapan fundamental yang saling terkait dan bersifat iteratif: (1) identifikasi masalah dan motivasi, (2) definisi tujuan solusi, (3) desain dan pengembangan, (4) demonstrasi, (5) evaluasi, dan (6) komunikasi. Dalam setiap tahapan, hasil evaluasi memberikan umpan balik untuk penyempurnaan, menciptakan siklus perbaikan berkelanjutan.
 
 Karakteristik utama DSRM yang relevan dengan penelitian ini adalah:
 
 \begin{enumerate}[label=\arabic*., leftmargin=*, nosep]
-    \item Berorientasi Solusi: DSRM berfokus pada penciptaan artefak inovatif untuk menyelesaikan masalah praktis yang sudah diidentifikasi. Dalam penelitian ini, artefak yang dikembangkan berupa kerangka kerja restorasi dokumen berbasis GAN dengan integrasi \textit{recognizer} HTR yang dibekukan dan optimasi fungsi \textit{loss} multikomponen. Kerangka kerja ini secara eksplisit dioptimalkan untuk meningkatkan keterbacaan dokumen oleh sistem HTR (bukan hanya kualitas visual), dan merupakan kontribusi konkret yang dapat diimplementasikan pada sistem digitalisasi arsip historis.
+    \item Berorientasi Solusi: DSRM berfokus pada penciptaan artefak inovatif untuk menyelesaikan masalah praktis yang sudah diidentifikasi. Dalam penelitian ini, artefak yang dikembangkan berupa metode restorasi dokumen berbasis GAN dengan integrasi \textit{recognizer} HTR yang dibekukan dan optimasi fungsi \textit{loss} multikomponen. Metode ini secara eksplisit dioptimalkan untuk meningkatkan keterbacaan dokumen oleh sistem HTR (bukan hanya kualitas visual), dan merupakan kontribusi konkret yang dapat diimplementasikan pada sistem digitalisasi arsip historis.
 
     \item Evaluasi Berbasis Bukti: Setiap iterasi desain dievaluasi secara kuantitatif menggunakan metrik yang terukur---kualitas visual (PSNR, SSIM) untuk validasi pelestarian struktur dokumen, dan metrik keterbacaan HTR (CER, WER) untuk validasi peningkatan performa pengenalan teks. Pendekatan evaluasi ganda ini memastikan bahwa penyempurnaan didasarkan pada data empiris dari dua dimensi objektif (visual dan tekstual), bukan asumsi subjektif atau observasi visual semata.
 
@@ -228,7 +228,7 @@ Sebagai kriteria keberhasilan metodologi pelatihan, stabilitas konvergensi dipan
 
 \paragraph{Tujuan Kualitatif:}
 
-Artefak yang dikembangkan adalah kerangka kerja restorasi dokumen berbasis GAN dengan tiga fitur utama: (1) arsitektur diskriminator \textit{dual-modal}, (2) strategi \textit{frozen recognizer}, dan (3) \textit{curriculum learning} untuk optimasi multiobjektif. Efektivitas kombinasi komponen ini divalidasi melalui studi ablasi sistematis dan evaluasi komparatif dengan metode \textit{baseline}.
+Artefak yang dikembangkan adalah metode restorasi dokumen berbasis GAN dengan tiga fitur utama: (1) arsitektur diskriminator \textit{dual-modal}, (2) strategi \textit{frozen recognizer}, dan (3) \textit{curriculum learning} untuk optimasi multiobjektif. Efektivitas kombinasi komponen ini divalidasi melalui studi ablasi sistematis dan evaluasi komparatif dengan metode \textit{baseline}.
 
 \subsubsection{Spesifikasi Kebutuhan Sistem}
 \label{subsubsec:requirements-analysis}
@@ -252,7 +252,7 @@ Detail lengkap di Tabel~\ref{tab:functional_requirements}.
 \begin{table}[htbp!]
     \centering
     \small
-    \caption{Spesifikasi Kebutuhan Fungsional Kerangka Kerja Restorasi}
+    \caption{Spesifikasi Kebutuhan Fungsional metode Restorasi}
     \label{tab:functional_requirements}
     \begin{tabular}{p{0.06\textwidth}p{0.18\textwidth}p{0.66\textwidth}}
         \toprule
@@ -295,7 +295,7 @@ Spesifikasi lengkap disajikan pada Tabel~\ref{tab:non_functional_requirements}.
 \begin{table}[htbp!]
     \centering
     \small
-    \caption{Spesifikasi Kebutuhan Non-Fungsional Kerangka Kerja Restorasi}
+    \caption{Spesifikasi Kebutuhan Non-Fungsional Metode Restorasi}
     \label{tab:non_functional_requirements}
     \begin{tabular}{p{0.06\textwidth}p{0.20\textwidth}p{0.64\textwidth}}
         \toprule
@@ -350,7 +350,7 @@ Tabel~\ref{tab:traceability-matrix} memetakan kebutuhan sistem ke rumusan masala
 
 \footnotetext[1]{Validasi memenuhi target $<$15 detik/gambar (GPU RTX A4000).}
 
-Simpulan Analisis Kebutuhan: Berdasarkan analisis di atas, kerangka kerja yang akan dikembangkan harus memenuhi total 12 kebutuhan (8 fungsional dan 4 non-fungsional) yang mencakup aspek visual, tekstual, performa, dan integrasi sistem. Spesifikasi kebutuhan ini menjadi acuan untuk: (1) Perancangan Arsitektur (Bab IV): Setiap komponen arsitektur (Generator, Recognizer, Discriminator, \textit{Loss Function}) dirancang untuk memenuhi kebutuhan spesifik yang telah ditetapkan, (2) Implementasi Sistem (Bab IV): Detail implementasi seperti alur data, \textit{training loop}, dan \textit{inference workflow} didesain untuk memenuhi kebutuhan fungsional FR-4 hingga FR-8, (3) Evaluasi dan Validasi (Bab V): Metrik evaluasi dan protokol eksperimen dirancang untuk mengukur pencapaian kebutuhan non-fungsional NFR-1 hingga NFR-4. Dengan demikian, analisis kebutuhan ini memberikan dasar yang kuat untuk tahapan selanjutnya dalam kerangka DSRM, yaitu perancangan dan pengembangan solusi (DSRM Tahap 3: Desain dan Pengembangan) yang akan diuraikan pada tahap berikutnya.
+Simpulan Analisis Kebutuhan: Berdasarkan analisis di atas, metode yang akan dikembangkan harus memenuhi total 12 kebutuhan (8 fungsional dan 4 non-fungsional) yang mencakup aspek visual, tekstual, performa, dan integrasi sistem. Spesifikasi kebutuhan ini menjadi acuan untuk: (1) Perancangan Arsitektur (Bab IV): Setiap komponen arsitektur (Generator, Recognizer, Discriminator, \textit{Loss Function}) dirancang untuk memenuhi kebutuhan spesifik yang telah ditetapkan, (2) Implementasi Sistem (Bab IV): Detail implementasi seperti alur data, \textit{training loop}, dan \textit{inference workflow} didesain untuk memenuhi kebutuhan fungsional FR-4 hingga FR-8, (3) Evaluasi dan Validasi (Bab V): Metrik evaluasi dan protokol eksperimen dirancang untuk mengukur pencapaian kebutuhan non-fungsional NFR-1 hingga NFR-4. Dengan demikian, analisis kebutuhan ini memberikan dasar yang kuat untuk tahapan selanjutnya dalam kerangka DSRM, yaitu perancangan dan pengembangan solusi (DSRM Tahap 3: Desain dan Pengembangan) yang akan diuraikan pada tahap berikutnya.
 
 \subsubsection{Lingkungan Eksperimen dan Spesifikasi Komputasi}
 \label{subsec:lingkungan-eksperimen}
@@ -415,7 +415,7 @@ Tahap ini merupakan inti penelitian di mana artefak \textit{framework} restorasi
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.3\textwidth]{images/PengembanganArtefak.png}
-    \caption[Alur Pengembangan Kerangka Kerja]{Alur pengembangan kerangka kerja restorasi dokumen dengan lima fase utama yang dilakukan secara sekuensial dengan iterasi pada fase 4 dan 5.}
+    \caption[Alur Pengembangan metode]{Alur pengembangan metode restorasi dokumen dengan lima fase utama yang dilakukan secara sekuensial dengan iterasi pada fase 4 dan 5.}
     \label{fig:development-pipeline}
 \end{figure}
 
@@ -423,7 +423,7 @@ Tahap ini merupakan inti penelitian di mana artefak \textit{framework} restorasi
 Dataset bersih disiapkan untuk melatih model \textit{Recognizer} dengan struktur pasangan citra-transkripsi. Dataset ini merupakan ekstraksi baris teks dari koleksi dokumen tulisan tangan paleografi Belanda abad ke-16 hingga ke-18 yang berasal dari Arsip Nasional Republik Indonesia (ANRI), yang telah didigitalisasi dan dianotasi dengan transkripsi \textit{ground truth} oleh ahli paleografi.
 
 \paragraph{Fase 2: Pelatihan dan Pembekuan Recognizer}
-Model \textit{Recognizer} HTR dilatih menggunakan arsitektur hibrida CNN-Transformer dengan dataset ANRI paleografi Belanda. Setelah pelatihan mencapai konvergensi, bobot model dibekukan untuk memastikan konsistensi evaluasi selama pelatihan GAN dan mencegah \textit{catastrophic forgetting}. Model beku ini diintegrasikan ke kerangka kerja untuk perhitungan CTC \textit{loss} yang dipropagasi balik ke Generator.
+Model \textit{Recognizer} HTR dilatih menggunakan arsitektur hibrida CNN-Transformer dengan dataset ANRI paleografi Belanda. Setelah pelatihan mencapai konvergensi, bobot model dibekukan untuk memastikan konsistensi evaluasi selama pelatihan GAN dan mencegah \textit{catastrophic forgetting}. Model beku ini diintegrasikan ke GAN untuk perhitungan CTC \textit{loss} yang dipropagasi balik ke Generator.
 
 % ===================================================================
 % ALGORITHM 1: HIDDEN - Masih dalam proses verifikasi
@@ -490,7 +490,7 @@ Model \textit{Recognizer} HTR dilatih menggunakan arsitektur hibrida CNN-Transfo
 Mengingat keterbatasan ketersediaan data berpasangan untuk dokumen historis, dikembangkan alur degradasi sintetis yang realistis untuk menghasilkan pasangan pelatihan dari dokumen bersih. Alur ini mensimulasikan berbagai jenis degradasi karakteristik dokumen historis seperti \textit{bleed-through}, \textit{ink fading}, noda, dan \textit{noise} untuk menghasilkan citra terdegradasi yang merepresentasikan kondisi dokumen arsip autentik.
 
 \paragraph{Fase 4: Implementasi dan Training GAN}
-Kerangka kerja GAN dengan komponen Generator, Diskriminator \textit{Dual-Modal}, dan \textit{frozen recognizer} (Fase 2) diimplementasikan dengan fungsi \textit{loss} multikomponen. Dataset yang digunakan merupakan pasangan citra terdegradasi-bersih dari dokumen ANRI dengan alur degradasi semi-sintetis (Fase 3), dengan pembagian \textit{train-validation-test split}.
+Metode GAN dengan komponen Generator, Diskriminator \textit{Dual-Modal}, dan \textit{frozen recognizer} (Fase 2) diimplementasikan dengan fungsi \textit{loss} multikomponen. Dataset yang digunakan merupakan pasangan citra terdegradasi-bersih dari dokumen ANRI dengan alur degradasi semi-sintetis (Fase 3), dengan pembagian \textit{train-validation-test split}.
 
 Prosedur pelatihan mengikuti strategi \textit{curriculum learning} tiga fase untuk stabilitas konvergensi: (1) \textit{Visual Warmup} dengan CTC \textit{loss disabled} untuk fokus rekonstruksi visual dasar, (2) \textit{CTC Introduction} dengan aktivasi penuh untuk optimasi keterbacaan teks, dan (3) \textit{Full Optimization} untuk keseimbangan Pareto antara kualitas visual dan keterbacaan HTR.\footnote{Studi ablasi susulan (Bab~V, Bagian~5.3.2.4) menunjukkan bahwa untuk arsitektur yang handal dan dataset terkontrol, pendekatan \textit{non-curriculum} dapat menghasilkan stabilitas yang sebanding dengan konvergensi lebih cepat. Namun, protokol \textit{curriculum} tetap digunakan dalam pelatihan produksi untuk eksplorasi dinamika pembelajaran bertahap dan konsistensi dengan desain eksperimen awal.} Pendekatan bertahap ini mencegah ketidakstabilan gradien akibat optimasi simultan komponen \textit{loss} dengan skala berbeda sejak awal pelatihan.
 

@@ -98,6 +98,15 @@ def calculate_cer(ground_truth, prediction):
     distance = editdistance.eval(ground_truth, prediction)
     return distance / len(ground_truth)
 
+def calculate_wer(ground_truth, prediction):
+    """Calculate Word Error Rate"""
+    gt_words = ground_truth.split()
+    pred_words = prediction.split()
+    if len(gt_words) == 0:
+        return 0.0 if len(pred_words) == 0 else 1.0
+    distance = editdistance.eval(gt_words, pred_words)
+    return distance / len(gt_words)
+
 def otsu_binarization(image):
     """Apply Otsu's thresholding"""
     img_uint8 = (image * 255).astype(np.uint8)
@@ -297,9 +306,15 @@ def generate_method_comparison_3samples(
             
             pred_text = decode_ctc_predictions(logits.numpy(), charset)[0]
             cer = calculate_cer(gt_text, pred_text)
+            wer = calculate_wer(gt_text, pred_text)
             
             predictions[method_name] = pred_text
             cers[method_name] = cer
+        
+        # Calculate WER for all methods
+        wers = {}
+        for method_name in methods_images.keys():
+            wers[method_name] = calculate_wer(gt_text, predictions[method_name])
         
         # Calculate PSNR
         clean_vertical = np.expand_dims(np.expand_dims(clean_np.T, 0), -1)
@@ -368,6 +383,10 @@ def generate_method_comparison_3samples(
             'cer_otsu': cers['otsu'],
             'cer_sauvola': cers['sauvola'],
             'cer_proposed': cers['proposed'],
+            'wer_degraded': wers['no_restoration'],
+            'wer_otsu': wers['otsu'],
+            'wer_sauvola': wers['sauvola'],
+            'wer_proposed': wers['proposed'],
             'psnr_degraded': psnr_no_rest,
             'psnr_otsu': psnr_otsu,
             'psnr_sauvola': psnr_sauvola,
@@ -408,30 +427,46 @@ def generate_method_comparison_3samples(
         # Row 1: Degraded
         ax1 = fig.add_subplot(gs[0, i])
         ax1.imshow(sample['degraded'], cmap='gray', vmin=0, vmax=1)
-        ax1.set_title(f'CER: {sample["cer_degraded"]*100:.1f}%',
-                     fontsize=16, color=COLOR_DEGRADED, fontweight='bold')
+        ax1.set_title(f'PSNR: {sample["psnr_degraded"]:.1f} dB | SSIM: {sample["ssim_degraded"]:.3f} | CER: {sample["cer_degraded"]*100:.1f}% | WER: {sample["wer_degraded"]*100:.1f}%',
+                     fontsize=13, color=COLOR_DEGRADED, fontweight='bold')
         ax1.axis('off')
+        # Add predicted text for degraded
+        ax1.text(0.5, -0.08, f'{sample["pred_degraded"][:50]}...' if len(sample["pred_degraded"]) > 50 else sample["pred_degraded"], 
+                transform=ax1.transAxes, fontsize=15, ha='center', va='top',
+                family='monospace', color='#000', style='italic')
         
         # Row 2: Otsu
         ax2 = fig.add_subplot(gs[1, i])
         ax2.imshow(sample['otsu'], cmap='gray', vmin=0, vmax=1)
-        ax2.set_title(f'CER: {sample["cer_otsu"]*100:.1f}%',
-                     fontsize=16, color=COLOR_OTSU, fontweight='bold')
+        ax2.set_title(f'PSNR: {sample["psnr_otsu"]:.1f} dB | SSIM: {sample["ssim_otsu"]:.3f} | CER: {sample["cer_otsu"]*100:.1f}% | WER: {sample["wer_otsu"]*100:.1f}%',
+                     fontsize=13, color=COLOR_OTSU, fontweight='bold')
         ax2.axis('off')
+        # Add predicted text for Otsu
+        ax2.text(0.5, -0.08, f'{sample["pred_otsu"][:50]}...' if len(sample["pred_otsu"]) > 50 else sample["pred_otsu"], 
+                transform=ax2.transAxes, fontsize=15, ha='center', va='top',
+                family='monospace', color='#000', style='italic')
         
         # Row 3: Sauvola
         ax3 = fig.add_subplot(gs[2, i])
         ax3.imshow(sample['sauvola'], cmap='gray', vmin=0, vmax=1)
-        ax3.set_title(f'CER: {sample["cer_sauvola"]*100:.1f}%',
-                     fontsize=16, color=COLOR_SAUVOLA, fontweight='bold')
+        ax3.set_title(f'PSNR: {sample["psnr_sauvola"]:.1f} dB | SSIM: {sample["ssim_sauvola"]:.3f} | CER: {sample["cer_sauvola"]*100:.1f}% | WER: {sample["wer_sauvola"]*100:.1f}%',
+                     fontsize=13, color=COLOR_SAUVOLA, fontweight='bold')
         ax3.axis('off')
+        # Add predicted text for Sauvola
+        ax3.text(0.5, -0.08, f'{sample["pred_sauvola"][:50]}...' if len(sample["pred_sauvola"]) > 50 else sample["pred_sauvola"], 
+                transform=ax3.transAxes, fontsize=15, ha='center', va='top',
+                family='monospace', color='#000', style='italic')
         
         # Row 4: Proposed
         ax4 = fig.add_subplot(gs[3, i])
         ax4.imshow(sample['proposed'], cmap='gray', vmin=0, vmax=1)
-        ax4.set_title(f'CER: {sample["cer_proposed"]*100:.1f}%',
-                     fontsize=16, color=COLOR_PROPOSED, fontweight='bold')
+        ax4.set_title(f'PSNR: {sample["psnr_proposed"]:.1f} dB | SSIM: {sample["ssim_proposed"]:.3f} | CER: {sample["cer_proposed"]*100:.1f}% | WER: {sample["wer_proposed"]*100:.1f}%',
+                     fontsize=13, color=COLOR_PROPOSED, fontweight='bold')
         ax4.axis('off')
+        # Add predicted text for Proposed
+        ax4.text(0.5, -0.08, f'{sample["pred_proposed"][:50]}...' if len(sample["pred_proposed"]) > 50 else sample["pred_proposed"], 
+                transform=ax4.transAxes, fontsize=15, ha='center', va='top',
+                family='monospace', color='#000', style='italic')
         
         # Row 5: Ground Truth
         ax5 = fig.add_subplot(gs[4, i])
@@ -440,7 +475,7 @@ def generate_method_comparison_3samples(
         ax5.axis('off')
         # Ground truth text - MUCH LARGER (3x) and BLACK for better readability
         # Moved further down to prevent overlap between columns
-        ax5.text(0.5, -0.15, f'GT: {sample["gt_text"][:60]}...', 
+        ax5.text(0.5, -0.18, f'GT: {sample["gt_text"][:60]}...' if len(sample["gt_text"]) > 60 else f'GT: {sample["gt_text"]}', 
                 transform=ax5.transAxes, fontsize=20, ha='center', va='top',
                 family='monospace', color='black', fontweight='bold')
     

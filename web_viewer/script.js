@@ -15,6 +15,13 @@ let showBoxes = true;
 let autoRefreshInterval = null;
 let lastKnownTimestamp = 0;
 
+// Pan/drag state
+let isPanning = false;
+let panStartX = 0;
+let panStartY = 0;
+let scrollStartX = 0;
+let scrollStartY = 0;
+
 // API Base URL (same origin)
 const API_BASE = '';
 
@@ -84,6 +91,17 @@ function setupEventListeners() {
     if (zoomInBtn) zoomInBtn.addEventListener('click', () => setZoom(currentZoom + 0.25));
     if (zoomOutBtn) zoomOutBtn.addEventListener('click', () => setZoom(currentZoom - 0.25));
     if (zoomResetBtn) zoomResetBtn.addEventListener('click', () => setZoom(1.0));
+    
+    // Mouse wheel zoom on image container
+    if (imageContainer) {
+        imageContainer.addEventListener('wheel', handleMouseWheelZoom, { passive: false });
+        
+        // Drag to pan
+        imageContainer.addEventListener('mousedown', handlePanStart);
+        imageContainer.addEventListener('mousemove', handlePanMove);
+        imageContainer.addEventListener('mouseup', handlePanEnd);
+        imageContainer.addEventListener('mouseleave', handlePanEnd);
+    }
     
     // Toolbar actions
     if (toggleBoxesBtn) toggleBoxesBtn.addEventListener('click', toggleBoundingBoxes);
@@ -583,20 +601,95 @@ function drawAllBoundingBoxes(imageElement, linesData) {
     layer.appendChild(svg);
 }
 
+// Mouse wheel zoom handler
+function handleMouseWheelZoom(event) {
+    event.preventDefault();
+    
+    const img = imageContainer.querySelector('img');
+    if (!img) return;
+    
+    // Calculate zoom direction
+    const delta = event.deltaY > 0 ? -0.15 : 0.15;
+    const newZoom = Math.max(0.25, Math.min(5.0, currentZoom + delta));
+    
+    if (newZoom !== currentZoom) {
+        // Get mouse position relative to container
+        const rect = imageContainer.getBoundingClientRect();
+        const mouseX = event.clientX - rect.left;
+        const mouseY = event.clientY - rect.top;
+        
+        // Calculate scroll position to keep mouse point stable
+        const scrollLeft = imageContainer.scrollLeft;
+        const scrollTop = imageContainer.scrollTop;
+        
+        // Calculate the point under cursor before zoom
+        const pointX = (scrollLeft + mouseX) / currentZoom;
+        const pointY = (scrollTop + mouseY) / currentZoom;
+        
+        // Apply new zoom
+        setZoom(newZoom);
+        
+        // Calculate new scroll position to keep the point under cursor
+        const newScrollLeft = (pointX * newZoom) - mouseX;
+        const newScrollTop = (pointY * newZoom) - mouseY;
+        
+        imageContainer.scrollLeft = newScrollLeft;
+        imageContainer.scrollTop = newScrollTop;
+    }
+}
+
+// Pan/drag handlers
+function handlePanStart(event) {
+    // Only pan with left mouse button and not on other interactive elements
+    if (event.button !== 0) return;
+    
+    const img = imageContainer.querySelector('img');
+    if (!img) return;
+    
+    isPanning = true;
+    panStartX = event.clientX;
+    panStartY = event.clientY;
+    scrollStartX = imageContainer.scrollLeft;
+    scrollStartY = imageContainer.scrollTop;
+    
+    imageContainer.style.cursor = 'grabbing';
+    event.preventDefault();
+}
+
+function handlePanMove(event) {
+    if (!isPanning) return;
+    
+    const deltaX = event.clientX - panStartX;
+    const deltaY = event.clientY - panStartY;
+    
+    imageContainer.scrollLeft = scrollStartX - deltaX;
+    imageContainer.scrollTop = scrollStartY - deltaY;
+}
+
+function handlePanEnd() {
+    if (isPanning) {
+        isPanning = false;
+        imageContainer.style.cursor = 'grab';
+    }
+}
+
 // Zoom functions
 function setZoom(level) {
-    currentZoom = Math.max(0.25, Math.min(4.0, level));
+    currentZoom = Math.max(0.25, Math.min(5.0, level));
     const img = imageContainer.querySelector('img');
     if (img) {
         img.style.transform = `scale(${currentZoom})`;
+        img.style.transformOrigin = 'top left';
         
-        // Update highlight layer
-        if (img.linesData) {
-            const layer = getOrCreateHighlightLayer(img);
-            if (showBoxes) {
-                drawAllBoundingBoxes(img, img.linesData);
+        // Update highlight layer after a small delay to let transform complete
+        setTimeout(() => {
+            if (img.linesData) {
+                const layer = getOrCreateHighlightLayer(img);
+                if (showBoxes) {
+                    drawAllBoundingBoxes(img, img.linesData);
+                }
             }
-        }
+        }, 50);
     }
     if (zoomLevelDisplay) {
         zoomLevelDisplay.textContent = `${Math.round(currentZoom * 100)}%`;

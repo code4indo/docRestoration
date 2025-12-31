@@ -138,6 +138,10 @@ class CustomHandler(http.server.SimpleHTTPRequestHandler):
         if '/api/' not in args[0]:
             print(f"[Viewer] {args[0]} - {args[1]}")
 
+class ReusableTCPServer(socketserver.TCPServer):
+    """TCP Server that allows address reuse"""
+    allow_reuse_address = True
+
 
 def run_server(port: int = DEFAULT_PORT, open_browser: bool = True):
     """Run the web viewer server"""
@@ -146,8 +150,8 @@ def run_server(port: int = DEFAULT_PORT, open_browser: bool = True):
     
     handler = partial(CustomHandler, directory=str(VIEWER_DIR))
     
-    with socketserver.TCPServer(("0.0.0.0", port), handler) as httpd:
-        url = f"http://localhost:{port}"
+    with ReusableTCPServer(("0.0.0.0", port), handler) as httpd:
+        url = f"http://10.13.0.4:{port}"
         print("=" * 60)
         print("  GAN-HTR Document Viewer Server")
         print("=" * 60)

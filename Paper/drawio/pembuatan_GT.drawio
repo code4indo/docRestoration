@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="Electron" modified="2024-12-07T11:00:00.000Z" agent="Mozilla/5.0" version="22.0.0" type="device">
+  <diagram name="Pembuatan Ground Truth" id="pembuatan-gt-diagram">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Title -->
+        <mxCell id="title" value="&lt;b&gt;Proses Pembuatan Ground Truth untuk GAN-HTR&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="450" y="10" width="500" height="40" as="geometry" />
+        </mxCell>
+        
+        <!-- ============ INPUT SOURCES ============ -->
+        <!-- Source 1: ANRI Bersih -->
+        <mxCell id="source-bersih" value="&lt;b&gt;Koleksi ANRI&lt;br&gt;(Kondisi Prima)&lt;/b&gt;&lt;br&gt;Dokumen Abad 16-18&lt;br&gt;Minim Degradasi" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="120" height="100" as="geometry" />
+        </mxCell>
+        
+        <!-- Source 2: ANRI Rusak -->
+        <mxCell id="source-rusak" value="&lt;b&gt;Koleksi ANRI&lt;br&gt;(Rusak Berat)&lt;/b&gt;&lt;br&gt;29 Dokumen K66a&lt;br&gt;Degradasi Autentik" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="400" width="120" height="100" as="geometry" />
+        </mxCell>
+        
+        <!-- Source 3: PageXML Transkribus -->
+        <mxCell id="source-xml" value="&lt;b&gt;PageXML&lt;/b&gt;&lt;br&gt;(Transkribus)&lt;br&gt;• Baseline coords&lt;br&gt;• TextLine&lt;br&gt;• Transkripsi" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="230" width="120" height="100" as="geometry" />
+        </mxCell>
+        
+        <!-- ============ TAHAP 1: CLEAN EXTRACTION ============ -->
+        <mxCell id="tahap1-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#82b366;strokeWidth=2;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="60" width="320" height="210" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="tahap1-label" value="&lt;b&gt;TAHAP 1: Ekstraksi Citra &amp;amp; Transkripsi&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=12;fontColor=#2e7d32;" vertex="1" parent="1">
+          <mxGeometry x="240" y="65" width="240" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="step1a" value="&lt;b&gt;1a. Parse PageXML&lt;/b&gt;&lt;br&gt;Ekstrak koordinat&lt;br&gt;baseline TextLine" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="220" y="95" width="110" height="55" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="step1b" value="&lt;b&gt;1b. Crop Baris&lt;/b&gt;&lt;br&gt;Berdasarkan&lt;br&gt;koordinat baseline" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="350" y="95" width="110" height="55" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="step1c" value="&lt;b&gt;1c. Binarisasi&lt;/b&gt;&lt;br&gt;Model praterlatih&lt;br&gt;(clean binary)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="220" y="160" width="110" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="step1d" value="&lt;b&gt;1d. Normalisasi&lt;/b&gt;&lt;br&gt;1024×128 px&lt;br&gt;Grayscale [0,1]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="350" y="160" width="110" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="step1e" value="&lt;b&gt;1e. Ekstrak Label&lt;/b&gt;&lt;br&gt;Transkripsi teks&lt;br&gt;dari TextLine" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="280" y="218" width="110" height="45" as="geometry" />
+        </mxCell>
+        
+        <!-- Output Tahap 1 -->
+        <mxCell id="gt-clean" value="&lt;b&gt;Citra Ground Truth&lt;/b&gt;&lt;br&gt;(Bersih/Binarized)&lt;br&gt;images_fixed/" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="560" y="90" width="130" height="70" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="label-output" value="&lt;b&gt;Transkripsi&lt;/b&gt;&lt;br&gt;labels_fixed.txt&lt;br&gt;Dutch paleografi" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="560" y="175" width="130" height="65" as="geometry" />
+        </mxCell>
+        
+        <!-- ============ TAHAP 1B: BACKGROUND EXTRACTION ============ -->
+        <mxCell id="tahap1b-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffebee;strokeColor=#b85450;strokeWidth=2;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="380" width="200" height="140" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="tahap1b-label" value="&lt;b&gt;TAHAP 1B: Ekstraksi Background&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=11;fontColor=#c62828;" vertex="1" parent="1">
+          <mxGeometry x="210" y="385" width="180" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="bg-extract" value="&lt;b&gt;Ekstrak Patch&lt;/b&gt;&lt;br&gt;128×1024 px&lt;br&gt;dari area non-teks&lt;br&gt;(degradasi autentik)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="220" y="410" width="160" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="bg-types" value="&lt;i&gt;• Paper aging&lt;br&gt;• Foxing &amp;amp; stains&lt;br&gt;• Ink corrosion&lt;br&gt;• Faded ink&lt;/i&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=9;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="225" y="475" width="100" height="45" as="geometry" />
+        </mxCell>
+        
+        <!-- Background Output -->
+        <mxCell id="bg-output" value="&lt;b&gt;Background Patches&lt;/b&gt;&lt;br&gt;anriRusak/&lt;br&gt;29 tekstur riil" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="440" y="410" width="120" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- ============ TAHAP 2: DEGRADASI ============ -->
+        <mxCell id="tahap2-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff8e1;strokeColor=#f9a825;strokeWidth=2;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="280" width="360" height="250" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="tahap2-label" value="&lt;b&gt;TAHAP 2: Sintesis Degradasi (Stokastik)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=12;fontColor=#f57f17;" vertex="1" parent="1">
+          <mxGeometry x="780" y="285" width="240" height="25" as="geometry" />
+        </mxCell>
+        
+        <!-- Degradation Input -->
+        <mxCell id="deg-input-clean" value="Citra Bersih" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="740" y="320" width="80" height="35" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="deg-input-bg" value="Background Riil" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="740" y="370" width="80" height="35" as="geometry" />
+        </mxCell>
+        
+        <!-- Overlay Process -->
+        <mxCell id="overlay" value="&lt;b&gt;Overlay &amp;amp; Blend&lt;/b&gt;&lt;br&gt;α-blending&lt;br&gt;γ ∈ [0.5, 0.8]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe0b2;strokeColor=#f57c00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="850" y="320" width="100" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Degradation Types -->
+        <mxCell id="deg-add-label" value="&lt;b&gt;+ Degradasi Sintetis:&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="740" y="415" width="130" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="deg1" value="&lt;b&gt;Bleed-through&lt;/b&gt;&lt;br&gt;30%, α[0.3,0.7]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcdd2;strokeColor=#c62828;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="740" y="435" width="90" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="deg2" value="&lt;b&gt;Stains/Foxing&lt;/b&gt;&lt;br&gt;25%, Perlin" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcdd2;strokeColor=#c62828;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="840" y="435" width="90" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="deg3" value="&lt;b&gt;Blur&lt;/b&gt;&lt;br&gt;20%, σ[0.5,2]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcdd2;strokeColor=#c62828;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="940" y="435" width="90" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="deg4" value="&lt;b&gt;Physical&lt;/b&gt;&lt;br&gt;10%, noise" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcdd2;strokeColor=#c62828;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="740" y="480" width="90" height="35" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="validasi" value="&lt;b&gt;Validasi&lt;/b&gt;&lt;br&gt;PSNR&gt;20dB" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="960" y="315" width="80" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Degraded Output -->
+        <mxCell id="deg-output" value="&lt;b&gt;Citra Terdegradasi&lt;/b&gt;&lt;br&gt;images_degraded/" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="320" width="110" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- ============ FINAL OUTPUT ============ -->
+        <mxCell id="final-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#1565c0;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="80" width="200" height="200" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="final-label" value="&lt;b&gt;OUTPUT: Dataset Triplet&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=12;fontColor=#1565c0;" vertex="1" parent="1">
+          <mxGeometry x="1130" y="85" width="140" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="triplet1" value="I&lt;sub&gt;clean&lt;/sub&gt; (Ground Truth)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="115" width="160" height="30" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="triplet2" value="I&lt;sub&gt;degraded&lt;/sub&gt; (Terdegradasi)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="150" width="160" height="30" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="triplet3" value="Transcription (Label)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="185" width="160" height="30" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="count" value="&lt;b&gt;4.739 Pasangan&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=14;fontColor=#1565c0;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="220" width="120" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="tfrecord" value="&lt;b&gt;TFRecord&lt;/b&gt;&lt;br&gt;dataset_gan.tfrecord" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#1565c0;strokeColor=#0d47a1;fontColor=#ffffff;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1135" y="245" width="130" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- ============ ARROWS ============ -->
+        <!-- Source arrows -->
+        <mxCell id="arr1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="source-bersih" target="step1a">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arr2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" edge="1" parent="1" source="source-xml" target="step1a">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arr3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" edge="1" parent="1" source="source-rusak" target="bg-extract">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Internal Tahap 1 arrows -->
+        <mxCell id="arr4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1;" edge="1" parent="1" source="step1a" target="step1b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arr5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1;" edge="1" parent="1" source="step1b" target="step1c">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="470" y="185" />
+              <mxPoint x="335" y="185" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="arr6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1;" edge="1" parent="1" source="step1c" target="step1d">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arr7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1;" edge="1" parent="1" source="step1a" target="step1e">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Output arrows from Tahap 1 -->
+        <mxCell id="arr8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="step1d" target="gt-clean">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arr9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#6c8ebf;" edge="1" parent="1" source="step1e" target="label-output">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arr10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#b85450;" edge="1" parent="1" source="bg-extract" target="bg-output">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- To Tahap 2 -->
+        <mxCell id="arr11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#82b366;dashed=1;" edge="1" parent="1" source="gt-clean" target="deg-input-clean">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="625" y="280" />
+              <mxPoint x="780" y="280" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="arr12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#b85450;dashed=1;" edge="1" parent="1" source="bg-output" target="deg-input-bg">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="600" y="440" />
+              <mxPoint x="600" y="387" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Tahap 2 internal -->
+        <mxCell id="arr13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1;" edge="1" parent="1" source="deg-input-clean" target="overlay">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arr14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1;" edge="1" parent="1" source="deg-input-bg" target="overlay">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arr15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1;" edge="1" parent="1" source="overlay" target="validasi">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arr16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#b85450;" edge="1" parent="1" source="validasi" target="deg-output">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- To Final Output -->
+        <mxCell id="arr17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="gt-clean" target="triplet1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="700" y="125" />
+              <mxPoint x="700" y="60" />
+              <mxPoint x="1090" y="60" />
+              <mxPoint x="1090" y="130" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="arr18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#b85450;" edge="1" parent="1" source="deg-output" target="triplet2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1115" y="265" />
+              <mxPoint x="1100" y="265" />
+              <mxPoint x="1100" y="165" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="arr19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#6c8ebf;" edge="1" parent="1" source="label-output" target="triplet3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="750" y="207" />
+              <mxPoint x="750" y="250" />
+              <mxPoint x="1090" y="250" />
+              <mxPoint x="1090" y="200" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Legend -->
+        <mxCell id="legend-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#999999;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="550" width="300" height="100" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend-title" value="&lt;b&gt;LEGENDA&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="50" y="555" width="80" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="leg1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="50" y="580" width="20" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1t" value="Citra Bersih (Ground Truth)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="75" y="577" width="130" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="leg2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="50" y="600" width="20" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2t" value="Citra Rusak / Terdegradasi" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="75" y="597" width="130" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="leg3" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="50" y="620" width="20" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3t" value="Transkripsi / PageXML" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="75" y="617" width="130" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="leg4" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="200" y="580" width="20" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4t" value="Proses Ekstraksi" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="225" y="577" width="100" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="leg5" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffcdd2;strokeColor=#c62828;" vertex="1" parent="1">
+          <mxGeometry x="200" y="600" width="20" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="leg5t" value="Proses Degradasi" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="225" y="597" width="100" height="20" as="geometry" />
+        </mxCell>
+        
+        <!-- Script references -->
+        <mxCell id="scripts" value="&lt;i&gt;Scripts: create_tfrecord_from_pairs.py, parse_pagexml_baselines()&lt;/i&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=9;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="380" y="560" width="350" height="20" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

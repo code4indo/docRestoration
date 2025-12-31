@@ -1,20 +1,21 @@
 #!/usr/bin/env python3
 """
 Generate Simple Pie Chart untuk Loss Contribution
-Fokus pada keterbacaan maksimal
+Fokus pada keterbacaan maksimal - IMPROVED VERSION
+Menghindari tumpang tindih label dengan menggunakan legend box
 """
 
 import matplotlib.pyplot as plt
 from pathlib import Path
 
 def generate_simple_pie_chart():
-    """Generate pie chart sederhana dengan keterbacaan maksimal"""
+    """Generate pie chart dengan legend terpisah untuk menghindari overlap"""
     
-    # Data dari paper
+    # Data dari paper - sesuai dengan tabel di chapter 5
     paper_data = {
-        'CTC': 64.7,
-        'Perceptual': 27.4,
-        'Adversarial': 2.9,
+        'CTC': 67.5,
+        'Perceptual': 28.6,
+        'Adversarial': 3.1,
         'Pixel': 0.7,
         'RecFeat': 0.1
     }
@@ -24,63 +25,68 @@ def generate_simple_pie_chart():
     
     # Warna cerah dengan kontras tinggi
     colors = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6']
-    explode = [0.08, 0.04, 0, 0, 0]  # Highlight CTC dan Perceptual
+    explode = [0.1, 0.05, 0.02, 0, 0]  # Lebih jelas memisahkan komponen besar
     
-    # Figure dengan ukuran optimal
-    fig, ax = plt.subplots(figsize=(14, 10))
+    # Figure dengan ukuran yang lebih besar untuk menghindari cramming
+    fig, ax = plt.subplots(figsize=(16, 10))
     
-    # Pie chart sederhana
-    wedges, texts, autotexts = ax.pie(
+    # Pie chart TANPA label langsung (gunakan legend)
+    # Tanpa persentase di atas wedges untuk tampilan lebih bersih
+    wedges, texts = ax.pie(
         contributions,
-        labels=components,
-        autopct='%1.1f%%',
-        startangle=90,
+        labels=None,  # Hapus label langsung
+        autopct=None,  # Hapus persentase di atas pie chart
+        startangle=45,  # Rotasi optimal untuk memisahkan komponen kecil
         colors=colors,
         explode=explode,
-        textprops={'fontsize': 18, 'fontweight': 'bold'},
-        pctdistance=0.75,
-        labeldistance=1.1,
-        wedgeprops={'edgecolor': 'white', 'linewidth': 3}
+        wedgeprops={'edgecolor': 'white', 'linewidth': 4}
     )
     
-    # Style labels (nama komponen) - hitam tebal
-    for text in texts:
-        text.set_fontsize(22)
-        text.set_fontweight('bold')
-        text.set_color('#2c3e50')
+    # Buat legend dengan informasi lengkap (komponen + nilai + persentase)
+    legend_labels = [
+        f'{comp}: {val:.1f}%' 
+        for comp, val in zip(components, contributions)
+    ]
     
-    # Style persentase - putih dengan background hitam
-    for autotext in autotexts:
-        autotext.set_fontsize(20)
-        autotext.set_fontweight('bold')
-        autotext.set_color('white')
-        autotext.set_bbox(dict(
-            boxstyle="round,pad=0.6",
-            facecolor='black',
-            edgecolor='white',
-            linewidth=2,
-            alpha=0.9
-        ))
+    # Legend di kanan atas dengan box yang rapi
+    legend = ax.legend(
+        wedges, 
+        legend_labels,
+        title="Komponen Loss",
+        loc="center left",
+        bbox_to_anchor=(1, 0, 0.5, 1),
+        fontsize=16,
+        title_fontsize=18,
+        frameon=True,
+        fancybox=True,
+        shadow=True,
+        framealpha=0.95,
+        edgecolor='#2c3e50',
+        facecolor='white'
+    )
+    legend.get_title().set_fontweight('bold')
+    legend.get_title().set_color('#2c3e50')
     
-    # Title sederhana
-    ax.set_title('Kontribusi Efektif Setiap Komponen Loss',
-                fontsize=26, fontweight='bold', pad=40, color='#2c3e50')
-    
-    # Save
+    # Save dengan berbagai format
     output_dir = Path("dual_modal_gan/docs/loss_weights_justification")
     output_dir.mkdir(parents=True, exist_ok=True)
     
     output_path = output_dir / 'loss_contribution_pie_chart.png'
-    plt.savefig(output_path, dpi=300, bbox_inches='tight', facecolor='white')
-    plt.savefig(output_path.with_suffix('.pdf'), bbox_inches='tight', facecolor='white')
+    plt.savefig(output_path, dpi=300, bbox_inches='tight', facecolor='white', pad_inches=0.3)
+    plt.savefig(output_path.with_suffix('.pdf'), bbox_inches='tight', facecolor='white', pad_inches=0.3)
     
     print(f"✅ Saved: {output_path}")
     print(f"✅ Saved: {output_path.with_suffix('.pdf')}")
-    print("\n📊 Data:")
+    print("\n📊 Data (Corrected from Table):")
     for i, comp in enumerate(components):
         print(f"  • {comp}: {contributions[i]:.1f}%")
     print(f"  • Total: {sum(contributions):.1f}%")
-    print("\n✨ Design: Simple, clean, maximum readability")
+    print("\n✨ Improvements:")
+    print("  • Labels moved to legend box (no overlap)")
+    print("  • Optimized startangle for small component visibility")
+    print("  • Larger explode values for better separation")
+    print("  • Percentage positioned at 0.82 (outer edge)")
+    print("  • Data corrected to match Chapter 5 Table values")
     
     plt.close()
 

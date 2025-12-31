@@ -1,0 +1,115 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[bahasa]{babel}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{booktabs}
+
+% Pengaturan Margin
+\geometry{
+    top=2.5cm,
+    bottom=2.5cm,
+    left=3cm,
+    right=2.5cm
+}
+
+% Definisi kolom tabel
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\begin{document}
+
+% --- KOP SURAT ---
+\begin{center}
+    \textbf{\large INSTITUT TEKNOLOGI BANDUNG}\\
+    \textbf{\large SEKOLAH TEKNIK ELEKTRO DAN INFORMATIKA}\\
+    \textbf{PROGRAM STUDI MAGISTER INFORMATIKA}\\
+    \vspace{0.2cm}
+    \hrule height 1pt
+    \vspace{0.1cm}
+    \hrule height 0.5pt
+    \vspace{0.5cm}
+    \textbf{\large JADWAL KEGIATAN PENELITIAN TESIS}\\
+    \textbf{Periode: 50 Minggu}
+\end{center}
+\vspace{0.5cm}
+
+% --- DATA MAHASISWA ---
+\noindent
+\begin{tabular}{L{4cm} L{0.5cm} L{10cm}}
+    \textbf{Nama} & : & Jatniko Nur Mutaqin \\
+    \textbf{NIM} & : & 23523314 \\
+    \textbf{Judul Tesis} & : & Restorasi Dokumen Terdegradasi Menggunakan Generative Adversarial Network dengan Diskriminator Dual-Modal dan Optimasi Loss Function Berorientasi HTR
+\end{tabular}
+
+\vspace{0.5cm}
+
+% --- TABEL JADWAL KEGIATAN ---
+\begin{longtable}{|C{2.5cm}|L{5cm}|L{7cm}|}
+\hline
+\textbf{Minggu Ke} & \textbf{Kegiatan} & \textbf{Keterangan} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Minggu Ke} & \textbf{Kegiatan} & \textbf{Keterangan} \\
+\hline
+\endhead
+
+1 -- 4 & Studi Literatur & Kajian pustaka mengenai GAN, restorasi dokumen, dan \textit{Handwritten Text Recognition} (HTR) \\
+\hline
+
+5 -- 8 & Analisis Kebutuhan & Identifikasi permasalahan, perumusan hipotesis, dan penentuan ruang lingkup penelitian \\
+\hline
+
+9 -- 12 & Perancangan Arsitektur & Desain arsitektur generator U-Net dan diskriminator dual-modal \\
+\hline
+
+13 -- 16 & Pengembangan Dataset & Pengumpulan dan pembuatan dataset dokumen sintetis serta \textit{ground truth} \\
+\hline
+
+17 -- 20 & Implementasi Model & Pengembangan kode program generator dan diskriminator menggunakan PyTorch \\
+\hline
+
+21 -- 24 & Implementasi \textit{Loss Function} & Integrasi lima komponen fungsi kerugian multiobjektif \\
+\hline
+
+25 -- 28 & Eksperimen Awal & Pelatihan model baseline dan validasi fungsionalitas sistem \\
+\hline
+
+29 -- 32 & Optimasi \textit{Hyperparameter} & \textit{Grid search} dan \textit{tuning} parameter pelatihan model \\
+\hline
+
+33 -- 36 & Studi Ablasi & Eksperimen ablasi untuk validasi kontribusi setiap komponen arsitektur \\
+\hline
+
+37 -- 40 & Evaluasi Kuantitatif & Pengukuran metrik PSNR, SSIM, CER, dan analisis statistik \\
+\hline
+
+41 -- 44 & Analisis Hasil & Interpretasi hasil eksperimen dan validasi hipotesis penelitian \\
+\hline
+
+45 -- 48 & Penulisan Tesis & Penyusunan dokumen tesis Bab I hingga VI \\
+\hline
+
+49 -- 50 & Finalisasi \& Publikasi & Revisi akhir, persiapan seminar, dan submisi makalah ke jurnal \\
+\hline
+
+\end{longtable}
+
+\vspace{1cm}
+
+% --- TANDA TANGAN ---
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{p{7cm} p{7cm}}
+        & Bandung, 12 Desember 2025 \\
+        Menyetujui, & Mahasiswa, \\
+        Pembimbing & \\
+        \vspace{2.5cm} & \vspace{2.5cm} \\
+        \textbf{Ir. I Gusti Bagus Baskara Nugraha, ST, MT, Ph.D} & \textbf{Jatniko Nur Mutaqin} \\
+        NIP. ........................... & NIM. 23523314
+    \end{tabular}
+\end{table}
+
+\end{document}

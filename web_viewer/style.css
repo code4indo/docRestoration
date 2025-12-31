@@ -251,13 +251,25 @@ header .subtitle {
     background-color: #0a0a14;
     border-radius: 5px;
     border: 1px solid #333;
+    cursor: grab;
+}
+
+#image-container:active {
+    cursor: grabbing;
+}
+
+#image-container.panning {
+    cursor: grabbing;
+    user-select: none;
 }
 
 #image-container img {
     display: block;
-    max-width: 100%;
+    max-width: none;
     height: auto;
     transform-origin: top left;
+    transition: none;
+    pointer-events: none;
 }
 
 #image-container .placeholder {

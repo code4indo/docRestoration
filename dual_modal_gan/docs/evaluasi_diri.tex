@@ -1,0 +1,206 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[bahasa]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+% Pengaturan Margin
+\geometry{
+    top=2.5cm,
+    bottom=2.5cm,
+    left=3cm,
+    right=2.5cm
+}
+
+% Definisi kolom tabel
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\begin{document}
+
+% --- KOP SURAT ---
+\begin{center}
+    \textbf{\large INSTITUT TEKNOLOGI BANDUNG}\\
+    \textbf{\large SEKOLAH TEKNIK ELEKTRO DAN INFORMATIKA}\\
+    \textbf{PROGRAM STUDI MAGISTER INFORMATIKA}\\
+    \vspace{0.2cm}
+    \hrule height 1pt
+    \vspace{0.1cm}
+    \hrule height 0.5pt
+    \vspace{0.5cm}
+    \textbf{\large LEMBAR EVALUASI DIRI MAHASISWA}\\
+    \textbf{Semester I - 2025/2026} % Disesuaikan dengan periode saat ini
+\end{center}
+\vspace{0.5cm}
+
+% --- DATA MAHASISWA ---
+\section*{A. Data Mahasiswa}
+\begin{table}[h!]
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{L{4cm} L{0.5cm} L{10cm}}
+        \textbf{Nama} & : & Jatniko Nur Mutaqin \\
+        \textbf{NIM} & : & 23523314 \\
+        \textbf{Jalur Pilihan} & : & Smart System (Smart-X) \\
+        \textbf{Pembimbing} & : & Ir. I Gusti Bagus Baskara Nugraha, ST, MT, Ph.D \\
+        \textbf{Judul Tesis} & : & Restorasi Dokumen Terdegradasi Menggunakan Generative Adversarial Network dengan Diskriminator Dual-Modal dan Optimasi Loss Function Berorientasi HTR
+    \end{tabular}
+\end{table}
+
+% --- ABSTRAK ---
+\section*{B. Ringkasan Tesis}
+\noindent \textbf{Abstrak:} \\
+Penelitian ini bertujuan mengembangkan kerangka kerja restorasi dokumen berbasis \textit{Generative Adversarial Network} (GAN) yang secara eksplisit mengintegrasikan umpan balik semantik guna meningkatkan kinerja \textit{Handwritten Text Recognition} (HTR). Kebaruan penelitian terletak pada penerapan strategi \textit{frozen recognizer} yang dikombinasikan dengan fungsi kerugian multiobjektif lima komponen, serta evaluasi kritis terhadap arsitektur diskriminator dual-modal. Metode melibatkan pelatihan generator U-Net yang dimodifikasi, yang belajar dari perbedaan piksel citra dan umpan balik gradien model pengenal teks beku (\textit{frozen}). Hasil evaluasi menggunakan 712 citra uji semisintetis menunjukkan model mampu menurunkan \textit{Character Error Rate} (CER) signifikan dari 83,4\% menjadi 34,9\% ($p<0,001$), mendekati batas bawah teoretis (34,1\%). Model juga mempertahankan kualitas visual tinggi dengan PSNR 30,74 dB dan SSIM 0,987. Studi ini membuktikan bahwa stabilitas sinyal pembelajaran melalui \textit{frozen recognizer} lebih vital daripada kompleksitas arsitektur diskriminator dalam restorasi dokumen historis.
+
+% --- LAPORAN MINGGUAN ---
+\section*{C. Laporan Kemajuan Mingguan}
+Berikut adalah rekapitulasi kegiatan penelitian dan bimbingan yang telah dilakukan:
+
+\begin{longtable}{|C{1cm}|C{3cm}|L{10.5cm}|}
+\hline
+\textbf{No} & \textbf{Tanggal} & \textbf{Kegiatan / Kemajuan / Substansi Bimbingan} \\
+\hline
+\endfirsthead
+\hline
+\textbf{No} & \textbf{Tanggal} & \textbf{Kegiatan / Kemajuan / Substansi Bimbingan} \\
+\hline
+\endhead
+
+1 & 12 Sep 2025 & \textbf{Penyusunan Bab I Pendahuluan:}
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item Diskusi mengenai urgensi metode GAN dalam latar belakang.
+    \item Revisi judul menjadi deskriptif (menghapus singkatan di awal) dan perbaikan alur logika pemilihan metode penelitian.
+    \item Penyesuaian format penulisan (pengurangan penggunaan bold).
+\end{itemize} \\
+\hline
+
+2 & 26 Sep 2025 & \textbf{Standardisasi Format Dokumen:}
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item Konversi format \textit{bullet points} menjadi narasi/penomoran sesuai standar tesis.
+    \item Proofreading kata sambung ("Sedangkan") dan konsistensi font Daftar Isi.
+    \item Koreksi nomenklatur Program Studi "Magister Informatika".
+\end{itemize} \\
+\hline
+
+3 & 17 Okt 2025 & \textbf{Penulisan Bab III \& IV (Metodologi \& Perancangan):}
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item Finalisasi persamaan matematis (rumus fungsi loss dan arsitektur GAN).
+    \item Perbaikan notasi matematika (simbol perkalian) dan penomoran bab pada rumus (misal: III.2).
+    \item Melengkapi sitasi dan \textit{caption} pada gambar arsitektur sistem.
+\end{itemize} \\
+\hline
+
+4 & 24 Okt 2025 & \textbf{Strategi Publikasi Ilmiah:}
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item Analisis target jurnal: Diskusi opsi \textit{IEEE Access} vs \textit{Wiley}.
+    \item Pengecekan syarat APC dan kuota klaim institusi.
+    \item Ekspansi daftar pustaka untuk memenuhi syarat minimal 40 referensi artikel jurnal bereputasi.
+\end{itemize} \\
+\hline
+
+5 & 31 Okt 2025 & \textbf{Finalisasi Metadata Paper:}
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item Koreksi afiliasi penulis ("Graduate Program in Informatics") dan jabatan pembimbing.
+    \item Penambahan detail \textit{expertise} (Smart City, Blockchain) pada biodata penulis.
+    \item Pengaturan peran \textit{corresponding author} untuk submisi.
+\end{itemize} \\
+\hline
+
+6 & 14 Nov 2025 & \textbf{Revisi Bab II Tinjauan Pustaka \& Sitasi:}
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item Eliminasi paragraf duplikat pada naskah paper/tesis.
+    \item Revisi istilah "Core Contributions" menjadi "Main Contributions".
+    \item Konversi manajemen referensi manual ke BibTeX untuk memperbaiki sitasi yang hilang (Ref 3-6, 20-21) dan duplikasi rumus (Eq 17).
+\end{itemize} \\
+\hline
+
+7 & 17 Nov 2025 & \textbf{Submisi Makalah:}
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item Mengirimkan makalah ke jurnal \textit{Advances in Human-Computer Interaction} (Wiley).
+    \item Status: \textit{Submitted}.
+\end{itemize} \\
+\hline
+
+8 & 24 Nov 2025 & \textbf{Penyelesaian Draf Tesis V1:}
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item Penyerahan Draf Lengkap Tesis (Bab I - VI) hasil penelitian.
+    \item Pengurusan administrasi formulir izin usulan seminar tesis.
+    \item Persiapan materi slide presentasi untuk seminar hasil.
+\end{itemize} \\
+\hline
+
+9 & 28 Nov 2025 & \textbf{Revisi Akhir \& Helicopter View:}
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item Memperjelas benang merah penelitian (\textit{helicopter view}) dari masalah ke solusi.
+    \item Konversi narasi metodologi yang kompleks menjadi tabel agar sistematis.
+    \item Detail teknis spesifikasi citra (dimensi/resolusi) dan perbaikan format (italic istilah asing, desimal).
+\end{itemize} \\
+\hline
+
+\end{longtable}
+
+% --- LUARAN ---
+\section*{D. Status Luaran Penelitian}
+\begin{itemize}
+    \item \textbf{Judul Makalah:} \textit{GAN-Based Document Restoration with Frozen HTR Recognizer and Multi-Component Loss Optimization for Historical Manuscripts.}
+    \item \textbf{Target Publikasi:} Jurnal Internasional - Advances in Human-Computer Interaction (Wiley Online Library).
+    \item \textbf{Status Saat Ini:} \textbf{Submitted} (Tanggal Pengiriman: 17 November 2025).
+\end{itemize}
+
+% --- EVALUASI DIRI ---
+\section*{E. Evaluasi Diri dan Rencana Tindak Lanjut}
+\textbf{Capaian:}
+\begin{itemize}
+    \item Penelitian telah berhasil membuktikan hipotesis bahwa strategi \textit{Frozen Recognizer} lebih stabil dibandingkan \textit{Joint Training}, dengan penurunan CER signifikan pada dokumen uji.
+    \item Draf tesis telah mencapai tahap finalisasi (V1) dengan kelengkapan Bab I hingga VI, termasuk analisis statistik hasil eksperimen.
+    \item Makalah telah dikirimkan (submitted) ke jurnal target.
+\end{itemize}
+
+\textbf{Kendala \& Rencana:}
+\begin{itemize}
+    \item \textbf{Kendala:} Diperlukan ketelitian tinggi dalam pemformatan akhir dokumen (tabel, gambar, rumus) sesuai standar akademik ITB, serta persiapan materi presentasi yang ringkas namun komprehensif.
+    \item \textbf{Rencana:} Melakukan revisi final berdasarkan masukan tanggal 28 November (terutama pada visualisasi alur metodologi), melaksanakan latihan presentasi seminar, dan memantau status \textit{review} jurnal.
+\end{itemize}
+
+% --- RUTINITAS ---
+\section*{F. Rutinitas Mengerjakan Tesis}
+\begin{itemize}
+    \item \textbf{Pelatihan Model:} Menjalankan eksperimen pelatihan GAN menggunakan server GPU, memantau \textit{loss trajectory}, dan menyimpan \textit{checkpoint} model secara berkala.
+    \item \textbf{Evaluasi Hasil:} Menganalisis metrik kualitas restorasi (PSNR, SSIM) dan metrik HTR (CER, WER) pada dataset uji untuk setiap konfigurasi eksperimen.
+    \item \textbf{Studi Ablasi:} Melakukan eksperimen sistematis dengan menonaktifkan komponen tertentu (misal: \textit{perceptual loss}, \textit{CTC loss}) untuk memvalidasi kontribusi masing-masing.
+    \item \textbf{Visualisasi \& Analisis:} Membuat visualisasi perbandingan hasil restorasi, \textit{confusion matrix} karakter, dan grafik konvergensi untuk interpretasi hasil.
+    \item \textbf{Penulisan Dokumen:} Menyusun dan merevisi naskah tesis menggunakan LaTeX, termasuk pemformatan tabel, gambar, dan persamaan matematika.
+    \item \textbf{Konsultasi Pembimbing:} Berdiskusi rutin dengan pembimbing untuk evaluasi progres, validasi metodologi, dan arahan perbaikan.
+    \item \textbf{Manajemen Eksperimen:} Mencatat konfigurasi \textit{hyperparameter}, hasil eksperimen, dan temuan penting menggunakan sistem \textit{version control} (Git).
+\end{itemize}
+
+% --- HAMBATAN ---
+\section*{G. Hambatan dalam Pengerjaan Tesis}
+\begin{itemize}
+    \item \textbf{Keterbatasan Komputasi:} Proses pelatihan model GAN memerlukan sumber daya GPU yang intensif, sehingga membutuhkan manajemen waktu eksperimen yang efisien.
+    \item \textbf{Kompleksitas Integrasi:} Mengintegrasikan modul HTR (\textit{frozen recognizer}) dengan arsitektur GAN memerlukan pemahaman mendalam terhadap kedua domain.
+    \item \textbf{Ketersediaan Data:} Dataset dokumen historis paleografi abad ke-16--18 yang berkualitas tinggi relatif terbatas dan memerlukan proses kurasi manual.
+    \item \textbf{Pemformatan Akademik:} Penyesuaian format penulisan tesis sesuai standar ITB (tabel, gambar, rumus, sitasi) memerlukan waktu dan ketelitian ekstra.
+    \item \textbf{Keseimbangan Waktu:} Menyeimbangkan waktu antara kegiatan penelitian, penulisan, dan aktivitas perkuliahan lainnya.
+\end{itemize}
+
+\vspace{1.5cm}
+
+% --- TANDA TANGAN ---
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{p{7cm} p{7cm}}
+        & Bandung, 12 Desember 2025 \\
+        Menyetujui, & Mahasiswa, \\
+        Pembimbing & \\
+        \vspace{2.5cm} & \vspace{2.5cm} \\
+        \textbf{Ir. I Gusti Bagus Baskara Nugraha, ST, MT, Ph.D} & \textbf{Jatniko Nur Mutaqin} \\
+        NIP. ........................... & NIM. 23523314
+    \end{tabular}
+\end{table}
+
+\end{document}

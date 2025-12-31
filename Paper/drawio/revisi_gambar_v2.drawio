@@ -1,0 +1,387 @@
+<mxGraphModel dx="2084" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1300" pageHeight="900" math="0" shadow="0">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+    
+    <!-- ==================== SECTION LABELS (TOP) ==================== -->
+    <mxCell id="section-input-label" parent="1" style="text;html=1;strokeColor=none;fillColor=#E8E8E8;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=14;fontStyle=1;fontColor=#333333" value="INPUT" vertex="1">
+      <mxGeometry height="30" width="220" x="30" y="30" as="geometry" />
+    </mxCell>
+    <mxCell id="section-process-label" parent="1" style="text;html=1;strokeColor=none;fillColor=#E8E8E8;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=14;fontStyle=1;fontColor=#333333" value="PROCESS" vertex="1">
+      <mxGeometry height="30" width="720" x="280" y="30" as="geometry" />
+    </mxCell>
+    <mxCell id="section-output-label" parent="1" style="text;html=1;strokeColor=none;fillColor=#E8E8E8;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=14;fontStyle=1;fontColor=#333333" value="OUTPUT" vertex="1">
+      <mxGeometry height="30" width="200" x="430" y="680" as="geometry" />
+    </mxCell>
+    
+    <!-- ==================== SECTION CONTAINERS (SWIMLANES) ==================== -->
+    <!-- INPUT Section Container -->
+    <mxCell id="section-input" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#BDBDBD;strokeWidth=2;dashed=1;" value="" vertex="1">
+      <mxGeometry height="360" width="220" x="30" y="70" as="geometry" />
+    </mxCell>
+    
+    <!-- PROCESS Section Container -->
+    <mxCell id="section-process" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#BDBDBD;strokeWidth=2;dashed=1;" value="" vertex="1">
+      <mxGeometry height="360" width="720" x="280" y="70" as="geometry" />
+    </mxCell>
+    
+    <!-- OUTPUT Section Container (Loss + Final) -->
+    <mxCell id="section-output" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#BDBDBD;strokeWidth=2;dashed=1;" value="" vertex="1">
+      <mxGeometry height="230" width="800" x="30" y="460" as="geometry" />
+    </mxCell>
+    
+    <!-- ==================== INPUT SECTION CONTENT ==================== -->
+    <!-- Ground Truth Container -->
+    <mxCell id="gt-container" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;strokeWidth=2;dashed=1;" value="" vertex="1">
+      <mxGeometry height="150" width="190" x="45" y="90" as="geometry" />
+    </mxCell>
+    <mxCell id="gt-label" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#333333" value="GROUND TRUTH" vertex="1">
+      <mxGeometry height="20" width="190" x="45" y="95" as="geometry" />
+    </mxCell>
+    
+    <!-- Input/Output: Ellipse shape -->
+    <mxCell id="gt-clean" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#D5F5E3;strokeColor=#27AE60;fontSize=10;fontStyle=0;strokeWidth=2" value="Clean Image&#xa;(Target)" vertex="1">
+      <mxGeometry height="45" width="150" x="65" y="120" as="geometry" />
+    </mxCell>
+    <mxCell id="gt-text" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#D5F5E3;strokeColor=#27AE60;fontSize=10;fontStyle=0;strokeWidth=2" value="Ground Truth Text&#xa;(Transcription)" vertex="1">
+      <mxGeometry height="45" width="150" x="65" y="180" as="geometry" />
+    </mxCell>
+    
+    <!-- Input Degraded Document -->
+    <mxCell id="input-degraded" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=11;fontStyle=0;strokeWidth=2" value="Input&#xa;Degraded Document" vertex="1">
+      <mxGeometry height="55" width="190" x="45" y="270" as="geometry" />
+    </mxCell>
+    
+    <!-- ==================== PROCESS SECTION CONTENT ==================== -->
+    <!-- GENERATOR Container (BLUE) -->
+    <mxCell id="gen-container" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D6EAF8;strokeColor=#3498DB;strokeWidth=2.5;fontStyle=0" value="" vertex="1">
+      <mxGeometry height="290" width="190" x="300" y="90" as="geometry" />
+    </mxCell>
+    <mxCell id="gen-label" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#2471A3" value="GENERATOR" vertex="1">
+      <mxGeometry height="20" width="190" x="300" y="95" as="geometry" />
+    </mxCell>
+    <mxCell id="gen-subtitle" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontStyle=2;fontColor=#555" value="U-Net Enhanced" vertex="1">
+      <mxGeometry height="15" width="190" x="300" y="115" as="geometry" />
+    </mxCell>
+    
+    <!-- Processing layers: Rectangle (sharp corners) - Blue theme -->
+    <mxCell id="gen-encoder" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#AED6F1;strokeColor=#2471A3;fontSize=11;fontStyle=0" value="Encoder&#xa;RDB + CBAM" vertex="1">
+      <mxGeometry height="45" width="150" x="320" y="140" as="geometry" />
+    </mxCell>
+    <mxCell id="gen-fusion" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#AED6F1;strokeColor=#2471A3;fontSize=11;fontStyle=0" value="Multi-Scale Fusion" vertex="1">
+      <mxGeometry height="30" width="150" x="320" y="200" as="geometry" />
+    </mxCell>
+    <mxCell id="gen-decoder" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#AED6F1;strokeColor=#2471A3;fontSize=11;fontStyle=0" value="Decoder&#xa;Attention Gates" vertex="1">
+      <mxGeometry height="45" width="150" x="320" y="245" as="geometry" />
+    </mxCell>
+    
+    <!-- Output: Ellipse -->
+    <mxCell id="gen-output" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#D5F5E3;strokeColor=#27AE60;fontSize=11;fontStyle=0;strokeWidth=2" value="Enhanced Image" vertex="1">
+      <mxGeometry height="35" width="150" x="320" y="305" as="geometry" />
+    </mxCell>
+    <mxCell id="gen-params" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=8;fontStyle=2;fontColor=#555" value="21.8M params" vertex="1">
+      <mxGeometry height="15" width="150" x="345" y="345" as="geometry" />
+    </mxCell>
+    
+    <!-- DISCRIMINATOR Container (ORANGE) -->
+    <mxCell id="disc-container" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FDEBD0;strokeColor=#E67E22;strokeWidth=2.5;fontStyle=0" value="" vertex="1">
+      <mxGeometry height="290" width="190" x="520" y="90" as="geometry" />
+    </mxCell>
+    <mxCell id="disc-label" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#CA6F1E" value="DISCRIMINATOR" vertex="1">
+      <mxGeometry height="20" width="190" x="520" y="95" as="geometry" />
+    </mxCell>
+    <mxCell id="disc-subtitle" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontStyle=2;fontColor=#555" value="Dual-Modal Enhanced" vertex="1">
+      <mxGeometry height="15" width="190" x="520" y="115" as="geometry" />
+    </mxCell>
+    
+    <!-- Processing layers: Rectangle - Orange theme -->
+    <mxCell id="disc-cnn" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F5B041;strokeColor=#CA6F1E;fontSize=11;fontStyle=0" value="CNN Branch&#xa;Image Features" vertex="1">
+      <mxGeometry height="40" width="150" x="540" y="140" as="geometry" />
+    </mxCell>
+    <mxCell id="disc-bilstm" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F5B041;strokeColor=#CA6F1E;fontSize=10;fontStyle=0" value="BiLSTM Branch&#xa;Text Features (GT/Pred)*" vertex="1">
+      <mxGeometry height="40" width="150" x="540" y="195" as="geometry" />
+    </mxCell>
+    <mxCell id="disc-attention" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F5B041;strokeColor=#CA6F1E;fontSize=10;fontStyle=0" value="Bilateral Attention&#xa;Cross-Modal Fusion" vertex="1">
+      <mxGeometry height="40" width="150" x="540" y="250" as="geometry" />
+    </mxCell>
+    
+    <!-- Output: Ellipse -->
+    <mxCell id="disc-output" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#D5F5E3;strokeColor=#27AE60;fontSize=11;fontStyle=0;strokeWidth=2" value="Real / Fake&#xa;[0,1]" vertex="1">
+      <mxGeometry height="40" width="150" x="540" y="305" as="geometry" />
+    </mxCell>
+    <mxCell id="disc-params" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=8;fontStyle=2;fontColor=#555" value="17.4M params" vertex="1">
+      <mxGeometry height="15" width="150" x="565" y="350" as="geometry" />
+    </mxCell>
+    
+    <!-- HTR RECOGNIZER Container (GRAY - FROZEN) -->
+    <mxCell id="htr-container" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EAEDED;strokeColor=#7F8C8D;strokeWidth=2.5;dashed=1;fontStyle=0" value="" vertex="1">
+      <mxGeometry height="290" width="190" x="740" y="90" as="geometry" />
+    </mxCell>
+    <mxCell id="htr-label" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#566573" value="HTR RECOGNIZER" vertex="1">
+      <mxGeometry height="20" width="190" x="740" y="95" as="geometry" />
+    </mxCell>
+    <mxCell id="htr-frozen" parent="1" style="text;html=1;strokeColor=#7F8C8D;fillColor=#D5D8DC;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=10;fontStyle=1;fontColor=#333333;strokeWidth=1.5" value="🔒 FROZEN" vertex="1">
+      <mxGeometry height="20" width="100" x="785" y="120" as="geometry" />
+    </mxCell>
+    
+    <!-- Processing layers: Rectangle - Gray theme (dashed for frozen) -->
+    <mxCell id="htr-cnn" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#BDC3C7;strokeColor=#7F8C8D;fontSize=11;fontStyle=0;dashed=1" value="CNN Backbone" vertex="1">
+      <mxGeometry height="35" width="150" x="760" y="155" as="geometry" />
+    </mxCell>
+    <mxCell id="htr-transformer" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#BDC3C7;strokeColor=#7F8C8D;fontSize=11;fontStyle=0;dashed=1" value="Transformer&#xa;(6L, 8H)" vertex="1">
+      <mxGeometry height="40" width="150" x="760" y="205" as="geometry" />
+    </mxCell>
+    <mxCell id="htr-ctc" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#BDC3C7;strokeColor=#7F8C8D;fontSize=11;fontStyle=0;dashed=1" value="CTC Decoder" vertex="1">
+      <mxGeometry height="30" width="150" x="760" y="260" as="geometry" />
+    </mxCell>
+    
+    <!-- Output: Ellipse -->
+    <mxCell id="htr-output" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#BDC3C7;strokeColor=#7F8C8D;fontSize=11;fontStyle=0;strokeWidth=2;dashed=1" value="Feature Extraction" vertex="1">
+      <mxGeometry height="30" width="150" x="760" y="305" as="geometry" />
+    </mxCell>
+    <mxCell id="htr-params" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=8;fontStyle=2;fontColor=#555" value="Pre-trained (CER 33.72%)" vertex="1">
+      <mxGeometry height="15" width="150" x="785" y="345" as="geometry" />
+    </mxCell>
+    
+    <!-- ==================== OUTPUT SECTION CONTENT ==================== -->
+    <!-- Loss Function Container (GREEN) -->
+    <mxCell id="loss-container" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5F5E3;strokeColor=#27AE60;strokeWidth=2" value="" vertex="1">
+      <mxGeometry height="140" width="560" x="45" y="480" as="geometry" />
+    </mxCell>
+    <mxCell id="loss-title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#1E8449" value="MULTI-COMPONENT LOSS FUNCTION" vertex="1">
+      <mxGeometry height="20" width="560" x="45" y="485" as="geometry" />
+    </mxCell>
+    
+    <!-- Loss components: Parallelogram shape -->
+    <mxCell id="loss-pixel" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ABEBC6;strokeColor=#1E8449;fontSize=10;fontStyle=1" value="L_pixel&#xa;MAE/L1" vertex="1">
+      <mxGeometry height="35" width="100" x="55" y="515" as="geometry" />
+    </mxCell>
+    <mxCell id="loss-adv" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ABEBC6;strokeColor=#1E8449;fontSize=10;fontStyle=1" value="L_adv&#xa;GAN" vertex="1">
+      <mxGeometry height="35" width="100" x="165" y="515" as="geometry" />
+    </mxCell>
+    <mxCell id="loss-perc" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ABEBC6;strokeColor=#1E8449;fontSize=10;fontStyle=1" value="L_perc&#xa;VGG" vertex="1">
+      <mxGeometry height="35" width="100" x="275" y="515" as="geometry" />
+    </mxCell>
+    <mxCell id="loss-rec" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ABEBC6;strokeColor=#1E8449;fontSize=10;fontStyle=1" value="L_rec&#xa;HTR Feat" vertex="1">
+      <mxGeometry height="35" width="100" x="385" y="515" as="geometry" />
+    </mxCell>
+    <mxCell id="loss-ctc" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#ABEBC6;strokeColor=#1E8449;fontSize=10;fontStyle=1" value="L_CTC&#xa;HTR Grad" vertex="1">
+      <mxGeometry height="35" width="100" x="495" y="515" as="geometry" />
+    </mxCell>
+    
+    <!-- Total Loss Formula -->
+    <mxCell id="loss-formula" parent="1" style="text;html=1;strokeColor=#1E8449;fillColor=#E9F7EF;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=10;fontStyle=1;fontColor=#1E8449;strokeWidth=1.5" value="L_total = λ₁·L_pixel + λ₂·L_adv + λ₃·L_perc + λ₄·L_rec + λ₅·L_CTC" vertex="1">
+      <mxGeometry height="25" width="540" x="55" y="560" as="geometry" />
+    </mxCell>
+    
+    <!-- Training strategies -->
+    <mxCell id="loss-adaptive" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCF3CF;strokeColor=#B7950B;fontSize=10;fontStyle=1" value="Adaptive&#xa;Balancing" vertex="1">
+      <mxGeometry height="35" width="90" x="630" y="500" as="geometry" />
+    </mxCell>
+    <mxCell id="loss-curriculum" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCF3CF;strokeColor=#B7950B;fontSize=10;fontStyle=1" value="Curriculum&#xa;Learning" vertex="1">
+      <mxGeometry height="35" width="90" x="730" y="500" as="geometry" />
+    </mxCell>
+    
+    <!-- FINAL OUTPUT -->
+    <mxCell id="final-output" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#27AE60;strokeColor=#1E8449;fontSize=12;fontStyle=1;strokeWidth=3;fontColor=#FFFFFF" value="ENHANCED DOCUMENT&#xa;(Restored)" vertex="1">
+      <mxGeometry height="50" width="200" x="430" y="720" as="geometry" />
+    </mxCell>
+    
+    <!-- ==================== LEGEND ==================== -->
+    <mxCell id="legend-container" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;strokeWidth=1.5" value="" vertex="1">
+      <mxGeometry height="120" width="190" x="960" y="80" as="geometry" />
+    </mxCell>
+    <mxCell id="legend-title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#333333" value="LEGEND" vertex="1">
+      <mxGeometry height="20" width="190" x="960" y="85" as="geometry" />
+    </mxCell>
+    
+    <!-- Legend items -->
+    <mxCell id="legend-ellipse" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=8" value="" vertex="1">
+      <mxGeometry height="12" width="25" x="970" y="110" as="geometry" />
+    </mxCell>
+    <mxCell id="legend-ellipse-text" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#333333" value="= I/O Data" vertex="1">
+      <mxGeometry height="12" width="80" x="1000" y="110" as="geometry" />
+    </mxCell>
+    
+    <mxCell id="legend-rect" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=8" value="" vertex="1">
+      <mxGeometry height="12" width="25" x="970" y="127" as="geometry" />
+    </mxCell>
+    <mxCell id="legend-rect-text" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#333333" value="= Layer" vertex="1">
+      <mxGeometry height="12" width="80" x="1000" y="127" as="geometry" />
+    </mxCell>
+    
+    <mxCell id="legend-rounded" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=8" value="" vertex="1">
+      <mxGeometry height="12" width="25" x="970" y="144" as="geometry" />
+    </mxCell>
+    <mxCell id="legend-rounded-text" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#333333" value="= Module" vertex="1">
+      <mxGeometry height="12" width="80" x="1000" y="144" as="geometry" />
+    </mxCell>
+    
+    <mxCell id="legend-para" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=8" value="" vertex="1">
+      <mxGeometry height="12" width="25" x="970" y="161" as="geometry" />
+    </mxCell>
+    <mxCell id="legend-para-text" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#333333" value="= Loss" vertex="1">
+      <mxGeometry height="12" width="80" x="1000" y="161" as="geometry" />
+    </mxCell>
+    
+    <mxCell id="legend-dashed" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EAEDED;strokeColor=#7F8C8D;fontSize=8;dashed=1" value="" vertex="1">
+      <mxGeometry height="12" width="25" x="970" y="178" as="geometry" />
+    </mxCell>
+    <mxCell id="legend-dashed-text" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#333333" value="= Frozen" vertex="1">
+      <mxGeometry height="12" width="80" x="1000" y="178" as="geometry" />
+    </mxCell>
+    
+    <!-- ==================== ARROWS/EDGES ==================== -->
+    <!-- Input to Generator -->
+    <mxCell id="edge-input-gen" edge="1" parent="1" source="input-degraded" target="gen-encoder" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#3498DB;endArrow=block;endFill=1;labelBackgroundColor=#ffffff;fontSize=10;fontStyle=0" value="Input">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="270" y="298" />
+          <mxPoint x="270" y="163" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    
+    <!-- Clean GT to Discriminator -->
+    <mxCell id="edge-clean-disc" edge="1" parent="1" source="gt-clean" target="disc-cnn" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#27AE60;endArrow=block;endFill=1;dashed=1;dashPattern=4 4;labelBackgroundColor=#ffffff;fontSize=9;fontStyle=0" value="Clean (GT)">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="250" y="143" />
+          <mxPoint x="250" y="60" />
+          <mxPoint x="615" y="60" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    
+    <!-- GT Text to Discriminator -->
+    <mxCell id="edge-gttext-disc" edge="1" parent="1" source="gt-text" target="disc-bilstm" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#27AE60;endArrow=block;endFill=1;dashed=1;dashPattern=4 4;labelBackgroundColor=#ffffff;fontSize=9;fontStyle=0" value="GT Text">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="255" y="203" />
+          <mxPoint x="255" y="75" />
+          <mxPoint x="500" y="75" />
+          <mxPoint x="500" y="215" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    
+    <!-- Enhanced to Discriminator -->
+    <mxCell id="edge-enhanced-disc" edge="1" parent="1" source="gen-output" target="disc-cnn" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#3498DB;endArrow=block;endFill=1;labelBackgroundColor=#ffffff;fontSize=10;fontStyle=0" value="Enhanced">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="495" y="323" />
+          <mxPoint x="495" y="160" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    
+    <!-- Enhanced to HTR -->
+    <mxCell id="edge-enhanced-htr" edge="1" parent="1" source="gen-output" target="htr-cnn" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7F8C8D;endArrow=block;endFill=1;labelBackgroundColor=#ffffff;fontSize=10;fontStyle=1" value="To HTR">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="395" y="400" />
+          <mxPoint x="720" y="400" />
+          <mxPoint x="720" y="173" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    
+    <!-- HTR CTC to Discriminator (Mode Pred) -->
+    <mxCell id="edge-htr-disc" edge="1" parent="1" source="htr-ctc" target="disc-bilstm" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7F8C8D;endArrow=block;endFill=1;dashed=1;dashPattern=4 4;labelBackgroundColor=#ffffff;fontSize=8;fontStyle=0" value="Mode Pred">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="950" y="275" />
+          <mxPoint x="950" y="215" />
+          <mxPoint x="690" y="215" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    
+    <!-- Gradient flows (dashed) -->
+    <mxCell id="edge-grad-adv" edge="1" parent="1" source="disc-output" target="loss-adv" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#E67E22;endArrow=block;endFill=1;dashed=1;dashPattern=8 4;labelBackgroundColor=#ffffff;fontSize=9;fontStyle=1" value="∇_adv">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="615" y="410" />
+          <mxPoint x="215" y="410" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    
+    <mxCell id="edge-grad-rec" edge="1" parent="1" source="htr-output" target="loss-rec" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7F8C8D;endArrow=block;endFill=1;dashed=1;dashPattern=8 4;labelBackgroundColor=#ffffff;fontSize=9;fontStyle=1" value="∇_rec">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="835" y="440" />
+          <mxPoint x="435" y="440" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    
+    <mxCell id="edge-grad-ctc" edge="1" parent="1" source="htr-ctc" target="loss-ctc" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7F8C8D;endArrow=block;endFill=1;dashed=1;dashPattern=8 4;labelBackgroundColor=#ffffff;fontSize=8;fontStyle=1" value="∇_CTC">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="910" y="275" />
+          <mxPoint x="910" y="420" />
+          <mxPoint x="545" y="420" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    
+    <mxCell id="edge-grad-pixel" edge="1" parent="1" source="gen-output" target="loss-pixel" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#3498DB;endArrow=block;endFill=1;dashed=1;dashPattern=8 4;labelBackgroundColor=#ffffff;fontSize=9;fontStyle=1" value="∇_pixel">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="260" y="323" />
+          <mxPoint x="260" y="420" />
+          <mxPoint x="105" y="420" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    
+    <mxCell id="edge-grad-perc" edge="1" parent="1" source="gen-output" target="loss-perc" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#3498DB;endArrow=block;endFill=1;dashed=1;dashPattern=8 4;labelBackgroundColor=#ffffff;fontSize=9;fontStyle=1" value="∇_perc">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="395" y="360" />
+          <mxPoint x="375" y="360" />
+          <mxPoint x="375" y="440" />
+          <mxPoint x="325" y="440" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    
+    <!-- GT Reference to Loss -->
+    <mxCell id="edge-gt-ref-pixel" edge="1" parent="1" source="gt-clean" target="loss-pixel" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#27AE60;endArrow=block;endFill=1;dashed=1;dashPattern=2 2;labelBackgroundColor=#ffffff;fontSize=9;fontStyle=1" value="Ref">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="20" y="143" />
+          <mxPoint x="20" y="450" />
+          <mxPoint x="75" y="450" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    
+    <mxCell id="edge-gt-ref-ctc" edge="1" parent="1" source="gt-text" target="loss-ctc" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#27AE60;endArrow=block;endFill=1;dashed=1;dashPattern=2 2;labelBackgroundColor=#ffffff;fontSize=9;fontStyle=1" value="Ref">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="25" y="203" />
+          <mxPoint x="25" y="455" />
+          <mxPoint x="565" y="455" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    
+    <!-- Final output arrow -->
+    <mxCell id="edge-final" edge="1" parent="1" source="loss-formula" target="final-output" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#27AE60;endArrow=block;endFill=1;labelBackgroundColor=#ffffff;fontSize=10;fontStyle=1" value="Optimized">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="325" y="640" />
+          <mxPoint x="530" y="640" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    
+    <!-- Subtitle -->
+    <mxCell id="subtitle" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=2;fontColor=#555555" value="Dual-Modal Discriminator + Frozen HTR Recognizer + Multi-Component Loss" vertex="1">
+      <mxGeometry height="20" width="480" x="420" y="5" as="geometry" />
+    </mxCell>
+    
+  </root>
+</mxGraphModel>

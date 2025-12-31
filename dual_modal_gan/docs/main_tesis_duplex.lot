@@ -7,40 +7,40 @@
 \contentsline {table}{\numberline {II.6}{\ignorespaces Perbandingan Metode Restorasi (Metrik Performa)}}{55}{table.caption.12}%
 \contentsline {table}{\numberline {II.7}{\ignorespaces Perbandingan Metode Restorasi (Karakteristik Arsitektur)}}{56}{table.caption.13}%
 \contentsline {table}{\numberline {III.1}{\ignorespaces Target Metrik Kuantitatif Penelitian}}{67}{table.caption.15}%
-\contentsline {table}{\numberline {III.2}{\ignorespaces Spesifikasi Kebutuhan Fungsional Kerangka Kerja Restorasi\relax }}{68}{table.caption.16}%
-\contentsline {table}{\numberline {III.3}{\ignorespaces Spesifikasi Kebutuhan Non-Fungsional Kerangka Kerja Restorasi\relax }}{69}{table.caption.17}%
+\contentsline {table}{\numberline {III.2}{\ignorespaces Spesifikasi Kebutuhan Fungsional metode Restorasi\relax }}{68}{table.caption.16}%
+\contentsline {table}{\numberline {III.3}{\ignorespaces Spesifikasi Kebutuhan Non-Fungsional Metode Restorasi\relax }}{69}{table.caption.17}%
 \contentsline {table}{\numberline {III.4}{\ignorespaces Matriks Pelacakan: Kebutuhan Sistem vs Rumusan Masalah\relax }}{69}{table.caption.18}%
 \contentsline {table}{\numberline {III.5}{\ignorespaces Lingkungan eksperimen}}{70}{table.caption.19}%
 \contentsline {table}{\numberline {IV.1}{\ignorespaces Analisis komparatif strategi integrasi pengenal HTR}}{86}{table.caption.25}%
 \contentsline {table}{\numberline {IV.2}{\ignorespaces Konfigurasi bobot \textit {loss} optimal}}{89}{table.caption.26}%
 \contentsline {table}{\numberline {IV.3}{\ignorespaces Protokol \textit {curriculum learning} tiga fase}}{94}{table.caption.29}%
-\contentsline {table}{\numberline {IV.4}{\ignorespaces Spesifikasi implementasi teknis pelatihan}}{96}{table.caption.30}%
+\contentsline {table}{\numberline {IV.4}{\ignorespaces Spesifikasi implementasi teknis pelatihan}}{97}{table.caption.30}%
 \contentsline {table}{\numberline {IV.5}{\ignorespaces Ringkasan metode \textit {baseline} klasik}}{97}{table.caption.31}%
-\contentsline {table}{\numberline {IV.6}{\ignorespaces Pemetaan metrik evaluasi dengan komponen arsitektur}}{98}{table.caption.32}%
+\contentsline {table}{\numberline {IV.6}{\ignorespaces Pemetaan metrik evaluasi dengan komponen arsitektur}}{99}{table.caption.32}%
 \contentsline {table}{\numberline {IV.7}{\ignorespaces Spesifikasi implementasi metrik evaluasi}}{99}{table.caption.33}%
-\contentsline {table}{\numberline {V.1}{\ignorespaces Hasil kuantitatif pada set uji semi-sintetis}}{103}{table.caption.34}%
-\contentsline {table}{\numberline {V.2}{\ignorespaces Ringkasan metrik CER \textit {baseline}}}{105}{table.caption.38}%
-\contentsline {table}{\numberline {V.3}{\ignorespaces Karakteristik dataset ANRI}}{109}{table.caption.41}%
-\contentsline {table}{\numberline {V.4}{\ignorespaces Prosedur evaluasi ahli}}{113}{table.caption.43}%
-\contentsline {table}{\numberline {V.5}{\ignorespaces Evaluasi ahli paleografi}}{113}{table.caption.44}%
-\contentsline {table}{\numberline {V.6}{\ignorespaces Performa restorasi ANRI}}{114}{table.caption.45}%
-\contentsline {table}{\numberline {V.7}{\ignorespaces Kesenjangan domain pelatihan-riil}}{115}{table.caption.46}%
-\contentsline {table}{\numberline {V.8}{\ignorespaces Studi ablasi komponen \textit {loss}}}{117}{table.caption.47}%
-\contentsline {table}{\numberline {V.9}{\ignorespaces Perbandingan \textit {loss frozen} berbanding \textit {joint}}}{119}{table.caption.48}%
-\contentsline {table}{\numberline {V.10}{\ignorespaces Metrik keterbacaan frozen berbanding joint}}{120}{table.caption.50}%
-\contentsline {table}{\numberline {V.11}{\ignorespaces Efisiensi komputasi frozen berbanding joint}}{122}{table.caption.53}%
-\contentsline {table}{\numberline {V.12}{\ignorespaces Temuan kunci frozen berbanding joint}}{123}{table.caption.55}%
-\contentsline {table}{\numberline {V.13}{\ignorespaces Ablasi diskriminator dual-modal berbanding CNN}}{125}{table.caption.57}%
-\contentsline {table}{\numberline {V.14}{\ignorespaces Performa curriculum berbanding non-curriculum}}{127}{table.caption.58}%
-\contentsline {table}{\numberline {V.15}{\ignorespaces Konfigurasi bobot \textit {loss} produksi}}{133}{table.caption.62}%
-\contentsline {table}{\numberline {V.16}{\ignorespaces Lima konfigurasi terbaik \textit {grid search}}}{135}{table.caption.66}%
-\contentsline {table}{\numberline {V.17}{\ignorespaces Sensitivitas bobot piksel}}{136}{table.caption.67}%
-\contentsline {table}{\numberline {V.18}{\ignorespaces Sensitivitas bobot CTC}}{136}{table.caption.68}%
-\contentsline {table}{\numberline {V.19}{\ignorespaces Sensitivitas bobot RecFeat}}{137}{table.caption.69}%
-\contentsline {table}{\numberline {V.20}{\ignorespaces Hasil pengujian statistik formal hipotesis penelitian}}{139}{table.caption.70}%
-\contentsline {table}{\numberline {V.21}{\ignorespaces Evaluasi hipotesis penelitian}}{140}{table.caption.71}%
-\contentsline {table}{\numberline {V.22}{\ignorespaces Perbandingan dengan pustaka}}{142}{table.caption.72}%
-\contentsline {table}{\numberline {V.23}{\ignorespaces Distribusi Tingkat CER}}{146}{table.caption.73}%
-\contentsline {table}{\numberline {V.24}{\ignorespaces Karakteristik Kesalahan Karakter}}{146}{table.caption.74}%
+\contentsline {table}{\numberline {V.1}{\ignorespaces Pemetaan seksi ke tahap DSRM}}{102}{table.caption.34}%
+\contentsline {table}{\numberline {V.2}{\ignorespaces Hasil kuantitatif pada set uji semi-sintetis}}{103}{table.caption.35}%
+\contentsline {table}{\numberline {V.3}{\ignorespaces Ringkasan metrik CER \textit {baseline}}}{106}{table.caption.39}%
+\contentsline {table}{\numberline {V.4}{\ignorespaces Karakteristik dataset ANRI}}{110}{table.caption.42}%
+\contentsline {table}{\numberline {V.5}{\ignorespaces Prosedur evaluasi ahli}}{113}{table.caption.44}%
+\contentsline {table}{\numberline {V.6}{\ignorespaces Evaluasi ahli paleografi}}{113}{table.caption.45}%
+\contentsline {table}{\numberline {V.7}{\ignorespaces Distribusi kontras dokumen ANRI}}{114}{table.caption.46}%
+\contentsline {table}{\numberline {V.8}{\ignorespaces Kesenjangan domain pelatihan-riil}}{115}{table.caption.47}%
+\contentsline {table}{\numberline {V.9}{\ignorespaces Studi ablasi komponen \textit {loss}}}{118}{table.caption.48}%
+\contentsline {table}{\numberline {V.10}{\ignorespaces Perbandingan \textit {loss frozen} berbanding \textit {joint}}}{119}{table.caption.49}%
+\contentsline {table}{\numberline {V.11}{\ignorespaces Metrik keterbacaan frozen berbanding joint}}{121}{table.caption.51}%
+\contentsline {table}{\numberline {V.12}{\ignorespaces Efisiensi komputasi frozen berbanding joint}}{122}{table.caption.54}%
+\contentsline {table}{\numberline {V.13}{\ignorespaces Temuan kunci frozen berbanding joint}}{124}{table.caption.56}%
+\contentsline {table}{\numberline {V.14}{\ignorespaces Ablasi diskriminator dual-modal berbanding CNN}}{125}{table.caption.58}%
+\contentsline {table}{\numberline {V.15}{\ignorespaces Performa curriculum berbanding non-curriculum}}{128}{table.caption.59}%
+\contentsline {table}{\numberline {V.16}{\ignorespaces Konfigurasi bobot \textit {loss} produksi}}{134}{table.caption.63}%
+\contentsline {table}{\numberline {V.17}{\ignorespaces Lima konfigurasi terbaik \textit {grid search}}}{136}{table.caption.67}%
+\contentsline {table}{\numberline {V.18}{\ignorespaces Sensitivitas bobot piksel}}{136}{table.caption.68}%
+\contentsline {table}{\numberline {V.19}{\ignorespaces Sensitivitas bobot CTC}}{137}{table.caption.69}%
+\contentsline {table}{\numberline {V.20}{\ignorespaces Sensitivitas bobot RecFeat}}{138}{table.caption.70}%
+\contentsline {table}{\numberline {V.21}{\ignorespaces Hasil pengujian statistik formal hipotesis penelitian}}{139}{table.caption.71}%
+\contentsline {table}{\numberline {V.22}{\ignorespaces Evaluasi hipotesis penelitian}}{141}{table.caption.72}%
+\contentsline {table}{\numberline {V.23}{\ignorespaces Perbandingan dengan pustaka}}{143}{table.caption.73}%
+\contentsline {table}{\numberline {V.24}{\ignorespaces Distribusi Tingkat CER}}{146}{table.caption.74}%
+\contentsline {table}{\numberline {V.25}{\ignorespaces Karakteristik Kesalahan Karakter}}{147}{table.caption.75}%
 \setcounter {tocdepth}{-1}
-\setcounter {tocdepth}{3}

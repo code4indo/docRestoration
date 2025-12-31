@@ -1,0 +1,166 @@
+{
+  "generated_at": "2025-12-30T17:05:23.348149",
+  "total_documents": 15,
+  "category_distribution": {
+    "Tinggi": 0,
+    "Sedang": 7,
+    "Rendah": 8
+  },
+  "category_thresholds": {
+    "high": ">=60 (std deviation)",
+    "medium": "30-60 (std deviation)",
+    "low": "<30 (std deviation)"
+  },
+  "documents": [
+    {
+      "filename": "ID-ANRI_K66a_2482_0578.jpg",
+      "std_contrast": 41.48,
+      "michelson_contrast": 81.2,
+      "rms_contrast": 27.11,
+      "mean_intensity": 153.01,
+      "category": "Sedang",
+      "effectiveness": "Baik",
+      "dimensions": "3190x4790"
+    },
+    {
+      "filename": "ID-ANRI_K66a_2525_0024.jpg",
+      "std_contrast": 18.32,
+      "michelson_contrast": 75.36,
+      "rms_contrast": 8.92,
+      "mean_intensity": 205.33,
+      "category": "Rendah",
+      "effectiveness": "Terbatas",
+      "dimensions": "3087x4774"
+    },
+    {
+      "filename": "ID-ANRI_K66b_004_0191.jpg",
+      "std_contrast": 33.98,
+      "michelson_contrast": 91.27,
+      "rms_contrast": 22.29,
+      "mean_intensity": 152.45,
+      "category": "Sedang",
+      "effectiveness": "Baik",
+      "dimensions": "2716x4439"
+    },
+    {
+      "filename": "ID-ANRI_K66b_005_0526_ori.jpg",
+      "std_contrast": 33.15,
+      "michelson_contrast": 75.49,
+      "rms_contrast": 23.66,
+      "mean_intensity": 140.12,
+      "category": "Sedang",
+      "effectiveness": "Baik",
+      "dimensions": "2841x4392"
+    },
+    {
+      "filename": "ID-ANRI_K66b_029_003.jpg",
+      "std_contrast": 28.56,
+      "michelson_contrast": 86.72,
+      "rms_contrast": 16.47,
+      "mean_intensity": 173.43,
+      "category": "Rendah",
+      "effectiveness": "Terbatas",
+      "dimensions": "2400x3780"
+    },
+    {
+      "filename": "ID-ANRI_K66b_055_152.jpg",
+      "std_contrast": 32.36,
+      "michelson_contrast": 74.55,
+      "rms_contrast": 18.77,
+      "mean_intensity": 172.37,
+      "category": "Sedang",
+      "effectiveness": "Baik",
+      "dimensions": "2124x2640"
+    },
+    {
+      "filename": "ID-ANRI_K66b_057_063.jpg",
+      "std_contrast": 20.63,
+      "michelson_contrast": 87.02,
+      "rms_contrast": 15.71,
+      "mean_intensity": 131.28,
+      "category": "Rendah",
+      "effectiveness": "Terbatas",
+      "dimensions": "2249x3552"
+    },
+    {
+      "filename": "ID-ANRI_K66b_059_067.jpg",
+      "std_contrast": 13.03,
+      "michelson_contrast": 84.03,
+      "rms_contrast": 6.53,
+      "mean_intensity": 199.55,
+      "category": "Rendah",
+      "effectiveness": "Terbatas",
+      "dimensions": "2370x3706"
+    },
+    {
+      "filename": "ID-ANRI_K66b_064_128.jpg",
+      "std_contrast": 20.17,
+      "michelson_contrast": 75.89,
+      "rms_contrast": 15.06,
+      "mean_intensity": 133.98,
+      "category": "Rendah",
+      "effectiveness": "Terbatas",
+      "dimensions": "2513x3894"
+    },
+    {
+      "filename": "ID-ANRI_K66b_064_188.jpg",
+      "std_contrast": 30.32,
+      "michelson_contrast": 75.63,
+      "rms_contrast": 18.19,
+      "mean_intensity": 166.66,
+      "category": "Sedang",
+      "effectiveness": "Baik",
+      "dimensions": "2372x3840"
+    },
+    {
+      "filename": "ID-ANRI_K66b_064_278.jpg",
+      "std_contrast": 21.96,
+      "michelson_contrast": 88.42,
+      "rms_contrast": 15.71,
+      "mean_intensity": 139.8,
+      "category": "Rendah",
+      "effectiveness": "Terbatas",
+      "dimensions": "2547x3849"
+    },
+    {
+      "filename": "ID-ANRI_K66b_065_119.jpg",
+      "std_contrast": 31.79,
+      "michelson_contrast": 80.16,
+      "rms_contrast": 18.02,
+      "mean_intensity": 176.39,
+      "category": "Sedang",
+      "effectiveness": "Baik",
+      "dimensions": "2315x3705"
+    },
+    {
+      "filename": "ID-ANRI_K66b_069_120.jpg",
+      "std_contrast": 26.58,
+      "michelson_contrast": 95.52,
+      "rms_contrast": 19.99,
+      "mean_intensity": 132.99,
+      "category": "Rendah",
+      "effectiveness": "Terbatas",
+      "dimensions": "2361x3650"
+    },
+    {
+      "filename": "ID-ANRI_K66b_070_179.jpg",
+      "std_contrast": 18.05,
+      "michelson_contrast": 73.28,
+      "rms_contrast": 16.75,
+      "mean_intensity": 107.76,
+      "category": "Rendah",
+      "effectiveness": "Terbatas",
+      "dimensions": "2386x3660"
+    },
+    {
+      "filename": "ID-ANRI_K66b_082_0064.jpg",
+      "std_contrast": 40.73,
+      "michelson_contrast": 100.0,
+      "rms_contrast": 27.28,
+      "mean_intensity": 149.29,
+      "category": "Sedang",
+      "effectiveness": "Baik",
+      "dimensions": "2735x4013"
+    }
+  ]
+}

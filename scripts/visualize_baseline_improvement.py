@@ -34,9 +34,14 @@ COLOR_GT = '#3498DB'           # Blue
 COLOR_IMPROVEMENT = '#9B59B6'  # Purple
 
 def load_metrics():
-    """Load metrics from baseline and production model"""
+    """Load metrics from baseline and production model
     
-    # Baseline (No Restoration)
+    CORRECTED VERSION: Uses TEST SET metrics to match Table V.1 in thesis
+    - Test set (n=712) results from chapter5_hasil.tex line 200
+    - Ground truth from theoretical limits (line 202)
+    """
+    
+    # Baseline (No Restoration) - from test set
     baseline_path = 'dual_modal_gan/checkpoints/baseline_no_restoration/metrics/baseline_evaluation.json'
     with open(baseline_path, 'r') as f:
         baseline_data = json.load(f)
@@ -52,29 +57,32 @@ def load_metrics():
         'wer_std': baseline_data['metrics']['wer']['std'] * 100
     }
     
-    # Production V3
-    production_path = 'dual_modal_gan/checkpoints/production_v3_academic_split_70_15_15/metrics/training_metrics_fp32_final.json'
-    with open(production_path, 'r') as f:
-        prod_data = json.load(f)
-    
-    # Get best epoch metrics
-    best_epoch = prod_data['best_epoch']
-    for epoch_data in prod_data['epochs']:
-        if epoch_data['epoch'] == best_epoch:
-            val_metrics = epoch_data['validation']
-            break
-    
+    # ============================================================================
+    # CORRECTED: Use TEST SET metrics (n=712) from Table V.1
+    # Source: chapter5_hasil.tex line 200 (Tabel V.1)
+    # Previous error: Was using VALIDATION SET (n=710) which gave CER 27.1%
+    # ============================================================================
     proposed = {
-        'psnr': val_metrics['psnr'],
-        'ssim': val_metrics['ssim'],
-        'cer': val_metrics['cer'] * 100,  # Convert to percentage
-        'wer': val_metrics['wer'] * 100   # Convert to percentage
+        'psnr': 30.74,      # Test set PSNR (Table V.1, line 200)
+        'psnr_std': 5.09,   # Standard deviation
+        'ssim': 0.987,      # Test set SSIM  
+        'ssim_std': 0.014,  # Standard deviation
+        'cer': 34.9,        # Test set CER - CORRECTED from 27.1% (validation)
+        'cer_std': 21.8,    # Standard deviation
+        'wer': 82.4,        # Test set WER - CORRECTED from 52.4% (validation)
+        'wer_std': 26.1     # Standard deviation
     }
     
-    # Ground truth (from frozen recognizer on clean images)
+    # ============================================================================
+    # CORRECTED: Ground truth theoretical limits (Table V.1, line 202)
+    # These are CER/WER of frozen recognizer on CLEAN images (test set)
+    # Previous error: GT CER was 26.6% (should be 34.1%)
+    # ============================================================================
     gt = {
-        'cer': 26.6,
-        'wer': 52.8
+        'cer': 34.1,        # Batas atas teoretis - CORRECTED from 26.6%
+        'cer_std': 22.7,    # Standard deviation
+        'wer': 82.1,        # Batas atas teoretis - CORRECTED from 52.8%
+        'wer_std': 27.3     # Standard deviation
     }
     
     return baseline, proposed, gt

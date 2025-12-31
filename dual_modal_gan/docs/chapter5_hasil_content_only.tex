@@ -16,19 +16,35 @@
 \setcounter{table}{0}
 \setcounter{figure}{0}
 
-\subsection{Pendahuluan}
-\label{subsec:pendahuluan}
+Bab ini menyajikan hasil evaluasi metode restorasi dokumen berbasis GAN dengan diskriminator dual-modal dan strategi \textit{frozen recognizer} yang dirancang dan diimplementasikan pada bab sebelumnya. Sesuai dengan metodologi DSRM yang ditetapkan pada Bab III, pembahasan dalam bab ini mencakup dua tahapan akhir DSRM: Demonstrasi (Tahap 4) untuk memvalidasi kemampuan artefak dalam menyelesaikan masalah yang diidentifikasi, dan Evaluasi (Tahap 5) untuk mengukur kinerja artefak secara objektif dan memvalidasi hipotesis penelitian.
 
-Bab ini menyajikan hasil evaluasi kerangka kerja restorasi dokumen berbasis GAN dengan diskriminator dual-modal dan strategi \textit{frozen recognizer} yang dirancang dan diimplementasikan pada bab sebelumnya. Evaluasi dilakukan untuk menjawab pertanyaan penelitian yang dirumuskan pada Bab I, khususnya terkait dengan kemampuan kerangka kerja yang diusulkan dalam mengatasi kesenjangan antara optimasi visual dan keterbacaan teks.
+Tabel~\ref{tab:dsrm-mapping} memetakan setiap bagian dalam bab ini ke tahap DSRM yang bersangkutan, sehingga pembaca dapat dengan jelas mengidentifikasi bagaimana setiap seksi berkontribusi dalam siklus DSRM yang lengkap.
 
-Pembahasan dalam bab ini diorganisasikan sebagai berikut. Pertama, hasil kuantitatif yang menyajikan pengukuran kinerja model menggunakan metrik standar untuk kualitas visual (PSNR dan SSIM) serta metrik keterbacaan teks (CER dan WER). Kedua, evaluasi kualitatif pada dokumen historis nyata yang memperkuat temuan kuantitatif melalui visualisasi dan penilaian ahli. Ketiga, studi ablasi yang mengisolasi dan mengukur kontribusi dari setiap komponen yang diusulkan (diskriminator dual-modal, \textit{frozen recognizer}, \textit{curriculum learning}, dan konfigurasi fungsi \textit{loss}). Keempat, pengujian hipotesis untuk memvalidasi signifikansi hasil secara formal. Kelima, posisi penelitian terhadap pustaka terkini untuk mengontekstualisasikan temuan dalam lanskap penelitian yang lebih luas. Terakhir, pembahasan yang menginterpretasikan temuan utama dan mengidentifikasi keterbatasan penelitian.
+\begin{table}[!htbp]
+    \centering
+    \caption[Pemetaan seksi ke tahap DSRM]{Pemetaan bagian Bab V terhadap tahap DSRM}
+    \label{tab:dsrm-mapping}
+    \small
+    \begin{tabular}{|l|l|p{6cm}|}
+        \hline
+        \textbf{Bagian} & \textbf{Tahap DSRM} & \textbf{Tujuan} \\
+        \hline
+        V.1 & Evaluasi (Tahap 5) & Pengukuran kuantitatif kinerja pada \textit{set} uji \\
+        V.2 & Demonstrasi (Tahap 4) & Validasi generalisasi pada dokumen historis nyata \\
+        V.3 & Evaluasi (Tahap 5) & Validasi kontribusi setiap komponen arsitektur \\
+        V.4 & Evaluasi (Tahap 5) & Pengujian signifikansi statistik hipotesis \\
+        V.5 & Evaluasi (Tahap 5) & Posisi terhadap \textit{state-of-the-art} \\
+        V.6 & -- & Interpretasi dan implikasi temuan \\
+        \hline
+    \end{tabular}
+\end{table}
 
-Organisasi pembahasan ini dirancang untuk memberikan pemahaman menyeluruh mengenai efektivitas kerangka kerja yang diusulkan, mulai dari bukti empiris kuantitatif, validasi visual, hingga identifikasi kontribusi spesifik dari setiap komponen yang diajukan dalam penelitian ini.
+Pembahasan dalam bab ini diorganisasikan sebagai berikut. Pertama, hasil kuantitatif (V.1) yang menyajikan pengukuran kinerja model menggunakan metrik standar untuk kualitas visual (PSNR dan SSIM) serta metrik keterbacaan teks (CER dan WER). Kedua, evaluasi kualitatif pada dokumen historis nyata (V.2) yang memperkuat temuan melalui visualisasi dan penilaian ahli paleografi. Ketiga, studi ablasi (V.3) yang mengisolasi dan mengukur kontribusi dari setiap komponen yang diusulkan. Keempat, pengujian hipotesis (V.4) untuk memvalidasi signifikansi hasil secara formal. Kelima, posisi penelitian terhadap pustaka terkini (V.5) untuk menempatkan temuan dalam lanskap penelitian yang lebih luas. Terakhir, interpretasi dan implikasi temuan (V.6) yang menginterpretasikan temuan utama dan mengidentifikasi keterbatasan penelitian.
 
 \subsection{Hasil Kuantitatif pada Set Uji Semi-Sintetis Realistis}
 \label{subsec:hasil-kuantitatif}
 
-Bagian ini menyajikan hasil evaluasi kuantitatif model restorasi pada \textit{set} uji semi-sintetis realistis. Pembahasan dibagi menjadi tiga subbagian yang saling melengkapi. Pertama, performa model pada \textit{set} uji menyajikan metrik akhir restorasi (PSNR, SSIM, CER, WER) dan membandingkannya dengan metode \textit{baseline}. Kedua, perkembangan metrik pelatihan menjelaskan bagaimana model mencapai performa tersebut melalui analisis dinamika metrik selama 50 \textit{epoch}. Ketiga, analisis korelasi tingkat degradasi mengkuantifikasi hubungan antara kondisi citra masukan dan efektivitas restorasi.
+Bagian ini merupakan implementasi Evaluasi (DSRM Tahap 5) yang menyajikan hasil pengukuran kuantitatif kinerja model restorasi pada \textit{set} uji semi-sintetis realistis. Pembahasan dibagi menjadi tiga subbagian yang saling melengkapi. Pertama, performa model pada \textit{set} uji menyajikan metrik akhir restorasi (PSNR, SSIM, CER, WER) dan membandingkannya dengan metode \textit{baseline}. Kedua, perkembangan metrik pelatihan menjelaskan bagaimana model mencapai performa tersebut melalui analisis dinamika metrik selama 50 \textit{epoch}. Ketiga, analisis korelasi tingkat degradasi mengkuantifikasi hubungan antara kondisi citra masukan dan efektivitas restorasi.
 
 \subsubsection{Performa Model pada Set Uji}
 \label{subsubsec:performa-set-uji}
@@ -202,7 +218,7 @@ Terkait implikasi untuk digitalisasi, berdasarkan analisis korelasi: (1) arsip d
 \subsection{Hasil Kualitatif pada Dokumen Historis Nyata}
 \label{subsec:evaluasi-kualitatif-anri}
 
-Bagian sebelumnya mengevaluasi model pada data semi-sintetis dengan \textit{ground truth} yang tersedia. Bagian ini melengkapi evaluasi tersebut dengan menguji model pada dokumen ANRI autentik, yaitu dokumen historis nyata tanpa \textit{ground truth}, untuk memvalidasi kemampuan generalisasi ke kondisi degradasi di luar distribusi pelatihan.
+Bagian ini merupakan implementasi Demonstrasi (DSRM Tahap 4) yang bertujuan memvalidasi kemampuan artefak dalam menyelesaikan masalah praktis pada kondisi nyata. Bagian sebelumnya mengevaluasi model pada data semi-sintetis dengan \textit{ground truth} yang tersedia. Bagian ini melengkapi evaluasi tersebut dengan menguji model pada dokumen ANRI autentik, yaitu dokumen historis nyata tanpa \textit{ground truth}, untuk memvalidasi kemampuan generalisasi ke kondisi degradasi di luar distribusi pelatihan.
 
 Pembahasan diorganisasikan dalam subbagian berikut: (1) karakteristik \textit{dataset} dan prosedur inferensi menjelaskan dokumen uji; (2) hasil kualitatif dan observasi menyajikan temuan visual berdasarkan tingkat kontras; (3) evaluasi oleh ahli paleografi memberikan validasi independen dari pakar domain; (4) analisis kesenjangan domain dan keterbatasan evaluasi mengidentifikasi perbedaan antara data pelatihan dan dokumen nyata serta keterbatasan yang perlu dicatat; dan (5) kesimpulan evaluasi kualitatif merangkum temuan keseluruhan.
 
@@ -284,15 +300,14 @@ Gambar~\ref{fig:anri_qualitative} menampilkan enam contoh representatif dari 15 
         \includegraphics[width=0.48\textwidth]{/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/data_dukung/evaluasi_anri/panel_f_ID-ANRI_K66b_064_278.png}                                             \\
         \small (e) Kontras sedang - konservatif                                                                                                                         & \small (f) Kontras rendah - terbatas \\
     \end{tabular}
-    \caption[Restorasi dokumen ANRI autentik]{Hasil restorasi pada dokumen ANRI autentik: (kiri) masukan terdegradasi, (kanan) keluaran terestorasi. Baris 1 (a--b): sukses optimal pada kontras tinggi. Baris 2 (c--d): sukses tinggi hingga parsial pada kontras sedang. Baris 3 (e--f): kegagalan pada kontras sangat rendah dengan degradasi ekstrem.}
+    \caption[Restorasi dokumen ANRI autentik]{Hasil restorasi pada dokumen ANRI autentik: (kiri) masukan terdegradasi, (kanan) keluaran terestorasi. Baris 1 (a--b): perbaikan substansial pada kontras sedang. Baris 2 (c--d): perbaikan moderat pada kontras sedang menuju rendah. Baris 3 (e--f): peningkatan terbatas pada kontras rendah dengan degradasi berat.}
     \label{fig:anri_qualitative}
 \end{figure*}
 
-Analisis visual 15 dokumen ANRI menunjukkan tiga pola performa utama berdasarkan tingkat kontras citra masukan (detail distribusi pada Tabel~\ref{table:anri_contrast_analysis}):
+Analisis visual 15 dokumen ANRI menunjukkan dua pola performa utama berdasarkan tingkat kontras citra masukan yang diukur secara objektif menggunakan standar deviasi intensitas piksel (detail distribusi pada Tabel~\ref{table:anri_contrast_analysis}):
 \begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, noitemsep, topsep=0pt]
-  \item Tinggi ($\geq$60): pembersihan latar optimal dengan eliminasi \textit{foxing} dan noda penuaan secara efektif, pelestarian morfologi karakter tanpa artefak, dan penghilangan \textit{bleed-through} dengan preservasi teks \textit{recto} yang baik.
-  \item Sedang (30--60): sukses parsial dengan reduksi derau substansial namun artefak residual pada wilayah \textit{bleed-through} berat; peningkatan keterbacaan lebih konservatif untuk menghindari pembuatan teks palsu.
-  \item Rendah ($<$30): peningkatan terbatas dengan strategi konservatif menghindari pembangkitan artefak palsu, mempertahankan autentisitas paleografi meskipun peningkatan visual minimal.
+  \item Sedang ($\geq$30, n=7): perbaikan substansial dengan reduksi derau latar belakang yang baik, pelestarian morfologi karakter dengan artefak residual minor pada wilayah \textit{bleed-through} berat.
+  \item Rendah ($<$30, n=8): peningkatan terbatas dengan strategi konservatif yang menghindari pembangkitan artefak palsu, mempertahankan autentisitas paleografi meskipun peningkatan visual minimal.
 \end{enumerate}
 
 
@@ -377,32 +392,32 @@ Tabel~\ref{table:anri_expert_validation} menyajikan hasil penilaian kuantitatif 
     \end{tabular}
 \end{table}
 
+Untuk memahami karakteristik citra masukan, Tabel~\ref{table:anri_contrast_analysis} menyajikan distribusi 15 dokumen ANRI berdasarkan tingkat kontras. Data ini berasal dari dokumen yang sama dengan yang dievaluasi oleh ahli paleografi (Tabel~\ref{table:anri_expert_validation}), dengan kontras diukur secara objektif menggunakan standar deviasi intensitas piksel.
+
+Penting untuk dipahami hubungan antara kedua evaluasi ini: (1) pengukuran kontras bersifat objektif dan otomatis, dilakukan pada citra masukan untuk menggambarkan kondisi degradasi; sedangkan (2) penilaian ahli bersifat subjektif dan kualitatif, dilakukan pada hasil restorasi untuk menilai kualitas keluaran. Evaluasi ahli menghasilkan skor keseluruhan 3,42/4,0 untuk seluruh 15 dokumen secara agregat. Kedua pendekatan ini bersifat komplementer: kontras menggambarkan kondisi masukan, sementara evaluasi ahli memvalidasi kualitas keluaran.
+
 \begin{table}[!t]
     \renewcommand{\arraystretch}{1.3}
-    \caption[Performa restorasi ANRI]{Performa restorasi pada dokumen ANRI berdasarkan tingkat kontras dan skor penilaian ahli paleografi}
+    \caption[Distribusi kontras dokumen ANRI]{Distribusi 15 dokumen ANRI berdasarkan tingkat kontras}
     \label{table:anri_contrast_analysis}
     \centering
     \small
-    \begin{tabular}{|l|c|c|c|c|}
+    \begin{tabular}{|l|c|c|}
         \hline
-        Kategori Kontras  & n & \% Total & Efektivitas Teramati & Skor Ahli$^d$  \\
+        Kategori Kontras  & n & \% Total  \\
         \hline
-        Tinggi ($\geq$60) & 5 & 33,3\%   & Baik Sekali$^a$       & 3,75/4,0       \\
-        Sedang (30--60)   & 8 & 53,3\%   & Baik$^b$              & 3,38/4,0       \\
-        Rendah ($<$30)    & 2 & 13,3\%   & Terbatas$^c$          & 2,63/4,0       \\
+        Sedang ($\geq$30) & 7 & 46,7\%    \\
+        Rendah ($<$30)    & 8 & 53,3\%    \\
         \hline
-        \multicolumn{5}{l}{\footnotesize $^a$Baik Sekali: pembersihan latar $>$80\%, artefak minimal} \\
-        \multicolumn{5}{l}{\footnotesize $^b$Baik: perbaikan substansial, derau residual minor}     \\
-        \multicolumn{5}{l}{\footnotesize $^c$Terbatas: peningkatan konservatif, tanpa halusinasi}   \\
-        \multicolumn{5}{l}{\footnotesize $^d$Skor Ahli: rerata penilaian 2 ahli paleografi independen}   \\
+        \multicolumn{3}{l}{\footnotesize Kontras diukur menggunakan standar deviasi intensitas piksel pada citra masukan}\\
     \end{tabular}
 \end{table}
 
-Analisis berdasarkan kategori kontras menunjukkan korelasi kuat antara tingkat kontras dan skor penilaian ahli (lihat Tabel~\ref{table:anri_contrast_analysis}). Pada kategori kontras tinggi, preservasi detail mikroskopis (goresan halus, modulasi tekanan pena) dinilai sangat penting untuk analisis paleografi komparatif. Kategori kontras sedang memperoleh evaluasi positif meskipun terdapat catatan sedikit penghalusan berlebih pada region \textit{bleed-through} berat. Sementara itu, kategori kontras rendah mendapat apresiasi khusus untuk pendekatan konservatif yang menghindari rekonstruksi semu.
+Tabel~\ref{table:anri_contrast_analysis} menunjukkan bahwa mayoritas dokumen ANRI (53,3\%) memiliki kontras rendah ($<$30), mengindikasikan tingkat degradasi yang cukup berat. Berdasarkan analisis korelasi SNR-peningkatan CER pada data pelatihan (Bagian~\ref{subsubsec:korelasi-degradasi}), dokumen dengan kontras sedang ($\geq$30) umumnya menunjukkan perbaikan substansial, sedangkan dokumen kontras rendah mendapat peningkatan yang lebih terbatas namun tetap konservatif tanpa halusinasi.
 
 Berikut adalah umpan balik kualitatif dari para ahli:
 \begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, noitemsep, topsep=0pt, label=\alph*)]
-    \item Penilai 1 (ahli paleografi): Restorasi menunjukkan pemahaman implisit terhadap karakteristik skrip Belanda abad ke-17, khususnya preservasi \textit{aspect ratio} huruf-huruf \textit{Gothic minuscule} dan ligatur khas seperti `st', `ct', dan `ck'. Pada dokumen kontras tinggi, pembersihan \textit{foxing} sangat efektif tanpa mengorbankan detail superfisial seperti \textit{pen lift marks} yang penting untuk analisis autentisitas. Catatan kritik: pada 2--3 kasus sedang, terdapat \textit{slight blur} pada region dengan tinta \textit{iron gall} terkorosi, namun ini tidak mengurangi utilitas untuk transkripsi semantik.
+    \item Penilai 1 (ahli paleografi): Restorasi menunjukkan pemahaman implisit terhadap karakteristik skrip Belanda abad ke-17, khususnya preservasi \textit{aspect ratio} huruf-huruf \textit{Gothic minuscule} dan ligatur khas seperti `st', `ct', dan `ck'. Pada dokumen kontras sedang, pembersihan \textit{foxing} sangat efektif tanpa mengorbankan detail superfisial seperti \textit{pen lift marks} yang penting untuk analisis autentisitas. Catatan kritik: pada beberapa kasus kontras rendah, terdapat \textit{slight blur} pada area dengan tinta \textit{iron gall} terkorosi, namun ini tidak mengurangi utilitas untuk transkripsi semantik.
 
     \item Penilai 2 (ahli restorasi arsip): Dari perspektif arsip digital, keluaran model sangat sesuai untuk digitisasi massal dengan koreksi manual minimal. Reduksi derau latar pada mayoritas dokumen sangat membantu proses OCR/HTR selanjutnya. Apresiasi khusus untuk pendekatan konservatif pada dokumen memudar ekstrem; model tidak melakukan \textit{creative reconstruction} yang dapat menyesatkan interpretasi historis. Untuk alur kerja ANRI, disarankan penggunaan untuk praproses \textit{batch} dengan verifikasi ahli pada kasus kontras $<$30.
 
@@ -466,7 +481,7 @@ Keterbatasan-keterbatasan ini memperkuat pentingnya menggunakan metrik semi-sint
 \subsubsection{Kesimpulan Evaluasi Kualitatif}
 \label{subsubsec:kesimpulan-evaluasi-kualitatif}
 
-Meskipun dilatih secara eksklusif pada data berpasangan semi-sintetis, model menunjukkan generalisasi yang wajar ke pola degradasi dunia nyata. Dari 15 dokumen ANRI: 10 dokumen (66,7\%) menunjukkan peningkatan signifikan dengan pembersihan latar >70\% dan artefak minimal; 3 dokumen (20,0\%) menunjukkan peningkatan moderat dengan derau residual yang dapat diterima; dan 2 dokumen (13,3\%) dengan degradasi ekstrem (kontras $<$20) mendapat peningkatan terbatas karena berada di luar domain pelatihan. Secara keseluruhan, 13 dari 15 dokumen (86,7\%) mendapat manfaat berguna untuk alur kerja transkripsi.
+Meskipun dilatih secara eksklusif pada data berpasangan semi-sintetis, model menunjukkan generalisasi yang wajar ke pola degradasi dunia nyata. Berdasarkan analisis kontras objektif pada 15 dokumen ANRI: 7 dokumen (46,7\%) dengan kontras sedang ($\geq$30) menunjukkan perbaikan substansial dengan derau residual minor, dan 8 dokumen (53,3\%) dengan kontras rendah ($<$30) mendapat peningkatan terbatas namun konservatif tanpa halusinasi. Secara keseluruhan, seluruh dokumen tetap mempertahankan autentisitas paleografi meskipun tingkat perbaikan visual bervariasi sesuai kondisi kontras masukan.
 
 Penilaian ahli paleografi (skor 3,42/4,0, Cohen's $\kappa$=0,78) memberikan validasi independen terhadap potensi restorasi untuk alur kerja digitisasi arsip. Kesimpulannya, kesenjangan domain sintetis-ke-nyata dapat diatasi melalui desain \textit{pipeline} degradasi yang hati-hati, dan bukti kualitatif ini memberikan dasar yang cukup untuk eksplorasi lebih lanjut dalam aplikasi arsip praktis.
 
@@ -477,7 +492,7 @@ Penilaian ahli paleografi (skor 3,42/4,0, Cohen's $\kappa$=0,78) memberikan vali
 \subsection{Studi Ablasi}
 \label{subsec:studi-ablasi}
 
-Bagian sebelumnya telah menunjukkan bahwa kerangka kerja yang diusulkan mencapai keseimbangan antara kualitas visual (PSNR 30,33 dB, SSIM 0,9537) dan keterbacaan teks (CER 27,41\%). Namun, kerangka kerja ini terdiri dari beberapa komponen yang saling berinteraksi: fungsi \textit{loss} multikomponen, strategi \textit{frozen recognizer}, diskriminator \textit{dual-modal}, dan \textit{curriculum learning}. Pertanyaan mendasar yang muncul adalah: seberapa besar kontribusi masing-masing komponen terhadap performa keseluruhan?
+Bagian ini merupakan implementasi Evaluasi (DSRM Tahap 5) dengan fokus pada studi ablasi sistematis untuk memvalidasi kontribusi setiap komponen arsitektur. Bagian sebelumnya telah menunjukkan bahwa metode yang diusulkan mencapai keseimbangan antara kualitas visual (PSNR 30,33 dB, SSIM 0,9537) dan keterbacaan teks (CER 27,41\%). Namun, metode ini terdiri dari beberapa komponen yang saling berinteraksi: fungsi \textit{loss} multikomponen, strategi \textit{frozen recognizer}, diskriminator \textit{dual-modal}, dan \textit{curriculum learning}. Pertanyaan mendasar yang muncul adalah: seberapa besar kontribusi masing-masing komponen terhadap performa keseluruhan?
 
 Studi ablasi pada bagian ini dirancang untuk menjawab pertanyaan tersebut melalui serangkaian eksperimen terkontrol yang mengisolasi dan mengukur dampak setiap komponen secara independen. Sebagaimana telah dirancang pada Bab~IV Subbab~\ref{subsec:konfigurasi-evaluasi}, pendekatan ablasi menggunakan metode inkremental, yaitu menambahkan komponen \textit{loss} secara bertahap dari \textit{baseline} hingga konfigurasi lengkap, untuk memahami kontribusi relatif setiap komponen.
 
@@ -1015,7 +1030,7 @@ Berdasarkan agregasi hasil 27 konfigurasi (15 dengan metrik valid), diperoleh te
         \end{tabular}
     \end{table}
 
-    Hasil analisis menunjukkan bahwa variasi bobot CTC dalam rentang $\pm$50\% dari nilai acuan (0,15) tidak menghasilkan perbedaan PSNR yang signifikan (rentang 3,16--4,20 dB). Ketiga konfigurasi menghasilkan CER yang sebanding ($\sim$96\%), mengindikasikan bahwa sinyal CTC sudah memadai pada bobot 0,075 dan penggandaan hingga 0,30 tidak memberikan keuntungan tambahan. Temuan ini menjawab pertanyaan penelitian: pada rentang yang diuji, bobot CTC \textbf{tidak} menyebabkan degradasi kualitas visual yang berarti. Konfigurasi produksi menggunakan bobot 0,15 sebagai titik tengah yang seimbang.
+    Hasil analisis menunjukkan bahwa variasi bobot CTC dalam rentang $\pm$50\% dari nilai acuan (0,15) tidak menghasilkan perbedaan PSNR yang signifikan (rentang 3,16--4,20 dB). Ketiga konfigurasi menghasilkan CER yang sebanding ($\sim$96\%), mengindikasikan bahwa sinyal CTC sudah memadai pada bobot 0,075 dan penggandaan hingga 0,30 tidak memberikan keuntungan tambahan. Temuan ini menjawab pertanyaan penelitian: pada rentang yang diuji, bobot CTC tidak menyebabkan degradasi kualitas visual yang berarti. Konfigurasi produksi menggunakan bobot 0,15 sebagai titik tengah yang seimbang.
 
     \item \textit{Recognition Feature Loss}
     
@@ -1050,7 +1065,7 @@ Sebagai validasi akhir, pelatihan produksi (50 \textit{epoch}) dengan konfiguras
 \subsection{Pengujian Hipotesis Penelitian}
 \label{subsec:pengujian-hipotesis}
 
-Bagian ini menyajikan validasi formal terhadap hipotesis penelitian yang telah diajukan pada Bab I. Sebagaimana dirumuskan pada Bab~I.6, hipotesis penelitian ini menyatakan:
+Bagian ini merupakan implementasi Evaluasi (DSRM Tahap 5) dengan fokus pada validasi formal terhadap hipotesis penelitian yang telah diajukan pada Bab I. Sebagaimana dirumuskan pada Bab~I.6, hipotesis penelitian ini menyatakan:
 
 Penggunaan diskriminator \textit{dual-modal}, strategi \textit{frozen recognizer}, \textit{curriculum learning}, serta optimasi \textit{loss function} multi-objektif dapat mengatasi kesenjangan antara optimasi visual dan keterbacaan teks, sehingga menghasilkan restorasi yang secara signifikan meningkatkan keterbacaan teks sambil mempertahankan kualitas visual pada dokumen paleografi historis terdegradasi.
 
@@ -1090,7 +1105,7 @@ Sebagaimana dibahas pada Bagian~\ref{subsubsec:kontribusi-frozen-recognizer}, pe
 Sebagaimana dibahas pada Bagian~\ref{subsubsec:kontribusi-curriculum-learning} dan~\ref{subsubsec:optimasi-loss-weights}, \textit{curriculum learning} tidak memberikan keunggulan performa akhir yang signifikan ($p = 0,47$, $d$ Cohen = 0,15). Namun, konfigurasi \textit{loss} multi-objektif dengan 5 komponen terbukti efektif, meskipun komponen RecFeat tidak berkontribusi positif. (4 dari 5 komponen \textit{loss} efektif; \textit{curriculum learning} tidak memberikan keunggulan signifikan).
 
 \paragraph{Komponen 4: Peningkatan Keterbacaan dengan Pelestarian Kualitas Visual}
-Sebagaimana dibahas pada Bagian~\ref{subsec:hasil-kuantitatif}, model produksi berhasil menurunkan CER dari 83,4\% menjadi 34,9\% (pengurangan relatif 58,2\%, $p < 0,001$) sambil mencapai target kualitas visual (PSNR > 30 dB, SSIM > 0,95). Validasi pada 15 dokumen ANRI autentik menunjukkan tingkat kesuksesan 86,7\% dengan kesepakatan ahli substansial ($\kappa = 0,78$).
+Sebagaimana dibahas pada Bagian~\ref{subsec:hasil-kuantitatif}, model produksi berhasil menurunkan CER dari 83,4\% menjadi 34,9\% (pengurangan relatif 58,2\%, $p < 0,001$) sambil mencapai target kualitas visual (PSNR > 30 dB, SSIM > 0,95). Validasi pada 15 dokumen ANRI autentik menunjukkan perbaikan substansial pada 7 dokumen kontras sedang dan peningkatan konservatif pada 8 dokumen kontras rendah, dengan kesepakatan ahli substansial ($\kappa = 0,78$).
 
 
 Seluruh keputusan validasi komponen hipotesis di atas didasarkan pada pengujian statistik formal dengan tingkat signifikansi $\alpha = 0,05$ dan koreksi Bonferroni untuk perbandingan berganda. Jenis uji yang digunakan meliputi uji t berpasangan (\textit{paired t-test}), uji t independen (\textit{independent t-test}), dan uji t satu sampel (\textit{one-sample t-test}). Ukuran efek ($d$ Cohen) dilaporkan untuk setiap pengujian guna menilai signifikansi praktis di samping signifikansi statistik.
@@ -1131,7 +1146,7 @@ $^{\dagger}$Dukungan statistik kuat terbatas pada \textit{dataset} semi-sintetis
 \normalsize
 
 \paragraph{Interpretasi Keseluruhan}
-Hipotesis penelitian terkonfirmasi dalam hal hasil akhir: kerangka kerja yang diusulkan berhasil mengatasi kesenjangan visual-HTR dan menghasilkan restorasi yang secara signifikan lebih baik dalam keterbacaan sambil mempertahankan kualitas visual. Namun, mekanisme keberhasilan berbeda dari prediksi awal:
+Hipotesis penelitian terkonfirmasi dalam hal hasil akhir: metode yang diusulkan berhasil mengatasi kesenjangan visual-HTR dan menghasilkan restorasi yang secara signifikan lebih baik dalam keterbacaan sambil mempertahankan kualitas visual. Namun, mekanisme keberhasilan berbeda dari prediksi awal:
 
 \begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, noitemsep, topsep=0pt, label=\alph*)]
     \item Faktor Kunci Keberhasilan: Strategi \textit{frozen recognizer} (terdukung penuh) dan optimasi \textit{loss} 5-komponen (terdukung penuh), bukan kompleksitas arsitektur diskriminator dual-modal (tidak terdukung)
@@ -1168,7 +1183,7 @@ Dengan demikian, meskipun tidak semua komponen hipotesis terdukung, hipotesis ut
 \subsection{Posisi Penelitian terhadap Pustaka Terkini}
 \label{subsec:perbandingan-literatur}
 
-Penelitian ini mengisi kesenjangan metodologis dalam restorasi dokumen paleografi dengan mengintegrasikan \textit{frozen recognizer} HTR dan optimasi \textit{loss function} 5-komponen. Untuk memberikan konteks terhadap kontribusi ini, Tabel~\ref{table:sota-comparison-literature} menyajikan lanskap metrik dari pustaka restorasi dokumen berbasis GAN. Penelitian-penelitian tersebut beroperasi pada domain berbeda (dokumen modern DIBCO berbanding paleografi historis ANRI), sehingga nilai metrik berfungsi sebagai acuan untuk memahami tingkat performa, bukan sebagai tolak ukur langsung.
+Bagian ini merupakan implementasi Evaluasi (DSRM Tahap 5) dengan fokus pada evaluasi komparatif terhadap pustaka terkini. Penelitian ini mengisi kesenjangan metodologis dalam restorasi dokumen paleografi dengan mengintegrasikan \textit{frozen recognizer} HTR dan optimasi \textit{loss function} 5-komponen. Untuk memberikan konteks terhadap kontribusi ini, Tabel~\ref{table:sota-comparison-literature} menyajikan lanskap metrik dari pustaka restorasi dokumen berbasis GAN. Penelitian-penelitian tersebut beroperasi pada domain berbeda (dokumen modern DIBCO berbanding paleografi historis ANRI), sehingga nilai metrik berfungsi sebagai acuan untuk memahami tingkat performa, bukan sebagai tolak ukur langsung.
 
 
 \begin{table}[!htbp]
@@ -1201,9 +1216,9 @@ Penelitian ini mengisi kesenjangan metodologis dalam restorasi dokumen paleograf
 Penelitian ini memiliki tiga perbedaan fundamental:
 
 \begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, noitemsep, topsep=0pt, label=(\arabic*)]
-    \item Arsitektur \textit{frozen recognizer}: Berbeda dari pendekatan \textit{joint training} Text-DIAE \textcite{textdiae2022} dan ERB \textcite{erb2021}, strategi ini memisahkan optimasi visual dari variabilitas gradien HTR, menghasilkan konvergensi 23\% lebih cepat (Bagian~\ref{subsubsec:kontribusi-frozen-recognizer}).
+    \item Arsitektur \textit{frozen recognizer}: Berbeda dari pendekatan \textit{joint training} Text-DIAE \parencite{textdiae2022} dan ERB \parencite{erb2021}, strategi ini memisahkan optimasi visual dari variabilitas gradien HTR, menghasilkan konvergensi 23\% lebih cepat (Bagian~\ref{subsubsec:kontribusi-frozen-recognizer}).
 
-    \item Optimasi multi-objektif 5-komponen: Integrasi \textit{perceptual}, \textit{adversarial}, CTC, \textit{pixel}, dan SSIM \textit{loss} dengan penyeimbangan GradNorm adaptif, lebih lengkap dari formulasi \textit{single-task} DE-GAN \textcite{souibgui2021} dan DocEnTr \textcite{souibgui2022docentr}.
+    \item Optimasi multi-objektif 5-komponen: Integrasi \textit{perceptual}, \textit{adversarial}, CTC, \textit{pixel}, dan SSIM \textit{loss} dengan penyeimbangan GradNorm adaptif, lebih lengkap dari formulasi \textit{single-task} DE-GAN \parencite{souibgui2021} dan DocEnTr \parencite{souibgui2022docentr}.
 
     \item Domain paleografi historis: Pengujian pada degradasi autentik periode kolonial (noda tinta \textit{iron gall}, kelembaban tropis) yang tidak tercakup dalam \textit{benchmark} DIBCO modern, menjadikan penelitian ini kajian pertama yang mengintegrasikan \textit{frozen} HTR untuk dokumen paleografi dengan degradasi kompleks multifaktorial.
 \end{enumerate}
@@ -1224,7 +1239,7 @@ Bagian ini menyajikan interpretasi mendalam terhadap hasil eksperimen, mencakup 
 Subbagian ini merangkum dan mengintegrasikan hasil dari empat sumber evaluasi: (1) pengujian kuantitatif pada set uji semi-sintetis (V.2), (2) validasi kualitatif pada dokumen ANRI autentik (V.3), (3) studi ablasi komponen arsitektur (V.4), dan (4) pengujian hipotesis penelitian (V.5). Sintesis ini bertujuan mengidentifikasi pola-pola kunci, mekanisme keberhasilan, dan implikasi teoretis dari temuan eksperimen.
 
 \paragraph{Sintesis Temuan Utama}
-Hasil evaluasi pada set uji ($n$=712) menunjukkan pengurangan CER dari 83,4\% (kondisi terdegradasi) menjadi 34,9\% (pengurangan relatif 58,2\%, $p<0,001$, Cohen's $d=0,85$), mendekati kinerja teoretis pada citra bersih (CER 34,1\%, kesenjangan hanya 0,8 poin persentase), sambil mempertahankan kualitas visual tinggi (PSNR 30,74 $\pm$ 2,15 dB, SSIM 0,987 $\pm$ 0,012). Performa pada set validasi ($n$=710) menunjukkan tren serupa dengan CER 27,11\%, PSNR 30,91 dB, dan SSIM 0,9869. Validasi kualitatif pada 15 naskah ANRI autentik memberikan indikasi awal generalisasi pada degradasi historis nyata dengan tingkat penerimaan visual 86,7\% (13/15 dokumen dinilai bermanfaat), didukung oleh evaluasi awal ahli paleografi dengan skor rerata 3,42/4,0.
+Hasil evaluasi pada set uji ($n$=712) menunjukkan pengurangan CER dari 83,4\% (kondisi terdegradasi) menjadi 34,9\% (pengurangan relatif 58,2\%, $p<0,001$, Cohen's $d=0,85$), mendekati kinerja teoretis pada citra bersih (CER 34,1\%, kesenjangan hanya 0,8 poin persentase), sambil mempertahankan kualitas visual tinggi (PSNR 30,74 $\pm$ 2,15 dB, SSIM 0,987 $\pm$ 0,012). Performa pada set validasi ($n$=710) menunjukkan tren serupa dengan CER 27,11\%, PSNR 30,91 dB, dan SSIM 0,9869. Validasi kualitatif pada 15 naskah ANRI autentik memberikan indikasi awal generalisasi pada degradasi historis nyata: 7 dokumen kontras sedang ($\geq$30) menunjukkan perbaikan substansial dan 8 dokumen kontras rendah ($<$30) mendapat peningkatan konservatif tanpa halusinasi, didukung oleh evaluasi awal ahli paleografi dengan skor rerata 3,42/4,0.
 
 \paragraph{Mekanisme \textit{Frozen Recognizer} dalam Mengatasi Kesenjangan Visual-HTR}
 Strategi \textit{frozen recognizer} terbukti menjadi faktor kunci keberhasilan sistem melalui dua mekanisme: (1) Stabilitas gradien: Pembekuan bobot \textit{recognizer} menghilangkan kompetisi gradien antara tujuan generator (menghasilkan citra yang mudah dibaca) dan tujuan \textit{recognizer} (mempertahankan akurasi pada citra bersih), menghasilkan trajektori \textit{loss} yang halus dengan standar deviasi rendah (G \textit{loss}: $\pm$0,45 berbanding \textit{joint training}: $\pm$158,7, data dari \textit{pelatihan produksi}); (2) Gradien berorientasi-teks yang konsisten: \textit{Recognizer} praterlatih yang dibekukan menyediakan umpan balik tekstual yang konsisten dan andal selama pelatihan tanpa risiko degradasi kinerja atau \textit{catastrophic forgetting}. Hasil: konvergensi stabil tanpa divergensi selama 50 \textit{epoch}, memungkinkan restorasi mencapai keterbacaan mendekati batas atas teoretis (CER 34,9\% pada set uji, hanya 0,8 poin persentase dari performa rujukan citra bersih 34,1\%).
@@ -1233,7 +1248,7 @@ Strategi \textit{frozen recognizer} terbukti menjadi faktor kunci keberhasilan s
 Studi ablasi mengungkapkan bahwa arsitektur diskriminator dual-modal menunjukkan kontribusi marginal ($\Delta$PSNR +0,28 dB, $\Delta$CER -0,01\%, $p>0,05$). Sebagaimana dianalisis pada Bagian~\ref{subsubsec:kontribusi-dual-modal}, kontribusi marginal ini disebabkan oleh keterbatasan implementasi (misalnya, penggunaan teks prediksi berderau dan bobot \textit{adversarial} yang rendah), bukan karena keterbatasan konseptual arsitektur. Temuan ini memberikan wawasan teoretis bahwa dalam optimisasi GAN multi-objektif, protokol pelatihan dan strategi seperti \textit{frozen recognizer} lebih dominan daripada penambahan kompleksitas pada arsitektur diskriminator. Secara praktis, hal ini menunjukkan bahwa arsitektur CNN tunggal yang lebih efisien adalah pilihan yang lebih rasional untuk tugas ini, menjadikan komponen dual-modal sebagai kandidat utama untuk penyederhanaan model di masa depan.
 
 \paragraph{Kesesuaian dengan Teori dan Literatur}
-Temuan penelitian ini sejalan dengan literatur GAN-HTR yang menunjukkan bahwa komponen \textit{loss} berorientasi-HTR ($\mathcal{L}_{\text{ctc}}$, $\mathcal{L}_{\text{rec-feat}}$) memberikan kontribusi signifikan pada pelestarian teks. Namun, penelitian ini melangkah lebih jauh dengan memvalidasi bahwa strategi pembekuan \textit{recognizer} (berbeda dari \textit{joint training} yang diusulkan oleh \textcite{souibgui2022}) menghasilkan stabilitas pelatihan lebih baik tanpa mengorbankan kinerja HTR. Sebagaimana divalidasi melalui analisis korelasi tingkat degradasi (Bagian~\ref{subsubsec:korelasi-degradasi}), model menunjukkan efektivitas lebih tinggi untuk dokumen sangat terdegradasi---sebuah pola yang juga dilaporkan oleh DE-GAN \textcite{souibgui2021} dan DocEnTr \textcite{souibgui2022docentr}, yang menunjukkan peningkatan kualitas restorasi lebih signifikan pada dokumen dengan degradasi berat.
+Temuan penelitian ini sejalan dengan literatur GAN-HTR yang menunjukkan bahwa komponen \textit{loss} berorientasi-HTR ($\mathcal{L}_{\text{ctc}}$, $\mathcal{L}_{\text{rec-feat}}$) memberikan kontribusi signifikan pada pelestarian teks. Namun, penelitian ini melangkah lebih jauh dengan memvalidasi bahwa strategi pembekuan \textit{recognizer} (berbeda dari \textit{joint training} yang diusulkan oleh \parencite{souibgui2022}) menghasilkan stabilitas pelatihan lebih baik tanpa mengorbankan kinerja HTR. Sebagaimana divalidasi melalui analisis korelasi tingkat degradasi (Bagian~\ref{subsubsec:korelasi-degradasi}), model menunjukkan efektivitas lebih tinggi untuk dokumen sangat terdegradasi---sebuah pola yang juga dilaporkan oleh DE-GAN \parencite{souibgui2021} dan DocEnTr \parencite{souibgui2022docentr}, yang menunjukkan peningkatan kualitas restorasi lebih signifikan pada dokumen dengan degradasi berat.
 
 \paragraph{Implikasi Teoretis: Optimasi GAN Multi-Objektif}
 Penelitian ini mengonfirmasi bahwa keberhasilan GAN multi-objektif (visual + HTR) tidak hanya bergantung pada kompleksitas arsitektur, melainkan pada keselarasan protokol pelatihan dengan tujuan optimisasi. Temuan kunci: (1) \textit{frozen recognizer} + optimasi \textit{loss} > Kompleksitas diskriminator; (2) Konfigurasi 5-komponen \textit{loss} (Pixel, adversarial, Perceptual, CTC, RecFeat) mencapai keseimbangan Pareto optimal; (3) \textit{curriculum learning} dengan \textit{CTC weight annealing} tidak meningkatkan performa akhir secara signifikan ($\Delta$PSNR -0,14 dB, $p>0,05$), tetapi digunakan dalam produksi untuk implementasi yang sistematis.

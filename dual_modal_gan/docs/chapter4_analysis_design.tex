@@ -124,14 +124,14 @@
 % \section{Perancangan dan Implementasi Sistem}
 \label{sec:perancangan-implementasi}
 
-Bab ini menyajikan perancangan teknis kerangka kerja restorasi dokumen berbasis GAN. Fokus utama perancangan adalah mengatasi kesenjangan antara pemulihan kualitas visual dan keterbacaan mesin. Pembahasan diorganisasi ke dalam empat bagian: (1) Arsitektur dan Komponen Utama, (2) Pengembangan Dataset, (3) Strategi dan Protokol Pelatihan, dan (4) Konfigurasi Evaluasi.
+Bab ini menyajikan perancangan teknis metode restorasi dokumen berbasis GAN. Fokus utama perancangan adalah mengatasi kesenjangan antara pemulihan kualitas visual dan keterbacaan mesin. Pembahasan diorganisasi ke dalam empat bagian: (1) Arsitektur dan Komponen Utama, (2) Pengembangan Dataset, (3) Strategi dan Protokol Pelatihan, dan (4) Konfigurasi Evaluasi.
 
 \subsection{Arsitektur dan Komponen Utama}
 \label{subsec:arsitektur-komponen-utama}
 
-Kerangka kerja GAN-HTR dirancang untuk mengatasi kesenjangan metode restorasi konvensional yang telah diidentifikasi pada Bab~II.8. Berbeda dari pendekatan sebelumnya yang mengabaikan aspek keterbacaan oleh mesin atau mengalami ketidakstabilan pada \textit{joint training}, kerangka kerja ini mengintegrasikan evaluasi keterbacaan teks secara eksplisit dalam siklus pelatihan melalui strategi \textit{frozen recognizer}.
+Metode GAN-HTR dirancang untuk mengatasi kesenjangan metode restorasi konvensional yang telah diidentifikasi pada Bab~II.8. Berbeda dari pendekatan sebelumnya yang mengabaikan aspek keterbacaan oleh mesin atau mengalami ketidakstabilan pada \textit{joint training}, metode ini mengintegrasikan evaluasi keterbacaan teks secara eksplisit dalam siklus pelatihan melalui strategi \textit{frozen recognizer}.
 
-Kerangka kerja yang diusulkan beroperasi pada citra baris dokumen tulisan tangan yang terdegradasi dan menghasilkan keluaran bersih yang dioptimalkan untuk kualitas visual serta kinerja HTR. Arsitektur terdiri dari empat komponen utama yang berinteraksi dalam kerangka pelatihan \textit{adversarial}:
+Metode yang diusulkan beroperasi pada citra baris dokumen tulisan tangan yang terdegradasi dan menghasilkan keluaran bersih yang dioptimalkan untuk kualitas visual serta kinerja HTR. Arsitektur terdiri dari empat komponen utama yang berinteraksi dalam kerangka pelatihan \textit{adversarial}:
 
 \begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, noitemsep, topsep=0pt]
   \item Generator (G): Arsitektur U-Net \textit{Enhanced} yang memetakan citra terdegradasi $I_{\text{deg}}$ ke citra terestorasi $I_{\text{gen}}$. Dilengkapi dengan \textit{Residual Dense Blocks} (RDB) dan \textit{Attention Gates} untuk preservasi detail teks halus sekaligus menghilangkan derau latar belakang.
@@ -144,8 +144,8 @@ Kerangka kerja yang diusulkan beroperasi pada citra baris dokumen tulisan tangan
 
 \begin{figure}[H]
   \centering
-  \makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth, keepaspectratio]{/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/drawio/main_framework.png}}
-  \caption[Kerangka kerja GAN-HTR dengan diskriminator \textit{dual-modal}]{Kerangka kerja GAN-HTR dengan diskriminator \textit{dual-modal} dan \textit{frozen} HTR \textit{recognizer}. Komponen utama: (1) Generator U-Net \textit{Enhanced}, (2) Diskriminator \textit{Dual-Modal} (CNN+BiLSTM), (3) \textit{Frozen} HTR \textit{Recognizer} untuk \textit{CTC loss}.}
+  \makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth, keepaspectratio]{/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/drawio/revisi_main_solution.png}}
+  \caption[Metode GAN-HTR dengan diskriminator \textit{dual-modal}]{Metode GAN-HTR dengan diskriminator \textit{dual-modal} dan \textit{frozen} HTR \textit{recognizer}. Komponen utama: (1) Generator U-Net \textit{Enhanced}, (2) Diskriminator \textit{Dual-Modal} (CNN+BiLSTM), (3) \textit{Frozen} HTR \textit{Recognizer} untuk \textit{CTC loss}.}
   \label{fig:arch_overview}
 \end{figure}
 
@@ -155,7 +155,7 @@ Subbagian berikut menguraikan arsitektur detail setiap komponen.
 
 \label{subsubsec:arsitektur-generator}
 
-Penelitian ini mengadopsi arsitektur U-Net Enhanced yang terdiri dari tiga komponen utama: \textit{encoder}, \textit{bottleneck}, dan \textit{decoder}. Berbeda dari U-Net konvensional~\textcite{ronneberger2015unet} yang menggunakan blok konvolusi standar, arsitektur \textit{Enhanced} mengintegrasikan empat teknik tambahan: \textit{Residual Dense Blocks} (RDB)~\textcite{zhang2018residual}, \textit{Convolutional Block Attention Module} (CBAM)~\textcite{woo2018cbam}, \textit{Multi-Scale Feature Pyramid} (MSFP)~\textcite{lin2017fpn}, dan \textit{Attention Gates}~\textcite{oktay2018attention}. Spesifikasi detail arsitektur (21,8M parameter, \textit{memory footprint} $\sim$87~MB) tersedia pada Lampiran~A, sementara Gambar~\ref{fig:unet_architecture} memvisualisasikan struktur keseluruhan.
+Penelitian ini mengadopsi arsitektur U-Net Enhanced yang terdiri dari tiga komponen utama: \textit{encoder}, \textit{bottleneck}, dan \textit{decoder}. Berbeda dari U-Net konvensional~\parencite{ronneberger2015unet} yang menggunakan blok konvolusi standar, arsitektur \textit{Enhanced} mengintegrasikan empat teknik tambahan: \textit{Residual Dense Blocks} (RDB)~\parencite{zhang2018residual}, \textit{Convolutional Block Attention Module} (CBAM)~\parencite{woo2018cbam}, \textit{Multi-Scale Feature Pyramid} (MSFP)~\parencite{lin2017fpn}, dan \textit{Attention Gates}~\parencite{oktay2018attention}. Spesifikasi detail arsitektur (21,8M parameter, \textit{memory footprint} $\sim$87~MB) tersedia pada Lampiran~A, sementara Gambar~\ref{fig:unet_architecture} memvisualisasikan struktur keseluruhan.
 
 
 % Diagram Arsitektur Generator U-Net Enhanced
@@ -178,11 +178,11 @@ Penelitian ini mengadopsi arsitektur U-Net Enhanced yang terdiri dari tiga kompo
 
 \paragraph{Bottleneck}
 
-\textit{Bottleneck} pada resolusi terendah ($32 \times 4 \times 512$) menangkap konteks global multi-skala melalui \textit{Multi-Scale Feature Pyramid} (MSFP) dengan tiga skala konvolusi terdilasi (\textit{dilation rates} 1, 2, 4)~\textcite{chen2017deeplab}. Komponen ini memungkinkan arsitektur 'melihat' degradasi pada berbagai skala---dari derau titik hingga noda besar---sebelum proses rekonstruksi. \textit{RDB} dan \textit{CBAM} diterapkan untuk penyempurnaan fitur global.
+\textit{Bottleneck} pada resolusi terendah ($32 \times 4 \times 512$) menangkap konteks global multi-skala melalui \textit{Multi-Scale Feature Pyramid} (MSFP) dengan tiga skala konvolusi terdilasi (\textit{dilation rates} 1, 2, 4)~\parencite{chen2017deeplab}. Komponen ini memungkinkan arsitektur 'melihat' degradasi pada berbagai skala---dari derau titik hingga noda besar---sebelum proses rekonstruksi. \textit{RDB} dan \textit{CBAM} diterapkan untuk penyempurnaan fitur global.
 
 \paragraph{Decoder}
 
-\textit{Decoder} merekonstruksi citra bersih melalui \textit{upsampling} progresif dalam lima tahap, mencerminkan struktur \textit{encoder}. Fitur penting \textit{decoder} adalah \textit{Attention Gates}~\textcite{oktay2018attention} pada setiap \textit{skip connection} yang menyaring fitur dari \textit{encoder}:
+\textit{Decoder} merekonstruksi citra bersih melalui \textit{upsampling} progresif dalam lima tahap, mencerminkan struktur \textit{encoder}. Fitur penting \textit{decoder} adalah \textit{Attention Gates}~\parencite{oktay2018attention} pada setiap \textit{skip connection} yang menyaring fitur dari \textit{encoder}:
 
 \begin{equation}
   \alpha = \sigma(W_g^T g + W_x^T x + b)
@@ -306,7 +306,7 @@ Diskriminator dual-modal dapat beroperasi dalam dua mode input teks: (1) \textit
 \subsubsection{Arsitektur HTR}
 \label{subsubsec:frozen-recognizer}
 
-Komponen \textit{Recognizer} (R) dalam kerangka kerja ini merupakan model HTR hibrida CNN-Transformer praterlatih dengan total 27,86M parameter. Arsitektur terdiri dari tiga bagian utama yang diuraikan berikut ini dan divisualisasikan pada Gambar~\ref{fig:htr_architecture}. Model ini dilatih pada dokumen ANRI era kolonial abad 16--18 sebelum diintegrasikan ke dalam kerangka kerja GAN dengan strategi pembekuan bobot.
+Komponen \textit{Recognizer} (R) dalam metode ini merupakan model HTR hibrida CNN-Transformer praterlatih dengan total 27,86M parameter. Arsitektur terdiri dari tiga bagian utama yang diuraikan berikut ini dan divisualisasikan pada Gambar~\ref{fig:htr_architecture}. Model ini dilatih pada dokumen ANRI era kolonial abad 16--18 sebelum diintegrasikan ke dalam arsitektur GAN dengan strategi pembekuan bobot.
 
 % Diagram Arsitektur HTR Recognizer
 \begin{figure}[H]
@@ -343,7 +343,7 @@ Selain prediksi teks, \textit{Recognizer} juga menghasilkan fitur perantara untu
 \paragraph{Strategi Integrasi}
 
 
-Berbeda dengan pendekatan \textit{joint training} pada ERB-MultiTask~\textcite{erb2021}, penelitian ini mengadopsi strategi pembekuan bobot (\textit{frozen recognizer}). Strategi ini dipilih berdasarkan tiga pertimbangan utama: (1) efisiensi komputasional---pengenal 27,86M parameter tidak memerlukan komputasi gradien, (2) stabilitas pelatihan---mengeliminasi konflik gradien destruktif antara tujuan rekonstruksi dan pengenalan~\textcite{souibgui2022,kang2021pay}, dan (3) pelestarian kinerja---mencegah \textit{catastrophic forgetting}~\textcite{kirkpatrick2017overcoming} pada pengenal praterlatih.
+Berbeda dengan pendekatan \textit{joint training} pada ERB-MultiTask~\parencite{erb2021}, penelitian ini mengadopsi strategi pembekuan bobot (\textit{frozen recognizer}). Strategi ini dipilih berdasarkan tiga pertimbangan utama: (1) efisiensi komputasional---pengenal 27,86M parameter tidak memerlukan komputasi gradien, (2) stabilitas pelatihan---mengeliminasi konflik gradien destruktif antara tujuan rekonstruksi dan pengenalan~\parencite{souibgui2022,kang2021pay}, dan (3) pelestarian kinerja---mencegah \textit{catastrophic forgetting}~\parencite{kirkpatrick2017overcoming} pada pengenal praterlatih.
 
 Komponen \textit{Recognizer} beku berfungsi sebagai evaluator objektif yang menghasilkan: (1) input teks bagi Diskriminator \textit{dual-modal} untuk menilai koherensi visual-tekstual, dan (2) kalkulasi \textit{CTC Loss} dan \textit{Recognition Feature Loss} untuk mengukur keterbacaan hasil restorasi. Tabel~\ref{table:recognizer_strategy_comparison} merangkum perbandingan strategi integrasi yang dipertimbangkan.
 
@@ -422,7 +422,7 @@ Norma L1 dipilih karena menghasilkan hasil yang lebih tajam dibandingkan norma L
 
 \paragraph{Perceptual Loss}
 
-\textit{Perceptual loss} \textcite{johnson2016} membandingkan fitur tingkat tinggi dari jaringan VGG-19 yang telah dilatih pada \textit{ImageNet}:
+\textit{Perceptual loss} \parencite{johnson2016} membandingkan fitur tingkat tinggi dari jaringan VGG-19 yang telah dilatih pada \textit{ImageNet}:
 
 \begin{equation}
   \mathcal{L}_{\text{perc}} = \sum_{l \in L} \|\phi_l(I_{\text{gen}}) - \phi_l(I_{\text{gt}})\|_2
@@ -433,9 +433,9 @@ dengan $\phi_l$ menunjukkan fitur dari lapisan $l$ dari jaringan VGG-19 praterla
 
 \paragraph{CTC Loss}
 
-\textit{CTC loss} memberikan gradien sadar-teks langsung dari \textit{frozen recognizer} untuk mengoptimalkan keterbacaan HTR secara eksplisit. \textit{Connectionist Temporal Classification} (CTC)~\textcite{graves2006} dipilih karena kemampuannya menangani sekuens dengan panjang variabel tanpa memerlukan \textit{alignment} eksplisit antara input citra dan output teks, ideal untuk dokumen tulisan tangan dengan variasi spasial karakter yang tinggi.
+\textit{CTC loss} memberikan gradien sadar-teks langsung dari \textit{frozen recognizer} untuk mengoptimalkan keterbacaan HTR secara eksplisit. \textit{Connectionist Temporal Classification} (CTC)~\parencite{graves2006} dipilih karena kemampuannya menangani sekuens dengan panjang variabel tanpa memerlukan \textit{alignment} eksplisit antara input citra dan output teks, ideal untuk dokumen tulisan tangan dengan variasi spasial karakter yang tinggi.
 
-Formulasi matematis CTC dan mekanisme penyelarasan otomatis telah dijelaskan secara rinci pada Bab~II Subbab~\ref{subsubsec:ctc-loss}. Komponen ini merupakan karakteristik penting kerangka kerja yang membedakannya dari metode restorasi dokumen konvensional yang hanya mengoptimalkan kualitas visual tanpa mempertimbangkan keterbacaan mesin.
+Formulasi matematis CTC dan mekanisme penyelarasan otomatis telah dijelaskan secara rinci pada Bab~II Subbab~\ref{subsubsec:ctc-loss}. Komponen ini merupakan karakteristik penting metode GAN-HTR yang membedakannya dari metode restorasi dokumen konvensional yang hanya mengoptimalkan kualitas visual tanpa mempertimbangkan keterbacaan mesin.
 
 Analisis kontribusi menunjukkan CTC loss berkontribusi 67,5\% terhadap total generator loss (meskipun bobot $\lambda_{\text{ctc}}=0,15$ relatif kecil) karena magnitudo \textit{natural} CTC ($\sim$100--300) jauh lebih besar dibanding komponen visual ($\sim$0,1--5,0), memvalidasi peran dominan komponen HTR dalam optimasi.
 
@@ -495,17 +495,19 @@ Istilah optimasi fungsi loss berorientasi HTR pada penelitian ini mengacu pada s
 \subsection{Pengembangan Dataset}
 \label{sec:pengembangan-dataset}
 
-Pelatihan dan evaluasi kerangka kerja GAN-HTR memerlukan konstruksi dataset khusus yang tidak tersedia secara publik. Bagian ini menjelaskan proses pengembangan empat komponen dataset: (1) \textit{ground truth} untuk pelatihan model GAN, (2) \textit{ground truth} untuk pelatihan model \textit{recognizer}, (3) dataset evaluasi kuantitatif, dan (4) dataset evaluasi kualitatif. Seluruh data bersumber dari koleksi arsip ANRI untuk memastikan karakteristik paleografi yang representatif. Gambar~\ref{fig:pembuatan-gt} memvisualisasikan alur pembuatan \textit{ground truth} secara keseluruhan.
+Pelatihan dan evaluasi metode GAN-HTR memerlukan konstruksi dataset khusus yang tidak tersedia secara publik. Bagian ini menjelaskan proses pengembangan empat komponen dataset: (1) \textit{ground truth} untuk pelatihan model GAN, (2) \textit{ground truth} untuk pelatihan model \textit{recognizer}, (3) dataset evaluasi kuantitatif, dan (4) dataset evaluasi kualitatif. Seluruh data bersumber dari koleksi arsip ANRI untuk memastikan karakteristik paleografi yang representatif. Gambar~\ref{fig:pembuatan-gt} memvisualisasikan alur pembuatan \textit{ground truth} secara keseluruhan.
 
 \subsubsection{Pembuatan \textit{Ground Truth} untuk GAN}
 
 Model GAN memerlukan pasangan citra terdegradasi-bersih (\textit{paired images}) dengan keselarasan tingkat piksel yang sempurna. Karena dokumen historis nyata yang rusak tidak dapat dipulihkan ke kondisi aslinya secara fisik, dataset semi-sintetis dikonstruksi melalui dua tahap.
 
+\textbf{Atribusi Proses:} Arsip Nasional Republik Indonesia (ANRI) menyediakan berkas PageXML yang telah berisi anotasi \textit{baseline} dan transkripsi teks, yang dihasilkan melalui proyek digitalisasi menggunakan platform Transkribus. Seluruh proses pembuatan \textit{ground truth} selanjutnya---meliputi ekstraksi citra baris, normalisasi geometri, sintesis degradasi, dan konstruksi dataset triplet---dilakukan sepenuhnya oleh penulis dengan menggunakan berkas PageXML tersebut sebagai sumber data masukan.
+
 \paragraph{Tahap Satu: Ekstraksi Citra Bersih}
-Citra \textit{ground truth} (bersih) diperoleh dari dokumen arsip ANRI abad ke-16 hingga ke-18 yang memiliki kondisi fisik prima (minim degradasi). Proses ekstraksi meliputi:
+Citra \textit{ground truth} (bersih) diperoleh dari dokumen arsip ANRI abad ke-16 hingga ke-18 yang memiliki kondisi fisik prima (minim degradasi). Proses ekstraksi yang dilakukan penulis meliputi:
 \begin{itemize}[leftmargin=1.5em, labelsep=0.5em, noitemsep, topsep=0pt]
   \item Seleksi manual halaman dengan keterbacaan tinggi dari koleksi ANRI.
-  \item Ekstraksi baris teks menggunakan koordinat \textit{baseline} dari anotasi Transkribus.
+  \item Ekstraksi baris teks menggunakan koordinat \textit{baseline} dari berkas PageXML Transkribus.
   \item Normalisasi geometri ke dimensi $1024 \times 128$ piksel.
 \end{itemize}
 
@@ -578,7 +580,7 @@ Karena tidak memiliki \textit{ground truth} visual (citra bersih), evaluasi pada
 \subsection{Strategi dan Protokol Pelatihan}
 \label{subsec:detail-implementasi-training}
 
-Pelatihan kerangka kerja GAN-HTR menghadapi tantangan unik yang tidak dijumpai pada pelatihan GAN konvensional. Kombinasi lima komponen \textit{loss} dengan magnitudo berbeda, integrasi \textit{frozen recognizer} untuk gradien sadar-HTR, serta arsitektur diskriminator \textit{dual-modal} memerlukan strategi pelatihan yang dirancang secara khusus untuk menjamin stabilitas konvergensi. Bagian ini menguraikan protokol pelatihan yang dikembangkan untuk mengatasi tantangan-tantangan tersebut.
+Pelatihan metode GAN-HTR menghadapi tantangan unik yang tidak dijumpai pada pelatihan GAN konvensional. Kombinasi lima komponen \textit{loss} dengan magnitudo berbeda, integrasi \textit{frozen recognizer} untuk gradien sadar-HTR, serta arsitektur diskriminator \textit{dual-modal} memerlukan strategi pelatihan yang dirancang secara khusus untuk menjamin stabilitas konvergensi. Bagian ini menguraikan protokol pelatihan yang dikembangkan untuk mengatasi tantangan-tantangan tersebut.
 
 Pembahasan dimulai dengan strategi \textit{curriculum learning} tiga fase yang memperkenalkan komponen \textit{loss} secara bertahap untuk mencegah \textit{mode collapse} dini (\ref{subsubsec:curriculum-learning}). Selanjutnya, dibahas mekanisme regularisasi dan analisis stabilitas yang memvalidasi efektivitas protokol pelatihan (\ref{subsubsec:stabilitas-regularisasi}). Bagian ini ditutup dengan spesifikasi teknis implementasi, termasuk kebijakan presisi numerik dan konfigurasi mode diskriminator.
 
@@ -589,7 +591,7 @@ Strategi pelatihan GAN-HTR terdiri atas dua dimensi yang saling melengkapi: (1) 
 
 \paragraph{Dimensi Temporal: Tiga Fase \textit{Curriculum Learning}}
 
-Pelatihan menggunakan pendekatan \textit{curriculum learning}~\textcite{bengio2009} tiga fase yang memperkenalkan komponen \textit{loss} secara bertahap. Strategi ini mencegah \textit{mode collapse} dan memungkinkan generator membangun kapabilitas secara inkremental:
+Pelatihan menggunakan pendekatan \textit{curriculum learning}~\parencite{bengio2009} tiga fase yang memperkenalkan komponen \textit{loss} secara bertahap. Strategi ini mencegah \textit{mode collapse} dan memungkinkan generator membangun kapabilitas secara inkremental:
 
 \begin{enumerate}[label=\alph*., leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, noitemsep, topsep=0pt]
   \item Fase \textit{Warmup} Visual (epoch 1--10): Pelatihan eksklusif pada kualitas visual tanpa supervisi teks, memungkinkan generator membangun kemampuan rekonstruksi dasar. Fase ini mencegah \textit{mode collapse} dini yang dapat terjadi jika \textit{loss} CTC diperkenalkan terlalu awal. Pada fase ini, hanya komponen \textit{loss} visual yang diaktifkan: $\mathcal{L}_{\text{pixel}}$, $\mathcal{L}_{\text{adv}}$, dan $\mathcal{L}_{\text{perc}}$ dengan bobot penuh sesuai Tabel~\ref{table:optimal_weights}, sementara $\lambda_{\text{ctc}}=0$ untuk stabilitas awal.
