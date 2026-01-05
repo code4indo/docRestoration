@@ -151,6 +151,49 @@
       \field{title}{Rethinking Atrous Convolution for Semantic Image Segmentation}
       \field{year}{2017}
     \endentry
+    \entry{chen2024diffusion}{article}{}
+      \name{author}{4}{}{%
+        {{un=1,uniquepart=given,hash=2bdd48dc68b3d7c9d63e3844f2459fd6}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={W.},
+           giveni={W\bibinitperiod},
+           givenun=1}}%
+        {{un=0,uniquepart=base,hash=e2e65bc31792929cfaa15cecf7f23965}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={H.},
+           giveni={H\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=51e5fb9f55c5b5d1edb17aea3861c908}{%
+           family={Yang},
+           familyi={Y\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=b828859093337f367dec073885b8bfaa}{%
+           family={Zhou},
+           familyi={Z\bibinitperiod},
+           given={K.},
+           giveni={K\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{9386c4836787c69b59806b702c08f865}
+      \strng{fullhash}{fc6614f1dfe36f3560d7e311c1c4c509}
+      \strng{bibnamehash}{9386c4836787c69b59806b702c08f865}
+      \strng{authorbibnamehash}{9386c4836787c69b59806b702c08f865}
+      \strng{authornamehash}{9386c4836787c69b59806b702c08f865}
+      \strng{authorfullhash}{fc6614f1dfe36f3560d7e311c1c4c509}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{year}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{arXiv preprint}
+      \field{title}{Diffusion Models for Document Image Enhancement}
+      \field{year}{2024}
+    \endentry
     \entry{chen2018gradnorm}{inproceedings}{}
       \name{author}{4}{}{%
         {{un=1,uniquepart=given,hash=76448b761ad64dd0746ba4b504382a50}{%

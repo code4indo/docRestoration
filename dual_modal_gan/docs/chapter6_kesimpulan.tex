@@ -86,9 +86,9 @@ Evaluasi pada 712 citra uji semi-sintetis dokumen paleografi ANRI abad ke-16--18
 
 
 
-Temuan kritis dari analisis komponen arsitektur meliputi:
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, noitemsep, topsep=0pt]
-  \item Redundansi Diskriminator \textit{Dual-Modal}: Arsitektur diskriminator \textit{dual-modal} memberikan kontribusi marginal yang tidak signifikan ($\Delta$PSNR +0,28 dB, $p>0,05$). Hal ini membuktikan bahwa peran pengawasan tekstual sudah dijalankan secara lebih efektif oleh mekanisme \textit{frozen recognizer} (melalui \textit{CTC loss}). Berdasarkan prinsip parsimoni, arsitektur diskriminator CNN tunggal (visual) direkomendasikan sebagai acuan efisiensi untuk implementasi masa depan.
+Temuan utama dari analisis komponen arsitektur meliputi:
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, noitemsep, topsep=0pt, partopsep=0pt]
+  \item Keberlebihan Diskriminator \textit{Dual-Modal}: Arsitektur diskriminator \textit{dual-modal} memberikan kontribusi marginal yang tidak signifikan ($\Delta$PSNR +0,28 dB, $p>0,05$). Hal ini membuktikan bahwa peran pengawasan tekstual sudah dijalankan secara lebih efektif oleh mekanisme \textit{frozen recognizer} (melalui \textit{CTC loss}). Berdasarkan prinsip parsimoni, arsitektur diskriminator CNN tunggal (visual) direkomendasikan sebagai acuan efisiensi untuk implementasi masa depan.
   \item Dominasi Protokol Pelatihan: Keberhasilan restorasi lebih ditentukan oleh strategi pelatihan (penyeimbangan dan pembekuan bobot) daripada kompleksitas arsitektur jaringan. \textit{Curriculum learning} terbukti bermanfaat untuk stabilitas pada fase awal (\textit{warmup}), meskipun dampaknya terhadap performa akhir tidak signifikan.
   \item Ketidakefektifan Komponen Fitur Rekognisi: Komponen \textit{recognition feature loss} (RecFeat) terbukti tidak memberikan peningkatan statistik pada akurasi teks dalam studi ablasi. Penggunaannya dalam model produksi saat ini merupakan sisa eksperimen yang dapat dihilangkan untuk efisiensi komputasi tanpa mengorbankan performa.
   \item Validasi Multimetrik: Korelasi lemah antara PSNR dan CER ($r \approx -0,15$) dibandingkan dengan korelasi kuat antara SNR dan peningkatan CER ($r = -0,963$) menegaskan bahwa metrik visual saja tidak cukup untuk mengevaluasi efektivitas restorasi dokumen sejarah.
@@ -98,7 +98,7 @@ Temuan kritis dari analisis komponen arsitektur meliputi:
 \label{subsec:keterbatasan}
 
 Keterbatasan penelitian yang ditemukan antara lain:
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, noitemsep, topsep=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, noitemsep, topsep=0pt, partopsep=0pt]
   \item Degradasi Ekstrem: Model menghadapi tantangan pada dokumen dengan kontras yang sangat rendah ($<30$) dan pemudaran yang parah (SNR $< 10$ dB); pada kondisi tersebut, pendekatan konservatif yang diterapkan model cenderung menghasilkan peningkatan minimal untuk menghindari pembentukan fitur palsu.
   \item Keterbatasan Pengenal HTR: Analisis kesalahan karakter menunjukkan bahwa kesalahan dominan terjadi di posisi tengah kata (62,6\%) dan pada tanda baca (26,6\%), sementara kesalahan dalam konteks ligatur paleografi hanya 9,0\%. Hal ini membuktikan bahwa hambatan utama bukan pada jenis karakter tertentu, melainkan pada kompleksitas tulisan kursif kontinu yang menyulitkan segmentasi karakter individual oleh \textit{recognizer}.
   \item Bias Aksara: Penelitian dibatasi pada aksara Latin paleografi (bahasa Belanda Kuno), sehingga generalisasi ke aksara lain (Arab, Melayu, Jawa Kuno) belum tervalidasi.
@@ -116,11 +116,10 @@ Berdasarkan temuan dan keterbatasan penelitian, saran dikelompokkan menjadi dua 
 \label{subsubsec:saran-penelitian}
 
 Untuk mengatasi keterbatasan teknis dan memperluas cakupan keilmuan, penelitian mendatang sebaiknya berfokus pada:
-
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, noitemsep, topsep=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, noitemsep, topsep=0pt, partopsep=0pt]
   \item \textit{Fine-Tuning} Pengenal HTR pada Data Paleografi: Mengingat hambatan utama adalah pengenal (\textit{recognizer}), prioritas riset selanjutnya adalah melakukan \textit{fine-tuning} atau adaptasi domain pada model HTR menggunakan korpus spesifik paleografi dengan ligatur yang kompleks untuk menurunkan tingkat kesalahan dasar (CER 34,1\%) yang saat ini menjadi batas kemampuan sistem.
 
-  \item Arsitektur Diskriminator yang Lebih Efisien: Mengganti desain dual-modal dengan diskriminator visual tunggal yang lebih ringan, serta mengeksplorasi alternatif fungsi \textit{loss} untuk menggantikan komponen RecFeat yang terbukti redundan.
+  \item Arsitektur Diskriminator yang Lebih Efisien: Mengganti desain dual-modal dengan diskriminator visual tunggal yang lebih ringan, serta mengeksplorasi alternatif fungsi \textit{loss} untuk menggantikan komponen RecFeat yang terbukti berlebihan.
 
   \item Pemodelan Degradasi Berbasis Fisika: Pengembangan model degradasi kimia historis autentik (korosi tinta \textit{iron gall}, \textit{foxing} biologis) dan mekanisme augmentasi data yang lebih intensif untuk meningkatkan ketangguhan model terhadap kasus degradasi ekstrem.
 
@@ -135,15 +134,14 @@ Untuk mengatasi keterbatasan teknis dan memperluas cakupan keilmuan, penelitian 
 \label{subsubsec:saran-praktis}
 
 Bagi lembaga kearsipan yang hendak mengadopsi teknologi ini, disarankan:
-
-\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, noitemsep, topsep=0pt]
+\begin{enumerate}[leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, noitemsep, topsep=0pt, partopsep=0pt]
   \item Adopsi Bertahap: Implementasi sistem restorasi dimulai pada koleksi prioritas dengan tingkat degradasi sedang hingga parah, mengingat pada kondisi tersebut model terbukti memberikan peningkatan keterbacaan yang paling signifikan.
   \item Verifikasi Hibrida: Menggunakan keluaran model sebagai draf awal transkripsi untuk mempercepat pekerjaan ahli paleografi, namun tetap mempertahankan verifikasi manusia untuk dokumen yang bernilai tinggi guna menjamin autentisitas.
   \item Standarisasi Digitalisasi: Penerapan standar pengambilan citra yang konsisten (resolusi, pencahayaan) untuk meminimalkan variabilitas domain yang dapat menurunkan kinerja model.
 \end{enumerate}
 
-\subsection{Penutup}
-\label{subsec:penutup}
+% \subsection{Penutup}
+% \label{subsec:penutup}
 
 
 Penelitian ini menegaskan bahwa keterpaduan antara pemrosesan citra dan pengenalan teks menjadi kunci keberhasilan dalam pengembangan sistem restorasi dokumen historis. Temuan bahwa protokol pelatihan yang tepat (strategi pembekuan \textit{recognizer}) lebih menentukan daripada kompleksitas arsitektur menjadi acuan penting bagi pengembangan sistem masa depan. Dengan kemampuan memulihkan keterbacaan hingga mendekati kondisi dokumen bersih, metode ini menawarkan kontribusi nyata bagi pelestarian warisan budaya digital dan pemerataan akses ke informasi sejarah bangsa.

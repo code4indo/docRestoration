@@ -5,13 +5,17 @@
 \usepackage{mathptmx} % Times New Roman font
 \usepackage{microtype} % Untuk optimasi typography dan spacing
 \usepackage[none]{hyphenat} % Menonaktifkan hyphenation
+
+% Pengaturan untuk mencegah orphan/widow lines (baris tanggung)
+\widowpenalty=10000   % Mencegah baris terakhir paragraf sendirian di halaman baru
+\clubpenalty=10000    % Mencegah baris pertama paragraf sendirian di halaman lama
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{setspace}
 \usepackage{geometry}
 \usepackage{tikz}
-\usepackage{float}
+% \usepackage{float}
 \usepackage{enumitem}
 \usepackage{longtable}
 
@@ -39,6 +43,14 @@
   labelsep=space,
   justification=justified,
   singlelinecheck=false
+}
+
+% FloatRow untuk membuat caption sama lebar dengan table
+\usepackage{floatrow}
+\floatsetup[table]{
+  capposition=top,
+  objectset=centering,
+  captionskip=10pt
 }
 
 \usepackage{subcaption}
@@ -71,6 +83,7 @@
 \renewcommand*{\postnotedelim}{\addcolon\space}
 \DeclareFieldFormat{postnote}{#1}
 \DeclareFieldFormat{multipostnote}{#1}
+\renewcommand*{\nameyeardelim}{\addcomma\space}
 
 \usepackage{hyperref}
 \hypersetup{
@@ -105,7 +118,7 @@
 
 % Pengaturan paragraf
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{0pt}
+\setlength{\parskip}{0.5\baselineskip}
 
 % Pengaturan jarak untuk subsection
 \usepackage{titlesec}
@@ -248,7 +261,7 @@
 % {\fontsize{12}{14.4}\selectfont\textbf{[TAHUN]}}
 
 % \end{titlepage}
-\pagenumbering{empty}
+% \pagenumbering{empty}
 \input{cover.tex}
 \newpage
 
@@ -283,7 +296,7 @@
 % HALAMAN DEDIKASI
 % ============================================================
 \newpage
-\addcontentsline{toc}{section}{HALAMAN PERUNTUKAN}
+\addcontentsline{toc}{section}{HALAMAN DEDIKASI}
 \input{halaman_dedikasi.tex}
 
 
@@ -309,7 +322,7 @@
 \end{center}
 \vspace{1em}
 
-{\singlespacing
+{\singlespacing\setlength{\parskip}{0pt}
       \makeatletter
       \@starttoc{toc}
       \makeatother
@@ -326,11 +339,11 @@
 \end{center}
 \vspace{1em}
 
-{\singlespacing
+{\singlespacing\setlength{\parskip}{0pt}
       Lampiran A. Arsitektur Generator U-Net Enhanced \dotfill \pageref{lampiran:A}\\
       Lampiran B. Arsitektur Diskriminator Dual-Modal Enhanced \dotfill \pageref{lampiran:B}\\
       Lampiran C. Formulir Penilaian Ahli Paleografi \dotfill \pageref{lampiran:C}\\
-      Lampiran D. Contoh Dokumen Historis Sebelum dan Setelah Restorasi \dotfill \pageref{lampiran:D}
+      Lampiran D. Contoh Hasil Restorasi \dotfill \pageref{lampiran:D}\\
 }
 
 % ============================================================
@@ -344,7 +357,7 @@
 \end{center}
 \vspace{1em}
 
-{\singlespacing
+{\singlespacing\setlength{\parskip}{0pt}
       \makeatletter
       \@starttoc{lof}
       \makeatother
@@ -361,7 +374,7 @@
 \end{center}
 \vspace{1em}
 
-{\singlespacing
+{\singlespacing\setlength{\parskip}{0pt}
       \makeatletter
       \@starttoc{lot}
       \makeatother

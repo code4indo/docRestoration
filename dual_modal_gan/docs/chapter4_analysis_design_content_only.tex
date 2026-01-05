@@ -81,7 +81,7 @@ Penelitian ini mengadopsi arsitektur U-Net Enhanced yang terdiri dari tiga kompo
   \label{fig:unet_architecture}
 \end{figure}
 
-\paragraph{Encoder}
+\paragraph{\textit{Encoder}}
 
 \textit{Encoder} mengekstrak fitur hierarkis melalui \textit{downsampling} progresif dalam lima tahap, mengurangi resolusi spasial dari $1024 \times 128$ hingga $32 \times 4$ (lebar $\times$ tinggi) sambil meningkatkan kedalaman kanal. Setiap blok \textit{encoder} terdiri dari:
 \begin{enumerate}[label=\alph*., leftmargin=1.5em, labelsep=0.5em, itemindent=0pt, noitemsep, topsep=0pt]
@@ -91,11 +91,11 @@ Penelitian ini mengadopsi arsitektur U-Net Enhanced yang terdiri dari tiga kompo
   \item Koneksi \textit{residual} untuk propagasi gradien efektif.
 \end{enumerate}
 
-\paragraph{Bottleneck}
+\paragraph{\textit{Bottleneck}}
 
 \textit{Bottleneck} pada resolusi terendah ($32 \times 4 \times 512$) menangkap konteks global multi-skala melalui \textit{Multi-Scale Feature Pyramid} (MSFP) dengan tiga skala konvolusi terdilasi (\textit{dilation rates} 1, 2, 4)~\parencite{chen2017deeplab}. Komponen ini memungkinkan arsitektur 'melihat' degradasi pada berbagai skala---dari derau titik hingga noda besar---sebelum proses rekonstruksi. \textit{RDB} dan \textit{CBAM} diterapkan untuk penyempurnaan fitur global.
 
-\paragraph{Decoder}
+\paragraph{\textit{Decoder}}
 
 \textit{Decoder} merekonstruksi citra bersih melalui \textit{upsampling} progresif dalam lima tahap, mencerminkan struktur \textit{encoder}. Fitur penting \textit{decoder} adalah \textit{Attention Gates}~\parencite{oktay2018attention} pada setiap \textit{skip connection} yang menyaring fitur dari \textit{encoder}:
 
@@ -127,7 +127,7 @@ Secara teknis, diskriminator menerima citra masukan dan sekuens teks (panjang ma
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.75\textwidth,keepaspectratio]{/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/drawio/arsitektur-dualModal.png}
-  \caption[Arsitektur Diskriminator \textit{Dual-Modal Enhanced}]{Arsitektur Diskriminator Dual-Modal Enhanced dengan dua cabang pemrosesan paralel (CNN untuk fitur visual, BiLSTM untuk fitur tekstual) dan mekanisme fusi \textit{bilateral cross-modal attention}.}
+  \caption[Arsitektur Diskriminator \textit{Dual-Modal Enhanced}]{Arsitektur Diskriminator \textit{Dual-Modal Enhanced} dengan dua cabang pemrosesan paralel (CNN untuk fitur visual, BiLSTM untuk fitur tekstual) dan mekanisme fusi \textit{bilateral cross-modal attention}.}
   \label{fig:discriminator_architecture}
 \end{figure}
 
@@ -172,7 +172,7 @@ Cabang ini menangkap koherensi sekuensial teks. Sekuens karakter masukan $S \in 
 
 \noindent dengan $Q, K, V$ adalah proyeksi linear dari $H$. \textit{Global average pooling} menghasilkan vektor teks $F_{\text{text}}^{\text{global}} \in \mathbb{R}^{512}$.
 
-\paragraph{Fusi Cross-Modal}
+\paragraph{Fusi \textit{Cross-Modal}}
 
 Kedua vektor fitur $F_{\text{img}}^{\text{global}} \in \mathbb{R}^{512}$ dan $F_{\text{text}}^{\text{global}} \in \mathbb{R}^{512}$ diproses melalui mekanisme atensi \textit{cross-modal} bilateral untuk memungkinkan interaksi dua arah antarmodalitas. Pendekatan bilateral memiliki dua alasan: pertama, citra perlu memvalidasi koherensi teks yang diprediksi pengenal HTR; kedua, teks perlu memverifikasi kualitas visual goresan yang menghasilkan karakter tersebut. Dengan demikian, kedua modalitas saling memberikan konteks untuk deteksi anomali yang lebih \textit{robust}. Setiap modalitas memproyeksikan fiturnya ke ruang bersama berdimensi rendah $d=128$ melalui enam matriks proyeksi terpisah:
 
@@ -227,24 +227,24 @@ Komponen \textit{Recognizer} (R) dalam metode ini merupakan model HTR hibrida CN
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.95\textwidth,keepaspectratio]{/home/lambda_one/tesis/GAN-HTR-ORI/docRestoration/Paper/drawio/arsitektur_htr.png}
-  \caption[Arsitektur HTR Recognizer]{Arsitektur HTR \textit{Recognizer}: model hibrida CNN-Transformer dengan CNN \textit{Backbone} 4 tahap (64$\rightarrow$512 kanal), \textit{Transformer Encoder} 6 lapisan (8 \textit{heads}, dimensi 512), dan \textit{CTC Output Layer} (96 kelas). Total 27,86M parameter dibekukan selama pelatihan GAN.}
+  \caption[Arsitektur HTR \textit{Recognizer}]{Arsitektur HTR \textit{Recognizer}: model hibrida CNN-Transformer dengan CNN \textit{Backbone} 4 tahap (64$\rightarrow$512 kanal), \textit{Transformer Encoder} 6 lapisan (8 \textit{heads}, dimensi 512), dan \textit{CTC Output Layer} (96 kelas). Total 27,86M parameter dibekukan selama pelatihan GAN.}
   \label{fig:htr_architecture}
 \end{figure}
 
-\paragraph{CNN Backbone}
-
+\begin{enumerate}[label=\arabic*., leftmargin=*, wide=0pt, itemsep=1ex]
+    \item CNN \textit{Backbone}
 
 CNN \textit{Backbone} berfungsi untuk mengekstrak fitur visual dari citra baris dokumen. Arsitektur terdiri dari 8 lapisan konvolusi yang diorganisasi dalam 4 tahap dengan peningkatan kedalaman kanal progresif: 64 $\rightarrow$ 128 $\rightarrow$ 256 $\rightarrow$ 512. Setiap tahap menerapkan \textit{max pooling} untuk reduksi dimensi spasial sambil mempertahankan informasi diskriminatif. Output berupa peta fitur spasial yang menjadi input bagi \textit{Transformer Encoder}.
 
-\paragraph{Transformer Encoder}
+    \item \textit{Transformer Encoder}
 
 \textit{Transformer Encoder} memodelkan ketergantungan kontekstual antar posisi karakter dalam sekuens. Arsitektur terdiri dari 6 lapisan \textit{encoder} dengan konfigurasi: 8 \textit{attention heads} dan dimensi representasi 512. Mekanisme \textit{self-attention} memungkinkan setiap posisi mengakses informasi dari seluruh sekuens, penting untuk menangani variasi jarak antar karakter pada dokumen tulisan tangan. Output berupa representasi kontekstual untuk prediksi karakter.
 
-\paragraph{CTC Output Layer}
+    \item \textit{CTC Output Layer}
 
 \textit{CTC Output Layer} memetakan representasi kontekstual ke distribusi probabilitas karakter. Lapisan ini menghasilkan prediksi untuk 95 kelas karakter (termasuk \textit{blank token} untuk penyelarasan CTC). \textit{Connectionist Temporal Classification} (CTC) dipilih karena kemampuannya menangani sekuens dengan panjang variabel tanpa memerlukan penyelarasan karakter-per-karakter secara eksplisit---ideal untuk dokumen tulisan tangan dengan variasi spasial tinggi.
 
-\paragraph{Ekstraksi Fitur}
+    \item Ekstraksi Fitur
 
 Selain prediksi teks, \textit{Recognizer} juga menghasilkan fitur perantara untuk kalkulasi \textit{Recognition Feature Loss}. Fitur diekstrak dari lapisan proyeksi sebelum \textit{Transformer Encoder}:
 
@@ -255,19 +255,20 @@ Selain prediksi teks, \textit{Recognizer} juga menghasilkan fitur perantara untu
 
 \noindent dengan $R_{\text{encoder}}$ adalah bagian \textit{encoder} yang dibekukan. Output berupa peta fitur dengan dimensi (batch, 128, 512) yang menangkap karakteristik relevan dengan teks: pola goresan, bentuk karakter, dan pengaturan spasial. Lapisan ini dipilih karena mengandung fitur tingkat urutan sebelum pengodean kontekstual, memberikan gradien yang stabil untuk Generator.
 
-\paragraph{Strategi Integrasi}
+    \item Strategi Integrasi
 
 
 Berbeda dengan pendekatan \textit{joint training} pada ERB-MultiTask~\parencite{erb2021}, penelitian ini mengadopsi strategi pembekuan bobot (\textit{frozen recognizer}). Strategi ini dipilih berdasarkan tiga pertimbangan utama: (1) efisiensi komputasional---pengenal 27,86M parameter tidak memerlukan komputasi gradien, (2) stabilitas pelatihan---mengeliminasi konflik gradien destruktif antara tujuan rekonstruksi dan pengenalan~\parencite{souibgui2022,kang2021pay}, dan (3) pelestarian kinerja---mencegah \textit{catastrophic forgetting}~\parencite{kirkpatrick2017overcoming} pada pengenal praterlatih.
 
 Komponen \textit{Recognizer} beku berfungsi sebagai evaluator objektif yang menghasilkan: (1) input teks bagi Diskriminator \textit{dual-modal} untuk menilai koherensi visual-tekstual, dan (2) kalkulasi \textit{CTC Loss} dan \textit{Recognition Feature Loss} untuk mengukur keterbacaan hasil restorasi. Tabel~\ref{table:recognizer_strategy_comparison} merangkum perbandingan strategi integrasi yang dipertimbangkan.
+\end{enumerate}
 
 \begin{table}[H]
   \caption[Analisis komparatif strategi integrasi pengenal HTR]{Analisis komparatif strategi integrasi pengenal HTR.}
   \label{table:recognizer_strategy_comparison}
   \small
   \renewcommand{\arraystretch}{1.2}
-  \centering
+
   \begin{tabular}{|p{2.2cm}|p{5.2cm}|p{5.2cm}|}
     \hline
     \textbf{Strategi}           & \textbf{Keuntungan}                                              & \textbf{Keterbatasan}                                                     \\
@@ -303,7 +304,7 @@ Generator dilatih dengan kombinasi lima komponen loss yang dikalibrasi melalui p
 
 Konfigurasi bobot loss untuk setiap komponen ditunjukkan dalam Tabel~\ref{table:optimal_weights}. Studi ablasi sistematis (Bab~V) mengidentifikasi konfigurasi optimal 4-komponen (tanpa $\mathcal{L}_{\text{rec-feat}}$) sebagai keseimbangan \textit{Pareto} antara kualitas visual dan keterbacaan HTR.
 
-\paragraph{Adversarial Loss}
+\paragraph{\textit{Adversarial Loss}}
 
 \textit{Adversarial loss} standar GAN mendorong pembuatan citra yang realistis dengan melatih generator untuk menipu diskriminator:
 
@@ -324,7 +325,7 @@ dengan $D(I_{\text{deg}}, I_{\text{gen}})$ adalah probabilitas diskriminator men
 
 dengan pasangan $(I_{\text{deg}}, I_{\text{gt}})$ merupakan pasangan nyata (citra terdegradasi dengan \textit{ground truth} bersih), sedangkan $(I_{\text{deg}}, I_{\text{gen}})$ merupakan pasangan palsu hasil generator. Mekanisme \textit{adversarial} ini mendorong generator menghasilkan citra dengan distribusi tekstur dan karakteristik visual yang tidak dapat dibedakan dari dokumen bersih autentik.
 
-\paragraph{Pixel Reconstruction Loss}
+\paragraph{\textit{Pixel Reconstruction Loss}}
 
 \textit{Pixel reconstruction loss} menggunakan norma L1 untuk memastikan kesamaan piksel-demi-piksel dengan \textit{ground truth}:
 
@@ -335,7 +336,7 @@ dengan pasangan $(I_{\text{deg}}, I_{\text{gt}})$ merupakan pasangan nyata (citr
 
 Norma L1 dipilih karena menghasilkan hasil yang lebih tajam dibandingkan norma L2 dan lebih tangguh terhadap nilai pencilan. Berbeda dengan L2 yang memberikan penalti kuadratik (cenderung menghasilkan citra kabur), L1 memberikan penalti linear yang mempertahankan ketajaman tepi dan detail goresan halus yang penting untuk keterbacaan HTR.
 
-\paragraph{Perceptual Loss}
+\paragraph{\textit{Perceptual Loss}}
 
 \textit{Perceptual loss} \parencite{johnson2016} membandingkan fitur tingkat tinggi dari jaringan VGG-19 yang telah dilatih pada \textit{ImageNet}:
 
@@ -346,7 +347,7 @@ Norma L1 dipilih karena menghasilkan hasil yang lebih tajam dibandingkan norma L
 
 dengan $\phi_l$ menunjukkan fitur dari lapisan $l$ dari jaringan VGG-19 praterlatih, dan $L$ adalah himpunan lapisan konvolusi yang dipilih untuk ekstraksi fitur. Fitur diekstrak dari beberapa lapisan konvolusi untuk perbandingan perseptual multiskala. Pendekatan ini memastikan pelestarian karakteristik visual dari detail tingkat rendah (tepi, tekstur) hingga fitur semantik tingkat tinggi (pola goresan, bentuk karakter), menghasilkan citra yang lebih koheren secara perseptual meskipun terdapat perbedaan piksel minor.
 
-\paragraph{CTC Loss}
+\paragraph{\textit{CTC Loss}}
 
 \textit{CTC loss} memberikan gradien sadar-teks langsung dari \textit{frozen recognizer} untuk mengoptimalkan keterbacaan HTR secara eksplisit. \textit{Connectionist Temporal Classification} (CTC)~\parencite{graves2006} dipilih karena kemampuannya menangani sekuens dengan panjang variabel tanpa memerlukan \textit{alignment} eksplisit antara input citra dan output teks, ideal untuk dokumen tulisan tangan dengan variasi spasial karakter yang tinggi.
 
@@ -356,7 +357,7 @@ Analisis kontribusi menunjukkan CTC loss berkontribusi 67,5\% terhadap total gen
 
 Strategi \textit{clipping} dengan batas maksimal 400,0 diterapkan untuk mencegah gradien ekstrem pada kasus degradasi berat yang dapat mengganggu stabilitas pelatihan adversarial.
 
-\paragraph{Recognition Feature Loss}
+\paragraph{\textit{Recognition Feature Loss}}
 
 Komponen \textit{recognition feature loss} ($\mathcal{L}_{\text{rec-feat}}$) dirancang untuk mendorong kesamaan fitur tingkat menengah antara citra restorasi dan \textit{ground truth} pada ruang representasi \textit{recognizer}:
 
@@ -373,7 +374,7 @@ Komponen \textit{recognition feature loss} ($\mathcal{L}_{\text{rec-feat}}$) dir
   \caption[Konfigurasi bobot \textit{loss} optimal]{Konfigurasi bobot \textit{loss} optimal: \textit{inverse scaling} empiris divalidasi dengan \textit{grid search} (27 konfigurasi).}
   \label{table:optimal_weights}
   \small
-  \centering
+
   \footnotesize
   \begin{tabular}{|l|p{2.2cm}|p{5.3cm}|}
     \hline
@@ -396,9 +397,8 @@ Pemilihan bobot loss (Tabel~\ref{table:optimal_weights}) dilakukan berdasarkan p
 
 \paragraph{Optimasi Berorientasi HTR}
 
-Istilah optimasi fungsi loss berorientasi HTR pada penelitian ini mengacu pada strategi kalibrasi yang menempatkan komponen HTR sebagai faktor dominan dalam pemilihan bobot, bukan sekadar komponen tambahan pada fungsi loss visual. Pendekatan ini berbeda dari metode restorasi dokumen konvensional dalam dua aspek:
-
-\begin{itemize}[noitemsep, topsep=0pt, leftmargin=1.5em]
+Pendekatan ini berbeda dari metode restorasi dokumen konvensional dalam dua aspek:
+\begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=1.5em]
   \item Dominasi \textit{CTC Loss}: Meskipun bobot nominal rendah ($\lambda_{\text{ctc}}=0,15$), magnitudo \textit{natural} yang besar ($\sim$100--400) menghasilkan kontribusi efektif 67,5\% terhadap total \textit{generator loss}---dibandingkan 32,4\% untuk komponen visual (\textit{pixel} + \textit{adversarial} + \textit{perceptual}).
   \item Orientasi Keterbacaan: Generator dioptimalkan secara eksplisit untuk keterbacaan HTR, memastikan hasil restorasi tidak hanya berkualitas visual tinggi tetapi juga dapat dibaca oleh sistem pengenalan teks.
 \end{itemize}
@@ -519,10 +519,10 @@ Pelatihan menggunakan pendekatan \textit{curriculum learning}~\parencite{bengio2
 Tabel~\ref{tab:curriculum-learning} merangkum konfigurasi ketiga fase beserta fokus optimasi masing-masing.
 
 \begin{table}[H]
-  \caption[Protokol \textit{curriculum learning} tiga fase]{Protokol \textit{curriculum learning} tiga fase: warmup visual, peningkatan bertahap CTC, pelatihan penuh.}
+  \caption[Protokol \textit{curriculum learning} tiga fase]{Protokol \textit{curriculum learning} tiga fase: \textit{warmup} visual, peningkatan bertahap CTC, pelatihan penuh.}
   \label{tab:curriculum-learning}
   \small
-  \centering
+
   \footnotesize
   \begin{tabular}{|l|c|c|p{4.5cm}|}
     \hline
@@ -587,7 +587,7 @@ Untuk menjamin reproduktibilitas eksperimen, dibawah ini merupakan parameter pel
   \caption[Spesifikasi implementasi teknis pelatihan]{Spesifikasi implementasi teknis eksperimen pelatihan GAN-HTR.}
   \label{tab:spesifikasi-implementasi}
   \small
-  \centering
+
   \renewcommand{\arraystretch}{1.2}
   \begin{tabular}{|l|p{8.5cm}|}
     \hline
@@ -631,7 +631,7 @@ Metode klasik dipilih sebagai \textit{baseline} kuantitatif karena dapat diimple
   \caption[Ringkasan metode \textit{baseline} klasik]{Ringkasan metode \textit{baseline} klasik untuk perbandingan kuantitatif.}
   \label{tab:metode-baseline}
   \small
-  \centering
+
   \renewcommand{\arraystretch}{1.3}
   \begin{tabular}{|l|p{3.5cm}|p{6.5cm}|}
     \hline
@@ -660,7 +660,7 @@ Untuk memvalidasi kontribusi setiap komponen arsitektur secara sistematis, studi
   \item Eksperimen 02 (+\textit{Adversarial}): Setara dengan GAN standar tanpa komponen HTR
   \item Eksperimen 03 (+Perseptual): Peningkatan dengan loss perseptual berbasis VGG
   \item Eksperimen 04 (+CTC): Konfigurasi optimal dengan integrasi HTR
-  \item Eksperimen 05 (+Fitur Pengenal): Konfigurasi lengkap untuk validasi redundansi komponen
+  \item Eksperimen 05 (+Fitur Pengenal): Konfigurasi lengkap untuk validasi keberlebihan komponen
 \end{enumerate}
 
 Pendekatan ablasi ini memberikan pemahaman tentang kontribusi relatif setiap komponen dan memvalidasi keputusan desain arsitektural secara empiris. Perbandingan kuantitatif langsung dengan metode \textit{deep learning} terkini (U-Net, DE-GAN, ERB-MultiTask, DocEnTr) tidak dilakukan karena perbedaan dataset pelatihan dan ketiadaan implementasi resmi yang dapat direproduksi, metode tersebut berfungsi sebagai konteks penelitian untuk memposisikan kontribusi yang diusulkan sebagaimana telah dibahas pada Bab II.
@@ -674,8 +674,8 @@ Evaluasi multi-objektif memerlukan metrik untuk mengukur kualitas visual dan ket
   \caption[Pemetaan metrik evaluasi dengan komponen arsitektur]{Pemetaan metrik evaluasi dengan komponen arsitektur dan kebutuhan sistem.}
   \label{tab:metric-component-mapping}
   \small
-  \centering
-  \begin{tabular}{|l|l|l|l|}
+
+  \begin{tabularx}{\textwidth}{|l|X|X|l|}
     \hline
     \textbf{Metrik} & \textbf{Aspek Diukur} & \textbf{Komponen Terkait}                      & \textbf{Kebutuhan} \\
     \hline
@@ -684,15 +684,15 @@ Evaluasi multi-objektif memerlukan metrik untuk mengukur kualitas visual dan ket
     CER             & Keterbacaan karakter  & \textit{Frozen Recognizer} + $\mathcal{L}_{\text{CTC}}$ & FR-3, NFR-2        \\
     WER             & Keterbacaan kata      & \textit{Frozen Recognizer} + $\mathcal{L}_{\text{CTC}}$ & FR-3, NFR-2        \\
     \hline
-  \end{tabular}
+  \end{tabularx}
 \end{table}
 
 \begin{table}[H]
   \caption[Spesifikasi implementasi metrik evaluasi]{Spesifikasi implementasi teknis metrik evaluasi.}
   \label{tab:metric-implementation}
   \small
-  \centering
-  \begin{tabular}{|l|l|l|l|}
+
+  \begin{tabularx}{\textwidth}{|l|l|X|X|}
     \hline
     \textbf{Metrik} & \textbf{\textit{Library}} & \textbf{Algoritma} & \textbf{Pra-pemrosesan} \\
     \hline
@@ -701,26 +701,26 @@ Evaluasi multi-objektif memerlukan metrik untuk mengukur kualitas visual dan ket
     CER  & editdistance 0.6.2  & \textit{Levenshtein distance} & \textit{CTC greedy}, \textit{lowercase} \\
     WER  & editdistance 0.6.2  & \textit{Levenshtein distance} & Tokenisasi kata \\
     \hline
-  \end{tabular}
+  \end{tabularx}
 \end{table}
 
 \paragraph{Formula Matematika Metrik}
 
-Metrik kualitas visual PSNR (\textit{Peak Signal-to-Noise Ratio}) mengukur rasio antara nilai maksimum sinyal dan derau rekonstruksi:
+Metrik kualitas visual PSNR mengukur rasio antara nilai maksimum sinyal dan derau rekonstruksi:
 \begin{equation}
   \text{PSNR} = 10 \log_{10}\left(\frac{\text{MAX}^2}{\text{MSE}}\right)
   \label{eq:IV.17}
 \end{equation}
 dengan $\text{MAX}=1,0$ untuk citra ternormalisasi $[0,1]$, dan $\text{MSE}$ merupakan \textit{Mean Squared Error}.
 
-Metrik SSIM (\textit{Structural Similarity Index}) mengukur kesamaan struktural antara dua citra berdasarkan luminansi, kontras, dan struktur:
+Metrik SSIM mengukur kesamaan struktural antara dua citra berdasarkan luminansi, kontras, dan struktur:
 \begin{equation}
   \text{SSIM}(I_1, I_2) = \frac{(2\mu_1\mu_2 + C_1)(2\sigma_{12} + C_2)}{(\mu_1^2 + \mu_2^2 + C_1)(\sigma_1^2 + \sigma_2^2 + C_2)}
   \label{eq:IV.18}
 \end{equation}
 dengan $\mu_1$, $\mu_2$ adalah rata-rata lokal; $\sigma_1$, $\sigma_2$ adalah variansi lokal; $\sigma_{12}$ adalah kovariansi; dan $C_1$, $C_2$ adalah konstanta stabilisasi.
 
-Metrik keterbacaan CER (\textit{Character Error Rate}) dan WER (\textit{Word Error Rate}) mengukur tingkat kesalahan pengenalan teks menggunakan algoritma \textit{Levenshtein distance}:
+Metrik keterbacaan CER dan WER mengukur tingkat kesalahan pengenalan teks menggunakan algoritma \textit{Levenshtein distance}:
 \begin{equation}
   \text{CER} = \frac{\text{EditDistance}(t_{\text{gt}}, t_{\text{pred}})}{|t_{\text{gt}}|} \times 100\%
   \label{eq:IV.19}
